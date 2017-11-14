@@ -1,0 +1,126 @@
+/* # Plugins
+---------------------------------------------------------------------------------------------------- */
+
+/* ## Genesis eNews Extended
+--------------------------------------------- */
+
+.sidebar .enews-widget,
+.sidebar .enews-widget .widget-title {
+  color: #fff;
+}
+
+.sidebar .widget.enews-widget {
+  background-color: #333;
+}
+
+.sidebar .enews-widget input,
+.sidebar .enews-widget input:focus {
+  border: 1px solid #333;
+}
+
+.sidebar .enews-widget input[type="submit"] {
+  background-color: #c3251d;
+  color: #fff;
+}
+
+.sidebar .enews-widget input[type="submit"]:focus,
+.sidebar .enews-widget input[type="submit"]:hover  {
+  background-color: #fff;
+  color: #333;
+}
+
+.enews-widget input {
+  font-size: 16px;
+  font-size: 1.6rem;
+  margin-bottom: 16px;
+}
+
+.enews-widget input[type="submit"] {
+  margin: 0;
+  width: 100%;
+}
+
+.enews form + p {
+  margin-top: 24px;
+}
+
+.sidebar{
+  .textwidget{
+  }
+  .featured-content{
+    border-top: 1px solid $blue;
+    border-bottom: 1px solid $blue;
+    .entry-content{
+      font-size: 0.9em;
+    }
+  }
+}
+
+/* ## Jetpack
+--------------------------------------------- */
+
+#wpstats {
+  display: none;
+}
+
+/* ## Gravity Forms
+--------------------------------------------- */
+.site-inner {
+  .gform_wrapper {
+    margin: 0 -1em 0 0;
+    max-width: 101%;
+    .gform_heading {
+      .gform_description {
+        color: $blue;
+        font-weight: 600;
+        a{
+          color: $blue;
+        }
+      }
+    }
+    .gform_body {
+      li.gfield {
+        background: $white;
+        margin-bottom: 0.5em;
+        label {
+          padding: 0 1em;
+          font-size: 0.7em;
+          font-weight: 400;
+        }
+        .ginput_container {
+          input, textarea {
+            border: 0;
+            background: $white;
+          }
+        }
+        &.white {
+          background: none;
+        }
+      }
+    }
+    .gform_footer {
+      input.button,
+      input[type=submit] {
+        width: 50%;
+        display: block;
+      }
+    }
+  }
+  .sidebar{
+    .gform_wrapper {
+      .gform_body {
+        li.gfield {
+          background: rgb(234, 243, 251);
+          .ginput_container {
+            input, textarea {
+              background: rgba(234,243,251,0);
+            }
+          }
+          &.white {
+            background: none;
+          }
+        }
+      }
+    }
+  }
+}

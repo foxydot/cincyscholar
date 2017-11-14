@@ -1,0 +1,284 @@
+@media only screen and (min-width: 1024px) {
+
+  /* # Defaults
+  ---------------------------------------------------------------------------------------------------- */
+  body{
+    .site-container{
+    }
+  }
+
+  /* # Structure
+  ---------------------------------------------------------------------------------------------------- */
+
+
+
+  /* ## Column Widths and Positions
+--------------------------------------------- */
+
+  /* ### Wrapping div for .content and .sidebar-primary */
+  .content-sidebar-sidebar .content-sidebar-wrap,
+  .sidebar-content-sidebar .content-sidebar-wrap,
+  .sidebar-sidebar-content .content-sidebar-wrap {
+  }
+
+  .content-sidebar-sidebar .content-sidebar-wrap {
+    float: left;
+  }
+
+  .sidebar-content-sidebar .content-sidebar-wrap,
+  .sidebar-sidebar-content .content-sidebar-wrap {
+    float: right;
+  }
+
+  /* ### Content */
+
+  .content {
+    float: right;
+    order: 2;
+  }
+
+  .content-sidebar .content,
+  .content-sidebar-sidebar .content,
+  .sidebar-content-sidebar .content {
+    float: left;
+    order: 1;
+  }
+
+  .content-sidebar-sidebar .content,
+  .sidebar-content-sidebar .content,
+  .sidebar-sidebar-content .content {
+  }
+
+  .full-width-content .content {
+    width: 100%;
+  }
+
+  /* ### Primary Sidebar */
+
+  .sidebar-primary {
+    float: right;
+  }
+
+  .sidebar-content .sidebar-primary,
+  .sidebar-sidebar-content .sidebar-primary {
+    float: left;
+    order: 1;
+    width: 30%;
+  }
+
+  /* ### Secondary Sidebar */
+
+  .sidebar-secondary {
+    float: left;
+  }
+
+  .content-sidebar-sidebar .sidebar-secondary {
+    float: right;
+  }
+
+  /* # Common
+  ---------------------------------------------------------------------------------------------------- */
+
+  /* # Widgets
+  ---------------------------------------------------------------------------------------------------- */
+
+  /* # Plugins
+  ---------------------------------------------------------------------------------------------------- */
+
+  /* # Site Header
+  ---------------------------------------------------------------------------------------------------- */
+
+  /* ## Title Area
+  --------------------------------------------- */
+
+  .title-area {
+    float: left;
+    padding: 10px 0;
+    width: 300px;
+  }
+
+  .header-image .title-area {
+    margin: 0 auto;
+    max-width: 500px;
+    width: 33%;
+    padding: 0;
+  }
+
+  .header-full-width .title-area {
+    float: left;
+  }
+
+  .site-title {
+    font-size: 3em;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .site-title a,
+  .site-title a:focus,
+  .site-title a:hover {
+    color: #333;
+    text-decoration: none;
+  }
+
+  /* Logo, hide text */
+
+
+  .header-image .site-title > a {
+  }
+
+  .site-description {
+    font-size: 16px;
+    font-size: 1.6rem;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  .site-description,
+  .site-title {
+    margin-bottom: 0;
+  }
+
+  /* Widget Area
+  --------------------------------------------- */
+
+  .site-header .widget-area, .pre-header .widget-area {
+    float: right;
+    text-align: right;
+    clear: right;
+    line-height: 1;
+    .widget {
+      display: inline-block;
+    }
+    .search-form {
+      display: inline-block;
+      padding: 0;
+      margin-left: 1rem;
+      position: relative;
+      whitespace: nowrap;
+      input[type="search"] {
+        font-size: 1.4rem;
+        width: 25rem;
+        background: $white;
+        padding: 0.5em 2.4em 0.5em 1em;
+        border: 0;
+        border-right: 1px solid $offwhite;
+        border-radius: 3rem;
+        line-height: 1;
+      }
+      input[type="submit"] {
+        @include fontawesome;
+        background: transparent;
+        border: 0 none;
+        clip: auto;
+        color: $ltgrey;
+        display: inline-block;
+        font-size: 1.2rem;
+        height: 18px;
+        line-height: 1;
+        text-align: center;
+        width: 18px;
+        right: 1rem;
+        top: 0.9rem;
+      }
+      &:hover {
+        input[type="search"] {
+        }
+      }
+    }
+  }
+
+  .site-header .widget-area {
+    float: right;
+    text-align: right;
+  }
+
+  .page-title-area {
+    background: $white;
+    .banner {
+      .texturize {
+        .gradient {
+          min-height: 400px;
+        }
+      }
+    }
+  }
+
+  .page-title-area{
+    .banner{
+      .wrap{
+        .gradient {
+          min-height: 450px;
+        }
+      }
+    }
+  }
+
+
+
+  /* # Nav
+  ---------------------------------------------------------------------------------------------------- */
+
+  /* # Content
+  ----------------------------------------------------------------------------------------------------- */
+  .entry {
+    padding: 2em;
+  }
+  
+  div.building-row {
+    div.building-item {
+      width:45%;
+      display:inline-block;
+      padding: 0 10px;
+      padding-bottom:10px;
+      float:left;
+      .fa {
+        padding-right:5px;
+      }
+    }
+    div.building-item-list {
+      padding-top:10px;
+      p { 
+        font-size: .8em;
+        margin-bottom: 12px;
+        }
+      h2 {
+        font-size: 1em;
+      }
+    }
+  }
+  .building {
+    h2.padding {
+      padding-top:20px; 
+    }
+    h3 {
+      padding-top: 20px;
+    }
+  }
+  
+
+  /* # Sidebars
+  ---------------------------------------------------------------------------------------------------- */
+
+  .sidebar {
+    .widget,
+    .sidebarcontent  {
+      padding: 2em 0;
+    }
+  }
+
+
+  /* # Footer Widgets
+---------------------------------------------------------------------------------------------------- */
+
+  .footer-widgets {
+    padding-top: 2em;
+  }
+
+
+  /* # Site Footer
+  ---------------------------------------------------------------------------------------------------- */
+
+  .site-footer {
+  }
+}

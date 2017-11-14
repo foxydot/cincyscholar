@@ -1,0 +1,64 @@
+.bannercontent{
+  color: $dkgrey;
+}
+.addborder{
+  border: 0.25em solid $white;
+}
+.nobr{
+  white-space: nowrap;
+}
+.nav-buttons{
+  float: left;
+  #nav-login-btn, #nav-signup-btn {
+    color: $dkgrey;
+    background: $offwhite;
+    border: none;
+    border-radius: 0;
+    margin-left: 20px;
+  }
+  #nav-signup-btn {
+     color: $offwhite;
+     background: $green;
+   }
+}
+
+i.fa{
+  margin: 0 auto;
+}
+.genesis-blog-grid {
+  article.genesis-feature, article.genesis-teaser {
+    .entry-header {
+      .featured_image_wrapper, .grid_image_wrapper {
+        text-align: center;
+        margin: 0 auto 1em;
+        display: block;
+        min-height: 22em;
+      }
+    }
+    .entry-content {
+      .readmore-button {
+        color: $offwhite;
+        background: $green;
+        border-radius: 1.5em;
+        padding: 0 1em;
+        border: 1px solid $green;
+        transition: all 0.5s;
+        &:hover {
+          color: $green;
+          background: $offwhite;
+        }
+      }
+    }
+  }
+  article.genesis-feature{
+    border-bottom: 1px solid $medgrey;
+  }
+}
+
+.single-post{
+  .content-sidebar-wrap{
+    main.content{
+      border-right: 1px solid $ltgrey;
+    }
+  }
+}

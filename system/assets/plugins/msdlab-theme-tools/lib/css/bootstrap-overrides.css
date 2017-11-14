@@ -1,0 +1,23 @@
+.container{
+    max-width: none;
+    width: auto;
+}
+
+@media print {
+    a[href]:after {
+        content: "" !important;
+    }
+
+    div.pre-header, #sticky-wrapper, header.site-header, aside.sidebar{
+        display: none !important;
+    }
+
+    div.print-header{
+        margin-bottom: 1em;
+    }
+
+    main.content {
+        width: 100% !important;
+    }
+    main.content p {page-break-inside: avoid;}
+}

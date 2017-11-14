@@ -1,0 +1,105 @@
+# This is a template .gitignore file for git-managed WordPress projects.
+#
+# Fact: you don't want WordPress core files, or your server-specific
+# configuration files etc., in your project's repository. You just don't.
+#
+# Solution: stick this file up your repository root (which it assumes is
+# also the WordPress root directory) and add exceptions for any plugins,
+# themes, and other directories that should be under version control.
+#
+# See the comments below for more info on how to add exceptions for your
+# content. Or see git's documentation for more info on .gitignore files:
+# http://kernel.org/pub/software/scm/git/docs/gitignore.html
+
+# Ignore everything in the root except the "system" directory.
+/*
+!.gitignore
+!system/
+
+# Ignore everything in the system directory except assets.
+system/*
+!system/assets/
+!system/wp-content/
+!system/fonts/
+
+# Ignore everything in the "assets" directory, except the "plugins"
+# and "themes" directories.
+system/assets/*
+!system/assets/plugins/
+!system/assets/themes/
+!system/assets/wpalchemy/
+system/wp-content/*
+!system/wp-content/plugins/
+!system/wp-content/themes/
+!system/wp-content/wpalchemy/
+
+# Ignore everything in the "plugins" directory, except the plugins you
+# specify (see the commented-out examples for hints on how to do this.)
+system/assets/plugins/*
+!system/assets/plugins/msd*
+# !system/assets/plugins/my-directory-plugin/
+system/wp-content/plugins/*
+!system/wp-content/plugins/msd*
+# !system/wp-content/plugins/my-directory-plugin/
+
+# Ignore everything in the "themes" directory, except the themes you
+# specify (see the commented-out example for a hint on how to do this.)
+system/assets/themes/twenty*
+system/assets/themes/genesis
+system/wp-content/themes/twenty*
+system/wp-content/themes/genesis
+
+# Apple stuff
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+
+# Backups and such
+*.zip
+*.tar.gz
+*.tar.bz
+
+
+# Thumbnails
+._*
+
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+*.pydevproject
+.project
+.metadata
+bin/**
+tmp/**
+tmp/**/*
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.classpath
+.settings/
+.loadpath
+
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# CDT-specific
+.cproject
+.idea
+
+# PDT-specific
+.buildpath
+
+# Codekit
+config.codekit
+.codekit-cache
+*codekit*
+
+.sass-cache
+.sass-cache/*

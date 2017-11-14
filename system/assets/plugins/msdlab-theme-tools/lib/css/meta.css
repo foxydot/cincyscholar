@@ -1,0 +1,65 @@
+.msdlab_meta {
+  /* Tables
+--------------------------------------------- */ }
+  .msdlab_meta ul li:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0; }
+  .msdlab_meta .description {
+    display: none; }
+  .msdlab_meta span {
+    display: block;
+    color: #999; }
+  .msdlab_meta label {
+    display: block;
+    font-weight: bold;
+    margin: 0 1% 0 0;
+    float: left;
+    width: 14%;
+    text-align: right;
+    cursor: default;
+    line-height: 2; }
+    .msdlab_meta label span {
+      display: inline;
+      font-weight: normal; }
+  .msdlab_meta input[type="text"],
+  .msdlab_meta input[type="password"],
+  .msdlab_meta input[type="color"],
+  .msdlab_meta input[type="date"],
+  .msdlab_meta input[type="datetime"],
+  .msdlab_meta input[type="datetime-local"],
+  .msdlab_meta input[type="email"],
+  .msdlab_meta input[type="month"],
+  .msdlab_meta input[type="number"],
+  .msdlab_meta input[type="range"],
+  .msdlab_meta input[type="tel"],
+  .msdlab_meta input[type="time"],
+  .msdlab_meta input[type="url"],
+  .msdlab_meta input[type="week"],
+  .msdlab_meta select,
+  .msdlab_meta textarea,
+  .msdlab_meta .input_container {
+    width: 85%;
+    float: left; }
+  .msdlab_meta table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    line-height: 2;
+    margin-bottom: 40px;
+    margin-bottom: 4rem;
+    width: 100%; }
+  .msdlab_meta tbody {
+    border-bottom: 1px solid #ddd; }
+  .msdlab_meta th,
+  .msdlab_meta td {
+    text-align: left; }
+  .msdlab_meta th {
+    font-weight: bold;
+    text-transform: uppercase; }
+  .msdlab_meta td {
+    border-top: 1px solid #ddd;
+    padding: 6px 0;
+    padding: 0.6rem 0; }

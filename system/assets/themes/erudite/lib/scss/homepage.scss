@@ -1,0 +1,12 @@
+@import "bootstrap-overrides.scss";
+@import "mixins.scss";
+
+
+@media only screen and (min-width: 768px) {
+  .sectioned-page-wrapper{
+    padding-top: 80px;
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+}

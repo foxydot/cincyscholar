@@ -1,0 +1,122 @@
+
+
+/* # Site Header
+---------------------------------------------------------------------------------------------------- */
+
+.site-header {
+  background-color: $dkgrey;
+  padding: 20px;
+  transition: all 0.8s;
+  border: 0;
+}
+
+/* ## Title Area
+--------------------------------------------- */
+
+.title-area {
+  float: left;
+  padding: 10px 0;
+  width: 300px;
+}
+
+.header-image .title-area {
+  margin: 0 auto;
+  max-width: 500px;
+  width: 33%;
+  padding: 0;
+}
+
+.header-full-width .title-area {
+  float: none;
+  width: 100%;
+}
+
+.site-title {
+  font-size: 30px;
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.site-title a,
+.site-title a:focus,
+.site-title a:hover {
+  color: #333;
+  text-decoration: none;
+  min-height: 40px;
+}
+
+/* Logo, hide text */
+
+.header-image .site-description{
+  display: none;
+}
+.header-image .site-title a {
+  display: block;
+  text-indent: -9999px;
+}
+
+.header-image .site-title > a {
+  background-position: center left;
+  background-size: contain !important;
+  background-image: url(../images/logo.png);
+  background-repeat: no-repeat;
+}
+
+.site-description {
+  font-size: 16px;
+  font-size: 1.6rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.site-description,
+.site-title {
+  margin-bottom: 0;
+}
+
+
+/* Widget Area
+--------------------------------------------- */
+
+.site-header .widget-area, .pre-header .widget-area {
+  float: right;
+  text-align: right;
+  clear: right;
+  line-height: 1;
+  .widget{
+    display: inline-block;
+  }
+}
+
+.site-header .widget-area {
+  float: right;
+  text-align: right;
+}
+
+.page-title-area{
+  .banner{
+    .wrap{
+      background-repeat: no-repeat;
+      background-size: cover;
+      .gradient{
+        background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.73) 17%,rgba(0,0,0,0.66) 35%,rgba(0,0,0,0.55) 62%,rgba(0,0,0,0.4) 100%);
+        background-attachment: fixed;
+        padding: 8em 0;
+        min-height: 45vw;
+        .bannertext{
+          text-align: center;
+          margin: 11em auto;
+          .entry-title{
+            font-size: 4em;
+            color: $offwhite;
+            text-transform: uppercase;
+            a{
+              color: $offwhite;
+            }
+          }
+        }
+      }
+    }
+  }
+}

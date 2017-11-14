@@ -1,0 +1,24 @@
+@import url(//fonts.googleapis.com/css?family=Lato:100,300,400,700,900,100italic,300italic,400italic,700italic,900italic);
+@import url(//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,700,300,600,800,400);
+@media print {
+  a[href]:after {
+    content: "" !important; }
+  div.pre-header, #sticky-wrapper, header.site-header, aside.sidebar {
+    display: none !important; }
+  div.print-header {
+    margin-bottom: 1em; }
+  main.content {
+    width: 100% !important; }
+    main.content p {
+      page-break-inside: avoid; } }
+
+/* Import Fonts
+------------------------------------------------------------ */
+/* Font Stacks */
+/* Colors */
+/* Neutrals */
+/* Default Colors */
+/* Social Colors */
+@media only screen and (min-width: 768px) {
+  .sectioned-page-wrapper {
+    padding-top: 80px; } }
