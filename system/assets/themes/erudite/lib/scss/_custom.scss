@@ -1,3 +1,4 @@
+.site-header>.container{position: relative;}
 .bannercontent{
   color: $dkgrey;
 }
@@ -18,7 +19,7 @@
   }
   #nav-signup-btn {
      color: $offwhite;
-     background: $green;
+     background: $blue;
    }
 }
 
@@ -38,13 +39,13 @@ i.fa{
     .entry-content {
       .readmore-button {
         color: $offwhite;
-        background: $green;
+        background: $blue;
         border-radius: 1.5em;
         padding: 0 1em;
-        border: 1px solid $green;
+        border: 1px solid $blue;
         transition: all 0.5s;
         &:hover {
-          color: $green;
+          color: $blue;
           background: $offwhite;
         }
       }

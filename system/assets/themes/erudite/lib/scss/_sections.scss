@@ -51,7 +51,7 @@
         &:before{
           @include fontawesome;
           content: '\f058';
-          color: $green;
+          color: $blue;
           margin-right: 0.5em;
         }
       }
@@ -66,7 +66,7 @@
   .section.overlay{
     padding: 0;
     .overlay{
-      background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%,rgba(0,0,0,0.53) 17%,rgba(0,0,0,0.46) 35%,rgba(0,0,0,0.35) 62%,rgba(0,0,0,0.2) 100%);
+      background: linear-gradient(to bottom, rgba(255,255,255,0.8) 0%,rgba(255,255,255,0.5) 100%);
       background-attachment: fixed;
       padding: 8em 0;
     }
@@ -78,7 +78,7 @@
     background-color: $ltgrey;
   }
   .section.bkg-green{
-    background-color: $green;
+    background-color: $blue;
   }
   .section.bkg-white{
     background-color: $offwhite;
@@ -87,10 +87,13 @@
     color: $dkgrey;
   }
   .section.text-green{
-    color: $green;
+    color: $blue;
   }
   .section.text-white{
     color: $offwhite;
+  }
+  .section.text-shadow{
+    text-shadow: 0 0 0.5em rgba($dkgrey,0.6);
   }
   .section.left-align{
     .section-body{
@@ -99,18 +102,18 @@
   }
   .section{
     .text-green{
-      color: $green;
+      color: $blue;
     }
     p.price{
       font-size: 6.5em;
-      color: $green;
+      color: $blue;
       span.price-desc{
         font-size: 1.4rem;
       }
     }
     i.icon {
       font-size: 4em;
-      border: 4px solid $green;
+      border: 4px solid $blue;
       width: 2.5em;
       height: 2.5em;
       padding: 0.5em 0.5em 0em;
@@ -119,7 +122,7 @@
       display: inline-block;
       text-align: center;
       &:hover{
-        background: $green;
+        background: $blue;
         color: $offwhite;
       }
     }
@@ -138,9 +141,9 @@
     margin-top: 100px;
     transition: all 0.5s;
     &:hover{
-      background: $green;
+      background: $blue;
       color: $offwhite;
-      border: 2px solid $green;
+      border: 2px solid $blue;
     }
   }
   //specific sections
@@ -175,8 +178,8 @@
   .section.section-team{
     .social-btn{
       display: inline-block;
-      border: 2px solid $green;
-      background: $green;
+      border: 2px solid $blue;
+      background: $blue;
       color: $offwhite;
       border-radius: 50%;
       margin: 0.5em;
@@ -186,7 +189,7 @@
       transition: all 0.5s;
       &:hover{
         background: $offwhite;
-        color: $green;
+        color: $blue;
       }
     }
   }

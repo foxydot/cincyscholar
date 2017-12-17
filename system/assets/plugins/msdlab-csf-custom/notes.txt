@@ -1,0 +1,22 @@
+User types:
+God
+CSF Admin
+Applicant
+Awardee
+Reject
+Awardee-renewal
+Donor
+Scholarship Admin
+
+Gateways
+Backend - god and csf admin only
+
+Application Gateway - applicants/awardees/renewals/rejects
+    Award Gateway - awardees/renewals
+
+Scholarship Gateway - Scholarship Admins
+
+Management panels
+Scholarship application period
+Scholarships -> subpanels
+Students -> subpanels

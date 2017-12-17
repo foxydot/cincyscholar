@@ -1,12 +1,11 @@
 /* Import Fonts
 ------------------------------------------------------------ */
-@import url(//fonts.googleapis.com/css?family=Lato:100,300,400,700,900,100italic,300italic,400italic,700italic,900italic);
-@import url(//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,700,300,600,800,400);
+@import url(//fonts.googleapis.com/css?family=Source+Sans+Pro:400,700|Vollkorn:400,700);
 
 
 /* Font Stacks */
 @mixin sansserif($size:1) {
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Source Sans Pro', sans-serif;
   text-rendering: optimizeLegibility !important;
   -webkit-font-smoothing: antialiased !important;
   font-weight: 400;
@@ -14,15 +13,15 @@
 }
 
 @mixin customheader($size:1){
-  font-family: 'Lato', sans-serif;
+  font-family: 'Source Sans Pro', sans-serif;
   text-rendering: optimizeLegibility !important;
   -webkit-font-smoothing: antialiased !important;
-  font-weight: 400;
+  font-weight: 700;
   font-size: $size*1em;
 }
 
 @mixin serif($size:1) {
-  font-family: "Martel", "Times New Roman", sans-serif;
+  font-family: "Vollkorn", "Times New Roman", serif;
   font-weight: 400;
   font-size: $size*1em;
 }
@@ -35,8 +34,8 @@
 $red: #f00;
 $linkred: #b1536f;
 $orange: #f90;
-$yellow: #ff0;
-$green: #2EA645;
+$yellow: rgb(255, 190, 11);
+$blue: #2EA645;
 $blue: rgb(63, 130, 156);
 $purple: #90f;
 $beige: #c96;
@@ -49,7 +48,7 @@ $dkorange: darken($orange, 20%);
 $ltyellow: lighten($yellow,20%);
 $dkyellow: darken($yellow, 20%);
 $ltgreen: #6FC87B;
-$dkgreen: darken($green, 20%);
+$dkgreen: darken($blue, 20%);
 $ltblue: lighten($blue,20%);
 $dkblue: darken($blue, 20%);
 $ltpurple: lighten($purple,20%);
@@ -70,14 +69,14 @@ $black: #000;
 /* Default Colors */
 $body_bkg: $white;
 $body_txt: $dkgrey;
-$link: $green;
-$link_hvr: $green;
+$link: $blue;
+$link_hvr: $blue;
 $border: $ltgrey;
 $input_bkg: $offwhite;
 $input_border: $ltgrey;
-$btn_bkg: $green;
+$btn_bkg: $blue;
 $btn_txt: $offwhite;
-$btn_hvr_bkg: $ltgreen;
+$btn_hvr_bkg: $ltblue;
 $btn_hvr_txt: $offwhite;
 $btn_dis_bkg: $ltgrey;
 $btn_dis_txt: $medgrey;

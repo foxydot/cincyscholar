@@ -4,6 +4,24 @@ jQuery(document).ready(function($) {
     $('*:nth-child(even)').addClass('even');
     $('*:nth-child(odd)').addClass('odd');
 
+
+	$('li.menu-item.icon').each(function(){
+		var cont = $(this);
+		var list = $(this).attr('class').split(/\s+/);
+		var link = $(this).find('a');
+		console.log(list);
+		$.each(list, function(index, item) {
+			console.log(item);
+			if (item.match(/fa-(.*)/)) {
+				//do something
+				link.addClass('fa');
+				link.find('span').addClass('screen-reader-text');
+				link.addClass(item);
+				cont.removeClass(item);
+			}
+		});
+	});
+
     $('.section.overlay').wrapInner('<div class="overlay"></div>');
 
 
@@ -40,5 +58,10 @@ jQuery(document).ready(function($) {
 	});
 
 	$('.genesis-teaser').matchHeight();
+
+	$('.login-trigger').click(function(e){
+		e.preventDefault();
+        $('#login-modal').modal('toggle');
+    });
 
 });

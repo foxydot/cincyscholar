@@ -27,7 +27,7 @@
   .sub-menu-toggle:focus,
   .sub-menu-toggle:hover {
     background: transparent;
-    color: $linkred;
+    color: $link;
     border-width: 0;
   }
 
@@ -85,7 +85,7 @@
 
   .genesis-responsive-menu .genesis-nav-menu a:focus,
   .genesis-responsive-menu .genesis-nav-menu a:hover {
-    color: $green;
+    color: $blue;
 }
 
   .genesis-responsive-menu .genesis-nav-menu .menu-item a {
@@ -138,19 +138,17 @@
 .genesis-nav-menu .menu-item {
   display: inline-block;
   margin-bottom: 0;
-  padding-bottom: 0;
+  padding: 0.5em;
   text-align: left;
 }
 
 .genesis-nav-menu a {
-  color: $white;
+  color: $dkgrey;
   display: block;
   padding: 0 0.5em;
   text-decoration: none;
-  text-transform: uppercase;
-  letter-spacing: 1px;
   line-height: 1.8em;
-  padding: 1em;
+  padding: 0.5em;
 }
 
 .genesis-nav-menu a:focus,
@@ -158,13 +156,14 @@
 .genesis-nav-menu .current-menu-item > a,
 .genesis-nav-menu .sub-menu .current-menu-item > a:focus,
 .genesis-nav-menu .sub-menu .current-menu-item > a:hover  {
-  color: $green;
+  color: $blue;
   text-decoration: none;
 }
 
 .genesis-nav-menu .sub-menu {
   left: -9999px;
-  background-color: rgba(255,255,255,.8);
+  background-color: rgba(255,255,255,1);
+  border: 1px solid $ltgrey;
   position: absolute;
   -webkit-transition: opacity .4s ease-in-out;
   -moz-transition:    opacity .4s ease-in-out;
@@ -173,21 +172,26 @@
   transition:         opacity .4s ease-in-out;
   width: 200px;
   z-index: 99;
+  .menu-item{
+    border-bottom: 1px solid $ltgrey;
+    display: block;
+    &:hover{
+      background: $yellow;
+    }
+  }
 }
+
+
 
 .genesis-nav-menu .sub-menu a {
   border-top: 0;
-  font-size: 14px;
-  font-size: 1.4rem;
-  padding: 20px;
+  border-bottom: 0;
   position: relative;
-  width: 200px;
   word-wrap: break-word;
-}
-
-.genesis-nav-menu .sub-menu a::before {
-  content: ">";
-  margin-right: 10px;
+  display: block;
+  &:hover{
+    border-bottom: 0;
+  }
 }
 
 .genesis-nav-menu .sub-menu .sub-menu {
@@ -227,9 +231,44 @@
 --------------------------------------------- */
 
 .nav-primary {
-  float: right;
-  text-transform: uppercase;
-  .menu{position: relative;}
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  .menu {
+    position: relative;
+    text-transform: uppercase;
+    font-weight: 600;
+    .menu-item{
+      a{
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-bottom: 4px solid transparent;
+      }
+    }
+    a:focus, a:hover,
+    .current-menu-item > a{
+      color: $dkgrey;
+      border-bottom: 4px solid $yellow;
+    }
+    .menu-item{
+      .sub-menu{
+        a, a:hover, a:focus{
+          border-bottom: 0;
+        }
+      }
+      &.icon{
+        a, a:hover, a:focus{
+          border-bottom: 0;
+        }
+        a:hover, a:focus{
+           color: $yellow;
+        }
+        &.current-menu-item > a{
+          color: $yellow;
+        }
+      }
+    }
+  }
   li.right.search{
     display: block;
     position: absolute;

@@ -4,10 +4,11 @@
 ---------------------------------------------------------------------------------------------------- */
 
 .site-header {
-  background-color: $dkgrey;
+  background-color: $white;
   padding: 20px;
   transition: all 0.8s;
   border: 0;
+  border-bottom: 1px solid $ltgrey;
 }
 
 /* ## Title Area
@@ -16,13 +17,13 @@
 .title-area {
   float: left;
   padding: 10px 0;
-  width: 300px;
+  width: 200px;
 }
 
 .header-image .title-area {
   margin: 0 auto;
   max-width: 500px;
-  width: 33%;
+  width: 20%;
   padding: 0;
 }
 
@@ -43,7 +44,7 @@
 .site-title a:hover {
   color: #333;
   text-decoration: none;
-  min-height: 40px;
+  min-height: 3em;
 }
 
 /* Logo, hide text */

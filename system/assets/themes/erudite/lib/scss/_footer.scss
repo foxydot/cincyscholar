@@ -1,32 +1,149 @@
 /* # Footer Widgets
 ---------------------------------------------------------------------------------------------------- */
 
+
 .footer-widgets {
-  background-color: $dkgrey;
-  color: $offwhite;
+  clear: both;
+  font-size: 3.5vw;
+  padding: 3vw;
+}
+
+.footer-widgets {
+  background-color: $yellow;
   clear: both;
   padding: 0.5vw 0;
-  font-size: 1.4em;
-  .widget{
-    margin-bottom: 2em;
-  }
-  h3.widget-title{
-    font-size: 1em;
-    font-weight: 700;
-    text-transform: uppercase;
-  }
   a {
-    color: $offwhite;
+    color: $dkgrey;
   }
 
   a:hover {
-    color: $offwhite;
+    color: $medgrey;
   }
 
+  .widget {
+    margin: 0.5vw auto;
+    float: none;
+    clear: both;
+    display: block;
+    text-align: center;
+  }
   .connected-social{
+    .social-media{
+      margin: 0.25vw 0;
+      float: none;
+      margin: 0 auto;
+      a,a:hover{
+        float: none;
+        display: inline-block;
+        &:before{
+          opacity: 1;
+        }
+      }
+      a.fa{
+        background: $dkgrey;
+        color: $white;
+        border-radius: 100%;
+        font-size: 6vw;
+        height: 9vw;
+        line-height: 1.5;
+        margin: 2vw;
+        width: 9vw;
+      }
+      a.fa.last-child{
+        margin-right: 0;
+      }
+      a.fa:hover{
+        background-color: $offwhite;
+      }
+
+      a.fa-facebook:hover{
+        background-color:$facebook;
+      }
+      a.fa-twitter:hover{
+        background-color:$twitter;
+      }
+      a.fa-pinterest:hover{
+        background-color:$pinterest;
+      }
+      a.fa-google-plus:hover{
+        background-color:$google;
+      }
+      a.fa-linkedin:hover{
+        background-color:$linkedin;
+      }
+      a.fa-instagram:hover{
+        background-color:$instagram;
+      }
+      a.fa-tumblr:hover{
+        background-color:$tumblr;
+      }
+      a.fa-reddit:hover{
+        background-color:$reddit;
+      }
+      a.fa-flickr:hover{
+        background-color:$flickr;
+      }
+      a.fa-youtube:hover{
+        background-color:$youtube;
+      }
+      a.fa-vimeo-square:hover{
+        background-color:$vimeo;
+      }
+      a.fa-vine:hover{
+        background-color:$vine;
+      }
+      a.fa-share-alt:hover{
+        background-color:$sharethis;
+      }
+      a.fa-envelope:hover{
+        background-color:$contact;
+      }
+      a.fa-rss:hover{
+        background-color:$rss;
+      }
+    }
   }
   .search-form input:focus {
     border: 0 solid #ddd;
+  }
+  .widget.widget_nav_menu{
+    text-align: left;
+    .widget-title{
+      text-align: center;
+      color: $dkgrey;
+      font-weight: 800;
+    }
+    ul.menu{
+      width: 90%;
+      margin: 0 auto;
+      -moz-column-count: 1;
+      -moz-column-gap: 30px;
+      -webkit-column-count: 1;
+      -webkit-column-gap: 30px;
+      column-count: 1;
+      column-gap: 30px;
+      >li{
+        -webkit-column-break-inside: avoid;
+        page-break-inside: avoid;
+        break-inside: avoid;
+        >a{
+          text-transform: uppercase;
+          font-weight: 700;
+        }
+        a,a:hover{
+          text-decoration: none;
+        }
+        .sub-menu{
+          margin-bottom: 1em;
+          li{
+            margin-left: 0;
+          }
+          .sub-menu{
+            display: none;
+          }
+        }
+      }
+    }
   }
 }
 
@@ -35,8 +152,7 @@
 ---------------------------------------------------------------------------------------------------- */
 
 .site-footer {
-  background: $dkgrey;
-  color: $offwhite;
+  color: $dkgrey;
   @include sansserif(0.8);
   font-size: 2.5vw;
   line-height: 1.5;
