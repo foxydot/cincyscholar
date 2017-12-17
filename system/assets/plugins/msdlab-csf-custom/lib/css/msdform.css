@@ -1,0 +1,52 @@
+.ui-toggle-btn {
+  display: block;
+  position: relative;
+  width: 4em;
+  height: 1.5em;
+  margin: 0 0 1rem 0;
+  background: #555;
+  overflow: hidden;
+  white-space: nowrap;
+  border-radius: 1.5em;
+  box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.4) inset, 1px 1px 0 rgba(255, 255, 255, 0.15); }
+  .ui-toggle-btn input[type="checkbox"] {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: 9999;
+    background-color: red;
+    border: solid 1px;
+    width: 100%;
+    height: 100%;
+    opacity: 0; }
+  .ui-toggle-btn .handle {
+    position: relative;
+    z-index: 99;
+    width: 1.5em;
+    height: 1.5em;
+    background: #BBB;
+    border-radius: 1.5em;
+    color: #DDD;
+    -webkit-transition: all 240ms;
+    -moz-transition: all 240ms;
+    box-shadow: 1px 1px 0 rgba(255, 255, 255, 0.3) inset;
+    -webkit-transform: translate3d(0, 0, 1px);
+    -moz-transform: translate3d(0, 0, 1px); }
+  .ui-toggle-btn input:checked + .handle {
+    -webkit-transform: translateX(170%);
+    -moz-transform: translateX(170%); }
+  .ui-toggle-btn .handle:before,
+  .ui-toggle-btn .handle:after {
+    position: absolute;
+    top: 0;
+    width: 3em;
+    height: 100%;
+    line-height: 20px;
+    font-size: 0.8em;
+    text-align: center; }
+  .ui-toggle-btn .handle:before {
+    content: attr(data-on);
+    right: 100%; }
+  .ui-toggle-btn .handle:after {
+    content: attr(data-off);
+    left: 100%; }
