@@ -54,17 +54,23 @@ class MSDLAB_FormControls{
 
     //TODO: Refactor for redundancies
 
-    public function field_hidden($id, $value = null, $title = "", $class = array('hidden')){
+    public function section_header($id, $value = null, $class = array('section-header')){
+        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
+        $ret = '<h3 id="'.$id.'_wrapper" class="'.$class.'">'.$value.'</h3>';
+        return apply_filters('msdlab_csf_'.$id.'', $ret);
+    }
+
+    public function field_hidden($id, $value = null, $title = "", $validation = null, $class = array('hidden')){
         if(is_null($value)){
             $value = $_POST[$id.'_input'];
         }
         $form_field = apply_filters('msdlab_csf_'.$id.'_field','<input id="'.$id.'_input" name="'.$id.'_input" type="hidden" value="'.$value.'" />');
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
-        $ret = '<div id="'.$id.'" class="'.$class.'">'.$label.$form_field.'</div>';
+        $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
 
-    public function field_boolean($id, $value = true, $title = "", $class = array('bool'), $settings = array()){
+    public function field_boolean($id, $value = true, $title = "", $validation = null, $class = array('bool'), $settings = array()){
         if(is_null($value)){
             $value = $_POST[$id.'_input'];
         }
@@ -78,33 +84,33 @@ class MSDLAB_FormControls{
         <input id="'.$id.'_input" name="'.$id.'_input" type="checkbox" value="'.$value.'"'.checked($value,true,false).' />
         <div class="handle" data-on="'.$settings['true'].'" data-off="'.$settings['false'].'"></div></div>');
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
-        $ret = '<div id="'.$id.'" class="'.$class.'">'.$label.$form_field.'</div>';
+        $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
 
-    public function field_date($id, $value = null, $title = "Date", $class = array('datepicker')){
+    public function field_date($id, $value = null, $title = "Date", $validation = null, $class = array('datepicker')){
         if(is_null($value)){
             $value = $_POST[$id.'_input'];
         }
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$title.'</label>');
         $form_field = apply_filters('msdlab_csf_'.$id.'_field','<input id="'.$id.'_input" name="'.$id.'_input" type="date" value="'.$value.'" placeholder="'.$title.'" />');
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
-        $ret = '<div id="'.$id.'" class="'.$class.'">'.$label.$form_field.'</div>';
+        $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
 
-    public function field_textfield($id, $value = null, $title = "", $class = array('medium')){
+    public function field_textfield($id, $value = null, $title = "", $validation = null, $class = array('medium')){
         if(is_null($value)){
             $value = $_POST[$id.'_input'];
         }
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$title.'</label>');
         $form_field = apply_filters('msdlab_csf_'.$id.'_field','<input id="'.$id.'_input" name="'.$id.'_input" type="text" value="'.$value.'" placeholder="'.$title.'" />');
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
-        $ret = '<div id="'.$id.'" class="'.$class.'">'.$label.$form_field.'</div>';
+        $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
 
-    public function field_textarea($id, $value = null, $title = "", $class = array('textarea')){
+    public function field_textarea($id, $value = null, $title = "", $validation = null, $class = array('textarea')){
         if(is_null($value)){
             $value = $_POST[$id.'_input'];
         }
@@ -113,11 +119,11 @@ class MSDLAB_FormControls{
         wp_editor( stripcslashes($value), $id.'_input', array('media_buttons' => false,'teeny' => true,'textarea_rows' => 5) );
         $form_field = ob_get_clean();
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
-        $ret = '<div id="'.$id.'" class="'.$class.'">'.$label.$form_field.'</div>';
+        $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
 
-    public function field_select($id, $value = null, $title = "", $options = array(), $class = array('select'), $null_option = 'Select'){
+    public function field_select($id, $value = null, $title = "", $options = array(), $validation = null, $class = array('select'), $null_option = 'Select'){
         if(is_null($value)){
             $value = $_POST[$id.'_input'];
         }
@@ -127,7 +133,7 @@ class MSDLAB_FormControls{
         $select = '<select id="'.$id.'_input" name="'.$id.'_input">'.$options_str.'</select>';
         $form_field = apply_filters('msdlab_csf_'.$id.'_field', $select );
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
-        $ret = '<div id="'.$id.'" class="'.$class.'">'.$label.$form_field.'</div>';
+        $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
 
@@ -140,10 +146,28 @@ class MSDLAB_FormControls{
         return $ret;
     }
 
+    public function field_radio($id, $value = null, $title = "", $validation = null, $options = array(), $class = array('radio')){
+        if(is_null($value)){
+            $value = $_POST[$id.'_input'];
+        }
+        $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$title.'</label>');
+        //iterate through $options
+        foreach ($options AS $k => $v){
+            $options_array[] = '<input id="'.$id.'" type="radio" value="'.$k.'"'.selected($value,$k,false).' /> '.$v;
+        }
+
+        $options_str = implode("\n\r",$options_array);
+        $form_field = apply_filters('msdlab_csf_'.$id.'_field', $options_str );
+        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
+        $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
+        return apply_filters('msdlab_csf_'.$id.'', $ret);
+    }
+
+
     public function field_button($id,$title = "Save", $class = array('submit'), $type = "submit"){
         $form_field = apply_filters('msdlab_csf_'.$id.'_button','<input id="'.$id.'_button" type="'.$type.'" value="'.$title.'" />');
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
-        $ret = '<div id="'.$id.'" class="'.$class.'">'.$form_field.'</div>';
+        $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
 

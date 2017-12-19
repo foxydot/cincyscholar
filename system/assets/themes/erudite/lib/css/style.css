@@ -1802,6 +1802,9 @@ i.fa {
 .single-post .content-sidebar-wrap main.content {
   border-right: 1px solid #CCC; }
 
+.logged-in .login-trigger {
+  display: none; }
+
 @media only screen and (min-width: 768px) {
   /* Accessible Menu
   --------------------------------------------- */
