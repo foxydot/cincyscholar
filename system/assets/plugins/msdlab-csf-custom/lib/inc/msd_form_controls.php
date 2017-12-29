@@ -60,6 +60,16 @@ class MSDLAB_FormControls{
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
 
+    public function field_utility($id, $value = null, $title = "", $validation = null, $class = array('hidden')){
+        if(is_null($value)){
+            $value = $_POST[$id];
+        }
+        $form_field = apply_filters('msdlab_csf_'.$id.'_field','<input id="'.$id.'" name="'.$id.'" type="hidden" value="'.$value.'" />');
+        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
+        $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
+        return apply_filters('msdlab_csf_'.$id.'', $ret);
+    }
+
     public function field_hidden($id, $value = null, $title = "", $validation = null, $class = array('hidden')){
         if(is_null($value)){
             $value = $_POST[$id.'_input'];
@@ -99,12 +109,13 @@ class MSDLAB_FormControls{
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
 
-    public function field_textfield($id, $value = null, $title = "", $validation = null, $class = array('medium')){
+    public function field_textfield($id, $value = null, $title = "", $placeholder = null, $validation = null, $class = array('medium')){
         if(is_null($value)){
             $value = $_POST[$id.'_input'];
         }
+        if($placeholder == null){$placeholder = $title;}
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$title.'</label>');
-        $form_field = apply_filters('msdlab_csf_'.$id.'_field','<input id="'.$id.'_input" name="'.$id.'_input" type="text" value="'.$value.'" placeholder="'.$title.'" />');
+        $form_field = apply_filters('msdlab_csf_'.$id.'_field','<input id="'.$id.'_input" name="'.$id.'_input" type="text" value="'.$value.'" placeholder="'.$placeholder.'" />');
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
@@ -123,10 +134,11 @@ class MSDLAB_FormControls{
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
 
-    public function field_select($id, $value = null, $title = "", $options = array(), $validation = null, $class = array('select'), $null_option = 'Select'){
+    public function field_select($id, $value = null, $title = "", $null_option = null, $options = array(), $validation = null, $class = array('select')){
         if(is_null($value)){
             $value = $_POST[$id.'_input'];
         }
+        if($null_option == null){$null_option = 'Select';}
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$title.'</label>');
         //iterate through $options
         $options_str = implode("\n\r",$this->build_options($options,$value,$null_option));
@@ -137,9 +149,13 @@ class MSDLAB_FormControls{
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
 
-    public function build_options($options,$value = null,$null_option = 'Select'){
+    public function build_options($options,$value,$null_option){
         $ret = array();
-        $ret[] = '<option>'.$null_option.'</option>';
+        if(is_array($null_option)){
+            $ret[] = '<option value="'.$null_option['value'].'">'.$null_option['option'].'</option>';
+        } else {
+            $ret[] = '<option>'.$null_option.'</option>';
+        }
         foreach ($options AS $k => $v){
             $ret[] = '<option value="'.$k.'"'.selected($value,$k,false).'>'.$v.'</option>';
         }
@@ -153,7 +169,7 @@ class MSDLAB_FormControls{
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$title.'</label>');
         //iterate through $options
         foreach ($options AS $k => $v){
-            $options_array[] = '<input id="'.$id.'" type="radio" value="'.$k.'"'.selected($value,$k,false).' /> '.$v;
+            $options_array[] = '<input id="'.$id.'_'.$k.'" name="'.$id.'" type="radio" value="'.$k.'"'.selected($value,$k,false).' /> '.$v;
         }
 
         $options_str = implode("\n\r",$options_array);

@@ -184,16 +184,17 @@ if(!class_exists('MSDLab_Capabilites')){
                 $allcaps = array();
                 switch($role){
                     case 'renewal':
-                        $allcaps[] = 'view_renewal_process';
+                        $allcaps['view_renewal_process'] = true;
                     case 'awardee':
-                        $allcaps[] = 'view_award';
-                        $allcaps[] = 'edit_renewal';
+                        $allcaps['view_award'] = true;
+                        $allcaps['submit_renewal'] = true;
                     case 'applicant':
                     case 'rejection':
-                        $allcaps[] = 'view_application_process';
+                        $allcaps['view_application_process'] = true;
                     case 'subscriber':
-                        $allcaps[] = 'edit_application';
-                        $allcaps[] = 'student';
+                        $allcaps['submit_application'] = true;
+                        $allcaps['student'] = true;
+                        $allcaps['read'] = true;
                 }
                 return $allcaps;
             }

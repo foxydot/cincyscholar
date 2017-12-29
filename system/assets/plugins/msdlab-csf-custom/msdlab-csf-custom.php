@@ -50,6 +50,10 @@ class MSDLabClientCustom
             $this->csfmanage = new MSDLab_CSF_Management();
         }
 
+        require_once(plugin_dir_path(__FILE__) . 'lib/inc/msd_csf_conversion_tools.php');
+        if(class_exists('MSDLab_CSF_Conversion_Tools')){
+            $this->csfconvert = new MSDLab_CSF_Conversion_Tools();
+        }
 
         register_activation_hook(__FILE__, array('MSDLab_User_Levels_Management','register_user_levels'));
         register_deactivation_hook(__FILE__, array('MSDLab_User_Levels_Management','unregister_user_levels'));
