@@ -67,8 +67,8 @@ class MSDLAB_Queries{
          if(wp_verify_nonce( $nonce, $form_id ) === false) {
              return 'no nonce';
          }
-         print '<br>$this->>post_vars<br>';
-         ts_data($this->post_vars);
+         /*print '<br>$this->>post_vars<br>';
+         ts_data($this->post_vars);*/
          foreach ($this->post_vars AS $k => $v){
              if(stripos($k,'_input')){
                 $karray = explode('_',$k);
@@ -84,29 +84,29 @@ class MSDLAB_Queries{
              unset($tables[$table]);
              $select_sql = 'SELECT * FROM '.$table.' WHERE '.$where[$table].';';
 
-             print '<br>$select_sql '.$table.'<br>';
-             ts_data($select_sql);
+             /*print '<br>$select_sql '.$table.'<br>';
+             ts_data($select_sql);*/
 
              if($r = $wpdb->get_row($select_sql)){
 
-                 print '<br>$r '.$table.'<br>';
-                 ts_data($r);
+                 /*print '<br>$r '.$table.'<br>';
+                 ts_data($r);*/
 
                  $sql = 'UPDATE '.$table.' SET '.implode(', ',$data[$table]).' WHERE '.$where[$table].';';
              } else {
                  $sql = 'INSERT INTO '.$table.' SET '.implode(', ',$data[$table]).';';
              }
 
-             print '<br>$sql '.$table.'<br>';
-             ts_data($sql);
+             /*print '<br>$sql '.$table.'<br>';
+             ts_data($sql);*/
 
              $result = $wpdb->get_results($sql);
              if(is_wp_error($result)){
                  return 'Error updating '.$table.';';
              }
 
-             print '<br>$result '.$table.'<br>';
-             ts_data($result);
+             /*print '<br>$result '.$table.'<br>';
+             ts_data($result);*/
          }
          return 'Data Saved!';
      }
