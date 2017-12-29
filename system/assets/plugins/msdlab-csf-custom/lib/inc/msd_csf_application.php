@@ -241,20 +241,21 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $ret['Applicant_HighSchoolGraduationDate'] = $this->form->field_select('Applicant_HighSchoolGraduationDate',$result->HighSchoolGraduationDate?date("Y",strtotime($result->HighSchoolGraduationDate)):null,"Year of Graduation",null,$this->gradyr_array);
                             $ret['Applicant_HighSchoolId'] = $this->form->field_select('Applicant_HighSchoolId',$result->HighSchoolId?$result->HighSchoolId:null,"High School Attended",$result->HighSchoolGraduationDate?$result->HighSchoolGraduationDate:null, $this->highschool_array, array('required' => true), array('req'));
                             $ret['Applicant_HighSchoolGPA'] = $this->form->field_textfield('Applicant_HighSchoolGPA',$result->HighSchoolGPA?$result->HighSchoolGPA:null,'HS Weighted GPA','0.00');
-                            $ret['Applicant_PlayedHighSchoolSports'] = $this->form->field_boolean('Applicant_PlayedHighSchoolSports',$result->PlayedHighSchoolSports?$result->PlayedHighSchoolSports:null,'Did you participate in sports while attending High School?');
+                            $ret['Applicant_PlayedHighSchoolSports'] = $this->form->field_boolean('Applicant_PlayedHighSchoolSports',$result->PlayedHighSchoolSports?$result->PlayedHighSchoolSports:0,'Did you participate in sports while attending High School?');
                             $ret[] = '<hr>';
-                            $ret['Applicant_FirstGenerationStudent'] = $this->form->field_boolean('Applicant_FirstGenerationStudent',$result->FirstGenerationStudent?$result->FirstGenerationStudent:null,'Are you the first person in your family to attend college?');
+                            $ret['Applicant_FirstGenerationStudent'] = $this->form->field_boolean('Applicant_FirstGenerationStudent',$result->FirstGenerationStudent?$result->FirstGenerationStudent:0,'Are you the first person in your family to attend college?');
                             //cant find these in DB?
                             //$ret['rdoGraduate'] = $this->form->field_boolean("rdoGraduate",false,"Do you have a degree?", array('required' => true), array('req'));
                             //$ret['txtGradLevel'] = $this->form->field_textfield('txtGradLevel',null,'If so, what level?',null, array('text' => true), array('switchable'));
                             //$ret['CollegeGPA'] = $this->form->field_textfield('Applicant_CollegeGPA', $result->CollegeGPA?$result->CollegeGPA:null,'GPA','0.00');
-                            $ret['Applicant_IsIndependent'] = $this->form->field_boolean('Applicant_IsIndependant',$result->IsIndependent?$result->IsIndependent:false,"Are you applying as a non-dependant student?");
+                            $ret['Applicant_IsIndependent'] = $this->form->field_boolean('Applicant_IsIndependant',$result->IsIndependent?$result->IsIndependent:0,"Are you applying as a non-dependant student?");
                             break;
                         case 3: //financial
                             $data['tables']['Guardian'] = array('GuardianFullName1', 'GuardianEmployer1', 'GuardianFullName2', 'GuardianEmployer2', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
                             $data['tables']['Applicant'] = array('ApplicationDateTime','IsIndependent','Employer','HardshipNote');
                             $results = $this->queries->get_result_set($data);
                             $result = $results[0];
+                            ts_data($result);
                             $ret['form_page_number'] = $this->form->field_utility('form_page_number',3);
                             if($result->IsIndependent == true){
                                 $ret[] = "Indy form";
@@ -285,7 +286,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                                 $ret[] = '</div>';
                                 $ret['Applicant_Employer'] = $this->form->field_textfield('Applicant_Employer',$result->Employer?$result->Employer:null,"Applicant Employer");
                                 //property
-                                $ret['Guardian_Homeowner'] = $this->form->field_boolean('Guardian_Homeowner',$result->Homeowner?$result->Homeowner:false,"Do the applicant's parents own their home?");
+                                $ret['Guardian_Homeowner'] = $this->form->field_boolean('Guardian_Homeowner',$result->Homeowner?$result->Homeowner:0,"Do the applicant's parents own their home?");
                                 $ret[] = '<div class="switchable">';
                                 $ret['Guardian_HomeValue'] = $this->form->field_textfield('Guardian_HomeValue',$result->HomeValue?$result->HomeValue:null,"Current Value");
                                 $ret['Guardian_AmountOwedOnHome'] = $this->form->field_textfield('Guardian_AmountOwedOnHome', $result->AmountOwedOnHome?$result->AmountOwedOnHome:null,"Amount Owed");
@@ -293,14 +294,14 @@ if (!class_exists('MSDLab_CSF_Application')) {
                                 //hardships
 
                                 $ret[] = "Do any of the following apply to you?";
-                                $ret['Hardship_AdvancedDegree'] = $this->form->field_boolean('Hardship_AdvancedDegree',false,'Working on a Master\'s or Doctorate degree?',null,array('hardshipbool'));
-                                $ret['Hardship_Children'] = $this->form->field_boolean('Hardship_Children',false,'Have a child or other legal dependants?',null,array('hardshipbool'));
-                                $ret['Hardship_Married'] = $this->form->field_boolean('Hardship_Married',false,'Married?',null,array('hardshipbool'));
-                                $ret['Hardship_TwentyFour'] = $this->form->field_boolean('Hardship_TwentyFour',false,'At least 24 years old?',null,array('hardshipbool'));
-                                $ret['Hardship_Veteran'] = $this->form->field_boolean('Hardship_Veteran',false,'Veteran of the U.S. Armed Forces?',null,array('hardshipbool'));
-                                $ret['Hardship_Orphan'] = $this->form->field_boolean('Hardship_Orphan',false,'Deceased parents, in foster care, or ward of the court?',null,array('hardshipbool'));
-                                $ret['Hardship_Emancipated'] = $this->form->field_boolean('Hardship_Emancipated',false,'An emancipated child as determined by a court judge?',null,array('hardshipbool'));
-                                $ret['Hardship_Homeless'] = $this->form->field_boolean('Hardship_Homeless',false,'Homeless, at risk of being homeless as determined by the director of an HUD approved homeless shelter, testimonial program or high school liason?',null,array('hardshipbool'));
+                                $ret['Hardship_AdvancedDegree'] = $this->form->field_boolean('Hardship_AdvancedDegree',0,'Working on a Master\'s or Doctorate degree?',null,array('hardshipbool'));
+                                $ret['Hardship_Children'] = $this->form->field_boolean('Hardship_Children',0,'Have a child or other legal dependants?',null,array('hardshipbool'));
+                                $ret['Hardship_Married'] = $this->form->field_boolean('Hardship_Married',0,'Married?',null,array('hardshipbool'));
+                                $ret['Hardship_TwentyFour'] = $this->form->field_boolean('Hardship_TwentyFour',0,'At least 24 years old?',null,array('hardshipbool'));
+                                $ret['Hardship_Veteran'] = $this->form->field_boolean('Hardship_Veteran',0,'Veteran of the U.S. Armed Forces?',null,array('hardshipbool'));
+                                $ret['Hardship_Orphan'] = $this->form->field_boolean('Hardship_Orphan',0,'Deceased parents, in foster care, or ward of the court?',null,array('hardshipbool'));
+                                $ret['Hardship_Emancipated'] = $this->form->field_boolean('Hardship_Emancipated',0,'An emancipated child as determined by a court judge?',null,array('hardshipbool'));
+                                $ret['Hardship_Homeless'] = $this->form->field_boolean('Hardship_Homeless',0,'Homeless, at risk of being homeless as determined by the director of an HUD approved homeless shelter, testimonial program or high school liason?',null,array('hardshipbool'));
                                 $ret['Applicant_HardshipNote'] = $this->form->field_textarea('Applicant_HardshipNote',$result->HardshipNote?$result->HardshipNote:null,"If applicable, please use this space to describe how you overcame hardships (family environment, health issues, or physical challenges, etc.) to achieve your dream of pursuing a college education.");
                             }
                             $btnTitle = "Save";

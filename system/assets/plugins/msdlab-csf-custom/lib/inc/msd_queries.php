@@ -67,8 +67,8 @@ class MSDLAB_Queries{
          if(wp_verify_nonce( $nonce, $form_id ) === false) {
              return 'no nonce';
          }
-         /*print '<br>$this->>post_vars<br>';
-         ts_data($this->post_vars);*/
+         print '<br>$this->>post_vars<br>';
+         ts_data($this->post_vars);
          foreach ($this->post_vars AS $k => $v){
              if(stripos($k,'_input')){
                 $karray = explode('_',$k);

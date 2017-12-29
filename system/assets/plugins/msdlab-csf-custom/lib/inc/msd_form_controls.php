@@ -80,7 +80,7 @@ class MSDLAB_FormControls{
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
 
-    public function field_boolean($id, $value = true, $title = "", $validation = null, $class = array('bool'), $settings = array()){
+    public function field_boolean($id, $value = 0, $title = "", $validation = null, $class = array('bool'), $settings = array()){
         if(is_null($value)){
             $value = $_POST[$id.'_input'];
         }
@@ -91,7 +91,7 @@ class MSDLAB_FormControls{
         $settings = array_merge($default_settings,$settings);
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$title.'</label>');
         $form_field = apply_filters('msdlab_csf_'.$id.'_field','<div class="ui-toggle-btn">
-        <input id="'.$id.'_input" name="'.$id.'_input" type="checkbox" value="'.$value.'"'.checked($value,true,false).' />
+        <input id="'.$id.'_input" name="'.$id.'_input" type="checkbox" value="1"'.checked($value,1,false).' />
         <div class="handle" data-on="'.$settings['true'].'" data-off="'.$settings['false'].'"></div></div>');
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
