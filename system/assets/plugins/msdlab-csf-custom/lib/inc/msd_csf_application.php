@@ -227,7 +227,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $ret['Applicant_SexId'] = $this->form->field_radio('Applicant_SexId',$result->SexId?$result->SexId:null,'Gender',null,$this->sex_array);
                             break;
                         case 2: //academic
-                            $data['tables']['Applicant'] = array('ApplicationDateTime','MajorId', 'EducationAttainmentId', 'HighSchoolGraduationDate', 'HighSchoolId','HighSchoolGraduationDate', 'HighSchoolGPA', 'PlayedHighSchoolSports', 'FirstGenerationStudent', 'IsIndependent');
+                            $data['tables']['Applicant'] = array('MajorId', 'EducationAttainmentId', 'HighSchoolGraduationDate', 'HighSchoolId','HighSchoolGraduationDate', 'HighSchoolGPA', 'PlayedHighSchoolSports', 'FirstGenerationStudent', 'IsIndependent');
                             $data['tables']['ApplicantCollege'] = array('CollegeId');
                             $results = $this->queries->get_result_set($data);
                             $result = $results[0];
@@ -236,10 +236,10 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $ret['ApplicantCollege_ApplicantId'] = $this->form->field_hidden("ApplicantCollege_ApplicantId",$applicant_id);
                             $ret['ApplicantCollege_CollegeId'] = $this->form->field_select('ApplicantCollege_CollegeId',$result->CollegeId?$result->CollegeId:null, 'College Applied To or Attending', null,$this->college_array, null);
                             //$ret['ApplicantCollege_Unlisted'.$i] = $this->form->field_textfield('ApplicantCollege_Unlisted'.$i, null,'',null, array('text'=>true)); //how are we handling "other" in the new DB?
-                            $ret['Applicant_MajorId'] = $this->form->field_select('Applicant_MajorId',$result->MajorId?$result->MajorId:null,'Intended Major (If Uncertain, select Undecided)',null,$this->major_array,null,array('req'));
+                            $ret['Applicant_MajorId'] = $this->form->field_select('Applicant_MajorId',$result->MajorId?$result->MajorId:5122,'Intended Major (If Uncertain, select Undecided)',null,$this->major_array,null,array('req'));
                             $ret['Applicant_EducationAttainmentId'] = $this->form->field_select("Applicant_EducationAttainmentId",$result->EducationAttainmentId?$result->EducationAttainmentId:null,"Year in School Fall Semester",array('option'=>'Select','value'=>'5'), $this->educationalattainment_array, array('required' => true), array('req'));
-                            $ret['Applicant_HighSchoolGraduationDate'] = $this->form->field_select('Applicant_HighSchoolGraduationDate',$result->HighSchoolGraduationDate?date("Y",strtotime($result->HighSchoolGraduationDate)):null,"Year of Graduation",null,$this->gradyr_array);
-                            $ret['Applicant_HighSchoolId'] = $this->form->field_select('Applicant_HighSchoolId',$result->HighSchoolId?$result->HighSchoolId:null,"High School Attended",$result->HighSchoolGraduationDate?$result->HighSchoolGraduationDate:null, $this->highschool_array, array('required' => true), array('req'));
+                            $ret['Applicant_HighSchoolGraduationDate'] = $this->form->field_select('Applicant_HighSchoolGraduationDate',$result->HighSchoolGraduationDate?date("Y",strtotime($result->HighSchoolGraduationDate)):date("Y"),"Year of Graduation",null,$this->gradyr_array);
+                            $ret['Applicant_HighSchoolId'] = $this->form->field_select('Applicant_HighSchoolId',$result->HighSchoolId?$result->HighSchoolId:136,"High School Attended",$result->HighSchoolGraduationDate?$result->HighSchoolGraduationDate:null, $this->highschool_array, array('required' => true), array('req'));
                             $ret['Applicant_HighSchoolGPA'] = $this->form->field_textfield('Applicant_HighSchoolGPA',$result->HighSchoolGPA?$result->HighSchoolGPA:null,'HS Weighted GPA','0.00');
                             $ret['Applicant_PlayedHighSchoolSports'] = $this->form->field_boolean('Applicant_PlayedHighSchoolSports',$result->PlayedHighSchoolSports?$result->PlayedHighSchoolSports:0,'Did you participate in sports while attending High School?');
                             $ret[] = '<hr>';
@@ -248,18 +248,22 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             //$ret['rdoGraduate'] = $this->form->field_boolean("rdoGraduate",false,"Do you have a degree?", array('required' => true), array('req'));
                             //$ret['txtGradLevel'] = $this->form->field_textfield('txtGradLevel',null,'If so, what level?',null, array('text' => true), array('switchable'));
                             //$ret['CollegeGPA'] = $this->form->field_textfield('Applicant_CollegeGPA', $result->CollegeGPA?$result->CollegeGPA:null,'GPA','0.00');
-                            $ret['Applicant_IsIndependent'] = $this->form->field_boolean('Applicant_IsIndependant',$result->IsIndependent?$result->IsIndependent:0,"Are you applying as a non-dependant student?");
+                            $ret['Applicant_IsIndependent'] = $this->form->field_boolean('Applicant_IsIndependent',$result->IsIndependent?$result->IsIndependent:0,"Are you applying as a non-dependant student?");
                             break;
                         case 3: //financial
                             $data['tables']['Guardian'] = array('GuardianFullName1', 'GuardianEmployer1', 'GuardianFullName2', 'GuardianEmployer2', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
-                            $data['tables']['Applicant'] = array('ApplicationDateTime','IsIndependent','Employer','HardshipNote');
+                            $data['tables']['Applicant'] = array('IsIndependent','Employer','HardshipNote');
                             $results = $this->queries->get_result_set($data);
                             $result = $results[0];
-                            ts_data($result);
+                            //ts_data($result);
                             $ret['form_page_number'] = $this->form->field_utility('form_page_number',3);
                             if($result->IsIndependent == true){
+                                //Independent Form
+                                $ret['hdrFinancialInfo'] = $this->form->section_header('hdrFinancialInfo','Independent Student Financial Information');
+                                $ret[''] = '';
                                 $ret[] = "Indy form";
                             } else {
+                                //Dependent Form
                                 $jquery[] = "$('#SingleParent_input').each(function(){
                             var sp = $('.second-guardian');
                             if($(this).is(':checked')){
