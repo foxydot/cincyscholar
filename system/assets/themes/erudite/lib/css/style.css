@@ -262,11 +262,11 @@ h6 {
   margin: 0 0 10px; }
 
 h1 {
-  font-size: 4em; }
+  font-size: 3.2em; }
 
 h2 {
   font-size: 2.4em;
-  text-transform: uppercase; }
+  color: #999; }
 
 h3 {
   font-size: 3em; }
@@ -400,7 +400,8 @@ a.btn {
   width: auto;
   border-radius: 0;
   padding: 0.5em 2em;
-  text-transform: uppercase; }
+  text-transform: uppercase;
+  font-weight: 700; }
 
 button:focus,
 button:hover,
@@ -517,8 +518,7 @@ th:first-child {
 --------------------------------------------- */
 .site-inner {
   clear: both;
-  word-wrap: break-word;
-  padding-top: 80px; }
+  word-wrap: break-word; }
 
 /* ## Column Widths and Positions
 --------------------------------------------- */
@@ -677,17 +677,18 @@ th:first-child {
   font-size: 2rem; }
 
 .entry-title {
-  color: #3f829c;
-  font-weight: 400; }
+  color: #ffbe0b;
+  font-weight: 700; }
 
 .entry-title a,
 .sidebar .widget-title a {
-  color: #3f829c;
+  color: #ffbe0b;
+  font-weight: 700;
   text-decoration: none; }
 
 .entry-title a:focus,
 .entry-title a:hover {
-  color: #6FC87B; }
+  color: #a47800; }
 
 .widget-title {
   color: #3f829c;
@@ -761,7 +762,7 @@ img.alignright,
   width: 0; }
 
 .site-inner {
-  font-size: 1.4em; }
+  font-size: 1.6em; }
 
 /* Display outline on focus */
 :focus {
@@ -1337,9 +1338,6 @@ img.alignright,
   background-color: #333;
   color: #eee; }
 
-.entry-content strong {
-  color: #3f829c; }
-
 /* ## Entry Meta
 --------------------------------------------- */
 p.entry-meta {
@@ -1624,8 +1622,7 @@ p.entry-meta {
 
 .sectioned-page-wrapper {
   position: relative;
-  z-index: 10;
-  text-align: center; }
+  z-index: 10; }
   .sectioned-page-wrapper .section {
     background-repeat: no-repeat;
     background-size: cover;
@@ -1635,12 +1632,14 @@ p.entry-meta {
       margin-bottom: 4em; }
       .sectioned-page-wrapper .section .section-title h3 {
         text-transform: uppercase; }
-    .sectioned-page-wrapper .section .section-body .wrap {
-      padding: 2rem 0; }
-      .sectioned-page-wrapper .section .section-body .wrap a, .sectioned-page-wrapper .section .section-body .wrap a:link, .sectioned-page-wrapper .section .section-body .wrap a:visited {
-        text-decoration: underline; }
-    .sectioned-page-wrapper .section .section-body .section-footer-area {
-      margin-top: 4em; }
+    .sectioned-page-wrapper .section .section-body {
+      font-size: 1.6em; }
+      .sectioned-page-wrapper .section .section-body .wrap {
+        padding: 2rem 0; }
+        .sectioned-page-wrapper .section .section-body .wrap a, .sectioned-page-wrapper .section .section-body .wrap a:link, .sectioned-page-wrapper .section .section-body .wrap a:visited {
+          text-decoration: underline; }
+      .sectioned-page-wrapper .section .section-body .section-footer-area {
+        margin-top: 4em; }
     .sectioned-page-wrapper .section ul {
       margin: 0 auto;
       display: inline-block; }
@@ -1652,8 +1651,6 @@ p.entry-meta {
           content: '\f058';
           color: #3f829c;
           margin-right: 0.5em; }
-    .sectioned-page-wrapper .section p, .sectioned-page-wrapper .section li {
-      font-size: 1.6em; }
     .sectioned-page-wrapper .section p.lead {
       font-size: 2.4em; }
   .sectioned-page-wrapper .section.overlay {
@@ -1666,18 +1663,22 @@ p.entry-meta {
     background-color: #2A2B30; }
   .sectioned-page-wrapper .section.bkg-ltgrey {
     background-color: #CCC; }
-  .sectioned-page-wrapper .section.bkg-green {
-    background-color: #3f829c; }
+  .sectioned-page-wrapper .section.bkg-yellow {
+    background-color: #ffbe0b; }
   .sectioned-page-wrapper .section.bkg-white {
     background-color: #FCFCFC; }
   .sectioned-page-wrapper .section.text-dkgrey {
     color: #2A2B30; }
-  .sectioned-page-wrapper .section.text-green {
-    color: #3f829c; }
   .sectioned-page-wrapper .section.text-white {
     color: #FCFCFC; }
   .sectioned-page-wrapper .section.text-shadow {
     text-shadow: 0 0 0.5em rgba(42, 43, 48, 0.6); }
+  .sectioned-page-wrapper .section.col-odd-white .column-1, .sectioned-page-wrapper .section.col-odd-white .column-3 {
+    background-color: #FFF;
+    padding: 1em; }
+  .sectioned-page-wrapper .section.col-even-ltgrey .column-2, .sectioned-page-wrapper .section.col-even-ltgrey .column-4 {
+    background-color: #f2f2f2;
+    padding: 1em; }
   .sectioned-page-wrapper .section.left-align .section-body {
     text-align: left; }
   .sectioned-page-wrapper .section .text-green {
@@ -1721,36 +1722,19 @@ p.entry-meta {
     .sectioned-page-wrapper .section.first-child.overlay {
       padding-top: 0; }
     .sectioned-page-wrapper .section.first-child .overlay {
-      padding-top: 27em;
-      height: 750px; }
+      padding-top: 14em;
+      height: 500px;
+      text-align: center; }
       .sectioned-page-wrapper .section.first-child .overlay .section-title h3 {
         font-size: 4em;
         font-weight: 500; }
-  .sectioned-page-wrapper .section.section-pricing .section-body .row {
-    margin-bottom: 4em; }
-    .sectioned-page-wrapper .section.section-pricing .section-body .row .section-content ul li:before {
-      content: '\f005'; }
-  .sectioned-page-wrapper .section.section-team .social-btn {
-    display: inline-block;
-    border: 2px solid #3f829c;
-    background: #3f829c;
-    color: #FCFCFC;
-    border-radius: 50%;
-    margin: 0.5em;
-    padding: 0.5em;
-    width: 2.3em;
-    height: 2.3em;
-    transition: all 0.5s; }
-    .sectioned-page-wrapper .section.section-team .social-btn:hover {
-      background: #FCFCFC;
-      color: #3f829c; }
+      .sectioned-page-wrapper .section.first-child .overlay p {
+        max-width: 700px;
+        margin: 0 auto 1em; }
 
 @media only screen and (min-width: 768px) {
   .sectioned-page-wrapper .section i.fa.fa-plus {
-    margin-top: 0.8em; }
-  .sectioned-page-wrapper .section.section-who .section-body ul li {
-    margin-left: 7em;
-    text-indent: -1.3em; } }
+    margin-top: 0.8em; } }
 
 .site-header > .container {
   position: relative; }
@@ -1808,6 +1792,8 @@ i.fa {
 @media only screen and (min-width: 768px) {
   /* Accessible Menu
   --------------------------------------------- */
+  .site-inner {
+    margin-top: 9em; }
   .menu .menu-item:focus {
     position: static; }
   .menu .menu-item > a:focus + ul.sub-menu,

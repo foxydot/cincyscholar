@@ -88,19 +88,20 @@
 }
 
 .entry-title {
-  color: $blue;
-  font-weight: 400;
+  color: $yellow;
+  font-weight: 700;
 }
 
 .entry-title a,
 .sidebar .widget-title a {
-  color: $blue;
+  color: $yellow;
+  font-weight: 700;
   text-decoration: none;
 }
 
 .entry-title a:focus,
 .entry-title a:hover {
-  color: $ltgreen;
+  color: $dkyellow;
 }
 
 .widget-title {
@@ -192,7 +193,7 @@ img.alignright,
 }
 
 .site-inner{
-  font-size: 1.4em;
+  font-size: 1.6em;
 }
 
 /* Display outline on focus */

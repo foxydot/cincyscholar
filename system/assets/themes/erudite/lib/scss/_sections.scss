@@ -18,7 +18,6 @@
 .sectioned-page-wrapper{
   position: relative;
   z-index: 10;
-  text-align: center;
   .section{
     background-repeat: no-repeat;
     background-size: cover;
@@ -31,6 +30,7 @@
       }
     }
     .section-body{
+      font-size: 1.6em;
       .wrap{
         padding: 2rem 0;
         img{}
@@ -56,9 +56,6 @@
         }
       }
     }
-    p,li{
-      font-size: 1.6em;
-    }
     p.lead{
       font-size: 2.4em;
     }
@@ -77,8 +74,8 @@
   .section.bkg-ltgrey{
     background-color: $ltgrey;
   }
-  .section.bkg-green{
-    background-color: $blue;
+  .section.bkg-yellow{
+    background-color: $yellow;
   }
   .section.bkg-white{
     background-color: $offwhite;
@@ -86,14 +83,23 @@
   .section.text-dkgrey{
     color: $dkgrey;
   }
-  .section.text-green{
-    color: $blue;
-  }
   .section.text-white{
     color: $offwhite;
   }
   .section.text-shadow{
     text-shadow: 0 0 0.5em rgba($dkgrey,0.6);
+  }
+  .section.col-odd-white{
+    .column-1,.column-3{
+      background-color: $white;
+      padding: 1em;
+    }
+  }
+  .section.col-even-ltgrey{
+    .column-2,.column-4{
+      background-color: rgb(95%, 95%, 95%);
+      padding: 1em;
+    }
   }
   .section.left-align{
     .section-body{
@@ -153,43 +159,16 @@
       padding-top: 0;
     }
     .overlay{
-      padding-top: 27em;
-      height: 750px;
+      padding-top: 14em;
+      height: 500px;
+      text-align: center;
       .section-title h3{
         font-size: 4em;
         font-weight: 500;
       }
-    }
-  }
-  .section.section-pricing{
-    .section-body{
-      .row {
-        margin-bottom: 4em;
-        .section-content {
-          ul {
-            li:before {
-              content: '\f005';
-            }
-          }
-        }
-      }
-    }
-  }
-  .section.section-team{
-    .social-btn{
-      display: inline-block;
-      border: 2px solid $blue;
-      background: $blue;
-      color: $offwhite;
-      border-radius: 50%;
-      margin: 0.5em;
-      padding: 0.5em;
-      width: 2.3em;
-      height: 2.3em;
-      transition: all 0.5s;
-      &:hover{
-        background: $offwhite;
-        color: $blue;
+      p{
+        max-width: 700px;
+        margin: 0 auto 1em;
       }
     }
   }
@@ -200,16 +179,6 @@
     .section{
       i.fa.fa-plus{
         margin-top: 0.8em;
-      }
-    }
-    .section.section-who{
-      .section-body{
-        ul{
-          li{
-            margin-left: 7em;
-            text-indent: -1.3em;
-          }
-        }
       }
     }
   }
