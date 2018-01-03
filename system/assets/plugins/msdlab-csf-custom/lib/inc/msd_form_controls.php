@@ -91,7 +91,7 @@ class MSDLAB_FormControls{
         $settings = array_merge($default_settings,$settings);
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$title.'</label>');
         $form_field = apply_filters('msdlab_csf_'.$id.'_field','<div class="ui-toggle-btn">
-        <input id="'.$id.'_input" name="'.$id.'_input" type="checkbox" value="1"'.checked($value,1,false).' />
+        <input id="'.$id.'_input" name="'.$id.'_input" type="checkbox" value="1"'.checked($value,1,false).' '.$this->build_validation($validation).' />
         <div class="handle" data-on="'.$settings['true'].'" data-off="'.$settings['false'].'"></div></div>');
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
@@ -103,7 +103,7 @@ class MSDLAB_FormControls{
             $value = $_POST[$id.'_input'];
         }
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$title.'</label>');
-        $form_field = apply_filters('msdlab_csf_'.$id.'_field','<input id="'.$id.'_input" name="'.$id.'_input" type="date" value="'.$value.'" placeholder="'.$title.'" />');
+        $form_field = apply_filters('msdlab_csf_'.$id.'_field','<input id="'.$id.'_input" name="'.$id.'_input" type="date" value="'.$value.'" placeholder="'.$title.'" '.$this->build_validation($validation).' />');
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
@@ -113,9 +113,10 @@ class MSDLAB_FormControls{
         if(is_null($value)){
             $value = $_POST[$id.'_input'];
         }
+        $type = isset($validation['type'])?$validation['type']:'text';
         if($placeholder == null){$placeholder = $title;}
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$title.'</label>');
-        $form_field = apply_filters('msdlab_csf_'.$id.'_field','<input id="'.$id.'_input" name="'.$id.'_input" type="text" value="'.$value.'" placeholder="'.$placeholder.'" />');
+        $form_field = apply_filters('msdlab_csf_'.$id.'_field','<input id="'.$id.'_input" name="'.$id.'_input" type="'.$type.'" value="'.$value.'" placeholder="'.$placeholder.'" '.$this->build_validation($validation).' />');
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
@@ -142,7 +143,7 @@ class MSDLAB_FormControls{
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$title.'</label>');
         //iterate through $options
         $options_str = implode("\n\r",$this->build_options($options,$value,$null_option));
-        $select = '<select id="'.$id.'_input" name="'.$id.'_input">'.$options_str.'</select>';
+        $select = '<select id="'.$id.'_input" name="'.$id.'_input" '.$this->build_validation($validation).'>'.$options_str.'</select>';
         $form_field = apply_filters('msdlab_csf_'.$id.'_field', $select );
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
@@ -162,14 +163,32 @@ class MSDLAB_FormControls{
         return $ret;
     }
 
-    public function field_radio($id, $value = null, $title = "", $validation = null, $options = array(), $class = array('radio')){
+    public function field_radio($id, $value = null, $title = "", $options = array(), $validation = null, $class = array('radio')){
         if(is_null($value)){
             $value = $_POST[$id.'_input'];
         }
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$title.'</label>');
         //iterate through $options
         foreach ($options AS $k => $v){
-            $options_array[] = '<input id="'.$id.'_'.$k.'" name="'.$id.'" type="radio" value="'.$k.'"'.selected($value,$k,false).' /> '.$v;
+            $options_array[] = '<div class="'.$id.'_'.$k.'_wrapper option-wrapper"><input id="'.$id.'_'.$k.'" name="'.$id.'" type="radio" value="'.$k.'"'.selected($value,$k,false).' /> <label class="option-label">'.$v.'</label></div>';
+        }
+
+        $options_str = '<div class="radio-wrapper">'.implode("\n\r",$options_array).'</div>';
+        $form_field = apply_filters('msdlab_csf_'.$id.'_field', $options_str );
+        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
+        $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
+        return apply_filters('msdlab_csf_'.$id.'', $ret);
+    }
+
+
+    public function field_checkbox_array($id, $value = null, $title = "", $options = array(), $validation = null, $class = array('checkbox')){
+        if(is_null($value)){
+            $value = $_POST[$id.'_input'];
+        }
+        $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$title.'</label>');
+        //iterate through $options
+        foreach ($options AS $k => $v){
+            $options_array[] = '<div class="'.$id.'_'.$k.'_wrapper checkbox-wrapper"><input id="'.$id.'_'.$k.'" name="'.$id.'" type="checkbox" value="'.$k.'"'.selected($value,$k,false).' /> '.$v.'</div>';
         }
 
         $options_str = implode("\n\r",$options_array);
@@ -185,6 +204,14 @@ class MSDLAB_FormControls{
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
+    }
+
+    public function build_validation($validation_array){
+        if(is_null($validation_array)){return;}
+        foreach($validation_array AS $k => $v){
+            $validation_str[] = $k . ' = "' . $v .'"';
+        }
+        return implode(' ',$validation_str);
     }
 
 }

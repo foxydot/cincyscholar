@@ -1,3 +1,34 @@
+input, select, textarea {
+  margin-bottom: 1em !important; }
+
+select {
+  height: 3.4em; }
+
+.radio-wrapper .option-wrapper {
+  display: inline-block;
+  margin-right: 3em; }
+
+label.option-label {
+  font-weight: 400;
+  margin-left: 0.5em; }
+
+input[type=submit], input[type=button] {
+  margin: 1em auto; }
+
+.required label:after {
+  content: ' *';
+  font-weight: 700;
+  color: #a00404; }
+
+label span.error {
+  margin-left: 1em;
+  font-weight: 700;
+  color: #a00404; }
+
+input.error, select.error, textarea.error {
+  border-color: #a00404;
+  background-color: rgba(160, 4, 4, 0.2); }
+
 .ui-toggle-btn {
   display: block;
   position: relative;
@@ -18,7 +49,8 @@
     border: solid 1px;
     width: 100%;
     height: 100%;
-    opacity: 0; }
+    opacity: 0;
+    margin: 0 !important; }
   .ui-toggle-btn .handle {
     position: relative;
     z-index: 99;

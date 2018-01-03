@@ -64,8 +64,14 @@ i.fa{
   }
 }
 
-.logged-in{
-  .login-trigger{
+.menu-item.logged-in{
     display: none;
+  }
+.logged-in .menu-item{
+  &.not-logged-in{
+    display: none;
+  }
+  &.logged-in{
+    display: inline-block;
   }
 }

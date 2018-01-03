@@ -269,17 +269,17 @@ h2 {
   color: #999; }
 
 h3 {
-  font-size: 3em; }
+  font-size: 1.8em; }
 
 h4 {
-  font-size: 2em;
+  font-size: 1.2em;
   text-transform: uppercase; }
 
 h5 {
-  font-size: 1.8em; }
+  font-size: 1em; }
 
 h6 {
-  font-size: 1.6em; }
+  font-size: 1em; }
 
 /* ## Objects
 --------------------------------------------- */
@@ -1786,8 +1786,14 @@ i.fa {
 .single-post .content-sidebar-wrap main.content {
   border-right: 1px solid #CCC; }
 
-.logged-in .login-trigger {
+.menu-item.logged-in {
   display: none; }
+
+.logged-in .menu-item.not-logged-in {
+  display: none; }
+
+.logged-in .menu-item.logged-in {
+  display: inline-block; }
 
 @media only screen and (min-width: 768px) {
   /* Accessible Menu

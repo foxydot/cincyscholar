@@ -56,6 +56,8 @@ if (!class_exists('MSDLab_CSF_Application')) {
         }
 
         function add_styles_and_scripts(){
+            wp_enqueue_script('jquery-validate',plugin_dir_url(__DIR__).'/../js/jquery.validate.min.js',array('jquery'));
+            wp_enqueue_script('jquery-validate-addl',plugin_dir_url(__DIR__).'/../js/additional-methods.min.js',array('jquery','jquery-validate'));
             wp_enqueue_style( 'msdform-css', plugin_dir_url(__DIR__).'/../css/msdform.css' );
         }
 
@@ -82,7 +84,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                         $ret[] = 'VIEW AWARD';
                     }
                     if(current_user_can('view_application_process')){
-                        $ret[] = 'VIEW APPLICATION PROCESS';
+                        $ret[] = $this->get_user_application_status();
                     }
                     if(current_user_can('submit_application')){
                         $ret[] = implode("\n\r",$this->get_form('application'));
@@ -130,7 +132,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
             $options = array_merge($defaults,$options);
 
             $jquery = $ret = array();
-            $ret['form_header'] = $this->form->form_header($form_id);
+            $ret['form_header'] = $this->form->form_header($form_id,array($form_id,'row'));
             switch($form_id){
                 case 'application':
                     $form_page_number = isset($_POST['form_page_number'])?$_POST['form_page_number']:1;
@@ -145,9 +147,13 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             break;
                         case 3:
                             $set['where']['ApplicantCollege']  = 'ApplicantCollege.ApplicantId = ' . $applicant_id;
-                            $data['where'] .= ' AND Guardian.ApplicantId = '.$applicant_id;
+                            $data['where'] .= ' AND ApplicantIndependent.ApplicantId = ' . $applicant_id;
                             break;
                         case 4:
+                            $set['where']['ApplicantIndependent']  = 'ApplicantIndependent.ApplicantId = ' . $applicant_id;
+                            $data['where'] .= ' AND Guardian.ApplicantId = '.$applicant_id;
+                            break;
+                        case 5:
                             $set['where']['Guardian'] = 'Guardian.ApplicantId = '.$applicant_id;
                             break;
                     }
@@ -173,6 +179,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     for($yr = 2000;$yr <= date("Y");$yr++){
                         $this->gradyr_array[$yr] = $yr;
                     }
+                    $this->gradyr_array = array_reverse($this->gradyr_array);
                     //build the jquery
                     $jquery[] = "$('.ui-toggle-btn').each(function(){
                         var toggled = $(this).parent().next('.switchable');
@@ -208,55 +215,83 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $ret['Applicant_ApplicationDateTime'] = $this->form->field_hidden("Applicant_ApplicationDateTime",$result->ApplicationDateTime?$result->ApplicationDateTime:time());
                             $ret['Applicant_UserId'] = $this->form->field_hidden("Applicant_UserId",$user_id);
                             $ret['Applicant_Email'] = $this->form->field_hidden("Applicant_Email",$current_user->user_email);
-                            $ret['Applicant_FirstName'] = $this->form->field_textfield('Applicant_FirstName',$result->FirstName?$result->FirstName:null,'First Name', null, array('text' => true), array('req'));
-                            $ret['Applicant_MiddleInitial'] = $this->form->field_textfield('Applicant_MiddleInitial',$result->MiddleInitial?$result->MiddleInitial:null,'Middle Initial',null, array('text' => true));
-                            $ret['Applicant_LastName'] = $this->form->field_textfield('Applicant_LastName',$result->LastName?$result->LastName:null,'Last Name',null, array('text' => true), array('req'));
-                            $ret['Applicant_Last4SSN'] = $this->form->field_textfield('Applicant_Last4SSN',$result->Last4SSN?$result->Last4SSN:null,'Last 4 numbers of your SS#','0000', array('number' => true,'maxchar' => 4, 'minchar' => 4), array('req'));
-                            $ret['Applicant_Address1'] = $this->form->field_textfield('Applicant_Address1',$result->Address1?$result->Address1:null,'Address',null, array('text' => true, 'required' => true), array('req'));
-                            $ret['Applicant_Address2'] = $this->form->field_textfield('Applicant_Address2',$result->Address2?$result->Address2:null,'',null, array('text' => true));
-                            $ret['Applicant_City'] = $this->form->field_textfield('Applicant_City',$result->City?$result->City:null,'City',null, array('text' => true), array('req'));
-                            $ret['Applicant_StateId'] = $this->form->field_select('Applicant_StateId',$result->StateId?$result->StateId:'OH','State',null,$this->states_array, array('required' => true), array('req'));
-                            $ret['Applicant_CountyId'] = $this->form->field_select('Applicant_CountyId',$result->CountyId?$result->CountyId:null,'County',array('option'=>'Select','value'=>'24'),$this->counties_array);
-                            $ret['Applicant_ZipCode'] = $this->form->field_textfield('Applicant_ZipCode',$result->ZipCode?$result->ZipCode:null,'ZIP Code','00000', array('number' => true, 'minchar'=>5, 'maxchar'=>10), array('req'));
-                            $ret['Applicant_CellPhone'] = $this->form->field_textfield('Applicant_CellPhone',$result->CellPhone?$result->CellPhone:null, 'Mobile Phone Number','(000)000-0000',array('required'=>true,'phone'=>true),array('req'));
-                            $ret['Applicant_AlternativePhone'] = $this->form->field_textfield('Applicant_AlternativePhone',$result->AlternativePhone?$result->AlternativePhone:null, 'Alternative Phone Number','(000)000-0000',array('phone'=>true),array('req'));
-                            $ret['Applicant_DateOfBirth'] = $this->form->field_date('Applicant_DateOfBirth', $result->DateOfBirth?$result->DateOfBirth:null, 'Date of Birth',null, array('date' => true), array('req'));
-                            $ret[] = '<hr>';
-                            $ret['disclaim'] = 'The Cincinnati Scholarship Foundation administers some scholarships that are restricted to members of a certain ethnic background or gender. While you are not required to supply this information, it may be to your advantage to do so.';
-                            $ret['Applicant_EthnicityId'] = $this->form->field_select('Applicant_EthnicityId',$result->EthnicityId?$result->EthnicityId:null,'Ethnicity',array('option'=>'Select','value'=>'24'),$this->ethnicity_array);
-                            $ret['Applicant_SexId'] = $this->form->field_radio('Applicant_SexId',$result->SexId?$result->SexId:null,'Gender',null,$this->sex_array);
+                            $ret['Applicant_FirstName'] = $this->form->field_textfield('Applicant_FirstName',$result->FirstName?$result->FirstName:null,'First Name', null, array('minlength' => '2','required' => 'required'), array('required','col-md-5','col-sm-12'));
+                            $ret['Applicant_MiddleInitial'] = $this->form->field_textfield('Applicant_MiddleInitial',$result->MiddleInitial?$result->MiddleInitial:null,'Middle Initial',null, array(),array('col-md-2','col-sm-12'));
+                            $ret['Applicant_LastName'] = $this->form->field_textfield('Applicant_LastName',$result->LastName?$result->LastName:null,'Last Name',null, array('minlength' => '2','required' => 'required'), array('required','col-md-5','col-sm-12'));
+                            $ret['Applicant_Last4SSN'] = $this->form->field_textfield('Applicant_Last4SSN',$result->Last4SSN?$result->Last4SSN:null,'Last 4 numbers of your SS#','0000', array('type' => 'number','maxlength' => 4, 'minlength' => 4, 'required'=>'required'), array('required','col-md-6','col-sm-12'));
+                            $ret['Applicant_DateOfBirth'] = $this->form->field_date('Applicant_DateOfBirth', $result->DateOfBirth?$result->DateOfBirth:null, 'Date of Birth', array('required' => 'required','type' => 'date'), array('datepicker','required','col-md-6','col-sm-12'));
+                            $ret['Applicant_Address1'] = $this->form->field_textfield('Applicant_Address1',$result->Address1?$result->Address1:null,'Address','123 Any Street', array('type' => 'text', 'minlength' => '2', 'required' => 'required'), array('required','col-md-12'));
+                            $ret['Applicant_Address2'] = $this->form->field_textfield('Applicant_Address2',$result->Address2?$result->Address2:null,'','Apartment or Box number', array('type' => 'text'),array('col-md-12'));
+                            $ret['Applicant_City'] = $this->form->field_textfield('Applicant_City',$result->City?$result->City:null,'City',null, array('type' => 'text', 'required' => 'required'), array('required','col-md-5','col-sm-12'));
+                            $ret['Applicant_StateId'] = $this->form->field_select('Applicant_StateId',$result->StateId?$result->StateId:'OH','State',array('option'=>'Select','value'=>'OH'),$this->states_array, array('required' => 'required'), array('required','col-md-2','col-sm-12'));
+                            $ret['Applicant_CountyId'] = $this->form->field_select('Applicant_CountyId',$result->CountyId?$result->CountyId:null,'County', array('option'=>'Select','value'=>'24'),$this->counties_array,null,array('col-md-3','col-sm-12'));
+                            $ret['Applicant_ZipCode'] = $this->form->field_textfield('Applicant_ZipCode',$result->ZipCode?$result->ZipCode:null,'ZIP Code','00000', array('type' => 'number', 'minlength'=>5, 'maxlength'=>10), array('required','col-md-2','col-sm-12'));
+                            $ret['Applicant_CellPhone'] = $this->form->field_textfield('Applicant_CellPhone',$result->CellPhone?$result->CellPhone:null, 'Mobile Phone Number','(000)000-0000',array('required'=>'required','type' => 'tel'),array('required','col-md-6','col-sm-12'));
+                            $ret['Applicant_AlternativePhone'] = $this->form->field_textfield('Applicant_AlternativePhone',$result->AlternativePhone?$result->AlternativePhone:null, 'Alternative Phone Number','(000)000-0000',array('type' => 'tel'),array('col-md-6','col-sm-12'));
+                            $ret[] = '<hr class="col-md-12">';
+                            $ret['disclaim'] = '<div>The Cincinnati Scholarship Foundation administers some scholarships that are restricted to members of a certain ethnic background or gender. While you are not required to supply this information, it may be to your advantage to do so.</div>';
+                            $ret['Applicant_EthnicityId'] = $this->form->field_select('Applicant_EthnicityId',$result->EthnicityId?$result->EthnicityId:null,'Ethnicity',array('option'=>'Select','value'=>'24'),$this->ethnicity_array, null, array('col-md-6','col-sm-12'));
+                            $ret['Applicant_SexId'] = $this->form->field_radio('Applicant_SexId',$result->SexId?$result->SexId:null,'Gender',$this->sex_array, null, array('col-md-6','col-sm-12'));
                             break;
                         case 2: //academic
-                            $data['tables']['Applicant'] = array('MajorId', 'EducationAttainmentId', 'HighSchoolGraduationDate', 'HighSchoolId','HighSchoolGraduationDate', 'HighSchoolGPA', 'PlayedHighSchoolSports', 'FirstGenerationStudent', 'IsIndependent');
+                            $data['tables']['Applicant'] = array('MajorId', 'EducationAttainmentId', 'HighSchoolGraduationDate', 'HighSchoolId','HighSchoolGraduationDate', 'HighSchoolGPA', 'PlayedHighSchoolSports', 'FirstGenerationStudent');
                             $data['tables']['ApplicantCollege'] = array('CollegeId');
                             $results = $this->queries->get_result_set($data);
                             $result = $results[0];
                             $ret['form_page_number'] = $this->form->field_utility('form_page_number',2);
                             $ret['hdrCollegeInfo'] = $this->form->section_header('hdrCollegeInfo','Academic Information');
                             $ret['ApplicantCollege_ApplicantId'] = $this->form->field_hidden("ApplicantCollege_ApplicantId",$applicant_id);
-                            $ret['ApplicantCollege_CollegeId'] = $this->form->field_select('ApplicantCollege_CollegeId',$result->CollegeId?$result->CollegeId:null, 'College Applied To or Attending', null,$this->college_array, null);
+                            $ret['ApplicantCollege_CollegeId'] = $this->form->field_select('ApplicantCollege_CollegeId',$result->CollegeId?$result->CollegeId:null, 'College Applied To or Attending', null,$this->college_array,array('required'=>'required'),array('required','col-md-6','col-sm-12'));
                             //$ret['ApplicantCollege_Unlisted'.$i] = $this->form->field_textfield('ApplicantCollege_Unlisted'.$i, null,'',null, array('text'=>true)); //how are we handling "other" in the new DB?
-                            $ret['Applicant_MajorId'] = $this->form->field_select('Applicant_MajorId',$result->MajorId?$result->MajorId:5122,'Intended Major (If Uncertain, select Undecided)',null,$this->major_array,null,array('req'));
-                            $ret['Applicant_EducationAttainmentId'] = $this->form->field_select("Applicant_EducationAttainmentId",$result->EducationAttainmentId?$result->EducationAttainmentId:null,"Year in School Fall Semester",array('option'=>'Select','value'=>'5'), $this->educationalattainment_array, array('required' => true), array('req'));
-                            $ret['Applicant_HighSchoolGraduationDate'] = $this->form->field_select('Applicant_HighSchoolGraduationDate',$result->HighSchoolGraduationDate?date("Y",strtotime($result->HighSchoolGraduationDate)):date("Y"),"Year of Graduation",null,$this->gradyr_array);
-                            $ret['Applicant_HighSchoolId'] = $this->form->field_select('Applicant_HighSchoolId',$result->HighSchoolId?$result->HighSchoolId:136,"High School Attended",$result->HighSchoolGraduationDate?$result->HighSchoolGraduationDate:null, $this->highschool_array, array('required' => true), array('req'));
-                            $ret['Applicant_HighSchoolGPA'] = $this->form->field_textfield('Applicant_HighSchoolGPA',$result->HighSchoolGPA?$result->HighSchoolGPA:null,'HS Weighted GPA','0.00');
+                            $ret['Applicant_MajorId'] = $this->form->field_select('Applicant_MajorId',$result->MajorId?$result->MajorId:5122,'Intended Major (If Uncertain, select Undecided)',null,$this->major_array,array('required'=>'required'),array('required','col-md-6','col-sm-12'));
+                            $ret['Applicant_EducationAttainmentId'] = $this->form->field_select("Applicant_EducationAttainmentId",$result->EducationAttainmentId?$result->EducationAttainmentId:null,"Year in School Fall Semester",array('option'=>'Select','value'=>'5'), $this->educationalattainment_array, array('required' => 'required'), array('required','col-md-6','col-sm-12'));
+                            $ret['Applicant_FirstGenerationStudent'] = $this->form->field_boolean('Applicant_FirstGenerationStudent',$result->FirstGenerationStudent?$result->FirstGenerationStudent:0,'Are you the first person in your family to attend college?',null,array('col-md-6','col-sm-12'));
+                            $ret[] = '<hr class="clear" />';
+                            $ret['Applicant_HighSchoolId'] = $this->form->field_select('Applicant_HighSchoolId',$result->HighSchoolId?$result->HighSchoolId:136,"High School Attended",$result->HighSchoolId?$result->HighSchoolId:null, $this->highschool_array, array('required'=>'required'),array('required','col-md-6','col-sm-12'));
+                            $ret['Applicant_HighSchoolGraduationDate'] = $this->form->field_select('Applicant_HighSchoolGraduationDate',$result->HighSchoolGraduationDate?date("Y",strtotime($result->HighSchoolGraduationDate)):date("Y"),"Year of High School Graduation",date("Y"),$this->gradyr_array,array('required'=>'required'),array('required','col-md-6','col-sm-12'));
+                            $ret['Applicant_HighSchoolGPA'] = $this->form->field_textfield('Applicant_HighSchoolGPA',$result->HighSchoolGPA?$result->HighSchoolGPA:null,'HS Weighted GPA','0.00',array('required' => 'required','type' => 'number','minlength' => 1),array('required','col-md-6','col-sm-12'));
                             $ret['Applicant_PlayedHighSchoolSports'] = $this->form->field_boolean('Applicant_PlayedHighSchoolSports',$result->PlayedHighSchoolSports?$result->PlayedHighSchoolSports:0,'Did you participate in sports while attending High School?');
-                            $ret[] = '<hr>';
-                            $ret['Applicant_FirstGenerationStudent'] = $this->form->field_boolean('Applicant_FirstGenerationStudent',$result->FirstGenerationStudent?$result->FirstGenerationStudent:0,'Are you the first person in your family to attend college?');
-                            //cant find these in DB?
-                            //$ret['rdoGraduate'] = $this->form->field_boolean("rdoGraduate",false,"Do you have a degree?", array('required' => true), array('req'));
-                            //$ret['txtGradLevel'] = $this->form->field_textfield('txtGradLevel',null,'If so, what level?',null, array('text' => true), array('switchable'));
-                            //$ret['CollegeGPA'] = $this->form->field_textfield('Applicant_CollegeGPA', $result->CollegeGPA?$result->CollegeGPA:null,'GPA','0.00');
-                            $ret['Applicant_IsIndependent'] = $this->form->field_boolean('Applicant_IsIndependent',$result->IsIndependent?$result->IsIndependent:0,"Are you applying as a non-dependant student?");
+                            $ret['ApplicantActivity_ActivityId'] = $this->form->field_checkbox_array('ApplicantActivity_ActivityId',$applicant_activity_array_of_ids,'Please check which sports and/or activitites you participated in during High School.',$array_of_options);
                             break;
-                        case 3: //financial
+                        case 3:
+                            //determine independance
+                            $data['tables']['Applicant'] = array('IsIndependent');
+                            $data['tables']['ApplicantIndependent'] = array( 'ApplicantId','AdvancedDegree', 'Children', 'Married', 'TwentyFour', 'Veteran', 'Orphan', 'Emancipated', 'Homeless');
+                            $results = $this->queries->get_result_set($data);
+                            $result = $results[0];
+                            $ret['form_page_number'] = $this->form->field_utility('form_page_number',3);
+                            $ret['Applicant_IsIndependent'] = $this->form->field_hidden('Applicant_IsIndependent',$result->IsIndependent?$result->IsIndependent:null);
+                            $ret['Independent_ApplicantId'] = $this->form->field_hidden("Independent_ApplicantId",$applicant_id);
+                            $ret[] = "Do any of the following apply to you?";
+                            $ret['Independent_AdvancedDegree'] = $this->form->field_boolean('Independent_AdvancedDegree',$result->AdvancedDegree?$result->AdvancedDegree:null,'Working on a Master\'s or Doctorate degree?',null,array('indybool'));
+                            $ret['Independent_Children'] = $this->form->field_boolean('Independent_Children',$result->Children?$result->Children:null,'Have a child or other legal dependants?',null,array('indybool'));
+                            $ret['Independent_Married'] = $this->form->field_boolean('Independent_Married',$result->Married?$result->Married:null,'Married?',null,array('indybool'));
+                            $ret['Independent_TwentyFour'] = $this->form->field_boolean('Independent_TwentyFour',$result->TwentyFour?$result->TwentyFour:null,'At least 24 years old?',null,array('indybool'));
+                            $ret['Independent_Veteran'] = $this->form->field_boolean('Independent_Veteran',$result->Veteran?$result->Veteran:null,'Veteran of the U.S. Armed Forces?',null,array('indybool'));
+                            $ret['Independent_Orphan'] = $this->form->field_boolean('Independent_Orphan',$result->Orphan?$result->Orphan:null,'Deceased parents, in foster care, or ward of the court?',null,array('indybool'));
+                            $ret['Independent_Emancipated'] = $this->form->field_boolean('Independent_Emancipated',$result->Emancipated?$result->Emancipated:null,'An emancipated child as determined by a court judge?',null,array('indybool'));
+                            $ret['Independent_Homeless'] = $this->form->field_boolean('Independent_Homeless',$result->Homeless?$result->Homeless:null,'Homeless, at risk of being homeless as determined by the director of an HUD approved homeless shelter, testimonial program or high school liason?',null,array('indybool'));
+                            $jquery[] = "$('.indybool').each(function(){
+                            var sp = $('#Applicant_IsIndependent');
+                            if($(this).is(':checked')){
+                                sp.val(1);
+                            } 
+                        });";
+                            $jquery[] = "$('.indybool').click(function(){
+                            var sp = $('#Applicant_IsIndependent');
+                            if($(this).is(':checked')){
+                                sp.val(1);
+                            } 
+                        });"; //LOOK HERE testing this
+                            break;
+                        case 4:
+                            //financial
                             $data['tables']['Guardian'] = array('GuardianFullName1', 'GuardianEmployer1', 'GuardianFullName2', 'GuardianEmployer2', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
                             $data['tables']['Applicant'] = array('IsIndependent','Employer','HardshipNote');
                             $results = $this->queries->get_result_set($data);
                             $result = $results[0];
                             //ts_data($result);
-                            $ret['form_page_number'] = $this->form->field_utility('form_page_number',3);
+                            $ret['form_page_number'] = $this->form->field_utility('form_page_number',4);
                             if($result->IsIndependent == true){
                                 //Independent Form
                                 $ret['hdrFinancialInfo'] = $this->form->section_header('hdrFinancialInfo','Independent Student Financial Information');
@@ -297,31 +332,30 @@ if (!class_exists('MSDLab_CSF_Application')) {
                                 $ret[] = '</div>';
                                 //hardships
 
-                                $ret[] = "Do any of the following apply to you?";
-                                $ret['Hardship_AdvancedDegree'] = $this->form->field_boolean('Hardship_AdvancedDegree',0,'Working on a Master\'s or Doctorate degree?',null,array('hardshipbool'));
-                                $ret['Hardship_Children'] = $this->form->field_boolean('Hardship_Children',0,'Have a child or other legal dependants?',null,array('hardshipbool'));
-                                $ret['Hardship_Married'] = $this->form->field_boolean('Hardship_Married',0,'Married?',null,array('hardshipbool'));
-                                $ret['Hardship_TwentyFour'] = $this->form->field_boolean('Hardship_TwentyFour',0,'At least 24 years old?',null,array('hardshipbool'));
-                                $ret['Hardship_Veteran'] = $this->form->field_boolean('Hardship_Veteran',0,'Veteran of the U.S. Armed Forces?',null,array('hardshipbool'));
-                                $ret['Hardship_Orphan'] = $this->form->field_boolean('Hardship_Orphan',0,'Deceased parents, in foster care, or ward of the court?',null,array('hardshipbool'));
-                                $ret['Hardship_Emancipated'] = $this->form->field_boolean('Hardship_Emancipated',0,'An emancipated child as determined by a court judge?',null,array('hardshipbool'));
-                                $ret['Hardship_Homeless'] = $this->form->field_boolean('Hardship_Homeless',0,'Homeless, at risk of being homeless as determined by the director of an HUD approved homeless shelter, testimonial program or high school liason?',null,array('hardshipbool'));
-                                $ret['Applicant_HardshipNote'] = $this->form->field_textarea('Applicant_HardshipNote',$result->HardshipNote?$result->HardshipNote:null,"If applicable, please use this space to describe how you overcame hardships (family environment, health issues, or physical challenges, etc.) to achieve your dream of pursuing a college education.");
+                                 $ret['Applicant_HardshipNote'] = $this->form->field_textarea('Applicant_HardshipNote',$result->HardshipNote?$result->HardshipNote:null,"If applicable, please use this space to describe how you overcame hardships (family environment, health issues, or physical challenges, etc.) to achieve your dream of pursuing a college education.");
                             }
                             $btnTitle = "Save";
-
-
-                            foreach($ret AS $k => $v){
-                                $crunch[] = "'".str_replace('Guardian_','',$k)."'";
-
-                            }
-                            //ts_data(implode("\n\r",$crunch));
                             break;
-                        case 4:
+                        case 5:
 
                             break;
                     }
-                    $ret['button'] = $this->form->field_button('saveBtn',$btnTitle);
+                    $jquery[] = '$("#'.$form_id.'").validate({
+                    
+		errorPlacement: function(error, element) {
+			// Append error within linked label
+			$( element )
+				.closest( "form" )
+					.find( "label[for=\'" + element.attr( "id" ) + "\']" )
+						.append( error );
+		},
+		errorElement: "span",
+		onfocusout: function(element) {
+            // "eager" validation
+            this.element(element);  
+        }
+});';
+                    $ret['button'] = $this->form->field_button('saveBtn',$btnTitle,array('submit','col-md-12'));
                     $ret['javascript'] = $this->form->build_jquery($form_id,$jquery);
                     break;
                 default:
@@ -329,7 +363,19 @@ if (!class_exists('MSDLab_CSF_Application')) {
             }
             $ret['nonce'] = wp_nonce_field( $form_id . $form_page_number );
             $ret['form_footer'] = $this->form->form_footer();
+//utility to be removed
+            foreach($ret AS $k => $v){
+                $myk = str_replace('Independent_','',$k);
+                //$crunch[] = "`".$myk."` tinyint(1) unsigned zerofill NOT NULL DEFAULT '0',";
+                $crunch[] = '$result->'.$myk.'?$result->'.$myk.':null';
+            }
+            //ts_data(implode("\n",$crunch));
+//end utility            
             return $ret;
+        }
+
+        function get_user_application_status(){
+            return 'Application Process';
         }
     } //End Class
 } //End if class exists statement
