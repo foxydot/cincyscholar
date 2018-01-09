@@ -34,9 +34,15 @@ class MSDLAB_FormControls{
         return apply_filters('msdlab_'.$id.'_header', $ret);
     }
 
-    public function form_footer(){
+    public function form_close(){
         $ret = '</form>';
         return apply_filters('msdlab_csf_manage_form_footer', $ret);
+    }
+
+    public function form_footer($id, $content, $class = array()){
+        $class = implode(" ",apply_filters('msdlab_'.$id.'_footer_class', $class));
+        $ret = '<div id="'.$id.'" class="'.$class.'">'.$content.'</div>';
+        return apply_filters('msdlab_'.$id.'_footer', $ret);
     }
 
 

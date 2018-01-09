@@ -108,7 +108,7 @@ class MSDLAB_Queries{
              /*print '<br>$result '.$table.'<br>';
              ts_data($result);*/
          }
-         return 'Data Saved!';
+         return '<div class="notice">Application saved!</div>';
      }
     /**
      * Create the full result set
