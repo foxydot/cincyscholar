@@ -141,7 +141,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
             switch($form_id) {
                 case 'application':
                     $form_page_number = isset($_POST['form_page_number']) ? $_POST['form_page_number'] : 1;
-                    $step = isset($_POST['form_page_number']) ? $_POST['form_page_number'] + 1 : 1;
+                    $step = isset($_POST['form_page_next']) ? $_POST['form_page_next'] : 1;
                     $set['where'] = $applicant_id > 0 ? array('Applicant' => 'Applicant.ApplicantId = ' . $applicant_id) : array('Applicant' => 'Applicant.UserId = ' . $user_id);
                     $data['where'] = 'Applicant.ApplicantId = ' . $applicant_id;
                     switch ($step) {
@@ -181,10 +181,10 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     $this->ethnicity_array = $this->queries->get_select_array_from_db('Ethnicity', 'EthnicityId', 'Ethnicity');
                     $this->states_array = $this->queries->get_select_array_from_db('State', 'StateId', 'State');
                     $this->counties_array = $this->queries->get_select_array_from_db('County', 'CountyId', 'County');
-                    $this->college_array = $this->queries->get_select_array_from_db('College', 'CollegeId', 'Name');
-                    $this->major_array = $this->queries->get_select_array_from_db('Major', 'MajorId', 'MajorName');
+                    $this->college_array = $this->queries->get_select_array_from_db('College', 'CollegeId', 'Name','Name');
+                    $this->major_array = $this->queries->get_select_array_from_db('Major', 'MajorId', 'MajorName','MajorName');
                     $this->educationalattainment_array = $this->queries->get_select_array_from_db('EducationalAttainment', 'EducationalAttainmentId', 'EducationalAttainment');
-                    $this->highschool_array = $this->queries->get_select_array_from_db('HighSchool', 'HighSchoolId', 'SchoolName');
+                    $this->highschool_array = $this->queries->get_select_array_from_db('HighSchool', 'HighSchoolId', 'SchoolName','SchoolName');
                     for ($yr = 2000; $yr <= date("Y"); $yr++) {
                         $this->gradyr_array[$yr] = $yr;
                     }
@@ -195,7 +195,8 @@ if (!class_exists('MSDLab_CSF_Application')) {
                         $('#".$form_id." #form_page_next').val(".($form_page_number - 1).");
                         $('#".$form_id."').submit();
                     });";
-                    $jquery[] = "$('#saveBtn_button').click(function(e){
+                    //can I bypass save on back button? do I want to?
+                    $jquery[] = "$('#saveBtn_button').click(function(e){ 
                         e.preventDefault();
                         $('#".$form_id." #form_page_next').val(".($form_page_number + 1).");
                         $('#".$form_id."').submit();
@@ -219,8 +220,9 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     //TODO: sort out js validation
                     $btnTitle = "Save & Continue";
                     $ret['form_type'] = $this->form->field_utility('application_form', true);
+                    $ret['save_data'] = $this->form->field_utility('save_data', true);
                     $ret['form_page_number'] = $this->form->field_utility('form_page_number', 1);
-                    $ret['form_page_next'] = $this->form->field_utility('form_page_next', 1);
+                    $ret['form_page_next'] = $this->form->field_utility('form_page_next', $form_page_number + 1);
                     $ret['ApplicantId'] = $this->form->field_utility("ApplicantId", $applicant_id); //matching user_id to applicantID. HRM. This is autoincremented in the DB. We will need to create userids for all the old data and start UIDs at a higher number than exisiting applicant IDs
                     switch ($form_page_number) {
                         case 1: //personal info
@@ -278,7 +280,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $ret['Applicant_HighSchoolGraduationDate'] = $this->form->field_select('Applicant_HighSchoolGraduationDate', $result->HighSchoolGraduationDate ? date("Y", strtotime($result->HighSchoolGraduationDate)) : date("Y"), "Year of High School Graduation", date("Y"), $this->gradyr_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
                             $ret['Applicant_HighSchoolGPA'] = $this->form->field_textfield('Applicant_HighSchoolGPA', $result->HighSchoolGPA ? $result->HighSchoolGPA : null, 'HS Weighted GPA', '0.00', array('required' => 'required', 'type' => 'number', 'minlength' => 1), array('required', 'col-md-6', 'col-sm-12'));
                             $ret['Applicant_PlayedHighSchoolSports'] = $this->form->field_boolean('Applicant_PlayedHighSchoolSports', $result->PlayedHighSchoolSports ? $result->PlayedHighSchoolSports : 0, 'Did you participate in sports while attending High School?');
-                            $ret['Applicant_Activities'] = $this->form->field_textarea('Applicant_Activities',$result->Activities ? $result->Activities : '',"Activities participated in, with years active.");
+                            $ret['Applicant_Activities'] = $this->form->field_textarea('Applicant_Activities',$result->Activities ? $result->Activities : '',"Please list any activities participated in, with years active.",null,array('col-md-12'));
                             break;
                         case 3:
                             //determine independance
@@ -334,7 +336,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                                 //Independent Form
                                 $ret['hdrFinancialInfo'] = $this->form->section_header('hdrFinancialInfo', 'Independent Student Financial Information');
                                 $ret[''] = '';
-                                $ret[] = "Indy form";
+                                $ret[] = "Indy form will go here, or we jsut ask for approval to get their financial info from FAFSA?";
                             } else {
                                 //Dependent Form
                                 $jquery[] = "$('#SingleParent_input').each(function(){
@@ -353,31 +355,31 @@ if (!class_exists('MSDLab_CSF_Application')) {
                                 sp.slideDown(500);
                             }
                         });";
-                                $ret['SingleParent'] = $this->form->field_boolean('SingleParent', strlen($result->GuardianFullName2 < 1), "Is this a single parent household?");
+                                $ret['SingleParent'] = $this->form->field_boolean('SingleParent', strlen($result->GuardianFullName2 < 1), "Is this a single parent household?",null, array('required', 'col-md-12'));
                                 $ret['Guardian_ApplicantId'] = $this->form->field_hidden("Guardian_ApplicantId", $applicant_id);
-                                $ret['Guardian_GuardianFullName1'] = $this->form->field_textfield('Guardian_GuardianFullName1', $result->GuardianFullName1 ? $result->GuardianFullName1 : null, "First Guardian Full Name");
-                                $ret['Guardian_GuardianEmployer1'] = $this->form->field_textfield('Guardian_GuardianEmployer1', $result->GuardianEmployer1 ? $result->GuardianEmployer1 : null, "Place of Employment");
+                                $ret['Guardian_GuardianFullName1'] = $this->form->field_textfield('Guardian_GuardianFullName1', $result->GuardianFullName1 ? $result->GuardianFullName1 : null, "First Guardian Full Name",null,array('minlength' => '2', 'required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
+                                $ret['Guardian_GuardianEmployer1'] = $this->form->field_textfield('Guardian_GuardianEmployer1', $result->GuardianEmployer1 ? $result->GuardianEmployer1 : null, "Place of Employment",null,array('minlength' => '2', 'required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
                                 $ret[] = '<div class="second-guardian">';
-                                $ret['Guardian_GuardianFullName2'] = $this->form->field_textfield('Guardian_GuardianFullName2', $result->GuardianFullName2 ? $result->GuardianFullName2 : null, "Second Guardian Full Name");
-                                $ret['Guardian_GuardianEmployer2'] = $this->form->field_textfield('Guardian_GuardianEmployer2', $result->GuardianEmployer2 ? $result->GuardianEmployer2 : null, "Place of Employment");
+                                $ret['Guardian_GuardianFullName2'] = $this->form->field_textfield('Guardian_GuardianFullName2', $result->GuardianFullName2 ? $result->GuardianFullName2 : null, "Second Guardian Full Name",null,null, array('col-md-6', 'col-sm-12'));
+                                $ret['Guardian_GuardianEmployer2'] = $this->form->field_textfield('Guardian_GuardianEmployer2', $result->GuardianEmployer2 ? $result->GuardianEmployer2 : null, "Place of Employment",null,null, array('col-md-6', 'col-sm-12'));
                                 $ret[] = '</div>';
-                                $ret['Applicant_Employer'] = $this->form->field_textfield('Applicant_Employer', $result->Employer ? $result->Employer : null, "Applicant Employer");
+                                $ret['Applicant_Employer'] = $this->form->field_textfield('Applicant_Employer', $result->Employer ? $result->Employer : null, "Applicant Employer",null,null, array('col-md-6', 'col-sm-12'));
                                 //property
-                                $ret['Guardian_Homeowner'] = $this->form->field_boolean('Guardian_Homeowner', $result->Homeowner ? $result->Homeowner : 0, "Do the applicant's parents own their home?");
+                                $ret['Guardian_Homeowner'] = $this->form->field_boolean('Guardian_Homeowner', $result->Homeowner ? $result->Homeowner : 0, "Do the applicant's parents own their home?",null, array('required', 'col-md-12'));
                                 $ret[] = '<div class="switchable">';
-                                $ret['Guardian_HomeValue'] = $this->form->field_textfield('Guardian_HomeValue', $result->HomeValue ? $result->HomeValue : null, "Current Value");
-                                $ret['Guardian_AmountOwedOnHome'] = $this->form->field_textfield('Guardian_AmountOwedOnHome', $result->AmountOwedOnHome ? $result->AmountOwedOnHome : null, "Amount Owed");
+                                $ret['Guardian_HomeValue'] = $this->form->field_textfield('Guardian_HomeValue', $result->HomeValue ? $result->HomeValue : null, "Current Value",'100,000', array('type' => 'number'), array('col-md-6', 'col-sm-12'));
+                                $ret['Guardian_AmountOwedOnHome'] = $this->form->field_textfield('Guardian_AmountOwedOnHome', $result->AmountOwedOnHome ? $result->AmountOwedOnHome : null, "Amount Owed",'50,000', array('type' => 'number'), array('col-md-6', 'col-sm-12'));
                                 $ret[] = '</div>';
                                 //hardships
 
-                                $ret['Applicant_HardshipNote'] = $this->form->field_textarea('Applicant_HardshipNote', $result->HardshipNote ? $result->HardshipNote : null, "If applicable, please use this space to describe how you overcame hardships (family environment, health issues, or physical challenges, etc.) to achieve your dream of pursuing a college education.");
+                                $ret['Applicant_HardshipNote'] = $this->form->field_textarea('Applicant_HardshipNote', $result->HardshipNote ? $result->HardshipNote : null, "If applicable, please use this space to describe how you overcame hardships (family environment, health issues, or physical challenges, etc.) to achieve your dream of pursuing a college education.",null,array('col-md-12'));
                             }
-                            $btnTitle = "Save";
                             break;
                         case 5:
                             //final checks
                             //sets up query
                             //fields
+                            $btnTitle = "Save";
                             break;
                     }
                     $jquery[] = '$("#' . $form_id . '").validate({

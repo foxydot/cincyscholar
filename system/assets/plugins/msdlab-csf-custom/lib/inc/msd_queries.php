@@ -66,6 +66,7 @@ class MSDLAB_Queries{
          $nonce = $_POST['_wpnonce'];
          if(wp_verify_nonce( $nonce, $form_id ) === false) {
              return 'no nonce';
+             ts_data($form_id);
          }
          /*print '<br>$this->>post_vars<br>';
          ts_data($this->post_vars);*/
@@ -125,13 +126,17 @@ class MSDLAB_Queries{
                 }
         }
         $sql = 'SELECT '.implode(', ',$fields).' FROM '.implode(', ',$tables).' WHERE '.$data['where'].';';
+        //ts_data($sql);
         $result = $wpdb->get_results($sql);
         return $result;
     }
 
-    function get_select_array_from_db($table,$id_field,$field){
+    function get_select_array_from_db($table,$id_field,$field,$orderby = false){
         global $wpdb;
-        $sql = 'SELECT `'.$id_field.'`,`'.$field.'` FROM `'.$table.'`;';
+        if(!$orderby){
+            $orderby = $id_field;
+        }
+        $sql = 'SELECT `'.$id_field.'`,`'.$field.'` FROM `'.$table.'` ORDER BY `'.$orderby.'` ASC;';
         $result = $wpdb->get_results( $sql, ARRAY_A );
         foreach ($result AS $k=>$v){
             $array[$v[$id_field]] = $v[$field];
