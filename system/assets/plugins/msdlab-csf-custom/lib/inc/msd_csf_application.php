@@ -234,7 +234,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             //the fields
                             $ret['form_page_number'] = $this->form->field_utility('form_page_number', 1);
                             $ret['hdrPersInfo'] = $this->form->section_header('hdrPersInfo', 'Personal Information');
-                            $ret['Applicant_ApplicationDateTime'] = $this->form->field_hidden("Applicant_ApplicationDateTime", $result->ApplicationDateTime ? $result->ApplicationDateTime : time());
+                            $ret['Applicant_ApplicationDateTime'] = $this->form->field_hidden("Applicant_ApplicationDateTime", (strtotime($result->ApplicationDateTime) > 0) ? $result->ApplicationDateTime : date("Y-m-d H:i:s"));
                             $ret['Applicant_UserId'] = $this->form->field_hidden("Applicant_UserId", $user_id);
                             $ret['Applicant_Email'] = $this->form->field_hidden("Applicant_Email", $current_user->user_email);
                             $ret['Applicant_FirstName'] = $this->form->field_textfield('Applicant_FirstName', $result->FirstName ? $result->FirstName : null, 'First Name', null, array('minlength' => '2', 'required' => 'required'), array('required', 'col-md-5', 'col-sm-12'));
@@ -262,7 +262,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             break;
                         case 2: //academic
                             //sets up the query
-                            $data['tables']['Applicant'] = array('MajorId', 'EducationAttainmentId', 'HighSchoolGraduationDate', 'HighSchoolId', 'HighSchoolGraduationDate', 'HighSchoolGPA', 'PlayedHighSchoolSports', 'FirstGenerationStudent');
+                            $data['tables']['Applicant'] = array('MajorId', 'EducationAttainmentId', 'HighSchoolGraduationDate', 'HighSchoolId', 'HighSchoolGraduationDate', 'HighSchoolGPA', 'PlayedHighSchoolSports', 'FirstGenerationStudent','Activities');
                             $data['tables']['ApplicantCollege'] = array('CollegeId');
                             $results = $this->queries->get_result_set($data);
                             $result = $results[0];
@@ -399,7 +399,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
 });';
 
                     if ($step != 1){
-                        $ftr['prev'] = $this->form->field_button('prevBtn', 'Back', array('prev', 'btn'));
+                        $ftr['prev'] = $this->form->field_button('prevBtn', 'Save & Go Back', array('prev', 'btn'));
                     }
                     $ftr['button'] = $this->form->field_button('saveBtn',$btnTitle,array('submit','btn'));
 

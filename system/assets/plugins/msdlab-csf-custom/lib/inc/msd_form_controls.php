@@ -115,7 +115,7 @@ class MSDLAB_FormControls{
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
 
-    public function field_textfield($id, $value = null, $title = "", $placeholder = null, $validation = null, $class = array('medium')){
+    public function field_textfield($id, $value, $title = "", $placeholder = null, $validation = null, $class = array('medium')){
         if(is_null($value)){
             $value = $_POST[$id.'_input'];
         }

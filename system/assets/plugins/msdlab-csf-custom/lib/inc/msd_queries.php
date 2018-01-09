@@ -98,8 +98,8 @@ class MSDLAB_Queries{
                  $sql = 'INSERT INTO '.$table.' SET '.implode(', ',$data[$table]).';';
              }
 
-             /*print '<br>$sql '.$table.'<br>';
-             ts_data($sql);*/
+             print '<br>$sql '.$table.'<br>';
+             ts_data($sql);
 
              $result = $wpdb->get_results($sql);
              if(is_wp_error($result)){
