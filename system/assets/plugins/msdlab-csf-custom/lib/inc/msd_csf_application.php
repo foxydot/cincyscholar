@@ -78,7 +78,15 @@ if (!class_exists('MSDLab_CSF_Application')) {
             }
             $start_date = strtotime(get_option('csf_settings_start_date'));
             $end_date = strtotime(get_option('csf_settings_end_date'));
+            $portal_page = get_option('csf_settings_student_welcome_page');
             $today = time();
+            if(!is_page($portal_page)){
+                if(is_user_logged_in()){
+                    return '<a href="'.get_permalink($portal_page).'" class="button">Proceed to Application Portal</a>';
+                } else {
+                    return '<div class="login-trigger"><span class="button">Login/Register</span></div>';
+                }
+            }
             if($today >= $start_date && $today <= $end_date){
                 if(is_user_logged_in()){
                     $ret = array();
