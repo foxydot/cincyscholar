@@ -220,4 +220,17 @@ class MSDLAB_FormControls{
         return implode(' ',$validation_str);
     }
 
+
+    public function field_result($id, $value, $title = "", $placeholder = null, $validation = null, $class = array('medium')){
+        if(is_null($value)){
+            $value = $_POST[$id.'_input'];
+        }
+        if($placeholder == null){$placeholder = $title;}
+        $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_result">'.$title.'</label>');
+        $form_field = apply_filters('msdlab_csf_'.$id.'_field','<span class="result">'.$value.'</span>');
+        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
+        $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
+        return apply_filters('msdlab_csf_'.$id.'', $ret);
+    }
+
 }

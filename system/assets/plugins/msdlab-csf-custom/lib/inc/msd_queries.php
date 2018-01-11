@@ -66,7 +66,7 @@ class MSDLAB_Queries{
          $nonce = $_POST['_wpnonce'];
          if(wp_verify_nonce( $nonce, $form_id ) === false) {
              return 'no nonce';
-             ts_data($form_id);
+             //ts_data($form_id);
          }
          /*print '<br>$this->>post_vars<br>';
          ts_data($this->post_vars);*/
@@ -98,8 +98,8 @@ class MSDLAB_Queries{
                  $sql = 'INSERT INTO '.$table.' SET '.implode(', ',$data[$table]).';';
              }
 
-             print '<br>$sql '.$table.'<br>';
-             ts_data($sql);
+             /*print '<br>$sql '.$table.'<br>';
+             ts_data($sql);*/
 
              $result = $wpdb->get_results($sql);
              if(is_wp_error($result)){
