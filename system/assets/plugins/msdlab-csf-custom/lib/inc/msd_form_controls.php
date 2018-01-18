@@ -82,7 +82,7 @@ class MSDLAB_FormControls{
         }
         $form_field = apply_filters('msdlab_csf_'.$id.'_field','<input id="'.$id.'_input" name="'.$id.'_input" type="hidden" value="'.$value.'" />');
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
-        $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
+        $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
 
@@ -96,11 +96,12 @@ class MSDLAB_FormControls{
         );
         $settings = array_merge($default_settings,$settings);
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$title.'</label>');
+        $bkp_field = apply_filters('msdlab_csf_'.$id.'_bkp_field','<input id="'.$id.'_input" name="'.$id.'_input" type="hidden" value="0" />');
         $form_field = apply_filters('msdlab_csf_'.$id.'_field','<div class="ui-toggle-btn">
         <input id="'.$id.'_input" name="'.$id.'_input" type="checkbox" value="1"'.checked($value,1,false).' '.$this->build_validation($validation).' />
         <div class="handle" data-on="'.$settings['true'].'" data-off="'.$settings['false'].'"></div></div>');
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
-        $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
+        $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$bkp_field.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
 
@@ -158,6 +159,9 @@ class MSDLAB_FormControls{
 
     public function build_options($options,$value,$null_option){
         $ret = array();
+        $cur = $options[$value];
+        $options = array_unique($options);
+        $options[$value] = $cur;
         if(is_array($null_option)){
             $ret[] = '<option value="'.$null_option['value'].'">'.$null_option['option'].'</option>';
         } else {
@@ -176,7 +180,7 @@ class MSDLAB_FormControls{
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$title.'</label>');
         //iterate through $options
         foreach ($options AS $k => $v){
-            $options_array[] = '<div class="'.$id.'_'.$k.'_wrapper option-wrapper"><input id="'.$id.'_'.$k.'" name="'.$id.'" type="radio" value="'.$k.'"'.selected($value,$k,false).' /> <label class="option-label">'.$v.'</label></div>';
+            $options_array[] = '<div class="'.$id.'_'.$k.'_wrapper option-wrapper"><input id="'.$id.'_'.$k.'_input" name="'.$id.'_input" type="radio" value="'.$k.'"'.checked($value,$k,false).' /> <label class="option-label">'.$v.'</label></div>';
         }
 
         $options_str = '<div class="radio-wrapper">'.implode("\n\r",$options_array).'</div>';
@@ -194,7 +198,7 @@ class MSDLAB_FormControls{
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$title.'</label>');
         //iterate through $options
         foreach ($options AS $k => $v){
-            $options_array[] = '<div class="'.$id.'_'.$k.'_wrapper checkbox-wrapper"><input id="'.$id.'_'.$k.'" name="'.$id.'" type="checkbox" value="'.$k.'"'.selected($value,$k,false).' /> '.$v.'</div>';
+            $options_array[] = '<div class="'.$id.'_'.$k.'_wrapper checkbox-wrapper"><input id="'.$id.'_'.$k.'" name="'.$id.'" type="checkbox" value="'.$k.'"'.checked($value,$k,false).' /> '.$v.'</div>';
         }
 
         $options_str = implode("\n\r",$options_array);

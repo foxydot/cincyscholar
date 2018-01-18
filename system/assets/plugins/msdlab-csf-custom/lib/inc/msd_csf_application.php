@@ -151,21 +151,17 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     $form_page_number = isset($_POST['form_page_number']) ? $_POST['form_page_number'] : 1;
                     $step = isset($_POST['form_page_next']) ? $_POST['form_page_next'] : 1;
                     $set['where'] = $applicant_id > 0 ? array('Applicant' => 'Applicant.ApplicantId = ' . $applicant_id) : array('Applicant' => 'Applicant.UserId = ' . $user_id);
-                    $data['where'] = 'Applicant.ApplicantId = ' . $applicant_id;
                     switch ($step) {
                         case 1:
                             break;
                         case 2:
                             $set['where']['ApplicationProcess'] = 'ApplicationProcess.ApplicantId = ' . $applicant_id .' AND ApplicationProcess.ProcessStepId = 1';
-                            $data['where'] .= ' AND ApplicantCollege.ApplicantId = ' . $applicant_id;
                             break;
                         case 3:
                             $set['where']['ApplicantCollege'] = 'ApplicantCollege.ApplicantId = ' . $applicant_id;
-                            $data['where'] .= ' AND ApplicantIndependent.ApplicantId = ' . $applicant_id;
                             break;
                         case 4:
-                            $set['where']['ApplicantIndependent'] = 'ApplicantIndependent.ApplicantId = ' . $applicant_id;
-                            $data['where'] .= ' AND Guardian.ApplicantId = ' . $applicant_id;
+                            $set['where']['ApplicantIndependenceQuery'] = 'ApplicantIndependenceQuery.ApplicantId = ' . $applicant_id;
                             break;
                         case 5:
                             $set['where']['Guardian'] = 'Guardian.ApplicantId = ' . $applicant_id;
@@ -174,7 +170,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $set['where']['Guardian'] = 'Guardian.ApplicantId = ' . $applicant_id;
                             //use all previous wheres to get final results
                             $data['where'] .= ' AND ApplicantCollege.ApplicantId = ' . $applicant_id;
-                            //$data['where'] .= ' AND ApplicantIndependent.ApplicantId = ' . $applicant_id;
+                            //$data['where'] .= ' AND ApplicantIndependenceQuery.ApplicantId = ' . $applicant_id;
                             $data['where'] .= ' AND Guardian.ApplicantId = ' . $applicant_id;
                             break;
                     }
@@ -239,6 +235,8 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     $ret['form_page_number'] = $this->form->field_utility('form_page_number', 1);
                     $ret['form_page_next'] = $this->form->field_utility('form_page_next', $form_page_number + 1);
                     $ret['ApplicantId'] = $this->form->field_utility("ApplicantId", $applicant_id); //matching user_id to applicantID. HRM. This is autoincremented in the DB. We will need to create userids for all the old data and start UIDs at a higher number than exisiting applicant IDs
+                    $data['where'] = 'Applicant.ApplicantId = ' . $applicant_id;
+
                     switch ($form_page_number) {
                         case 1: //personal info
                             //sets up the query
@@ -279,15 +277,40 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             //sets up the query
                             $data['tables']['Applicant'] = array('MajorId', 'EducationAttainmentId', 'HighSchoolGraduationDate', 'HighSchoolId', 'HighSchoolGraduationDate', 'HighSchoolGPA', 'PlayedHighSchoolSports', 'FirstGenerationStudent','Activities');
                             $data['tables']['ApplicantCollege'] = array('CollegeId');
+                            $data['where'] .= ' AND ApplicantCollege.ApplicantId = ' . $applicant_id;
                             $results = $this->queries->get_result_set($data);
                             $result = $results[0];
                             //the fields
+
+                            $jquery[] = "$('#ApplicantCollege_CollegeId_input').each(function(){
+                            var sp = $('.otherwrap');
+                            if($(this).val() != '343'){
+                                sp.slideUp(0);
+                                sp.find($('input')).removeAttr('required');
+                            } else {
+                                sp.slideDown(0);
+                                sp.find($('input')).attr('required','required');
+                            }
+                        });";
+                            $jquery[] = "$('#ApplicantCollege_CollegeId_input').change(function(){
+                            var sp = $('.otherwrap');
+                            if($(this).val() != 343){
+                                sp.slideUp(0);
+                                sp.find($('input')).removeAttr('required');
+                            } else {
+                                sp.slideDown(0);
+                                sp.find($('input')).attr('required','required');
+                            }
+                        });";
                             $ret['form_page_number'] = $this->form->field_utility('form_page_number', 2);
                             $ret['hdrCollegeInfo'] = $this->form->section_header('hdrCollegeInfo', 'Academic Information');
                             $ret['ApplicantCollege_ApplicantId'] = $this->form->field_hidden("ApplicantCollege_ApplicantId", $applicant_id);
                             $ret['ApplicantCollege_CollegeId'] = $this->form->field_select('ApplicantCollege_CollegeId', $result->CollegeId ? $result->CollegeId : null, 'College Applied To or Attending', null, $this->college_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
-                            //$ret['ApplicantCollege_Unlisted'.$i] = $this->form->field_textfield('ApplicantCollege_Unlisted'.$i, null,'',null, array('text'=>true)); //how are we handling "other" in the new DB?
                             $ret['Applicant_MajorId'] = $this->form->field_select('Applicant_MajorId', $result->MajorId ? $result->MajorId : 5122, 'Intended Major (If Uncertain, select Undecided)', null, $this->major_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
+
+                            $ret['OtherWrapOpen'] = '<div class="otherwrap">';
+                            $ret['Applicant_OtherSchool'] = $this->form->field_textfield('Applicant_OtherSchool', null,'Name of Unlisted Institution',null, array('text'=>true),array('col-sm-12','required')); //how are we handling "other" in the new DB?
+                            $ret['OtherWrapClose'] = '</div>';
                             $ret['Applicant_EducationAttainmentId'] = $this->form->field_select("Applicant_EducationAttainmentId", $result->EducationAttainmentId ? $result->EducationAttainmentId : null, "Year in School Fall Semester", array('option' => 'Select', 'value' => '5'), $this->educationalattainment_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
                             $ret['Applicant_FirstGenerationStudent'] = $this->form->field_boolean('Applicant_FirstGenerationStudent', $result->FirstGenerationStudent ? $result->FirstGenerationStudent : 0, 'Are you the first person in your family to attend college?', null, array('col-md-6', 'col-sm-12'));
                             $ret[] = '<hr class="clear" />';
@@ -301,22 +324,23 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             //determine independance
                             //sets up the query
                             $data['tables']['Applicant'] = array('IsIndependent');
-                            $data['tables']['ApplicantIndependent'] = array('ApplicantId', 'AdvancedDegree', 'Children', 'Married', 'TwentyFour', 'Veteran', 'Orphan', 'Emancipated', 'Homeless');
+                            $data['tables']['ApplicantIndependenceQuery'] = array('ApplicantId', 'AdvancedDegree', 'Children', 'Married', 'TwentyFour', 'Veteran', 'Orphan', 'Emancipated', 'Homeless');
+                            $data['where'] .= ' AND ApplicantIndependenceQuery.ApplicantId = ' . $applicant_id;
                             $results = $this->queries->get_result_set($data);
                             $result = $results[0];
                             //the fields
                             $ret['form_page_number'] = $this->form->field_utility('form_page_number', 3);
                             $ret['Applicant_IsIndependent'] = $this->form->field_hidden('Applicant_IsIndependent', $result->IsIndependent ? $result->IsIndependent : 0);
-                            $ret['ApplicantIndependent_ApplicantId'] = $this->form->field_hidden("ApplicantIndependent_ApplicantId", $applicant_id);
+                            $ret['ApplicantIndependenceQuery_ApplicantId'] = $this->form->field_hidden("ApplicantIndependenceQuery_ApplicantId", $applicant_id);
                             $ret[] = "Do any of the following apply to you?";
-                            $ret['ApplicantIndependent_AdvancedDegree'] = $this->form->field_boolean('ApplicantIndependent_AdvancedDegree', $result->AdvancedDegree ? $result->AdvancedDegree : 0, 'Working on a Master\'s or Doctorate degree?', null, array('indybool'));
-                            $ret['ApplicantIndependent_Children'] = $this->form->field_boolean('ApplicantIndependent_Children', $result->Children ? $result->Children : 0, 'Have a child or other legal dependants?', null, array('indybool'));
-                            $ret['ApplicantIndependent_Married'] = $this->form->field_boolean('ApplicantIndependent_Married', $result->Married ? $result->Married : 0, 'Married?', 0, array('indybool'));
-                            $ret['ApplicantIndependent_TwentyFour'] = $this->form->field_boolean('ApplicantIndependent_TwentyFour', $result->TwentyFour ? $result->TwentyFour : 0, 'At least 24 years old?', null, array('indybool'));
-                            $ret['ApplicantIndependent_Veteran'] = $this->form->field_boolean('ApplicantIndependent_Veteran', $result->Veteran ? $result->Veteran : 0, 'Veteran of the U.S. Armed Forces?', null, array('indybool'));
-                            $ret['ApplicantIndependent_Orphan'] = $this->form->field_boolean('ApplicantIndependent_Orphan', $result->Orphan ? $result->Orphan : 0, 'Deceased parents, in foster care, or ward of the court?', null, array('indybool'));
-                            $ret['ApplicantIndependent_Emancipated'] = $this->form->field_boolean('ApplicantIndependent_Emancipated', $result->Emancipated ? $result->Emancipated : 0, 'An emancipated child as determined by a court judge?', null, array('indybool'));
-                            $ret['ApplicantIndependent_Homeless'] = $this->form->field_boolean('ApplicantIndependent_Homeless', $result->Homeless ? $result->Homeless : 0, 'Homeless, at risk of being homeless as determined by the director of an HUD approved homeless shelter, testimonial program or high school liason?', null, array('indybool'));
+                            $ret['ApplicantIndependenceQuery_AdvancedDegree'] = $this->form->field_boolean('ApplicantIndependenceQuery_AdvancedDegree', $result->AdvancedDegree ? $result->AdvancedDegree : 0, 'Working on a Master\'s or Doctorate degree?', null, array('indybool'));
+                            $ret['ApplicantIndependenceQuery_Children'] = $this->form->field_boolean('ApplicantIndependenceQuery_Children', $result->Children ? $result->Children : 0, 'Have a child or other legal dependants?', null, array('indybool'));
+                            $ret['ApplicantIndependenceQuery_Married'] = $this->form->field_boolean('ApplicantIndependenceQuery_Married', $result->Married ? $result->Married : 0, 'Married?', 0, array('indybool'));
+                            $ret['ApplicantIndependenceQuery_TwentyFour'] = $this->form->field_boolean('ApplicantIndependenceQuery_TwentyFour', $result->TwentyFour ? $result->TwentyFour : 0, 'At least 24 years old?', null, array('indybool'));
+                            $ret['ApplicantIndependenceQuery_Veteran'] = $this->form->field_boolean('ApplicantIndependenceQuery_Veteran', $result->Veteran ? $result->Veteran : 0, 'Veteran of the U.S. Armed Forces?', null, array('indybool'));
+                            $ret['ApplicantIndependenceQuery_Orphan'] = $this->form->field_boolean('ApplicantIndependenceQuery_Orphan', $result->Orphan ? $result->Orphan : 0, 'Deceased parents, in foster care, or ward of the court?', null, array('indybool'));
+                            $ret['ApplicantIndependenceQuery_Emancipated'] = $this->form->field_boolean('ApplicantIndependenceQuery_Emancipated', $result->Emancipated ? $result->Emancipated : 0, 'An emancipated child as determined by a court judge?', null, array('indybool'));
+                            $ret['ApplicantIndependenceQuery_Homeless'] = $this->form->field_boolean('ApplicantIndependenceQuery_Homeless', $result->Homeless ? $result->Homeless : 0, 'Homeless, at risk of being homeless as determined by the director of an HUD approved homeless shelter, testimonial program or high school liason?', null, array('indybool'));
                             //if any of the above apply, the student is independant. set this.
                             $jquery[] = "$('.indybool input').each(function(){
                             var sp = $('#Applicant_IsIndependent_input');
@@ -340,20 +364,40 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             break;
                         case 4:
                             //financial
-                            //sets up the query
-                            $data['tables']['Guardian'] = array('GuardianFullName1', 'GuardianEmployer1', 'GuardianFullName2', 'GuardianEmployer2', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
-                            $data['tables']['Applicant'] = array('IsIndependent', 'Employer', 'HardshipNote');
-                            $results = $this->queries->get_result_set($data);
-                            $result = $results[0];
-                            //different fields for independent and dependent students
                             $ret['form_page_number'] = $this->form->field_utility('form_page_number', 4);
-                            if ($result->IsIndependent == true) {
+                            $data['tables']['Applicant'] = array('IsIndependent', 'Employer', 'HardshipNote');
+
+                            //get the indy
+                            if($this->is_indy($applicant_id)){
                                 //Independent Form
+                                //sets up the query
+                                $data['tables']['ApplicantFinancial'] = array('ApplicantEmployer','ApplicantIncome','SpouseEmployer','SpouseIncome', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
+
+
+                                $data['where'] .= ' AND ApplicantFinancial.ApplicantId = ' . $applicant_id;
+                                $results = $this->queries->get_result_set($data);
+                                $result = $results[0];
+                                //form
                                 $ret['hdrFinancialInfo'] = $this->form->section_header('hdrFinancialInfo', 'Independent Student Financial Information');
-                                $ret[''] = '';
-                                $ret[] = "Indy form will go here, or we just ask for approval to get their financial info from FAFSA?";
+                                $ret['Applicant_Employer'] = $this->form->field_textfield('Applicant_Employer', $result->Employer ? $result->Employer : null, "Applicant Employer",null,null, array('col-md-6', 'col-sm-12'));
+                                $ret['ApplicantFinancial_ApplicantIncome'] = $this->form->field_textfield('ApplicantFinancial_ApplicantIncome', $result->ApplicantIncome ? $result->ApplicantIncome : null, "Applicant Annual Income",'30,000', array('type' => 'number'), array('col-md-6', 'col-sm-12'));
+
+                                $ret['ApplicantFinancial_SpouseEmployer'] = $this->form->field_textfield('ApplicantFinancial_SpouseEmployer', $result->SpouseEmployer ? $result->SpouseEmployer : null, "Spouse Employer",null,null, array('col-md-6', 'col-sm-12'));
+                                $ret['ApplicantFinancial_SpouseIncome'] = $this->form->field_textfield('ApplicantFinancial_SpouseIncome', $result->SpouseIncome ? $result->SpouseIncome : null, "Spouse Annual Income",'30,000', array('type' => 'number'), array('col-md-6', 'col-sm-12'));
+
+                                $ret['ApplicantFinancial_Homeowner'] = $this->form->field_boolean('ApplicantFinancial_Homeowner', $result->Homeowner ? $result->Homeowner : 0, "Is the applicant a homeowner?",null, array('required', 'col-md-12'));
+                                $ret[] = '<div class="switchable">';
+                                $ret['ApplicantFinancial_HomeValue'] = $this->form->field_textfield('ApplicantFinancial_HomeValue', $result->HomeValue ? $result->HomeValue : null, "Current Value",'100,000', array('type' => 'number'), array('col-md-6', 'col-sm-12'));
+                                $ret['ApplicantFinancial_AmountOwedOnHome'] = $this->form->field_textfield('ApplicantFinancial_AmountOwedOnHome', $result->AmountOwedOnHome ? $result->AmountOwedOnHome : null, "Amount Owed",'50,000', array('type' => 'number'), array('col-md-6', 'col-sm-12'));
+                                $ret[] = '</div>';
                             } else {
                                 //Dependent Form
+                                //sets up the query
+                                $data['tables']['Guardian'] = array('GuardianFullName1', 'GuardianEmployer1', 'GuardianFullName2', 'GuardianEmployer2', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
+                                $data['where'] .= ' AND Guardian.ApplicantId = ' . $applicant_id;
+                                $results = $this->queries->get_result_set($data);
+                                $result = $results[0];
+                                //form
                                 $jquery[] = "$('#SingleParent_input').each(function(){
                             var sp = $('.second-guardian');
                             if($(this).is(':checked')){
@@ -386,61 +430,87 @@ if (!class_exists('MSDLab_CSF_Application')) {
                                 $ret['Guardian_HomeValue'] = $this->form->field_textfield('Guardian_HomeValue', $result->HomeValue ? $result->HomeValue : null, "Current Value",'100,000', array('type' => 'number'), array('col-md-6', 'col-sm-12'));
                                 $ret['Guardian_AmountOwedOnHome'] = $this->form->field_textfield('Guardian_AmountOwedOnHome', $result->AmountOwedOnHome ? $result->AmountOwedOnHome : null, "Amount Owed",'50,000', array('type' => 'number'), array('col-md-6', 'col-sm-12'));
                                 $ret[] = '</div>';
-                                //hardships
-
-                                $ret['Applicant_HardshipNote'] = $this->form->field_textarea('Applicant_HardshipNote', $result->HardshipNote ? $result->HardshipNote : null, "If applicable, please use this space to describe how you overcame hardships (family environment, health issues, or physical challenges, etc.) to achieve your dream of pursuing a college education.",null,array('col-md-12'));
                             }
+                            //hardships
+                            $ret['Applicant_HardshipNote'] = $this->form->field_textarea('Applicant_HardshipNote', $result->HardshipNote ? $result->HardshipNote : null, "If applicable, please use this space to describe how you overcame hardships (family environment, health issues, or physical challenges, etc.) to achieve your dream of pursuing a college education.",null,array('col-md-12'));
+
                             break;
                         case 5:
                             //final checks
                             //sets up query
-                            $data['tables']['Applicant'] = array('IsIndependent', 'InformationSharingAllowed');
+                            $data['tables']['Applicant'] = array('InformationSharingAllowed');
                             $results = $this->queries->get_result_set($data);
                             $result = $results[0];
                             //fields
                             $btnTitle = "Save";
                             $ret['form_page_number'] = $this->form->field_utility('form_page_number', 5);
 
-                            $ret['hdrAgreements'] = $this->form->section_header('hdrAgreements', 'Approvals and Signature');
-                            $ret['readCarefully'] = '<div class="notice">Please read carefully before signing below.</div>';
-                            if ($result->IsIndependent == true) {
-                                //Independent Form
-                                $ret['FAFHeader'] = '<h3>FAF Need Evaluation Release</h3>';
-                                $ret['FAFCopy'] = '<p>I give my permission to the Cincinati Scholarship Foundation (CSF) to be provided with the need evaluation of the FAFSA and other financial aid information determined by the Office of Financial Aid of any college or university receiving this release. </p>';
-                                $ret['UNKNOWN_FAFNeedEvaluationRelease'] = $this->form->field_boolean('UNKNOWN_FAFNeedEvaluationRelease',0,'Applicant Agrees',array('required'));
-                                $ret['SRHeader'] = '<h3>Student Responsibility Agreements</h3>';
-                                $ret['SRCopy'] = '<ul><li>I have read and understand the "IMPORTANT INFORMATION ABOUT THE ON-LINE APPLICATION" prior to opening the application;</li>
-<li>I understand that applications submitted after the April 30, 2017 deadline will not be considered;</li>
-<li>I understand that the application is incomplete without my transcript, my Student Aid Report and the financial aid award notification from the school I have chosen to attend;</li>
-<li>I will report all other substantial scholarships received (other than state and federal grants and awards).</li>
-</ul>';
-                                $ret['UNKNOWN_SRAgreement'] = $this->form->field_boolean('UNKNOWN_SRAgreement',0,'Applicant Agrees',array('required'));
+                            $ret['hdrAgreements'] = $this->form->section_header('hdrAgreements', 'Documents and Approvals');
+                            $ret['ResumeHeader'] = '<h3>Upload Resume</h3>';
+                            $ret['ResumeDoc'] = 'uploader';
+                            $ret['TranscriptHeader'] = '<h3>Upload Transcript</h3>';
+                            $ret['TranscriptDoc'] = 'uploader';
+                            $ret['FAFHeader'] = '<h3>Upload FAF Need Evaluation Document</h3>';
+                            $ret['FAFDoc'] = 'uploader';
 
-                                //$ret['InformationSharingHdr'] = '<h3></h3>';
-                                $ret['InformationSharingCopy'] = 'Do you authorize the CSF to share the information on your scholarship application with other foundations looking for prospective recipients?';
-                                $ret['Applicant_InformationSharingAllowed'] = $this->form->field_boolean('Applicant_InformationSharingAllowed',$result->InformationSharingAllowed ? $result->InformationSharingAllowed : 0,'Applicant Agrees',array('required'));
+                            $ret['SRHeader'] = '<h3>Student Responsibility Agreements</h3>';
+                            //add SRA to applicant and guardian tables
+                            //create SRA table to store all indicators
+                            $ret['SRATableHdr'] = '<div class="table">';
 
-                            } else {
-                                //Dependent Form
-                                $ret['FAFHeader'] = '<h3>FAF Need Evaluation Release</h3>';
-                                $ret['FAFCopy'] = '<p>We give our permission to the Cincinati Scholarship Foundation (CSF) to be provided with the need evaluation of the FAFSA and other financial aid information determined by the Office of Financial Aid of any college or university receiving this release. </p>';
-                                $ret['UNKNOWN_FAFNeedEvaluationRelease'] = $this->form->field_boolean('UNKNOWN_FAFNeedEvaluationRelease',0,'Guardian Agrees',array('required'));
-                                $ret['UNKNOWN2_FAFNeedEvaluationRelease'] = $this->form->field_boolean('UNKNOWN_FAFNeedEvaluationRelease',0,'Applicant Agrees',array('required'));
-                                $ret['SRHeader'] = '<h3>Student Responsibility Agreements</h3>';
-                                $ret['SRCopy'] = '<ul><li>I/we have read and understand the "IMPORTANT INFORMATION ABOUT THE ON-LINE APPLICATION" prior to opening the application;</li>
-<li>I/we understand that applications submitted after the April 30, 2017 deadline will not be considered;</li>
-<li>I/we understand that the application is incomplete without my transcript, my Student Aid Report and the financial aid award notification from the school I have chosen to attend;</li>
-<li>I/we will report all other substantial scholarships received (other than state and federal grants and awards).</li>
-</ul>';
-                                $ret['UNKNOWN_SRAgreement'] = $this->form->field_boolean('UNKNOWN_SRAgreement',0,'Guardian Agrees',array('required'));
-                                $ret['UNKNOWN2_SRAgreement'] = $this->form->field_boolean('UNKNOWN_SRAgreement',0,'Applicant Agrees',array('required'));
-
-                                //$ret['InformationSharingHdr'] = '<h3></h3>';
-                                $ret['InformationSharingCopy'] = 'Do you authorize the CSF to share the information on your scholarship application with other foundations looking for prospective recipients?';
-                                $ret['UNKNOWN_InformationSharingAllowed'] = $this->form->field_boolean('UNKNOWN_InformationSharingAllowed',$result->InformationSharingAllowed ? $result->InformationSharingAllowed : 0,'Guardian Agrees',array('required'));
-                                $ret['Applicant_InformationSharingAllowed'] = $this->form->field_boolean('Applicant_InformationSharingAllowed',$result->InformationSharingAllowed ? $result->InformationSharingAllowed : 0,'Applicant Agrees',array('required'));
-
+                            $ret[] = '<table class="table">
+                                <tr class="table-row">
+                                    <th class="table-cell"></th>
+                                    <th class="table-cell table-header">Student</th>';
+                            if(!$this->is_indy($applicant_id)){
+                                $ret[] = '<th class="table-cell table-header">Guardian</th>';
                             }
+                            $ret[] = '</div>';
+
+
+                            $ret[] = '<tr class="table-row">'; //styling???? add header
+                            $ret[] = '<td class="table-cell">I/we have read and understand the "IMPORTANT INFORMATION ABOUT THE ON-LINE APPLICATION" prior to opening the application;</td>';
+                            $ret['Agreements_ApplicantHaveRead'] = '<td class="table-cell">'.$this->form->field_boolean('Agreements_ApplicantHaveRead', 0,'',array('required')).'</td>';
+                            if(!$this->is_indy($applicant_id)){
+                                $ret['Agreements_GuardianHaveRead'] = '<td class="table-cell">'.$this->form->field_boolean('Agreements_GuardianHaveRead', 0,'',array('required')).'</td>';
+                            }
+                            $ret[] = '</tr>';
+
+                            $ret[] = '<tr class="table-row">';
+                            $ret[] = '<td class="table-cell">I/we understand that applications submitted after the April 30, 2017 deadline will not be considered;</td>';
+                            $ret['Agreements_ApplicantDueDate'] = '<td class="table-cell">'.$this->form->field_boolean('Agreements_ApplicantDueDate', 0,'',array('required')).'</td>';
+                            if(!$this->is_indy($applicant_id)){
+                                $ret['Agreements_GuardianDueDate'] = '<td class="table-cell">'.$this->form->field_boolean('Agreements_GuardianDueDate', 0,'',array('required')).'</td>';
+                            }
+                            $ret[] = '</tr>';
+
+
+                            $ret[] = '<tr class="table-row">';
+                            $ret[] = '<td class="table-cell">I/we understand that the application is incomplete without my transcript, my Student Aid Report and the financial aid award notification from the school I have chosen to attend;</td>';
+                            $ret['Agreements_ApplicantDocsReq'] = '<td class="table-cell">'.$this->form->field_boolean('Agreements_ApplicantDocsReq', 0,'',array('required')).'</td>';
+                            if(!$this->is_indy($applicant_id)){
+                                $ret['Agreements_GuardianDocsReq'] = '<td class="table-cell">'.$this->form->field_boolean('Agreements_GuardianDocsReq', 0,'',array('required')).'</td>';
+                            }
+                            $ret[] = '</tr>';
+
+
+                            $ret[] = '<tr class="table-row">';
+                            $ret[] = '<td class="table-cell">I/we will report all other substantial scholarships received (other than state and federal grants and awards).</div>';
+                            $ret['Agreements_ApplicantReporting'] = '<td class="table-cell">'.$this->form->field_boolean('Agreements_ApplicantReporting', 0,'',array('required')).'</div>';
+                            if(!$this->is_indy($applicant_id)){
+                                $ret['Agreements_GuardianReporting'] = '<td class="table-cell">'.$this->form->field_boolean('Agreements_GuardianReporting', 0,'',array('required')).'</div>';
+                            }
+                            $ret[] = '</tr>';
+
+                            $ret[] = '<tr class="table-row">';
+                            $ret['InformationSharingCopy'] = '<td class="table-cell">Do you authorize the CSF to share the information on your scholarship application with other foundations looking for prospective recipients?</td>';
+                            $ret['Applicant_InformationSharingAllowed'] = '<td class="table-cell">'.$this->form->field_boolean('Applicant_InformationSharingAllowed', $result->InformationSharingAllowed ? $result->InformationSharingAllowed : 0,'',array('required')).'</td>';
+                            if(!$this->is_indy($applicant_id)){
+                                $ret['Guardian_InformationSharingAllowedByGuardian'] = '<td class="table-cell">'.$this->form->field_boolean('Guardian_InformationSharingAllowedByGuardian', $result->InformationSharingAllowedByGuardian ? $result->Guardian_InformationSharingAllowedByGuardian : 0,'',array('required')).'</td>';
+                            }
+                            $ret[] = '</tr>';
+                            $ret['SRATableFtr'] = '</table>';
+
                             break;
                         case 6:
                             $data['tables']['Applicant'] = array('ApplicationDateTime', 'FirstName', 'MiddleInitial', 'LastName', 'Last4SSN', 'Address1', 'Address2', 'City', 'StateId', 'IsIndependent',
@@ -480,9 +550,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $ret['Applicant_PlayedHighSchoolSports'] = $this->form->field_result('Applicant_PlayedHighSchoolSports', $result->PlayedHighSchoolSports ? 'YES' : 'NO', 'Did you participate in sports while attending High School?');
                             $ret['Applicant_Activities'] = $this->form->field_result('Applicant_Activities',$result->Activities ? $result->Activities : '',"Please list any activities participated in, with years active.",null,array('col-md-12'));
 
-                            $ret['Applicant_IsIndependent'] = $this->form->field_result('Applicant_IsIndependent', $result->IsIndependent ? 'YES' : 'NO', 'Independent Student?');
-
-                            if ($result->IsIndependent == true) {
+                            if ($this->is_indy($applicant_id)) {
                             } else {
                                 $ret['hdrFinancialInfo'] = $this->form->section_header('hdrFinancialInfo', 'Student Guardianship and Financial Information');
                                 $ret['SingleParent'] = $this->form->field_result('SingleParent', strlen($result->GuardianFullName2 < 1)? 'YES':'NO', "Is this a single parent household?",null, array('required', 'col-md-12'));
@@ -508,7 +576,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
 
                             $ret['hdrAgreements'] = $this->form->section_header('hdrAgreements', 'Approvals and Signature');
                             $ret['readCarefully'] = '<div class="notice">Please read carefully before signing below.</div>';
-                            if ($result->IsIndependent == true) {
+                            if ($this->is_indy($applicant_id)) {
                                 //Independent Form
                                 $ret['FAFHeader'] = '<h3>FAF Need Evaluation Release</h3>';
                                 $ret['FAFCopy'] = '<p>I give my permission to the Cincinati Scholarship Foundation (CSF) to be provided with the need evaluation of the FAFSA and other financial aid information determined by the Office of Financial Aid of any college or university receiving this release. </p>';
@@ -580,13 +648,25 @@ if (!class_exists('MSDLab_CSF_Application')) {
             $ret['form_close'] = $this->form->form_close();
 //utility to be removed
             foreach($ret AS $k => $v){
-                $myk = str_replace('ApplicantIndependent_','',$k);
+                $myk = str_replace('ApplicantIndependenceQuery_','',$k);
                 //$crunch[] = "`".$myk."` tinyint(1) unsigned zerofill NOT NULL DEFAULT '0',";
                 $crunch[] = '$result->'.$myk.'?$result->'.$myk.':null';
             }
             //ts_data(implode("\n",$crunch));
 //end utility            
             return $ret;
+        }
+
+        function is_indy($applicant_id){
+            $indy['where'] = 'Applicant.ApplicantId = ' . $applicant_id;;
+            $indy['tables']['Applicant'] = array('IsIndependent');
+            $results = $this->queries->get_result_set($indy);
+            $result = $results[0];
+            if($result->IsIndependent){
+                return true;
+            } else {
+                return false;
+            }
         }
 
         function get_user_application_status(){
