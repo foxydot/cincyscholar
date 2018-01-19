@@ -41,7 +41,7 @@ class MSDLAB_Queries{
          }
          $nonce = $_POST['_wpnonce'];
          if(!wp_verify_nonce( $nonce, $form_id )) {
-             return 'no nonce';
+             return '<div class="error">Invalid entry</div>';
          }
          foreach ($this->post_vars AS $k => $v){
              if(stripos($k,'_input')){
@@ -195,4 +195,58 @@ class MSDLAB_Queries{
         return $attachment_type_ids;
     }
 
+    function get_attachment_type_by_id($id){
+        global $wpdb;
+        $sql = "SELECT AttachmentType FROM AttachmentType WHERE AttachmentTypeId = ".$id.";";
+        $result = $wpdb->get_results( $sql );
+        //return $result[0];
+    }
+    function get_state_by_id($id){
+        global $wpdb;
+        $sql = "SELECT State FROM State WHERE StateId = '".$id."';";
+        $result = $wpdb->get_results( $sql );
+        return $result[0]->State;
+    }
+    function get_county_by_id($id){
+        global $wpdb;
+        $sql = "SELECT County FROM County WHERE CountyId = '".$id."';";
+        $result = $wpdb->get_results( $sql );
+        return $result[0]->County;
+    }
+    function get_ethnicity_by_id($id){
+        global $wpdb;
+        $sql = "SELECT Ethnicity FROM Ethnicity WHERE EthnicityId = '".$id."';";
+        $result = $wpdb->get_results( $sql );
+        return $result[0]->Ethnicity;
+    }
+    function get_sex_by_id($id){
+        global $wpdb;
+        $sql = "SELECT Sex FROM Sex WHERE SexId = '".$id."';";
+        $result = $wpdb->get_results( $sql );
+        return $result[0]->Sex;
+    }
+    function get_college_by_id($id){
+        global $wpdb;
+        $sql = "SELECT Name FROM College WHERE CollegeId = '".$id."';";
+        $result = $wpdb->get_results( $sql );
+        return $result[0]->Name;
+    }
+    function get_major_by_id($id){
+        global $wpdb;
+        $sql = "SELECT MajorName FROM Major WHERE MajorId = '".$id."';";
+        $result = $wpdb->get_results( $sql );
+        return $result[0]->MajorName;
+    }
+    function get_educationalattainment_by_id($id){
+        global $wpdb;
+        $sql = "SELECT EducationalAttainment FROM EducationalAttainment WHERE EducationalAttainmentId = '".$id."';";
+        $result = $wpdb->get_results( $sql );
+        return $result[0]->EducationalAttainment;
+    }
+    function get_highschool_by_id($id){
+        global $wpdb;
+        $sql = "SELECT SchoolName FROM HighSchool WHERE HighSchoolId = '".$id."';";
+        $result = $wpdb->get_results( $sql );
+        return $result[0]->SchoolName;
+    }
 }

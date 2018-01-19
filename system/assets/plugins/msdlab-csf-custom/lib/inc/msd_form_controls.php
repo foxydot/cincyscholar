@@ -266,7 +266,7 @@ class MSDLAB_FormControls{
             if(count($grid)>0){
                 $value = '<div class="row documents grid">'.implode('',$grid).'</div>';
             } else {
-                $value = "No documents found.";
+                $value = '<div class="row documents grid"><div class="col-xs-12">No documents found.</div></div>';
             }
         }
         $form_field = apply_filters('msdlab_csf_'.$id.'_field','<span class="result">'.$value.'</span>');
