@@ -75,3 +75,23 @@ i.fa{
     display: inline-block;
   }
 }
+
+form{
+  .documents.grid {
+    margin-bottom: 3em;
+    .document.grid-item {
+      text-align: center;
+      a {
+        border: 1px solid $blue;
+        padding: 1em;
+        display: block;
+        &:hover {
+          background-color: $yellow;
+        }
+        i {
+          font-size: 2em;
+        }
+      }
+    }
+  }
+}

@@ -1795,6 +1795,19 @@ i.fa {
 .logged-in .menu-item.logged-in {
   display: inline-block; }
 
+form .documents.grid {
+  margin-bottom: 3em; }
+  form .documents.grid .document.grid-item {
+    text-align: center; }
+    form .documents.grid .document.grid-item a {
+      border: 1px solid #3f829c;
+      padding: 1em;
+      display: block; }
+      form .documents.grid .document.grid-item a:hover {
+        background-color: #ffbe0b; }
+      form .documents.grid .document.grid-item a i {
+        font-size: 2em; }
+
 @media only screen and (min-width: 768px) {
   /* Accessible Menu
   --------------------------------------------- */

@@ -458,11 +458,13 @@ if (!class_exists('MSDLab_CSF_Application')) {
 
                             $ret['hdrAgreements'] = $this->form->section_header('hdrAgreements', 'Documents and Approvals');
                             $ret['Attachment_ApplicantId'] = $this->form->field_hidden("Attachment_ApplicantId", $applicant_id);
-
-                            $ret['Attachment_Resume'] = $this->form->field_upload('Attachment_Resume','','Upload Resume');
-                            $ret['Attachment_Transcript'] = $this->form->field_upload('Attachment_Transcript','','Upload Transcript');
-                            $ret['Attachment_FAF'] = $this->form->field_upload('Attachment_FAF','','Upload FAF Need Evaluation Document');
-
+                            $ret['AttachmentCopy'] = '<div class="copy">Please upload all documents in PDF format.</div>';
+                            $ret['AttachmentDisplay'] = $this->form->attachment_display('AttachmentDisplay',$documents,"Your Uploaded Documents");
+                            $ret[] = '<div class="row">';
+                            $ret['Attachment_Resume'] = $this->form->field_upload('Attachment_Resume','','Upload Resume',null,null,array('col-sm-4'));
+                            $ret['Attachment_Transcript'] = $this->form->field_upload('Attachment_Transcript','','Upload Transcript',null,null,array('col-sm-4'));
+                            $ret['Attachment_FAF'] = $this->form->field_upload('Attachment_FAF','','Upload FAF Need Evaluation Document',null,null,array('col-sm-4'));
+                            $ret[] = '</div><br /><br />';
                             $ret['SRHeader'] = '<h3>Student Responsibility Agreements</h3>';
                             $ret['Agreements_ApplicantId'] = $this->form->field_hidden("Agreements_ApplicantId", $applicant_id);
                             //add SRA to applicant and guardian tables

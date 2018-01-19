@@ -24,6 +24,9 @@ class MSDLAB_FormControls{
 
     public function __construct() {
 
+        if(class_exists('MSDLAB_Queries')){
+            $this->queries = new MSDLAB_Queries();
+        }
 
     }
 
@@ -243,6 +246,29 @@ class MSDLAB_FormControls{
         }
         if($placeholder == null){$placeholder = $title;}
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_result">'.$title.'</label>');
+        $form_field = apply_filters('msdlab_csf_'.$id.'_field','<span class="result">'.$value.'</span>');
+        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
+        $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
+        return apply_filters('msdlab_csf_'.$id.'', $ret);
+    }
+
+    public function attachment_display($id, $data, $title = "", $class = "", $display = "all", $style = "grid"){
+        $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_result">'.$title.'</label>');
+        $attachment_types = array_flip($this->queries->get_attachment_type_ids());
+        if($display == "all" && $style == "grid"){
+            foreach($data AS $d){
+                $filename = array_pop(explode('/',$d->FilePath));
+                $fileext = strtolower(array_pop(explode('.',$filename)));
+                $grid[] = '<div class="col-xs-6 col-sm-2 document grid-item">
+                    <a href="'.$d->FilePath.'" title="'.$filename.'"><i class="fa fa-file-'.$fileext.'-o" aria-hidden="true"></i><br>'.$attachment_types[$d->AttachmentTypeId].'</a>
+                </div>';
+            }
+            if(count($grid)>0){
+                $value = '<div class="row documents grid">'.implode('',$grid).'</div>';
+            } else {
+                $value = "No documents found.";
+            }
+        }
         $form_field = apply_filters('msdlab_csf_'.$id.'_field','<span class="result">'.$value.'</span>');
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
