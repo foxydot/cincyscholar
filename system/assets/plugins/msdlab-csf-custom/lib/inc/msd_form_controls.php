@@ -30,7 +30,7 @@ class MSDLAB_FormControls{
 
     public function form_header($id = "csf_form", $class = array()){
         $class = implode(" ",apply_filters('msdlab_'.$id.'_header_class', $class));
-        $ret = '<form id="'.$id.'" class="'.$class.'" method="post">';
+        $ret = '<form id="'.$id.'" class="'.$class.'" method="post" enctype="multipart/form-data">';
         return apply_filters('msdlab_'.$id.'_header', $ret);
     }
 
@@ -208,6 +208,18 @@ class MSDLAB_FormControls{
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
 
+
+    public function field_upload($id, $value, $title = "", $placeholder = null, $validation = null, $class = array('medium')){
+        if(is_null($value)){
+            $value = $_POST[$id.'_input'];
+        }
+        $type = isset($validation['type'])?$validation['type']:'file';
+        $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$title.'</label>');
+        $form_field = apply_filters('msdlab_csf_'.$id.'_field','<input id="'.$id.'_input" name="'.$id.'_input" type="'.$type.'" value="'.$value.'" placeholder="'.$placeholder.'" '.$this->build_validation($validation).' />');
+        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
+        $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
+        return apply_filters('msdlab_csf_'.$id.'', $ret);
+    }
 
     public function field_button($id,$title = "Save", $class = array('submit'), $type = "submit"){
         $form_field = apply_filters('msdlab_csf_'.$id.'_button','<input id="'.$id.'_button" type="'.$type.'" value="'.$title.'" />');

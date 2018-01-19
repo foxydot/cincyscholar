@@ -110,7 +110,7 @@ add_action( 'msdlab_pre_header', 'genesis_do_subnav' );
 remove_action('genesis_header','genesis_do_header' );
 add_action('genesis_header','msdlab_do_header' );
 
-add_action('genesis_header','msdlab_header_right' );
+//add_action('genesis_header','msdlab_header_right' );
 
 /*** NAV ***/
 /**

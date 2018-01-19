@@ -116,7 +116,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
         function get_applicant_id($user_id){
             global $wpdb;
             $sql = "SELECT ApplicantId FROM Applicant WHERE UserId = ". $user_id;
-            error_log($sql);
+            //error_log($sql);
             $result = $wpdb->get_results($sql);
             return $result[0]->ApplicantId;
         }
@@ -168,6 +168,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             break;
                         case 6:
                             $set['where']['Guardian'] = 'Guardian.ApplicantId = ' . $applicant_id;
+                            $set['where']['Agreements'] = 'Agreements.ApplicantId = ' . $applicant_id;
                             //use all previous wheres to get final results
                             $data['where'] .= ' AND ApplicantCollege.ApplicantId = ' . $applicant_id;
                             //$data['where'] .= ' AND ApplicantIndependenceQuery.ApplicantId = ' . $applicant_id;
@@ -439,21 +440,31 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             //final checks
                             //sets up query
                             $data['tables']['Applicant'] = array('InformationSharingAllowed');
+                            if(!$this->is_indy($applicant_id)) {
+                                $data['tables']['Guardian'] = array('InformationSharingAllowedByGuardian');
+                                $data['where'] .= ' AND Guardian.ApplicantId = ' . $applicant_id;
+                            }
+                            $data['tables']['Agreements'] = array('ApplicantHaveRead','ApplicantDueDate','ApplicantDocsReq','ApplicantReporting','GuardianHaveRead','GuardianDueDate','GuardianDocsReq','GuardianReporting');
+                            $data['where'] .= ' AND Agreements.ApplicantId = ' . $applicant_id;
                             $results = $this->queries->get_result_set($data);
                             $result = $results[0];
+
+                            $docs['tables']['Attachment'] = array('AttachmentId','AttachmentTypeId','FilePath');
+                            $docs['where'] = 'ApplicantID = '.$applicant_id;
+                            $documents = $this->queries->get_result_set($docs);
                             //fields
                             $btnTitle = "Save";
                             $ret['form_page_number'] = $this->form->field_utility('form_page_number', 5);
 
                             $ret['hdrAgreements'] = $this->form->section_header('hdrAgreements', 'Documents and Approvals');
-                            $ret['ResumeHeader'] = '<h3>Upload Resume</h3>';
-                            $ret['ResumeDoc'] = 'uploader';
-                            $ret['TranscriptHeader'] = '<h3>Upload Transcript</h3>';
-                            $ret['TranscriptDoc'] = 'uploader';
-                            $ret['FAFHeader'] = '<h3>Upload FAF Need Evaluation Document</h3>';
-                            $ret['FAFDoc'] = 'uploader';
+                            $ret['Attachment_ApplicantId'] = $this->form->field_hidden("Attachment_ApplicantId", $applicant_id);
+
+                            $ret['Attachment_Resume'] = $this->form->field_upload('Attachment_Resume','','Upload Resume');
+                            $ret['Attachment_Transcript'] = $this->form->field_upload('Attachment_Transcript','','Upload Transcript');
+                            $ret['Attachment_FAF'] = $this->form->field_upload('Attachment_FAF','','Upload FAF Need Evaluation Document');
 
                             $ret['SRHeader'] = '<h3>Student Responsibility Agreements</h3>';
+                            $ret['Agreements_ApplicantId'] = $this->form->field_hidden("Agreements_ApplicantId", $applicant_id);
                             //add SRA to applicant and guardian tables
                             //create SRA table to store all indicators
                             $ret['SRATableHdr'] = '<div class="table">';
@@ -516,8 +527,28 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $data['tables']['Applicant'] = array('ApplicationDateTime', 'FirstName', 'MiddleInitial', 'LastName', 'Last4SSN', 'Address1', 'Address2', 'City', 'StateId', 'IsIndependent',
                                 'CountyId', 'ZipCode', 'CellPhone', 'AlternativePhone', 'DateOfBirth', 'EthnicityId', 'SexId','MajorId', 'EducationAttainmentId', 'HighSchoolGraduationDate', 'HighSchoolId', 'HighSchoolGraduationDate', 'HighSchoolGPA', 'PlayedHighSchoolSports', 'FirstGenerationStudent','Activities');
                             $data['tables']['ApplicantCollege'] = array('CollegeId');
+                            $data['where'] .= ' AND ApplicantCollege.ApplicantId = ' . $applicant_id;
+
+                            $data['tables']['ApplicantIndependenceQuery'] = array('ApplicantId', 'AdvancedDegree', 'Children', 'Married', 'TwentyFour', 'Veteran', 'Orphan', 'Emancipated', 'Homeless');
+                            $data['where'] .= ' AND ApplicantIndependenceQuery.ApplicantId = ' . $applicant_id;
+
+                            if($this->is_indy($applicant_id)) {
+                                $data['tables']['ApplicantFinancial'] = array('ApplicantEmployer', 'ApplicantIncome', 'SpouseEmployer', 'SpouseIncome', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
+                                $data['where'] .= ' AND ApplicantFinancial.ApplicantId = ' . $applicant_id;
+                            } else {
+                                $data['tables']['Guardian'] = array('GuardianFullName1', 'GuardianEmployer1', 'GuardianFullName2', 'GuardianEmployer2', 'Homeowner', 'HomeValue', 'AmountOwedOnHome','InformationSharingAllowedByGuardian');
+                                $data['where'] .= ' AND Guardian.ApplicantId = ' . $applicant_id;
+                            }
+                            $data['tables']['Agreements'] = array('ApplicantHaveRead','ApplicantDueDate','ApplicantDocsReq','ApplicantReporting','GuardianHaveRead','GuardianDueDate','GuardianDocsReq','GuardianReporting');
+                            $data['where'] .= ' AND Agreements.ApplicantId = ' . $applicant_id;
                             $results = $this->queries->get_result_set($data);
                             $result = $results[0];
+
+                            $docs['tables']['Attachment'] = array('AttachmentId','AttachmentTypeId','FilePath');
+                            $docs['where'] = 'ApplicantID = '.$applicant_id;
+                            $documents = $this->queries->get_result_set($docs);
+                            ts_data($documents);
+
                             $ret['form_page_number'] = $this->form->field_utility('form_page_number', 6);
                             $ret['Applicant_FirstName'] = $this->form->field_result('Applicant_FirstName', $result->FirstName ? $result->FirstName : null, 'First Name', null, array('minlength' => '2', 'required' => 'required'), array('required', 'col-md-5', 'col-sm-12'));
                             $ret['Applicant_MiddleInitial'] = $this->form->field_result('Applicant_MiddleInitial', $result->MiddleInitial ? $result->MiddleInitial : null, 'Middle Initial', null, array(), array('col-md-2', 'col-sm-12'));
