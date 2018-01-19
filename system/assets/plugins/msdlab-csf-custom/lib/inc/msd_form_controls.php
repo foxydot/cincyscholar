@@ -146,7 +146,7 @@ class MSDLAB_FormControls{
     }
 
     public function field_select($id, $value = null, $title = "", $null_option = null, $options = array(), $validation = null, $class = array('select')){
-        if(is_null($value)){
+        if(is_null($value)  || empty($value)){
             $value = $_POST[$id.'_input'];
         }
         if($null_option == null){$null_option = 'Select';}
@@ -164,7 +164,9 @@ class MSDLAB_FormControls{
         $ret = array();
         $cur = $options[$value];
         $options = array_unique($options);
-        $options[$value] = $cur;
+        if(!empty($cur)) {
+            $options[$value] = $cur;
+        }
         if(is_array($null_option)){
             $ret[] = '<option value="'.$null_option['value'].'">'.$null_option['option'].'</option>';
         } else {

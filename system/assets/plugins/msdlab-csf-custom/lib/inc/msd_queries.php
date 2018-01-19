@@ -133,7 +133,6 @@ class MSDLAB_Queries{
         foreach ($result AS $k=>$v){
             $array[$v[$id_field]] = $v[$field];
         }
-
         return $array;
     }
 
