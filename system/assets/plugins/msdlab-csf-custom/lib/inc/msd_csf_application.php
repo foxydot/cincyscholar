@@ -490,7 +490,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $ret[] = '</tr>';
 
                             $ret[] = '<tr class="table-row">';
-                            $ret[] = '<td class="table-cell">I/we understand that applications submitted after the April 30, 2017 deadline will not be considered;</td>';
+                            $ret[] = '<td class="table-cell">I/we understand that applications submitted after the April 30, 2018 deadline will not be considered;</td>';
                             $ret['Agreements_ApplicantDueDate'] = '<td class="table-cell">'.$this->form->field_boolean('Agreements_ApplicantDueDate', $result->ApplicantDueDate?$result->ApplicantDueDate:0,'',array('required')).'</td>';
                             if(!$this->is_indy($applicant_id)){
                                 $ret['Agreements_GuardianDueDate'] = '<td class="table-cell">'.$this->form->field_boolean('Agreements_GuardianDueDate', $result->GuardianDueDate?$result->GuardianDueDate:0,'',array('required')).'</td>';
@@ -661,7 +661,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $ret[] = '</tr>';
 
                             $ret[] = '<tr class="table-row">';
-                            $ret[] = '<td class="table-cell">I/we understand that applications submitted after the April 30, 2017 deadline will not be considered;</td>';
+                            $ret[] = '<td class="table-cell">I/we understand that applications submitted after the April 30, 2018 deadline will not be considered;</td>';
                             $ret['Agreements_ApplicantDueDate'] = '<td class="table-cell">'.$this->form->field_result('Agreements_ApplicantDueDate', $result->ApplicantDueDate? 'YES' : 'NO').'</td>';
                             if(!$this->is_indy($applicant_id)){
                                 $ret['Agreements_GuardianDueDate'] = '<td class="table-cell">'.$this->form->field_result('Agreements_GuardianDueDate', $result->GuardianDueDate? 'YES' : 'NO').'</td>';
