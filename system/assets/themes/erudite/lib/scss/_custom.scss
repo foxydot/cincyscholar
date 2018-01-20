@@ -77,6 +77,12 @@ i.fa{
 }
 
 form{
+  h3.section-header{
+    border-bottom: 1px solid $ltgrey;
+  }
+  span.result{
+    padding: 0 1em;
+  }
   .documents.grid {
     margin-bottom: 3em;
     .document.grid-item {

@@ -65,7 +65,7 @@ class MSDLAB_FormControls{
 
     public function section_header($id, $value = null, $class = array('section-header')){
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
-        $ret = '<h3 id="'.$id.'_wrapper" class="'.$class.'">'.$value.'</h3>';
+        $ret = '<div class="row"><h3 id="'.$id.'_wrapper" class="col-sm-12 '.$class.'">'.$value.'</h3></div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
 
@@ -242,7 +242,7 @@ class MSDLAB_FormControls{
     }
 
 
-    public function field_result($id, $value, $title = "", $placeholder = null, $validation = null, $class = array('medium')){
+    public function field_result($id, $value, $title = "", $class = array('medium')){
         if(is_null($value)){
             $value = $_POST[$id.'_input'];
         }

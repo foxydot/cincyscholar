@@ -41,7 +41,7 @@ class MSDLAB_Queries{
          }
          $nonce = $_POST['_wpnonce'];
          if(!wp_verify_nonce( $nonce, $form_id )) {
-             return '<div class="error">Invalid entry</div>';
+             return '<div class="message error">Invalid entry</div>';
          }
          foreach ($this->post_vars AS $k => $v){
              if(stripos($k,'_input')){
@@ -49,12 +49,12 @@ class MSDLAB_Queries{
                  $orig = get_option($option);
                  if($v !== $orig) {
                      if (!update_option($option, $v)) {
-                         return "Error updating " . $option;
+                         return '<div class="message error">Error updating ' . $option .'</div>';
                      }
                  }
              }
          }
-         return "Data Updated";
+         return '<div class="message success">Data Updated</div>';
      }
 
 
@@ -98,10 +98,10 @@ class MSDLAB_Queries{
 
              $result = $wpdb->get_results($sql);
              if(is_wp_error($result)){
-                 return '<div class="error">Error updating '.$table.'</div>';
+                 return '<div class="message error">Error updating '.$table.'</div>';
              }
         }
-         return '<div class="notice">Application saved!</div>';
+         return '<div class="message success">Application saved!</div>';
      }
     /**
      * Create the full result set
@@ -118,7 +118,6 @@ class MSDLAB_Queries{
                 }
         }
         $sql = 'SELECT '.implode(', ',$fields).' FROM '.implode(', ',$tables).' WHERE '.$data['where'].';';
-        //ts_data($sql);
         $result = $wpdb->get_results($sql);
         return $result;
     }
@@ -167,20 +166,20 @@ class MSDLAB_Queries{
             //handle the upload
             $ufile = $user_dirname .'/'. basename($fileinfo['name']);
             if (move_uploaded_file($fileinfo['tmp_name'], $ufile)) {
-                $ret[] = basename($fileinfo['name'])." successfully uploaded.\n";
+                //$ret[] = '<div class="message success">' . basename($fileinfo['name']) . ' successfully uploaded.</div>';
                 $filepath = $user_url.'/'.basename($fileinfo['name']);
                 $sql = "INSERT INTO `Attachment` SET `ApplicantId` = '".$applicant_id."', `AttachmentTypeId` = '".$attachment_type_id."', `FilePath` = '".$filepath."';";
                 $result = $wpdb->get_results($sql);
                 if(is_wp_error($result)){
-                    print "Error saving upload data to database.";
+                    print '<div class="message error">Error saving upload data to database.</div>';
                     return false;
                 }
             } else {
-                print "Possible file upload attack!\n";
+                print '<div class="message error">Possible file upload attack!</div>';
                 return false;
             }
         }
-        return implode("<br />\n\r",$ret);
+        return true;
     }
 
     function get_attachment_type_ids(){
