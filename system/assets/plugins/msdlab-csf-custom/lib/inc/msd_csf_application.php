@@ -96,12 +96,13 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     if(current_user_can('view_award')){
                         $ret[] = 'VIEW AWARD';
                     }
-                    if(current_user_can('view_application_process')){
-                        $ret[] = $this->get_user_application_status();
-                    }
                     if(current_user_can('submit_application')){
-                        $ret[] = implode("\n\r",$this->get_form('application'));
+                        $ret[2] = implode("\n\r",$this->get_form('application'));
                     }
+                    if(current_user_can('view_application_process')){
+                        $ret[1] = $this->get_user_application_status_list();
+                    }
+                    sort($ret);
                     return implode("\n\r",$ret);
                 } else {
                     return '<div class="login-trigger"><span class="button">Login/Register</span></div>';
@@ -145,10 +146,11 @@ if (!class_exists('MSDLab_CSF_Application')) {
             $options = array_merge($defaults,$options);
 
             $jquery = $ret = array();
-            $ret['form_header'] = $this->form->form_header($form_id,array($form_id,'row'));
+            $ret['form_header'] = $this->form->form_header($form_id,array($form_id));
             switch($form_id) {
                 case 'application':
                     $form_page_number = isset($_POST['form_page_number']) ? $_POST['form_page_number'] : 1;
+                    if($this->get_user_application_status()>1){$form_page_number = $step = 7;}
                     $step = isset($_POST['form_page_next']) ? $_POST['form_page_next'] : 1;
                     $set['where'] = $applicant_id > 0 ? array('Applicant' => 'Applicant.ApplicantId = ' . $applicant_id) : array('Applicant' => 'Applicant.UserId = ' . $user_id);
                     switch ($step) {
@@ -169,10 +171,8 @@ if (!class_exists('MSDLab_CSF_Application')) {
                         case 6:
                             $set['where']['Guardian'] = 'Guardian.ApplicantId = ' . $applicant_id;
                             $set['where']['Agreements'] = 'Agreements.ApplicantId = ' . $applicant_id;
-                            //use all previous wheres to get final results
-                            $data['where'] .= ' AND ApplicantCollege.ApplicantId = ' . $applicant_id;
-                            //$data['where'] .= ' AND ApplicantIndependenceQuery.ApplicantId = ' . $applicant_id;
-                            $data['where'] .= ' AND Guardian.ApplicantId = ' . $applicant_id;
+                            break;
+                        case 7:
                             break;
                     }
                     if ($_POST['application_form']) {
@@ -703,7 +703,10 @@ if (!class_exists('MSDLab_CSF_Application')) {
                                 $ret['SigCopy'] = '<div class="copy col-sm-12">Please confirm application is ready for submission by signing with your last name and the last 4 digits of your Social Security Number.</div>';
                                 $ret['Applicant_Signature'] = $this->form->field_textfield('Applicant_Signature','','Digital Signature','Lastname 0000',array('required' => 'required'),array('required','col-sm-12'));
                                 $ret[] = '</div>';
-
+                                //to set the process "in motion"
+                                $ret['ApplicationProcess_ApplicantId'] = $this->form->field_hidden("ApplicationProcess_ApplicantId", $applicant_id);
+                                $ret['ApplicationProcess_ProcessStepId'] = $this->form->field_hidden("ApplicationProcess_ProcessStepId", 2);
+                                $ret['ApplicationProcess_ProcessStepBool'] = $this->form->field_hidden("ApplicationProcess_ProcessStepBool", 1);
                             }
                             if($form_page_number == 7){
 
@@ -726,10 +729,10 @@ if (!class_exists('MSDLab_CSF_Application')) {
         }
 });';
 
-                    if ($step != 1 && $step != 7){
+                    if ($form_page_number != 1 && $form_page_number != 7){
                         $ftr['prev'] = $this->form->field_button('prevBtn', $backBtnTitle, array('prev', 'btn'),'submit',false);
                     }
-                    if($step != 7) {
+                    if($form_page_number != 7) {
                         $ftr['button'] = $this->form->field_button('saveBtn', $fwdBtnTitle, array('submit', 'btn'));
                     }
                     $ret['form_footer'] = $this->form->form_footer('form_footer',implode("\n",$ftr),array('form-footer', 'col-md-12'));
@@ -759,6 +762,17 @@ if (!class_exists('MSDLab_CSF_Application')) {
         function get_user_application_status(){
             global $current_user,$applicant_id,$wpdb;
             if(!$applicant_id){$applicant_id = $this->get_applicant_id($current_user->ID);}
+            $sql = "SELECT * FROM ApplicationProcess WHERE ApplicationProcess.ApplicantId = ".$applicant_id ." ORDER BY ApplicationProcess.ProcessStepId DESC";
+            $result = $wpdb->get_results($sql);
+            return $result[0]->ProcessStepId;
+        }
+
+        function get_user_application_status_list(){
+            global $current_user,$applicant_id,$wpdb;
+            if(!$applicant_id){$applicant_id = $this->get_applicant_id($current_user->ID);}
+            //clean up with graphic display of all steps and steps completed
+            $steps = $this->get_application_process_steps();
+            //ts_data($steps);
             $sql = "SELECT * FROM ApplicationProcess,ProcessSteps WHERE ApplicationProcess.ApplicantId = ".$applicant_id." AND ApplicationProcess.ProcessStepId = ProcessSteps.StepId";
             $result = $wpdb->get_results($sql);
             if(count($result)>0) {
@@ -768,6 +782,17 @@ if (!class_exists('MSDLab_CSF_Application')) {
                 }
                 return $hdr . '<ul><li>' . implode('</li>' . "\n" . '<li>', $progress) . '</li></ul>';
             }
+        }
+
+        function get_application_process_steps(){
+            global $wpdb;
+            $sql = "SELECT * FROM ProcessSteps";
+            $result = $wpdb->get_results($sql);
+            $ret = array();
+            foreach($result AS $r){
+                $ret[$r->StepId] = $r->StepName;
+            }
+            return $ret;
         }
     } //End Class
 } //End if class exists statement
