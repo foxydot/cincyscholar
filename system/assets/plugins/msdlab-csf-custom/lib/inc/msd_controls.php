@@ -110,6 +110,7 @@ class MSDLAB_QueryControls{
     public function print_settings($echo = true){
         $form_id = 'csf_settings_form';
         $ret = array();
+        $ret['admin_address'] = $this->settings_textfield("Admin Address","csf_settings_admin_address",array(''),get_option('csf_settings_admin_address'));
         $ret['start_date'] = $this->settings_date("Start Date","csf_settings_start_date",array('datepicker'),get_option('csf_settings_start_date'));
         $ret['end_date'] = $this->settings_date("End Date","csf_settings_end_date",array('datepicker'),get_option('csf_settings_end_date'));
         $ret['alt_text'] = $this->settings_textarea("Text to Display When Not Taking Applications","csf_settings_alt_text",array(''),get_option('csf_settings_alt_text'));

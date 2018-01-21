@@ -23,11 +23,9 @@ class MSDLAB_FormControls{
     }
 
     public function __construct() {
-
         if(class_exists('MSDLAB_Queries')){
             $this->queries = new MSDLAB_Queries();
         }
-
     }
 
 

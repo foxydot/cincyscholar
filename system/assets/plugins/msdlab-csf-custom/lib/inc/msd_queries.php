@@ -28,6 +28,9 @@ class MSDLAB_Queries{
         if ( ! empty( $_POST ) ) { //add nonce
             $this->post_vars = $_POST;
         }
+        /*if(class_exists('MSDLAB_FormControls')){
+            $this->form = new MSDLAB_FormControls();
+        }*/
     }
 
     /**
