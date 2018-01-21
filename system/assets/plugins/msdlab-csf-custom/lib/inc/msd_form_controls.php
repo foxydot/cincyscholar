@@ -220,14 +220,16 @@ class MSDLAB_FormControls{
         }
         $type = isset($validation['type'])?$validation['type']:'file';
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$title.'</label>');
+        $hide_uploader = apply_filters('msdlab_csf_'.$id.'_hide','<a class="hideshowuploader button btn">Upload another</a>');
         $form_field = apply_filters('msdlab_csf_'.$id.'_field','<input id="'.$id.'_input" name="'.$id.'_input" type="'.$type.'" value="'.$value.'" placeholder="'.$placeholder.'" '.$this->build_validation($validation).' />');
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
 
-    public function field_button($id,$title = "Save", $class = array('submit'), $type = "submit"){
-        $form_field = apply_filters('msdlab_csf_'.$id.'_button','<input id="'.$id.'_button" type="'.$type.'" value="'.$title.'" />');
+    public function field_button($id,$title = "Save", $class = array('submit'), $type = "submit", $validate = true){
+        if(!$validate){$atts = ' formnovalidate ';}
+        $form_field = apply_filters('msdlab_csf_'.$id.'_button','<input id="'.$id.'_button" type="'.$type.'" value="'.$title.'"'.$atts.'/>');
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
@@ -262,7 +264,7 @@ class MSDLAB_FormControls{
                 $filename = array_pop(explode('/',$d->FilePath));
                 $fileext = strtolower(array_pop(explode('.',$filename)));
                 $grid[] = '<div class="col-xs-6 col-sm-2 document grid-item">
-                    <a href="'.$d->FilePath.'" title="'.$filename.'"><i class="fa fa-file-'.$fileext.'-o" aria-hidden="true"></i><br>'.$attachment_types[$d->AttachmentTypeId].'</a>
+                    <a href="'.$d->FilePath.'" title="'.$filename.'"><i class="fa fa-file-'.$fileext.'-o" aria-hidden="true"></i><br /><span class="filename">'.$filename.'</span><br><span class="filecat">'.$attachment_types[$d->AttachmentTypeId].'</span></a>
                 </div>';
             }
             if(count($grid)>0){

@@ -229,8 +229,10 @@ if (!class_exists('MSDLab_CSF_Application')) {
                                 toggled.slideUp(500);
                             }
                         });";
+                    //jquery to handle file upload hider
                     //TODO: sort out js validation
-                    $btnTitle = "Save & Continue";
+                    $fwdBtnTitle = "Save & Continue";
+                    $backBtnTitle = "Save & Go Back";
                     $ret['form_type'] = $this->form->field_utility('application_form', true);
                     $ret['save_data'] = $this->form->field_utility('save_data', true);
                     $ret['form_page_number'] = $this->form->field_utility('form_page_number', 1);
@@ -453,7 +455,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $docs['where'] = 'ApplicantID = '.$applicant_id;
                             $documents = $this->queries->get_result_set($docs);
                             //fields
-                            $btnTitle = "Save & Review";
+                            $fwdBtnTitle = "Save & Review";
                             $ret['form_page_number'] = $this->form->field_utility('form_page_number', 5);
 
                             $ret['hdrAgreements'] = $this->form->section_header('hdrAgreements', 'Documents and Agreements');
@@ -527,9 +529,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             break;
                         case 6:
                         case 7:
-                            $data['tables']['Applicant'] = array('ApplicationDateTime', 'FirstName', 'MiddleInitial', 'LastName', 'Last4SSN', 'Address1', 'Address2', 'City', 'StateId', 'IsIndependent',
-                                'CountyId', 'ZipCode', 'CellPhone', 'AlternativePhone', 'DateOfBirth', 'EthnicityId', 'SexId','MajorId', 'EducationAttainmentId', 'HighSchoolGraduationDate', 'HighSchoolId',
-                                'HighSchoolGraduationDate', 'HighSchoolGPA', 'PlayedHighSchoolSports', 'FirstGenerationStudent','Activities','OtherSchool');
+                            $data['tables']['Applicant'] = array('*');
                             $data['tables']['ApplicantCollege'] = array('CollegeId');
                             $data['where'] .= ' AND ApplicantCollege.ApplicantId = ' . $applicant_id;
 
@@ -695,7 +695,8 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $ret[] = '</tr>';
                             $ret['SRATableFtr'] = '</table>';
                             if($form_page_number == 6){
-                                $btnTitle = "Submit Application";
+                                $fwdBtnTitle = "Submit Application";
+                                $backBtnTitle = "Go Back";
                                 // Add Signing option
                                 $ret['hdrSignature'] = $this->form->section_header('hdrSignature', 'Digital Signature and Submission');
                                 $ret[] = '<div class="row">';
@@ -726,10 +727,10 @@ if (!class_exists('MSDLab_CSF_Application')) {
 });';
 
                     if ($step != 1 && $step != 7){
-                        $ftr['prev'] = $this->form->field_button('prevBtn', 'Save & Go Back', array('prev', 'btn'));
+                        $ftr['prev'] = $this->form->field_button('prevBtn', $backBtnTitle, array('prev', 'btn'),'submit',false);
                     }
                     if($step != 7) {
-                        $ftr['button'] = $this->form->field_button('saveBtn', $btnTitle, array('submit', 'btn'));
+                        $ftr['button'] = $this->form->field_button('saveBtn', $fwdBtnTitle, array('submit', 'btn'));
                     }
                     $ret['form_footer'] = $this->form->form_footer('form_footer',implode("\n",$ftr),array('form-footer', 'col-md-12'));
 
@@ -757,10 +758,11 @@ if (!class_exists('MSDLab_CSF_Application')) {
 
         function get_user_application_status(){
             global $current_user,$applicant_id,$wpdb;
+            if(!$applicant_id){$applicant_id = $this->get_applicant_id($current_user->ID);}
             $sql = "SELECT * FROM ApplicationProcess,ProcessSteps WHERE ApplicationProcess.ApplicantId = ".$applicant_id." AND ApplicationProcess.ProcessStepId = ProcessSteps.StepId";
             $result = $wpdb->get_results($sql);
             if(count($result)>0) {
-                $hdr = $this->form->section_header('ProcessHeader', 'Your Progress');
+                $hdr = $this->form->section_header('ProcessHeader', 'Application Process');
                 foreach ($result AS $r) {
                     $progress[] = $r->StepName;
                 }
