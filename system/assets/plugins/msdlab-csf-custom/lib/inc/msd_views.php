@@ -150,7 +150,7 @@ class MSDLAB_Display{
                         break;
                 }
                 $row[] = '<td class="'.$value.'">'.$printval.'</td>';
-                $erow[] = $printval;
+                $erow[] = $this->csv_safe($printval);
             }
             $class = $i%2==0?'even':'odd';
             $ret[] = '<tr class="'.$class.'">'.implode("\n\r", $row).'</tr>';
@@ -204,6 +204,11 @@ class MSDLAB_Display{
         } else {
             return $ret;
         }
+    }
+
+    public function csv_safe($value){
+        $value = preg_replace('%\'%i','‘',$value);
+        return $value;
     }
 
 }
