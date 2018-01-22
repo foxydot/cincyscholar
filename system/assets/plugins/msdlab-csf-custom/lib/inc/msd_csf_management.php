@@ -71,6 +71,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
         function report_page_content(){
             $id = 'full-report';
             $fields = array(
+                'ApplicantId',
                 'FirstName',
                 'MiddleInitial',
                 'LastName',

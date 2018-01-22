@@ -152,7 +152,6 @@ class MSDLAB_Queries{
              $select_sql = 'SELECT * FROM '.$table.' WHERE '.$where[$table].';';
 
              if($r = $wpdb->get_row($select_sql)){
-
                  $sql = 'UPDATE '.$table.' SET '.implode(', ',$data[$table]).' WHERE '.$where[$table].';';
              } else {
                  $sql = 'INSERT INTO '.$table.' SET '.implode(', ',$data[$table]).';';
@@ -321,6 +320,19 @@ class MSDLAB_Queries{
         $results = $this->get_result_set($indy);
         $result = $results[0];
         if($result->IsIndependent){
+            return true;
+        } else {
+            return false;
+        }
+    }
+    function is_adult($applicant_id){
+        $indy['where'] = 'Applicant.ApplicantId = ' . $applicant_id;;
+        $indy['tables']['Applicant'] = array('DateOfBirth');
+        $results = $this->get_result_set($indy);
+        $result = $results[0];
+        $dob = strtotime($result->DateOfBirth);
+        $cutoff = strtotime("- 18 years");
+        if($dob <= $cutoff){
             return true;
         } else {
             return false;
