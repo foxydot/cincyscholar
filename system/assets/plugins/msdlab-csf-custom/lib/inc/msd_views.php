@@ -27,7 +27,9 @@ class MSDLAB_Display{
     }
 
     public function __construct() {
-
+        if(class_exists('MSDLAB_Queries')){
+            $this->queries = new MSDLAB_Queries();
+        }
 
     }
 
@@ -44,17 +46,14 @@ class MSDLAB_Display{
         $ret = array();
         $exh = array();
         foreach($fields AS $key => $value){
-            $ret[] = '<th>'.$key.'</th>';
-
-            if($key != 'Profile' && $key != 'Edit Member' && $key != 'Application' && $key != 'Documentation') {
-                $exh[] = '"' . $key . '"';
-            }
+            $ret[] = '<th>'.$value.'</th>';
+            $exh[] = $value;
         }
 
         $this->export_header = implode(",",$exh);
 
         if($echo){
-            print $ret = apply_filters('msdlab_ninc_report_display_table_header','<tr>'.implode("\n\r", $ret).'<tr>');
+            print $ret = apply_filters('msdlab_csf_report_display_table_header','<tr>'.implode("\n\r", $ret).'<tr>');
         } else {
             return '<tr>'.implode("\n\r", $ret).'<tr>';
         }
@@ -78,7 +77,7 @@ class MSDLAB_Display{
 
         }
 
-        $ret = apply_filters('msdlab_ninc_report_display_table_footer', '<th colspan="'.$numfields.'">'.implode("\r\n",$ret).'</th>');
+        $ret = apply_filters('msdlab_csf_report_display_table_footer', '<th colspan="'.$numfields.'">'.implode("\r\n",$ret).'</th>');
 
         if($echo){
             print '<tr>'.$ret.'</tr>';
@@ -100,31 +99,58 @@ class MSDLAB_Display{
         $ret = array();
         $ecsv = array();
         $i = 0;
-        foreach($result as $user){
-            $fields = array(
-                'Legal Name' => $user->meta['legal_name'][0],
-                'Pen Name(s)' => $user->data->application[5], //not a perfect solution
-                'WP Email' => $user->user_email, //hotlink
-                'NincLink Email' => $user->meta['secondary_email'][0],///?????? //hotlink
-                'Application Date'  => MSDLAB_Queries::get_application_date($user), //application date OR application date from meta OR join date from meta,
-                'Renewal Date' => $user->meta['date_last_renewed'][0], //latest form renewal date OR new member dues date OR renewal date from meta,
-                'Paid Thru Date' => $user->meta['date_paid_thru'][0], //latest form renewal date OR new member dues date OR renewal date from meta,
-                'Last Login Date' => date('Y-m-d',strtotime($user->meta['last_activity'][0])),
-                'Country' => $user->meta['address_country'][0],
-                'ACA Survey Date' => $user->meta['date_last_survey'][0],//date of latest ACA survey form, //hotlink to form entry
-                'Profile' => MSDLAB_Queries::get_user_profile_link($user),
-                'Edit Member' => MSDLAB_Queries::get_user_edit_link($user),
-                'Application' => MSDLAB_Queries::get_user_application_link($user),
-                'Documentation' => MSDLAB_Queries::get_user_verify_link($user),
-                'Conference Registration' => $user->data->conference,
-            );
+        foreach($result as $k => $user){
             $row = array();
             $erow = array();
             foreach ($fields as $key => $value) {
-                $row[] = '<td class="'.$key.'">'.$value.'</td>';
-                if($key != 'Profile' && $key != 'Edit Member' && $key != 'Application' && $key != 'Documentation') {
-                    $erow[] = '"' . convert_quotes_for_export($value) . '"';
+                switch ($value){
+                    case 'CountyId':
+                        $printval = $this->queries->get_county_by_id($user->{$value});
+                        break;
+                    case 'StateId':
+                        $printval = $this->queries->get_state_by_id($user->{$value});
+                        break;
+                    case 'CollegeId':
+                        $printval = $this->queries->get_college_by_id($user->{$value});
+                        break;
+                    case 'MajorId':
+                        $printval = $this->queries->get_major_by_id($user->{$value});
+                        break;
+                    case 'SexId':
+                        $printval = $this->queries->get_sex_by_id($user->{$value});
+                        break;
+                    case 'EducationAttainmentId':
+                        $printval = $this->queries->get_educationalattainment_by_id($user->{$value});
+                        break;
+                    case 'EthnicityId':
+                        $printval = $this->queries->get_ethnicity_by_id($user->{$value});
+                        break;
+                    case 'HighSchoolId':
+                        $printval = $this->queries->get_highschool_by_id($user->{$value});
+                        break;
+                    case 'FirstGenerationStudent':
+                    case 'IsIndependent':
+                    case 'PlayedHighSchoolSports':
+                    case 'InformationSharingAllowed':
+                    case 'IsComplete':
+                    case 'ApplicantHaveRead':
+                    case 'ApplicantDueDate':
+                    case 'ApplicantDocsReq':
+                    case 'ApplicantReporting':
+                    case 'GuardianHaveRead':
+                    case 'GuardianDueDate':
+                    case 'GuardianDocsReq':
+                    case 'GuardianReporting':
+                    case 'Homeowner':
+                    case 'InformationSharingAllowedByGuardian':
+                        $printval = $user->{$value}>0?'Yes':'No';
+                        break;
+                    default:
+                        $printval = $user->{$value};
+                        break;
                 }
+                $row[] = '<td class="'.$value.'">'.$printval.'</td>';
+                $erow[] = $printval;
             }
             $class = $i%2==0?'even':'odd';
             $ret[] = '<tr class="'.$class.'">'.implode("\n\r", $row).'</tr>';
@@ -145,9 +171,9 @@ class MSDLAB_Display{
      *
      */
     public function print_export_tools(){
-        $ret =  '<form name="export" action="'.plugin_dir_url(__FILE__).'../lib/exporttocsv.php" method="post">
+        $ret =  '<form name="export" action="'.plugin_dir_url(__FILE__).'exporttocsv.php" method="post">
         <input type="submit" value="Export table to CSV">
-        <input type="hidden" value="ninc_member_report" name="csv_hdr">
+        <input type="hidden" value="Cincinnati Scholarship Foundation Application Report" name="csv_hdr">
         <input type="hidden" value=\''.$this->export_header."\n".$this->export_csv.'\' name="csv_output">
         </form>';
         return $ret;
@@ -164,7 +190,7 @@ class MSDLAB_Display{
      * @return string The footer to be printed, or void if the param $echo is true.
      */
     public function print_table($id, $fields, $result, $info, $class = array(), $echo = true){
-        $class = implode(" ",apply_filters('msdlab_ninc_report_display_table_class', $class));
+        $class = implode(" ",apply_filters('msdlab_csf_report_display_table_class', $class));
         $ret = array();
         $ret['start_table'] = '<table id="'.$id.'" class="'.$class.'">';
         $ret['table_header'] = $this->table_header($fields,false);

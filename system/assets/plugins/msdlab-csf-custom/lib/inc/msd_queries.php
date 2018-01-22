@@ -33,6 +33,11 @@ class MSDLAB_Queries{
         }*/
     }
 
+
+    /*
+     * Setting Queries
+     */
+
     /**
      * Save any updated data
      *
@@ -60,7 +65,61 @@ class MSDLAB_Queries{
          return '<div class="message success">Data Updated</div>';
      }
 
+     /*
+      * Report Queries
+      */
 
+     public function get_all_applications(){
+         global $wpdb;
+         $usertable = $wpdb->prefix . 'users';
+         $data['tables']['Applicant'] = array('*');
+         $data['where'] = 'Applicant.ApplicationDateTime > 20180101000000'; //replace with dates from settings
+         $data['tables'][$usertable] = array('user_email');
+         $data['where'] .= ' AND ' . $usertable . '.ID  = Applicant.UserId';
+         $data['tables']['ApplicantCollege'] = array('CollegeId');
+         $data['where'] .= ' AND ApplicantCollege.ApplicantId = Applicant.ApplicantId';
+         $results = $this->get_result_set($data);
+
+         foreach ($results AS $k => $r){
+             $applicant_id = $r->ApplicantId;
+             $agreements = $financial = $docs = array();
+             //add agreements
+             $agreements['tables']['Agreements'] = array('ApplicantHaveRead','ApplicantDueDate','ApplicantDocsReq','ApplicantReporting','GuardianHaveRead','GuardianDueDate','GuardianDocsReq','GuardianReporting');
+             $agreements['where'] .= ' Agreements.ApplicantId = ' . $applicant_id;
+             $agreements_results = $this->get_result_set($agreements);
+             foreach($agreements_results AS $ar){
+                 foreach($ar as $y => $z){
+                     $results[$k]->$y = $z;
+                 }
+             }
+             //add financial
+             if($this->is_indy($applicant_id)){
+                 $financial['tables']['ApplicantFinancial'] = array('ApplicantEmployer', 'ApplicantIncome', 'SpouseEmployer', 'SpouseIncome', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
+                 $financial['where'] .= ' ApplicantFinancial.ApplicantId = ' . $applicant_id;
+             } else {
+                 $financial['tables']['Guardian'] = array('GuardianFullName1', 'GuardianEmployer1', 'GuardianFullName2', 'GuardianEmployer2', 'Homeowner', 'HomeValue', 'AmountOwedOnHome','InformationSharingAllowedByGuardian');
+                 $financial['where'] .= ' Guardian.ApplicantId = ' . $applicant_id;
+             }
+             $financial_results = $this->get_result_set($financial);
+             foreach($financial_results AS $fr){
+                 foreach($fr as $y => $z){
+                     $results[$k]->$y = $z;
+                 }
+             }
+             //add docs
+             $docs['tables']['Attachment'] = array('AttachmentTypeId','FilePath');
+             $docs['where'] = 'ApplicantID = '.$applicant_id;
+             $documents = $this->get_result_set($docs);
+             foreach($documents AS $d){
+                 $results[$k]->Documents .= '<a href="'.$d->FilePath.'">'.$this->get_attachment_type_by_id($d->AttachmentTypeId).'</a><br />';
+             }
+         }
+         return $results;
+     }
+
+/*
+ *  Form Queries
+ */
      public function set_data($form_id,$where){
          global $wpdb;
          if(empty($this->post_vars)){
@@ -185,6 +244,11 @@ class MSDLAB_Queries{
         return true;
     }
 
+
+    /*
+    *  Resource Queries
+    */
+
     function get_attachment_type_ids(){
         global $wpdb;
         $sql = 'SELECT * FROM AttachmentType;';
@@ -200,7 +264,7 @@ class MSDLAB_Queries{
         global $wpdb;
         $sql = "SELECT AttachmentType FROM AttachmentType WHERE AttachmentTypeId = ".$id.";";
         $result = $wpdb->get_results( $sql );
-        //return $result[0];
+        return $result[0]->AttachmentType;
     }
     function get_state_by_id($id){
         global $wpdb;
@@ -250,4 +314,18 @@ class MSDLAB_Queries{
         $result = $wpdb->get_results( $sql );
         return $result[0]->SchoolName;
     }
+
+    function is_indy($applicant_id){
+        $indy['where'] = 'Applicant.ApplicantId = ' . $applicant_id;;
+        $indy['tables']['Applicant'] = array('IsIndependent');
+        $results = $this->get_result_set($indy);
+        $result = $results[0];
+        if($result->IsIndependent){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
 }

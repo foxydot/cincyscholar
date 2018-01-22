@@ -373,7 +373,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $data['tables']['Applicant'] = array('IsIndependent', 'Employer', 'HardshipNote');
 
                             //get the indy
-                            if($this->is_indy($applicant_id)){
+                            if($this->queries->is_indy($applicant_id)){
                                 //Independent Form
                                 //sets up the query
                                 $data['tables']['ApplicantFinancial'] = array('ApplicantEmployer','ApplicantIncome','SpouseEmployer','SpouseIncome', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
@@ -444,7 +444,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             //final checks
                             //sets up query
                             $data['tables']['Applicant'] = array('InformationSharingAllowed');
-                            if(!$this->is_indy($applicant_id)) {
+                            if(!$this->queries->is_indy($applicant_id)) {
                                 $data['tables']['Guardian'] = array('InformationSharingAllowedByGuardian');
                                 $data['where'] .= ' AND Guardian.ApplicantId = ' . $applicant_id;
                             }
@@ -479,7 +479,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                                 <tr class="table-row">
                                     <th class="table-cell"></th>
                                     <th class="table-cell table-header">Student</th>';
-                            if(!$this->is_indy($applicant_id)){
+                            if(!$this->queries->is_indy($applicant_id)){
                                 $ret[] = '<th class="table-cell table-header">Guardian</th>';
                             }
                             $ret[] = '</div>';
@@ -488,7 +488,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $ret[] = '<tr class="table-row">'; //styling???? add header
                             $ret[] = '<td class="table-cell">I/we have read and understand the "IMPORTANT INFORMATION ABOUT THE ON-LINE APPLICATION" prior to opening the application;</td>';
                             $ret['Agreements_ApplicantHaveRead'] = '<td class="table-cell">'.$this->form->field_boolean('Agreements_ApplicantHaveRead', $result->ApplicantHaveRead?$result->ApplicantHaveRead:0,'',array('required')).'</td>';
-                            if(!$this->is_indy($applicant_id)){
+                            if(!$this->queries->is_indy($applicant_id)){
                                 $ret['Agreements_GuardianHaveRead'] = '<td class="table-cell">'.$this->form->field_boolean('Agreements_GuardianHaveRead', $result->GuardianHaveRead?$result->GuardianHaveRead:0,'',array('required')).'</td>';
                             }
                             $ret[] = '</tr>';
@@ -496,7 +496,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $ret[] = '<tr class="table-row">';
                             $ret[] = '<td class="table-cell">I/we understand that applications submitted after the April 30, 2018 deadline will not be considered;</td>';
                             $ret['Agreements_ApplicantDueDate'] = '<td class="table-cell">'.$this->form->field_boolean('Agreements_ApplicantDueDate', $result->ApplicantDueDate?$result->ApplicantDueDate:0,'',array('required')).'</td>';
-                            if(!$this->is_indy($applicant_id)){
+                            if(!$this->queries->is_indy($applicant_id)){
                                 $ret['Agreements_GuardianDueDate'] = '<td class="table-cell">'.$this->form->field_boolean('Agreements_GuardianDueDate', $result->GuardianDueDate?$result->GuardianDueDate:0,'',array('required')).'</td>';
                             }
                             $ret[] = '</tr>';
@@ -505,7 +505,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $ret[] = '<tr class="table-row">';
                             $ret[] = '<td class="table-cell">I/we understand that the application is incomplete without my transcript, my Student Aid Report and the financial aid award notification from the school I have chosen to attend;</td>';
                             $ret['Agreements_ApplicantDocsReq'] = '<td class="table-cell">'.$this->form->field_boolean('Agreements_ApplicantDocsReq', $result->ApplicantDocsReq?$result->ApplicantDocsReq:0,'',array('required')).'</td>';
-                            if(!$this->is_indy($applicant_id)){
+                            if(!$this->queries->is_indy($applicant_id)){
                                 $ret['Agreements_GuardianDocsReq'] = '<td class="table-cell">'.$this->form->field_boolean('Agreements_GuardianDocsReq', $result->GuardianDocsReq?$result->GuardianDocsReq:0,'',array('required')).'</td>';
                             }
                             $ret[] = '</tr>';
@@ -514,7 +514,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $ret[] = '<tr class="table-row">';
                             $ret[] = '<td class="table-cell">I/we will report all other substantial scholarships received (other than state and federal grants and awards).</div>';
                             $ret['Agreements_ApplicantReporting'] = '<td class="table-cell">'.$this->form->field_boolean('Agreements_ApplicantReporting', $result->ApplicantReporting?$result->ApplicantReporting:0,'',array('required')).'</div>';
-                            if(!$this->is_indy($applicant_id)){
+                            if(!$this->queries->is_indy($applicant_id)){
                                 $ret['Agreements_GuardianReporting'] = '<td class="table-cell">'.$this->form->field_boolean('Agreements_GuardianReporting', $result->GuardianReporting?$result->GuardianReporting:0,'',array('required')).'</div>';
                             }
                             $ret[] = '</tr>';
@@ -522,7 +522,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $ret[] = '<tr class="table-row">';
                             $ret['InformationSharingCopy'] = '<td class="table-cell">Do you authorize the CSF to share the information on your scholarship application with other foundations looking for prospective recipients?</td>';
                             $ret['Applicant_InformationSharingAllowed'] = '<td class="table-cell">'.$this->form->field_boolean('Applicant_InformationSharingAllowed', $result->InformationSharingAllowed ? $result->InformationSharingAllowed : 0,'',array('required')).'</td>';
-                            if(!$this->is_indy($applicant_id)){
+                            if(!$this->queries->is_indy($applicant_id)){
                                 $ret['Guardian_InformationSharingAllowedByGuardian'] = '<td class="table-cell">'.$this->form->field_boolean('Guardian_InformationSharingAllowedByGuardian', $result->InformationSharingAllowedByGuardian ? $result->Guardian_InformationSharingAllowedByGuardian : 0,'',array('required')).'</td>';
                             }
                             $ret[] = '</tr>';
@@ -586,18 +586,6 @@ if (!class_exists('MSDLab_CSF_Application')) {
             return $ret;
         }
 
-        function is_indy($applicant_id){
-            $indy['where'] = 'Applicant.ApplicantId = ' . $applicant_id;;
-            $indy['tables']['Applicant'] = array('IsIndependent');
-            $results = $this->queries->get_result_set($indy);
-            $result = $results[0];
-            if($result->IsIndependent){
-                return true;
-            } else {
-                return false;
-            }
-        }
-
         function get_the_user_application($applicant_id){
             global $applicant_id, $wpdb;
             $data['tables']['Applicant'] = array('*');
@@ -608,7 +596,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
             $data['tables']['ApplicantIndependenceQuery'] = array('ApplicantId', 'AdvancedDegree', 'Children', 'Married', 'TwentyFour', 'Veteran', 'Orphan', 'Emancipated', 'Homeless');
             $data['where'] .= ' AND ApplicantIndependenceQuery.ApplicantId = ' . $applicant_id;
 
-            if($this->is_indy($applicant_id)) {
+            if($this->queries->is_indy($applicant_id)) {
                 $data['tables']['ApplicantFinancial'] = array('ApplicantEmployer', 'ApplicantIncome', 'SpouseEmployer', 'SpouseIncome', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
                 $data['where'] .= ' AND ApplicantFinancial.ApplicantId = ' . $applicant_id;
             } else {
@@ -667,7 +655,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
             $ret['Applicant_Activities'] = $this->form->field_result('Applicant_Activities',$result->Activities ? $result->Activities : '',"Please list any activities participated in, with years active.",array('col-md-12'));
             $ret[] = '</div>';
 
-            if ($this->is_indy($applicant_id)) {
+            if ($this->queries->is_indy($applicant_id)) {
                 $ret['hdrFinancialInfo'] = $this->form->section_header('hdrFinancialInfo', 'Independent Student Financial Information');
                 $ret[] = '<div class="row">';
                 $ret['FinancialInfoCopy'] = '<div class="copy col-sm-12">You are an <strong>Independent Applicant</strong>.</div>';
@@ -718,7 +706,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                                 <tr class="table-row">
                                     <th class="table-cell"></th>
                                     <th class="table-cell table-header">Student</th>';
-            if(!$this->is_indy($applicant_id)){
+            if(!$this->queries->is_indy($applicant_id)){
                 $ret[] = '<th class="table-cell table-header">Guardian</th>';
             }
             $ret[] = '</div>';
@@ -727,7 +715,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
             $ret[] = '<tr class="table-row">'; //styling???? add header
             $ret[] = '<td class="table-cell">I/we have read and understand the "IMPORTANT INFORMATION ABOUT THE ON-LINE APPLICATION" prior to opening the application;</td>';
             $ret['Agreements_ApplicantHaveRead'] = '<td class="table-cell">'.$this->form->field_result('Agreements_ApplicantHaveRead', $result->ApplicantHaveRead? 'YES' : 'NO').'</td>';
-            if(!$this->is_indy($applicant_id)){
+            if(!$this->queries->is_indy($applicant_id)){
                 $ret['Agreements_GuardianHaveRead'] = '<td class="table-cell">'.$this->form->field_result('Agreements_GuardianHaveRead', $result->GuardianHaveRead? 'YES' : 'NO').'</td>';
             }
             $ret[] = '</tr>';
@@ -735,7 +723,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
             $ret[] = '<tr class="table-row">';
             $ret[] = '<td class="table-cell">I/we understand that applications submitted after the April 30, 2018 deadline will not be considered;</td>';
             $ret['Agreements_ApplicantDueDate'] = '<td class="table-cell">'.$this->form->field_result('Agreements_ApplicantDueDate', $result->ApplicantDueDate? 'YES' : 'NO').'</td>';
-            if(!$this->is_indy($applicant_id)){
+            if(!$this->queries->is_indy($applicant_id)){
                 $ret['Agreements_GuardianDueDate'] = '<td class="table-cell">'.$this->form->field_result('Agreements_GuardianDueDate', $result->GuardianDueDate? 'YES' : 'NO').'</td>';
             }
             $ret[] = '</tr>';
@@ -744,7 +732,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
             $ret[] = '<tr class="table-row">';
             $ret[] = '<td class="table-cell">I/we understand that the application is incomplete without my transcript, my Student Aid Report and the financial aid award notification from the school I have chosen to attend;</td>';
             $ret['Agreements_ApplicantDocsReq'] = '<td class="table-cell">'.$this->form->field_result('Agreements_ApplicantDocsReq', $result->ApplicantDocsReq? 'YES' : 'NO').'</td>';
-            if(!$this->is_indy($applicant_id)){
+            if(!$this->queries->is_indy($applicant_id)){
                 $ret['Agreements_GuardianDocsReq'] = '<td class="table-cell">'.$this->form->field_result('Agreements_GuardianDocsReq', $result->GuardianDocsReq? 'YES' : 'NO').'</td>';
             }
             $ret[] = '</tr>';
@@ -753,7 +741,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
             $ret[] = '<tr class="table-row">';
             $ret[] = '<td class="table-cell">I/we will report all other substantial scholarships received (other than state and federal grants and awards).</div>';
             $ret['Agreements_ApplicantReporting'] = '<td class="table-cell">'.$this->form->field_result('Agreements_ApplicantReporting', $result->ApplicantReporting? 'YES' : 'NO').'</div>';
-            if(!$this->is_indy($applicant_id)){
+            if(!$this->queries->is_indy($applicant_id)){
                 $ret['Agreements_GuardianReporting'] = '<td class="table-cell">'.$this->form->field_result('Agreements_GuardianReporting', $result->GuardianReporting? 'YES' : 'NO').'</div>';
             }
             $ret[] = '</tr>';
@@ -761,7 +749,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
             $ret[] = '<tr class="table-row">';
             $ret['InformationSharingCopy'] = '<td class="table-cell">Do you authorize the CSF to share the information on your scholarship application with other foundations looking for prospective recipients?</td>';
             $ret['Applicant_InformationSharingAllowed'] = '<td class="table-cell">'.$this->form->field_result('Applicant_InformationSharingAllowed', $result->InformationSharingAllowed ? 'YES' : 'NO').'</td>';
-            if(!$this->is_indy($applicant_id)){
+            if(!$this->queries->is_indy($applicant_id)){
                 $ret['Guardian_InformationSharingAllowedByGuardian'] = '<td class="table-cell">'.$this->form->field_result('Guardian_InformationSharingAllowedByGuardian', $result->InformationSharingAllowedByGuardian ? 'YES' : 'NO').'</td>';
             }
             $ret[] = '</tr>';

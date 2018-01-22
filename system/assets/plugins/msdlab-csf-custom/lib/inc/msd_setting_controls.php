@@ -1,5 +1,5 @@
 <?php
-class MSDLAB_QueryControls{
+class MSDLAB_SettingControls{
 
     public $javascript;
 
@@ -15,7 +15,7 @@ class MSDLAB_QueryControls{
     public static function get_instance() {
 
         if( null == self::$instance ) {
-            self::$instance = new MSDLAB_QueryControls();
+            self::$instance = new MSDLAB_SettingControls();
         }
 
         return self::$instance;
