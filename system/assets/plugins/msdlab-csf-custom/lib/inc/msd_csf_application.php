@@ -214,6 +214,9 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     $jquery[] = "$('#prevBtn_button').click(function(e){
                         e.preventDefault();
                         $('#".$form_id." #form_page_next').val(".($form_page_number - 1).");
+                        if(".$form_page_number." == 6){
+                            
+                        }
                         $('#".$form_id."').submit();
                     });";
                     //can I bypass save on back button? do I want to?
@@ -673,7 +676,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                 $ret['ApplicantFinancial_SpouseEmployer'] = $this->form->field_result('ApplicantFinancial_SpouseEmployer', $result->SpouseEmployer ? $result->SpouseEmployer : null, "Spouse Employer", array('col-md-6', 'col-sm-12'));
                 $ret['ApplicantFinancial_SpouseIncome'] = $this->form->field_result('ApplicantFinancial_SpouseIncome', $result->SpouseIncome ? $result->SpouseIncome : null, "Spouse Annual Income",array('col-md-6', 'col-sm-12'));
 
-                $ret['ApplicantFinancial_Homeowner'] = $this->form->field_boolean('ApplicantFinancial_Homeowner', $result->Homeowner ? 'YES' : 'NO', "Is the applicant a homeowner?", array('required', 'col-md-12'));
+                $ret['ApplicantFinancial_Homeowner'] = $this->form->field_result('ApplicantFinancial_Homeowner', $result->Homeowner ? 'YES' : 'NO', "Is the applicant a homeowner?", array('required', 'col-md-12'));
                 if($result->Homeowner) {
                     $ret['ApplicantFinancial_HomeValue'] = $this->form->field_result('ApplicantFinancial_HomeValue', $result->HomeValue ? $result->HomeValue : null, "Current Value",  array('col-md-6', 'col-sm-12'));
                     $ret['ApplicantFinancial_AmountOwedOnHome'] = $this->form->field_result('ApplicantFinancial_AmountOwedOnHome', $result->AmountOwedOnHome ? $result->AmountOwedOnHome : null, "Amount Owed",  array('col-md-6', 'col-sm-12'));
