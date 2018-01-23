@@ -118,7 +118,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
         function get_applicant_id($user_id){
             global $wpdb;
             $sql = "SELECT ApplicantId FROM applicant WHERE UserId = ". $user_id;
-            //error_log($sql);
+            error_log($sql);
             $result = $wpdb->get_results($sql);
             return $result[0]->ApplicantId;
         }
@@ -185,6 +185,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     if ($_POST['application_form']) {
                         //Do the stuff
                         print $this->queries->set_data($form_id . $form_page_number, $set['where']);
+                        if(!$applicant_id){$applicant_id = $this->get_applicant_id($current_user->ID);}
                         if(isset($_POST['SendEmails'])){
                             $this->send_form_emails($_POST['SendEmails']);
                         }
