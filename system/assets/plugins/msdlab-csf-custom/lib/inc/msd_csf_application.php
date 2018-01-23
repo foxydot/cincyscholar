@@ -197,8 +197,6 @@ if (!class_exists('MSDLab_CSF_Application')) {
                         }
                     }
 
-                    ts_data($applicant_id);
-
                     //get the form selects
                     $this->sex_array = $this->queries->get_select_array_from_db('Sex', 'SexId', 'Sex');
                     $this->ethnicity_array = $this->queries->get_select_array_from_db('Ethnicity', 'EthnicityId', 'Ethnicity');
