@@ -175,7 +175,7 @@ error_log('sql: '.$sql);
         foreach($data['tables'] AS $table => $fieldslist){
             $tables[] = strtolower($table);
                 foreach($fieldslist AS $field){
-                $fields[] = $table.'.'.$field;
+                $fields[] = strtolower($table).'.'.$field;
                 }
         }
         $sql = 'SELECT '.implode(', ',$fields).' FROM '.implode(', ',$tables).' WHERE '.$data['where'].';';

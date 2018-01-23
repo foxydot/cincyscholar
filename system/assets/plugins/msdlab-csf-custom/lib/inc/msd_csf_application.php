@@ -153,31 +153,31 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     $form_page_number = isset($_POST['form_page_number']) ? $_POST['form_page_number'] : 1;
                     if($this->get_user_application_status()>1){$form_page_number = $step = 7;}
                     $step = isset($_POST['form_page_next']) ? $_POST['form_page_next'] : 1;
-                    $set['where'] = $applicant_id > 0 ? array('Applicant' => 'Applicant.ApplicantId = ' . $applicant_id) : array('Applicant' => 'Applicant.UserId = ' . $user_id);
+                    $set['where'] = $applicant_id > 0 ? array('applicant' => 'applicant.ApplicantId = ' . $applicant_id) : array('applicant' => 'applicant.UserId = ' . $user_id);
                     switch ($step) {
                         case 1:
                             break;
                         case 2:
-                            $set['where']['ApplicationProcess'] = 'ApplicationProcess.ApplicantId = ' . $applicant_id .' AND ApplicationProcess.ProcessStepId = 1';
+                            $set['where']['applicationprocess'] = 'applicationprocess.ApplicantId = ' . $applicant_id .' AND applicationprocess.ProcessStepId = 1';
                             break;
                         case 3:
-                            $set['where']['ApplicantCollege'] = 'ApplicantCollege.ApplicantId = ' . $applicant_id;
+                            $set['where']['applicantcollege'] = 'applicantcollege.ApplicantId = ' . $applicant_id;
                             break;
                         case 4:
-                            $set['where']['ApplicantIndependenceQuery'] = 'ApplicantIndependenceQuery.ApplicantId = ' . $applicant_id;
+                            $set['where']['applicantindependencequery'] = 'applicantindependencequery.ApplicantId = ' . $applicant_id;
                             break;
                         case 5:
                             if($this->queries->is_indy($applicant_id)){
-                                $set['where']['ApplicantFinancial'] = 'ApplicantFinancial.ApplicantId = ' . $applicant_id;
+                                $set['where']['applicantfinancial'] = 'applicantfinancial.ApplicantId = ' . $applicant_id;
                             } else {
-                                $set['where']['Guardian'] = 'Guardian.ApplicantId = ' . $applicant_id;
+                                $set['where']['guardian'] = 'guardian.ApplicantId = ' . $applicant_id;
                             }
                             break;
                         case 6:
                             if(!$this->queries->is_indy($applicant_id)) {
-                                $set['where']['Guardian'] = 'Guardian.ApplicantId = ' . $applicant_id;
+                                $set['where']['guardian'] = 'guardian.ApplicantId = ' . $applicant_id;
                             }
-                            $set['where']['Agreements'] = 'Agreements.ApplicantId = ' . $applicant_id;
+                            $set['where']['agreements'] = 'agreements.ApplicantId = ' . $applicant_id;
                             break;
                         case 7:
                             break;
@@ -252,7 +252,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     $ret['form_page_number'] = $this->form->field_utility('form_page_number', 1);
                     $ret['form_page_next'] = $this->form->field_utility('form_page_next', $form_page_number + 1);
                     $ret['ApplicantId'] = $this->form->field_utility("ApplicantId", $applicant_id); //matching user_id to applicantID. HRM. This is autoincremented in the DB. We will need to create userids for all the old data and start UIDs at a higher number than exisiting applicant IDs
-                    $data['where'] = 'Applicant.ApplicantId = ' . $applicant_id;
+                    $data['where'] = 'applicant.ApplicantId = ' . $applicant_id;
 
                     switch ($form_page_number) {
                         case 1: //personal info
