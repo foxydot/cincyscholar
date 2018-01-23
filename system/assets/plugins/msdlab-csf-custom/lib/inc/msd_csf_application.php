@@ -294,7 +294,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             //sets up the query
                             $data['tables']['Applicant'] = array('MajorId', 'EducationAttainmentId', 'HighSchoolGraduationDate', 'HighSchoolId', 'HighSchoolGraduationDate', 'HighSchoolGPA', 'PlayedHighSchoolSports', 'FirstGenerationStudent','Activities','OtherSchool');
                             $data['tables']['ApplicantCollege'] = array('CollegeId');
-                            $data['where'] .= ' AND ApplicantCollege.ApplicantId = ' . $applicant_id;
+                            $data['where'] .= ' AND applicantcollege.ApplicantId = ' . $applicant_id;
                             $results = $this->queries->get_result_set($data);
                             $result = $results[0];
                             //the fields
@@ -342,7 +342,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             //sets up the query
                             $data['tables']['Applicant'] = array('IsIndependent');
                             $data['tables']['ApplicantIndependenceQuery'] = array('ApplicantId', 'AdvancedDegree', 'Children', 'Married', 'TwentyFour', 'Veteran', 'Orphan', 'Emancipated', 'Homeless');
-                            $data['where'] .= ' AND ApplicantIndependenceQuery.ApplicantId = ' . $applicant_id;
+                            $data['where'] .= ' AND applicantindependencequery.ApplicantId = ' . $applicant_id;
                             $results = $this->queries->get_result_set($data);
                             $result = $results[0];
                             //the fields
@@ -389,7 +389,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                                 //Independent Form
                                 //sets up the query
                                 $data['tables']['ApplicantFinancial'] = array('ApplicantEmployer','ApplicantIncome','SpouseEmployer','SpouseIncome', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
-                                $data['where'] .= ' AND ApplicantFinancial.ApplicantId = ' . $applicant_id;
+                                $data['where'] .= ' AND applicantfinancial.ApplicantId = ' . $applicant_id;
                                 $results = $this->queries->get_result_set($data);
                                 $result = $results[0];
                                 //form
@@ -410,7 +410,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                                 //Dependent Form
                                 //sets up the query
                                 $data['tables']['Guardian'] = array('GuardianFullName1', 'GuardianEmployer1', 'GuardianFullName2', 'GuardianEmployer2', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
-                                $data['where'] .= ' AND Guardian.ApplicantId = ' . $applicant_id;
+                                $data['where'] .= ' AND guardian.ApplicantId = ' . $applicant_id;
                                 $results = $this->queries->get_result_set($data);
                                 $result = $results[0];
                                 //form
@@ -457,15 +457,15 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $data['tables']['Applicant'] = array('InformationSharingAllowed');
                             if(!$this->queries->is_indy($applicant_id)) {
                                 $data['tables']['Guardian'] = array('InformationSharingAllowedByGuardian');
-                                $data['where'] .= ' AND Guardian.ApplicantId = ' . $applicant_id;
+                                $data['where'] .= ' AND guardian.ApplicantId = ' . $applicant_id;
                             }
                             $data['tables']['Agreements'] = array('ApplicantHaveRead','ApplicantDueDate','ApplicantDocsReq','ApplicantReporting','GuardianHaveRead','GuardianDueDate','GuardianDocsReq','GuardianReporting');
-                            $data['where'] .= ' AND Agreements.ApplicantId = ' . $applicant_id;
+                            $data['where'] .= ' AND agreements.ApplicantId = ' . $applicant_id;
                             $results = $this->queries->get_result_set($data);
                             $result = $results[0];
 
                             $docs['tables']['Attachment'] = array('AttachmentId','AttachmentTypeId','FilePath');
-                            $docs['where'] = 'ApplicantID = '.$applicant_id;
+                            $docs['where'] = 'applicantid = '.$applicant_id;
                             $documents = $this->queries->get_result_set($docs);
                             //fields
                             $fwdBtnTitle = "Save & Review";
@@ -605,26 +605,26 @@ if (!class_exists('MSDLab_CSF_Application')) {
             global $applicant_id;
             $data['tables']['Applicant'] = array('*');
             $data['tables']['ApplicantCollege'] = array('CollegeId');
-            $data['where'] = 'Applicant.ApplicantId = ' . $applicant_id;
-            $data['where'] .= ' AND ApplicantCollege.ApplicantId = ' . $applicant_id;
+            $data['where'] = 'applicant.ApplicantId = ' . $applicant_id;
+            $data['where'] .= ' AND applicantcollege.ApplicantId = ' . $applicant_id;
 
             $data['tables']['ApplicantIndependenceQuery'] = array('ApplicantId', 'AdvancedDegree', 'Children', 'Married', 'TwentyFour', 'Veteran', 'Orphan', 'Emancipated', 'Homeless');
-            $data['where'] .= ' AND ApplicantIndependenceQuery.ApplicantId = ' . $applicant_id;
+            $data['where'] .= ' AND applicantindependencequery.ApplicantId = ' . $applicant_id;
 
             if($this->queries->is_indy($applicant_id)) {
                 $data['tables']['ApplicantFinancial'] = array('ApplicantEmployer', 'ApplicantIncome', 'SpouseEmployer', 'SpouseIncome', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
-                $data['where'] .= ' AND ApplicantFinancial.ApplicantId = ' . $applicant_id;
+                $data['where'] .= ' AND applicantfinancial.ApplicantId = ' . $applicant_id;
             } else {
                 $data['tables']['Guardian'] = array('GuardianFullName1', 'GuardianEmployer1', 'GuardianFullName2', 'GuardianEmployer2', 'Homeowner', 'HomeValue', 'AmountOwedOnHome','InformationSharingAllowedByGuardian');
-                $data['where'] .= ' AND Guardian.ApplicantId = ' . $applicant_id;
+                $data['where'] .= ' AND guardian.ApplicantId = ' . $applicant_id;
             }
             $data['tables']['Agreements'] = array('ApplicantHaveRead','ApplicantDueDate','ApplicantDocsReq','ApplicantReporting','GuardianHaveRead','GuardianDueDate','GuardianDocsReq','GuardianReporting');
-            $data['where'] .= ' AND Agreements.ApplicantId = ' . $applicant_id;
+            $data['where'] .= ' AND agreements.ApplicantId = ' . $applicant_id;
             $results = $this->queries->get_result_set($data);
             $result = $results[0];
 
             $docs['tables']['Attachment'] = array('AttachmentId','AttachmentTypeId','FilePath');
-            $docs['where'] = 'ApplicantID = '.$applicant_id;
+            $docs['where'] = 'attachment.ApplicantID = '.$applicant_id;
             $documents = $this->queries->get_result_set($docs);
             //test to see if there is one of each type
             //if so, set the next process step: documents uploaded.
