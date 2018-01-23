@@ -117,7 +117,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
 
         function get_applicant_id($user_id){
             global $wpdb;
-            $sql = "SELECT ApplicantId FROM Applicant WHERE UserId = ". $user_id;
+            $sql = "SELECT ApplicantId FROM applicant WHERE UserId = ". $user_id;
             //error_log($sql);
             $result = $wpdb->get_results($sql);
             return $result[0]->ApplicantId;
@@ -777,7 +777,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
         function get_user_application_status(){
             global $current_user,$applicant_id,$wpdb;
             if(!$applicant_id){$applicant_id = $this->get_applicant_id($current_user->ID);}
-            $sql = "SELECT * FROM ApplicationProcess WHERE ApplicationProcess.ApplicantId = ".$applicant_id ." ORDER BY ApplicationProcess.ProcessStepId DESC";
+            $sql = "SELECT * FROM applicationprocess WHERE applicationprocess.ApplicantId = ".$applicant_id ." ORDER BY applicationprocess.ProcessStepId DESC";
             $result = $wpdb->get_results($sql);
             return $result[0]->ProcessStepId;
         }
@@ -788,7 +788,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
             //clean up with graphic display of all steps and steps completed
             $steps = $this->get_application_process_steps();
             //ts_data($steps);
-            $sql = "SELECT * FROM ApplicationProcess,ProcessSteps WHERE ApplicationProcess.ApplicantId = ".$applicant_id." AND ApplicationProcess.ProcessStepId = ProcessSteps.StepId";
+            $sql = "SELECT * FROM applicationprocess,processsteps WHERE applicationprocess.ApplicantId = ".$applicant_id." AND applicationprocess.ProcessStepId = processsteps.StepId";
             $result = $wpdb->get_results($sql);
             if(count($result)>0) {
                 $hdr = $this->form->section_header('ProcessHeader', 'Application Process');
@@ -801,7 +801,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
 
         function get_application_process_steps(){
             global $wpdb;
-            $sql = "SELECT * FROM ProcessSteps";
+            $sql = "SELECT * FROM processsteps";
             $result = $wpdb->get_results($sql);
             $ret = array();
             foreach($result AS $r){
