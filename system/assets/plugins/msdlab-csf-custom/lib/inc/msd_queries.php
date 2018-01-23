@@ -150,13 +150,13 @@ class MSDLAB_Queries{
                  }
              }
              $select_sql = 'SELECT * FROM '.$table.' WHERE '.$where[$table].';';
-error_log('select_sql: '.$select_sql);
+error_log('check_sql: '.$select_sql);
              if($r = $wpdb->get_row($select_sql)){
                  $sql = 'UPDATE '.$table.' SET '.implode(', ',$data[$table]).' WHERE '.$where[$table].';';
              } else {
                  $sql = 'INSERT INTO '.$table.' SET '.implode(', ',$data[$table]).';';
              }
-error_log('sql: '.$sql);
+error_log('update_sql: '.$sql);
              $result = $wpdb->get_results($sql);
              if(is_wp_error($result)){
                  return '<div class="message error">Error updating '.$table.'</div>';
@@ -179,6 +179,7 @@ error_log('sql: '.$sql);
                 }
         }
         $sql = 'SELECT '.implode(', ',$fields).' FROM '.implode(', ',$tables).' WHERE '.$data['where'].';';
+        error_log('select_sql':.$sql);
         $result = $wpdb->get_results($sql);
         return $result;
     }
