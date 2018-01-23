@@ -229,7 +229,7 @@ error_log('sql: '.$sql);
             if (move_uploaded_file($fileinfo['tmp_name'], $ufile)) {
                 //$ret[] = '<div class="message success">' . basename($fileinfo['name']) . ' successfully uploaded.</div>';
                 $filepath = $user_url.'/'.basename($fileinfo['name']);
-                $sql = "INSERT INTO `Attachment` SET `ApplicantId` = '".$applicant_id."', `AttachmentTypeId` = '".$attachment_type_id."', `FilePath` = '".$filepath."';";
+                $sql = "INSERT INTO `attachment` SET `ApplicantId` = '".$applicant_id."', `AttachmentTypeId` = '".$attachment_type_id."', `FilePath` = '".$filepath."';";
                 $result = $wpdb->get_results($sql);
                 if(is_wp_error($result)){
                     print '<div class="message error">Error saving upload data to database.</div>';
