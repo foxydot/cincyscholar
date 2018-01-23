@@ -215,7 +215,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                         e.preventDefault();
                         $('#".$form_id." #form_page_next').val(".($form_page_number - 1).");
                         if(".$form_page_number." == 6){
-                            
+                           $('#ApplicationProcess_Update').remove();
                         }
                         $('#".$form_id."').submit();
                     });";
@@ -553,10 +553,12 @@ if (!class_exists('MSDLab_CSF_Application')) {
                                 $ret['Applicant_Signature'] = $this->form->field_textfield('Applicant_Signature','','Digital Signature','Lastname 0000',array('required' => 'required'),array('required','col-sm-12'));
                                 $ret[] = '</div>';
                                 //to set the process "in motion"
+                                $ret[] = '<div class="" id="ApplicationProcess_Update">';
                                 $ret['ApplicationProcess_ApplicantId'] = $this->form->field_hidden("ApplicationProcess_ApplicantId", $applicant_id);
                                 $ret['ApplicationProcess_ProcessStepId'] = $this->form->field_hidden("ApplicationProcess_ProcessStepId", 2);
                                 $ret['ApplicationProcess_ProcessStepBool'] = $this->form->field_hidden("ApplicationProcess_ProcessStepBool", 1);
                                 $ret['SendEmails'] = $this->form->field_utility('SendEmails','application_submitted');
+                                $ret[] = '</div>';
                             }
                             if($form_page_number == 7){
 
