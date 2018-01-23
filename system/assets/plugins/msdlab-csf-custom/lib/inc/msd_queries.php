@@ -188,7 +188,7 @@ error_log('sql: '.$sql);
         if(!$orderby){
             $orderby = $id_field;
         }
-        $sql = 'SELECT `'.$id_field.'`,`'.$field.'` FROM `'.$table.'` ORDER BY `'.$orderby.'` ASC;';
+        $sql = 'SELECT `'.$id_field.'`,`'.$field.'` FROM `'.strtolower($table).'` ORDER BY `'.$orderby.'` ASC;';
         $result = $wpdb->get_results( $sql, ARRAY_A );
         foreach ($result AS $k=>$v){
             $array[$v[$id_field]] = $v[$field];
