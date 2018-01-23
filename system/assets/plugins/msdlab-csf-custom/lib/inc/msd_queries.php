@@ -72,20 +72,20 @@ class MSDLAB_Queries{
      public function get_all_applications(){
          global $wpdb;
          $usertable = $wpdb->prefix . 'users';
-         $data['tables']['Applicant'] = array('*');
-         $data['where'] = 'Applicant.ApplicationDateTime > 20180101000000'; //replace with dates from settings
+         $data['tables']['applicant'] = array('*');
+         $data['where'] = 'applicant.ApplicationDateTime > 20180101000000'; //replace with dates from settings
          $data['tables'][$usertable] = array('user_email');
-         $data['where'] .= ' AND ' . $usertable . '.ID  = Applicant.UserId';
-         $data['tables']['ApplicantCollege'] = array('CollegeId');
-         $data['where'] .= ' AND ApplicantCollege.ApplicantId = Applicant.ApplicantId';
+         $data['where'] .= ' AND ' . $usertable . '.ID  = applicant.UserId';
+         $data['tables']['applicantcollege'] = array('CollegeId');
+         $data['where'] .= ' AND applicantcollege.ApplicantId = applicant.ApplicantId';
          $results = $this->get_result_set($data);
 
          foreach ($results AS $k => $r){
              $applicant_id = $r->ApplicantId;
              $agreements = $financial = $docs = array();
              //add agreements
-             $agreements['tables']['Agreements'] = array('ApplicantHaveRead','ApplicantDueDate','ApplicantDocsReq','ApplicantReporting','GuardianHaveRead','GuardianDueDate','GuardianDocsReq','GuardianReporting');
-             $agreements['where'] .= ' Agreements.ApplicantId = ' . $applicant_id;
+             $agreements['tables']['agreements'] = array('ApplicantHaveRead','ApplicantDueDate','ApplicantDocsReq','ApplicantReporting','GuardianHaveRead','GuardianDueDate','GuardianDocsReq','GuardianReporting');
+             $agreements['where'] .= ' agreements.ApplicantId = ' . $applicant_id;
              $agreements_results = $this->get_result_set($agreements);
              foreach($agreements_results AS $ar){
                  foreach($ar as $y => $z){
@@ -94,11 +94,11 @@ class MSDLAB_Queries{
              }
              //add financial
              if($this->is_indy($applicant_id)){
-                 $financial['tables']['ApplicantFinancial'] = array('ApplicantEmployer', 'ApplicantIncome', 'SpouseEmployer', 'SpouseIncome', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
-                 $financial['where'] .= ' ApplicantFinancial.ApplicantId = ' . $applicant_id;
+                 $financial['tables']['applicantfinancial'] = array('ApplicantEmployer', 'ApplicantIncome', 'SpouseEmployer', 'SpouseIncome', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
+                 $financial['where'] .= ' applicantfinancial.ApplicantId = ' . $applicant_id;
              } else {
-                 $financial['tables']['Guardian'] = array('GuardianFullName1', 'GuardianEmployer1', 'GuardianFullName2', 'GuardianEmployer2', 'Homeowner', 'HomeValue', 'AmountOwedOnHome','InformationSharingAllowedByGuardian');
-                 $financial['where'] .= ' Guardian.ApplicantId = ' . $applicant_id;
+                 $financial['tables']['guardian'] = array('GuardianFullName1', 'GuardianEmployer1', 'GuardianFullName2', 'GuardianEmployer2', 'Homeowner', 'HomeValue', 'AmountOwedOnHome','InformationSharingAllowedByGuardian');
+                 $financial['where'] .= ' guardian.ApplicantId = ' . $applicant_id;
              }
              $financial_results = $this->get_result_set($financial);
              foreach($financial_results AS $fr){
@@ -107,8 +107,8 @@ class MSDLAB_Queries{
                  }
              }
              //add docs
-             $docs['tables']['Attachment'] = array('AttachmentTypeId','FilePath');
-             $docs['where'] = 'ApplicantID = '.$applicant_id;
+             $docs['tables']['attachment'] = array('AttachmentTypeId','FilePath');
+             $docs['where'] = 'ApplicantId = '.$applicant_id;
              $documents = $this->get_result_set($docs);
              foreach($documents AS $d){
                  $results[$k]->Documents .= '<a href="'.$d->FilePath.'">'.$this->get_attachment_type_by_id($d->AttachmentTypeId).'</a><br />';
@@ -133,7 +133,7 @@ class MSDLAB_Queries{
              if(stripos($k,'_input')){
                 $karray = explode('_',$k);
                 if(count($karray)<3){continue;}
-                $table = $karray[0];
+                $table = strtolower($karray[0]);
                 $field = $karray[1];
                 $tables[] = $table;
                 $data[$table][] = $table.'.'.$field.' = "'.trim($v).'"';
@@ -142,7 +142,7 @@ class MSDLAB_Queries{
          $tables = array_flip(array_unique($tables));
          foreach($tables AS $table => $v){
              unset($tables[$table]);
-             if($table == 'Attachment'){
+             if($table == 'attachment'){
                  if($this->handle_attachments($data[$table])){
                      continue;
                  } else {
@@ -173,7 +173,7 @@ error_log('sql: '.$sql);
         global $wpdb;
         $this->__construct();
         foreach($data['tables'] AS $table => $fieldslist){
-            $tables[] = $table;
+            $tables[] = strtolower($table);
                 foreach($fieldslist AS $field){
                 $fields[] = $table.'.'.$field;
                 }
@@ -261,62 +261,62 @@ error_log('sql: '.$sql);
 
     function get_attachment_type_by_id($id){
         global $wpdb;
-        $sql = "SELECT AttachmentType FROM AttachmentType WHERE AttachmentTypeId = ".$id.";";
+        $sql = "SELECT AttachmentType FROM attachmenttype WHERE AttachmentTypeId = ".$id.";";
         $result = $wpdb->get_results( $sql );
         return $result[0]->AttachmentType;
     }
     function get_state_by_id($id){
         global $wpdb;
-        $sql = "SELECT State FROM State WHERE StateId = '".$id."';";
+        $sql = "SELECT State FROM state WHERE StateId = '".$id."';";
         $result = $wpdb->get_results( $sql );
         return $result[0]->State;
     }
     function get_county_by_id($id){
         global $wpdb;
-        $sql = "SELECT County FROM County WHERE CountyId = '".$id."';";
+        $sql = "SELECT County FROM county WHERE CountyId = '".$id."';";
         $result = $wpdb->get_results( $sql );
         return $result[0]->County;
     }
     function get_ethnicity_by_id($id){
         global $wpdb;
-        $sql = "SELECT Ethnicity FROM Ethnicity WHERE EthnicityId = '".$id."';";
+        $sql = "SELECT Ethnicity FROM ethnicity WHERE EthnicityId = '".$id."';";
         $result = $wpdb->get_results( $sql );
         return $result[0]->Ethnicity;
     }
     function get_sex_by_id($id){
         global $wpdb;
-        $sql = "SELECT Sex FROM Sex WHERE SexId = '".$id."';";
+        $sql = "SELECT Sex FROM sex WHERE SexId = '".$id."';";
         $result = $wpdb->get_results( $sql );
         return $result[0]->Sex;
     }
     function get_college_by_id($id){
         global $wpdb;
-        $sql = "SELECT Name FROM College WHERE CollegeId = '".$id."';";
+        $sql = "SELECT Name FROM college WHERE CollegeId = '".$id."';";
         $result = $wpdb->get_results( $sql );
         return $result[0]->Name;
     }
     function get_major_by_id($id){
         global $wpdb;
-        $sql = "SELECT MajorName FROM Major WHERE MajorId = '".$id."';";
+        $sql = "SELECT MajorName FROM major WHERE MajorId = '".$id."';";
         $result = $wpdb->get_results( $sql );
         return $result[0]->MajorName;
     }
     function get_educationalattainment_by_id($id){
         global $wpdb;
-        $sql = "SELECT EducationalAttainment FROM EducationalAttainment WHERE EducationalAttainmentId = '".$id."';";
+        $sql = "SELECT EducationalAttainment FROM educationalattainment WHERE EducationalAttainmentId = '".$id."';";
         $result = $wpdb->get_results( $sql );
         return $result[0]->EducationalAttainment;
     }
     function get_highschool_by_id($id){
         global $wpdb;
-        $sql = "SELECT SchoolName FROM HighSchool WHERE HighSchoolId = '".$id."';";
+        $sql = "SELECT SchoolName FROM highschool WHERE HighSchoolId = '".$id."';";
         $result = $wpdb->get_results( $sql );
         return $result[0]->SchoolName;
     }
 
     function is_indy($applicant_id){
-        $indy['where'] = 'Applicant.ApplicantId = ' . $applicant_id;;
-        $indy['tables']['Applicant'] = array('IsIndependent');
+        $indy['where'] = 'applicant.ApplicantId = ' . $applicant_id;;
+        $indy['tables']['applicant'] = array('IsIndependent');
         $results = $this->get_result_set($indy);
         $result = $results[0];
         if($result->IsIndependent){
@@ -326,8 +326,8 @@ error_log('sql: '.$sql);
         }
     }
     function is_adult($applicant_id){
-        $indy['where'] = 'Applicant.ApplicantId = ' . $applicant_id;;
-        $indy['tables']['Applicant'] = array('DateOfBirth');
+        $indy['where'] = 'applicant.ApplicantId = ' . $applicant_id;;
+        $indy['tables']['applicant'] = array('DateOfBirth');
         $results = $this->get_result_set($indy);
         $result = $results[0];
         $dob = strtotime($result->DateOfBirth);
