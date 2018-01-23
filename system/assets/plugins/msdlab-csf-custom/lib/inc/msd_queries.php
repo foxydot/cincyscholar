@@ -179,7 +179,7 @@ error_log('update_sql: '.$sql);
                 }
         }
         $sql = 'SELECT '.implode(', ',$fields).' FROM '.implode(', ',$tables).' WHERE '.$data['where'].';';
-        error_log('select_sql':.$sql);
+        error_log('select_sql:'.$sql);
         $result = $wpdb->get_results($sql);
         return $result;
     }
