@@ -818,17 +818,20 @@ if (!class_exists('MSDLab_CSF_Application')) {
             $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
             $css = '<link rel="stylesheet" id="bootstrap-style-css" href="//maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css?ver=4.5.0" type="text/css" media="all" class="even">';
             $css .= '<link rel="stylesheet" id="msd-style-css" href="http://cincyscholar.msd/system/assets/themes/erudite/lib/css/style.css?ver=4.9.1" type="text/css" media="all" class="odd">';
-            switch($type){
+            switch($type) {
                 case 'application_submitted':
                     $emails['user']['header'] = $headers;
-                    $emails['user']['to'] = $current_user->display_name . ' <'.$current_user->user_email.'>';
+                    $emails['user']['to'] = $current_user->display_name . ' <' . $current_user->user_email . '>';
                     $emails['user']['subject'] = 'Your Application has been Submitted';
                     $emails['user']['message'] = 'Your Application has been submitted to the Cincinnati Scholarship Foundation. You will be notified within one business week with regards to any additional information that may be required.';
 
-                    $emails['admin']['header'] = $headers;
-                    $emails['admin']['to'] = 'CSF Admin <'.get_option('csf_settings_admin_address').'>';
-                    $emails['admin']['subject'] = $current_user->display_name . ' Submitted an Application';
-                    $emails['admin']['message'] = '<html><head>'.$css.'</head><body>'.$this->get_the_user_application($applicant_id).'</body></html>';
+                    $adminaddys = explode(',', get_option('csf_settings_admin_address'));
+                    foreach ($adminaddys AS $k => $addy) {
+                        $emails['admin_' . $k]['header'] = $headers;
+                        $emails['admin_' . $k]['to'] = $addy;
+                        $emails['admin_' . $k]['subject'] = $current_user->display_name . ' Submitted an Application';
+                        $emails['admin_' . $k]['message'] = '<html><head>' . $css . '</head><body>' . $this->get_the_user_application($applicant_id) . '</body></html>';
+                    }
                     break;
             }
             foreach($emails AS $email){
