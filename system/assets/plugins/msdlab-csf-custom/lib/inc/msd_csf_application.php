@@ -151,7 +151,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
             switch($form_id) {
                 case 'application':
                     $form_page_number = isset($_POST['form_page_number']) ? $_POST['form_page_number'] : 1;
-                    if($this->get_user_application_status()>1){$form_page_number = $step = 7;}
+                    //RESTORE if($this->get_user_application_status()>1){$form_page_number = $step = 7;}
                     $step = isset($_POST['form_page_next']) ? $_POST['form_page_next'] : 1;
                     $set['where'] = $applicant_id > 0 ? array('applicant' => 'applicant.ApplicantId = ' . $applicant_id) : array('applicant' => 'applicant.UserId = ' . $user_id);
                     switch ($step) {
@@ -816,8 +816,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
             if(!$applicant_id){$applicant_id = $this->get_applicant_id($current_user->ID);}
             $headers = 'MIME-Version: 1.0' . "\r\n";
             $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-            $css = '<link rel="stylesheet" id="bootstrap-style-css" href="//maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css?ver=4.5.0" type="text/css" media="all" class="even">';
-            $css .= '<link rel="stylesheet" id="msd-style-css" href="http://cincyscholar.msd/system/assets/themes/erudite/lib/css/style.css?ver=4.9.1" type="text/css" media="all" class="odd">';
+            $css = '<style>.table,label{max-width:100%}.row:after,hr{clear:both}td,th{text-align:left}html{font-family:sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}hr{height:0;-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box}input{margin:0;font:inherit;font-family:inherit;line-height:inherit}body,h3{font-family:sans-serif;text-rendering:optimizeLegibility!important;-webkit-font-smoothing:antialiased!important}input::-moz-focus-inner{padding:0;border:0}hr,table{border-collapse:collapse}.table .table,body{background-color:#fff}*,:after,:before{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}html{-webkit-tap-highlight-color:transparent;font-size:62.5%}h3{color:inherit;margin-top:20px;margin-bottom:10px}.row{margin-right:-15px;margin-left:-15px}.col-md-12,.col-md-2,.col-md-3,.col-md-5,.col-md-6,.col-sm-12,.col-xs-12{position:relative;min-height:1px;padding-right:15px;padding-left:15px}.col-xs-12{float:left;width:100%}@media (min-width:768px){.col-sm-12{float:left;width:100%}}@media (min-width:992px){.col-md-12,.col-md-2,.col-md-3,.col-md-5,.col-md-6{float:left}.col-md-12{width:100%}.col-md-6{width:50%}.col-md-5{width:41.66666667%}.col-md-3{width:25%}.col-md-2{width:16.66666667%}}.table,input,table{width:100%}table{background-color:transparent}.table{margin-bottom:20px}.table>tbody>tr>td,.table>tbody>tr>th{padding:8px;line-height:1.42857143;vertical-align:top;border-top:1px solid #ddd}input,input:focus{border:1px solid #CCC}label{display:inline-block;margin-bottom:5px;font-weight:700}.row:after,.row:before{display:table;content:" "}.hidden{display:none!important}@-ms-viewport{width:device-width}body{font-weight:400;font-size:1em;color:#2A2B30;line-height:1.625;margin:0}input:focus{transition:all .1s ease-in-out;outline:0}hr{border:0;border-top:1px solid #CCC;margin:1em 0}strong{font-weight:700}h3{font-weight:300;line-height:1.2;margin:0 0 10px;font-size:1.8em}input,th{font-weight:400}input{background-color:#FCFCFC;color:#333;font-size:18px;font-size:1.8rem;padding:16px}::-moz-placeholder{color:#333;opacity:1}::-webkit-input-placeholder{color:#333}table{border-spacing:0;line-height:2;margin-bottom:40px;word-break:normal}form h3.section-header,tbody{border-bottom:1px solid #CCC}td{border-top:1px solid #CCC;padding:6px}th{padding:0 6px}td:first-child,th:first-child{padding-left:0}form span.result{padding:0 1em}.documents.grid{margin-bottom:3em}.documents.grid .document.grid-item{text-align:center}.documents.grid .document.grid-item a{border:1px solid #3f829c;padding:1em;display:block}.documents.grid .document.grid-item a:hover{background-color:#ffbe0b}.documents.grid .document.grid-item a i{font-size:2em}</style>';
             switch($type) {
                 case 'application_submitted':
                     $emails['user']['header'] = $headers;
@@ -835,6 +834,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     break;
             }
             foreach($emails AS $email){
+                ts_data($email);
                 wp_mail($email['to'],$email['subject'],$email['message'],$email['header']);
             }
         }

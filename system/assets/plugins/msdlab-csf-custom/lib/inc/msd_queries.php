@@ -231,12 +231,14 @@ error_log('update_sql: '.$sql);
                 //$ret[] = '<div class="message success">' . basename($fileinfo['name']) . ' successfully uploaded.</div>';
                 $filepath = $user_url.'/'.basename($fileinfo['name']);
                 $sql = "INSERT INTO `attachment` SET `ApplicantId` = '".$applicant_id."', `AttachmentTypeId` = '".$attachment_type_id."', `FilePath` = '".$filepath."';";
+                error_log('attachemnt_sql: '.$sql);
                 $result = $wpdb->get_results($sql);
                 if(is_wp_error($result)){
                     print '<div class="message error">Error saving upload data to database.</div>';
                     return false;
                 }
             } else {
+                error_log(basename($fileinfo['name']).' not moved.');
                 print '<div class="message error">Possible file upload attack!</div>';
                 return false;
             }
