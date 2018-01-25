@@ -834,7 +834,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     break;
             }
             foreach($emails AS $email){
-                ts_data($email);
+                //ts_data($email);
                 wp_mail($email['to'],$email['subject'],$email['message'],$email['header']);
             }
         }
