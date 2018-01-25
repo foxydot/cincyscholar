@@ -253,7 +253,7 @@ error_log('update_sql: '.$sql);
 
     function get_attachment_type_ids(){
         global $wpdb;
-        $sql = 'SELECT * FROM AttachmentType;';
+        $sql = 'SELECT * FROM attachmenttype;';
         $result = $wpdb->get_results( $sql, ARRAY_A );
         $attachment_type_ids = array();
         foreach ($result as $r) {
