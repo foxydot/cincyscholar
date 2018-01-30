@@ -82,3 +82,10 @@ input.error, select.error, textarea.error {
   .ui-toggle-btn .handle:after {
     content: attr(data-off);
     left: 100%; }
+
+.toplevel_page_csf-report td > div {
+  height: 4em;
+  overflow: scroll; }
+
+.toplevel_page_csf-report td.HardshipNote > div, .toplevel_page_csf-report td.Activities > div {
+  width: 24em; }

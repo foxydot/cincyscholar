@@ -47,6 +47,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
         function add_admin_styles_and_scripts(){
             wp_enqueue_style('bootstrap-style','//maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css',false,'4.5.0');
             wp_enqueue_style('font-awesome-style','//maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css',false,'4.5.0');
+            wp_enqueue_style('csf-report-style',preg_replace('#/inc/#i','/css/',plugin_dir_url(__FILE__)).'msdform.css');
             wp_enqueue_script('bootstrap-jquery','//maxcdn.bootstrapcdn.com/bootstrap/latest/js/bootstrap.min.js',array('jquery'));
         }
 
@@ -69,7 +70,6 @@ if (!class_exists('MSDLab_CSF_Management')) {
         }
 
         function report_page_content(){
-            $id = 'full-report';
             $fields = array(
                 'ApplicantId',
                 'FirstName',
@@ -129,10 +129,34 @@ if (!class_exists('MSDLab_CSF_Management')) {
                 'Documents',
             );
             $result = $this->queries->get_all_applications();
+            $submitted = $incomplete = array();
+            foreach($result AS $applicant){
+                if($applicant->status == 2){
+                    $submitted[] = $applicant;
+                } else {
+                    $incomplete[] = $applicant;
+                }
+            }
             $info = '';
             $class = array('table','table-bordered');
             print '<h2>Scholarship Application Reports</h2>';
-            $this->display->print_table($id,$fields,$result,$info,$class);
+            print '
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#submitted" aria-controls="submitted" role="tab" data-toggle="tab">Submitted</a></li>
+    <li role="presentation"><a href="#incomplete" aria-controls="incomplete" role="tab" data-toggle="tab">incomplete</a></li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="submitted">
+    ';
+            $this->display->print_table('submitted',$fields,$submitted,$info,$class);
+            print '
+</div>
+    <div role="tabpanel" class="tab-pane" id="incomplete">';
+            $this->display->print_table('incomplete',$fields,$incomplete,$info,$class);
+            print '</div>
+  </div>';
         }
 
         //ultilities

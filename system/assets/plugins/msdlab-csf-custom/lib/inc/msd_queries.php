@@ -113,6 +113,18 @@ class MSDLAB_Queries{
              foreach($documents AS $d){
                  $results[$k]->Documents .= '<a href="'.$d->FilePath.'">'.$this->get_attachment_type_by_id($d->AttachmentTypeId).'</a><br />';
              }
+
+             //add status
+             $status['tables']['applicationprocess'] = array('ProcessStepId','ProcessStepBool');
+             $status['where'] = 'ApplicantId = '.$applicant_id;
+             $status_results = $this->get_result_set($status);
+             foreach($status_results AS $sr){
+                 if($sr->ProcessStepBool == 1) {
+                     if($sr->ProcessStepId > $results[$k]->Status) {
+                         $results[$k]->status = $sr->ProcessStepId;
+                     }
+                 }
+             }
          }
          return $results;
      }
@@ -315,6 +327,12 @@ class MSDLAB_Queries{
         $sql = "SELECT SchoolName FROM highschool WHERE HighSchoolId = '".$id."';";
         $result = $wpdb->get_results( $sql );
         return $result[0]->SchoolName;
+    }
+    function get_status_by_id($id){
+        global $wpdb;
+        $sql = "SELECT StepName FROM processsteps WHERE StepId = '".$id."';";
+        $result = $wpdb->get_results( $sql );
+        return $result[0]->StepName;
     }
 
     function is_indy($applicant_id){

@@ -102,3 +102,13 @@ input, select, textarea {
     left: 100%;
   }
 }
+
+.toplevel_page_csf-report{
+  td>div{
+    height: 4em;
+    overflow: scroll;
+  }
+  td.HardshipNote>div,td.Activities>div{
+    width: 24em;
+  }
+}

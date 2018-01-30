@@ -149,11 +149,15 @@ class MSDLAB_Display{
                     case 'InformationSharingAllowedByGuardian':
                         $printval = $user->{$value}>0?'Yes':'No';
                         break;
+                    case 'Activities':
+                    case 'HardshipNote':
+                        $printval = strip_tags($user->{$value});
+                        break;
                     default:
                         $printval = $user->{$value};
                         break;
                 }
-                $row[] = '<td class="'.$value.'">'.$printval.'</td>';
+                $row[] = '<td class="'.$value.'"><div>'.$printval.'</div></td>';
                 $erow[] = $this->csv_safe($printval);
             }
             $class = $i%2==0?'even':'odd';
@@ -174,10 +178,10 @@ class MSDLAB_Display{
     /**
      *
      */
-    public function print_export_tools(){
-        $ret =  '<form name="export" action="'.plugin_dir_url(__FILE__).'exporttocsv.php" method="post">
+    public function print_export_tools($id){
+        $ret =  '<form name="'.$id.'_export" action="'.plugin_dir_url(__FILE__).'exporttocsv.php" method="post">
         <input type="submit" value="Export table to CSV">
-        <input type="hidden" value="Cincinnati Scholarship Foundation Application Report" name="csv_hdr">
+        <input type="hidden" value="Cincinnati Scholarship Foundation Application Report '.$id.'" name="csv_hdr">
         <input type="hidden" value=\''.$this->export_header."\n".$this->export_csv.'\' name="csv_output">
         </form>';
         return $ret;
@@ -201,7 +205,7 @@ class MSDLAB_Display{
         $ret['table_data'] = $this->table_data($fields,$result,false);
         $ret['table_footer'] = $this->table_footer($fields,$info,false);
         $ret['end_table'] = '</table>';
-        $ret['export'] = $this->print_export_tools();
+        $ret['export'] = $this->print_export_tools($id);
 
         if($echo){
             print implode("\n\r", $ret);
@@ -212,6 +216,9 @@ class MSDLAB_Display{
 
     public function csv_safe($value){
         $value = preg_replace('%\'%i','‘',$value);
+        $value = strip_tags($value,'<p><a>');
+        $value = preg_replace("/<a.+href=['|\"]([^\"\']*)['|\"].*>(.+)<\/a>/i",'\2 (\1)',$value);
+        $value = '"'.$value.'"';
         return $value;
     }
 
