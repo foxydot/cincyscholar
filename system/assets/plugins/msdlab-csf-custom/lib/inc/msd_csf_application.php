@@ -102,6 +102,10 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     if(current_user_can('view_application_process')){
                         $ret[1] = $this->get_user_application_status_list();
                     }
+                    if(current_user_can('review_application')){
+                        $ret[1] = $this->get_user_application_status_list();
+                        $ret[2] = implode("\n\r",$this->get_form('application'));
+                    }
                     //add admin ability to see based on GET var.
                     sort($ret);
                     return implode("\n\r",$ret);
@@ -118,7 +122,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
         function get_applicant_id($user_id){
             global $wpdb;
             $sql = "SELECT ApplicantId FROM applicant WHERE UserId = ". $user_id;
-            //error_log($sql);
+            error_log($sql);
             $result = $wpdb->get_results($sql);
             return $result[0]->ApplicantId;
         }
@@ -151,7 +155,11 @@ if (!class_exists('MSDLab_CSF_Application')) {
             switch($form_id) {
                 case 'application':
                     $form_page_number = isset($_POST['form_page_number']) ? $_POST['form_page_number'] : 1;
-                    //RESTORE if($this->get_user_application_status()>1){$form_page_number = $step = 7;}
+                    if($this->get_user_application_status()>1){$form_page_number = $step = 7;}
+                    if(current_user_can('review_application')){
+                        $form_page_number = $step = 7;
+                        $applicant_id = $_GET['applicant_id'];
+                    }
                     $step = isset($_POST['form_page_next']) ? $_POST['form_page_next'] : 1;
                     $set['where'] = $applicant_id > 0 ? array('applicant' => 'applicant.ApplicantId = ' . $applicant_id) : array('applicant' => 'applicant.UserId = ' . $user_id);
                     switch ($step) {

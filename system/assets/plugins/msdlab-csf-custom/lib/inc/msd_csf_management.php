@@ -56,7 +56,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
         function settings_page(){
             add_menu_page(__('CSF Management and Reports'),__('CSF Management'), 'manage_csf', 'csf-report', array(&$this,'report_page_content'),'dashicons-chart-area');
             add_submenu_page('csf-report',__('Reports'),__('Reports'),'manage_csf','csf-report', array(&$this,'report_page_content'));
-            add_submenu_page('csf-report',__('Settings'),__('Settings'),'manage_csf','csf-settings', array(&$this,'setting_page_content'));
+            add_submenu_page('csf-report',__('General Settings'),__('General Settings'),'manage_csf','csf-settings', array(&$this,'setting_page_content'));
         }
 
         function setting_page_content(){

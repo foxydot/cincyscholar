@@ -104,6 +104,10 @@ class MSDLAB_Display{
             $erow = array();
             foreach ($fields as $key => $value) {
                 switch ($value){
+                    case 'ApplicantId':
+                        $portal_page = get_option('csf_settings_student_welcome_page');
+                        $printval = '<a href="'.get_permalink($portal_page).'?applicant_id='.$user->{$value}.'">'.$user->{$value}.'</a>';
+                        break;
                     case 'CountyId':
                         $printval = $this->queries->get_county_by_id($user->{$value});
                         break;
