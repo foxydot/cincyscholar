@@ -118,7 +118,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
         function get_applicant_id($user_id){
             global $wpdb;
             $sql = "SELECT ApplicantId FROM applicant WHERE UserId = ". $user_id;
-            error_log($sql);
+            //error_log($sql);
             $result = $wpdb->get_results($sql);
             return $result[0]->ApplicantId;
         }

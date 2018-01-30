@@ -150,13 +150,13 @@ class MSDLAB_Queries{
                  }
              }
              $select_sql = 'SELECT * FROM '.$table.' WHERE '.$where[$table].';';
-error_log('check_sql: '.$select_sql);
+//error_log('check_sql: '.$select_sql);
              if($r = $wpdb->get_row($select_sql)){
                  $sql = 'UPDATE '.$table.' SET '.implode(', ',$data[$table]).' WHERE '.$where[$table].';';
              } else {
                  $sql = 'INSERT INTO '.$table.' SET '.implode(', ',$data[$table]).';';
              }
-error_log('update_sql: '.$sql);
+//error_log('update_sql: '.$sql);
              $result = $wpdb->get_results($sql);
              if(is_wp_error($result)){
                  return '<div class="message error">Error updating '.$table.'</div>';
@@ -179,7 +179,7 @@ error_log('update_sql: '.$sql);
                 }
         }
         $sql = 'SELECT '.implode(', ',$fields).' FROM '.implode(', ',$tables).' WHERE '.$data['where'].';';
-        error_log('select_sql:'.$sql);
+        //error_log('select_sql:'.$sql);
         $result = $wpdb->get_results($sql);
         return $result;
     }
@@ -231,14 +231,14 @@ error_log('update_sql: '.$sql);
                 //$ret[] = '<div class="message success">' . basename($fileinfo['name']) . ' successfully uploaded.</div>';
                 $filepath = $user_url.'/'.basename($fileinfo['name']);
                 $sql = "INSERT INTO `attachment` SET `ApplicantId` = '".$applicant_id."', `AttachmentTypeId` = '".$attachment_type_id."', `FilePath` = '".$filepath."';";
-                error_log('attachemnt_sql: '.$sql);
+               // error_log('attachemnt_sql: '.$sql);
                 $result = $wpdb->get_results($sql);
                 if(is_wp_error($result)){
                     print '<div class="message error">Error saving upload data to database.</div>';
                     return false;
                 }
             } else {
-                error_log(basename($fileinfo['name']).' not moved.');
+                //error_log(basename($fileinfo['name']).' not moved.');
                 print '<div class="message error">Possible file upload attack!</div>';
                 return false;
             }

@@ -40,14 +40,14 @@ if (!class_exists('MSDLab_User_Levels_Management')) {
         }
 
         function welcome_user($url, $query, $user){
-            error_log($url);
+            //error_log($url);
             if ( user_can($user->ID,'student') ) {
-                error_log('is student');
+               // error_log('is student');
                 //redirect to the welcome page
                 $page_id = get_option('csf_settings_student_welcome_page');
                 $url = get_permalink($page_id);
             }
-            error_log($url);
+           // error_log($url);
             return $url;
         }
 
@@ -65,6 +65,10 @@ if (!class_exists('MSDLab_User_Levels_Management')) {
             $subscriber_role = get_role('subscriber');
             foreach($caps->subscriber AS $c) {
                 $subscriber_role->add_cap($c);
+            }
+            $administrator_role = get_role('administrator');
+            foreach($caps->administrator AS $c) {
+                $administrator_role->add_cap($c);
             }
             add_role('rejection','Student Non-awardee', $caps->rejection);
             add_role('applicant','Student Applicant', $caps->applicant);
@@ -90,13 +94,19 @@ if (!class_exists('MSDLab_User_Levels_Management')) {
 if(!class_exists('MSDLab_Capabilites')){
     class MSDLab_Capabilites{
         function __construct(){
-            $roles = array('subscriber','rejection','applicant','awardee','renewal','donor','scholarship','csf');
+            $roles = array('subscriber','rejection','applicant','awardee','renewal','donor','scholarship','csf','administrator');
             foreach($roles as $role){
                 $this->{$role} = $this->get_my_caps($role);
             }
         }
 
         function get_my_caps($role){
+            if($role == 'administrator'){
+                return array(
+                    'review_application' => 1,
+                    'manage_csf' => 1,
+                );
+            }
             if($role == 'csf'){
                 return array(
                     'edit_users' => 1,
@@ -171,6 +181,7 @@ if(!class_exists('MSDLab_Capabilites')){
                     'publish_tribe_organizers' => 1,
                     'wpseo_manage_options' => 1,
                     'review_application' => 1,
+                    'manage_csf' => 1,
                 );
             } elseif($role == 'scholarship'){
                 return array();
