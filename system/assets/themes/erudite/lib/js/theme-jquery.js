@@ -53,10 +53,6 @@ jQuery(document).ready(function($) {
 	    }
 	});
 
-	$('.gform_wrapper .gform_body li.gfield').each(function(){
-		$(this).children('label').before($(this).children('.ginput_container'));
-	});
-
 	$('.genesis-teaser').matchHeight();
 
 	$('.login-trigger').click(function(e){
