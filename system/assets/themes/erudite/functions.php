@@ -34,7 +34,7 @@ include_once( get_stylesheet_directory() . '/lib/inc/genesis_blog_grid.php' );
 new MSDLab_Page_Banner_Support(array());
 
 // Child theme (do not remove).
-define( 'CHILD_THEME_NAME', 'Deitrich' );
+define( 'CHILD_THEME_NAME', 'Erudite' );
 define( 'CHILD_THEME_URL', 'http://msdlab.com/' );
 define( 'CHILD_THEME_VERSION', '2.3.0' );
 
