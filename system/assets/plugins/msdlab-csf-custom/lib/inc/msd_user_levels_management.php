@@ -148,6 +148,7 @@ if(!class_exists('MSDLab_Capabilites')){
                     'remove_users' => 1,
                     'promote_users' => 1,
                     'export' => 1,
+                    'edit_theme_options' => 1,
                     'wpseo_bulk_edit' => 1,
                     'read_private_tribe_events' => 1,
                     'edit_tribe_events' => 1,

@@ -60,6 +60,17 @@ add_theme_support( 'genesis-structural-wraps', array(
     'footer-widgets',
 ) );
 
+remove_theme_support('custom-header');
+
+add_action( 'admin_menu', 'adjust_the_wp_menu', 999 );
+function adjust_the_wp_menu() {
+    if(!current_user_can('install_themes')) {
+        add_submenu_page('themes.php', 'Menus', 'Menus', 'edit_theme_options', 'nav-menus.php', '', '', 30);
+        remove_submenu_page( 'themes.php', 'customize.php' );
+    }
+}
+
+
 /***Tools Plugin**/
 //instantiate sub packages
 if(class_exists('MSDLab_Theme_Tweaks')){
