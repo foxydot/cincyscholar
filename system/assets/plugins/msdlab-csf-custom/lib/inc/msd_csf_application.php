@@ -833,7 +833,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     $emails['user']['header'] = $headers;
                     $emails['user']['to'] = $current_user->display_name . ' <' . $current_user->user_email . '>';
                     $emails['user']['subject'] = 'Your Application has been Submitted';
-                    $emails['user']['message'] = 'Your Application has been submitted to the Cincinnati Scholarship Foundation. You will be notified within one business week with regards to any additional information that may be required.';
+                    $emails['user']['message'] = 'Your application has been received. If you have any questions regarding the application process, please call or email the Cincinnati Scholarship Foundation.';
 
                     $adminaddys = explode(',', get_option('csf_settings_admin_address'));
                     foreach ($adminaddys AS $k => $addy) {
