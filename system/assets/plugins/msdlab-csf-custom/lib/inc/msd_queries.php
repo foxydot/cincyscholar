@@ -308,7 +308,7 @@ class MSDLAB_Queries{
         return $result[0]->ApplicantId;
     }
 
-    function get_user_id($applicant_id){
+    function get_user_id_by_applicant($applicant_id){
         global $wpdb;
         $sql = "SELECT UserId FROM applicant WHERE ApplicantId = ". $applicant_id;
         error_log($sql);
