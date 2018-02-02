@@ -191,6 +191,7 @@ class MSDLAB_Queries{
                 }
         }
         $sql = 'SELECT '.implode(', ',$fields).' FROM '.implode(', ',$tables).' WHERE '.$data['where'].';';
+        //TODO: refactor all queries to ue proper JOIN
         error_log('select_sql:'.$sql);
         $result = $wpdb->get_results($sql);
         return $result;
@@ -262,6 +263,58 @@ class MSDLAB_Queries{
     /*
     *  Resource Queries
     */
+
+    function get_user_application_status(){
+        global $current_user,$applicant_id,$wpdb;
+        if(!$applicant_id){$applicant_id = $this->get_applicant_id($current_user->ID);}
+        $sql = "SELECT * FROM applicationprocess WHERE applicationprocess.ApplicantId = ".$applicant_id ." ORDER BY applicationprocess.ProcessStepId DESC";
+        $result = $wpdb->get_results($sql);
+        return $result[0]->ProcessStepId;
+    }
+
+    function get_user_application_status_list(){
+        global $current_user,$applicant_id,$wpdb;
+        if(!$applicant_id){$applicant_id = $this->get_applicant_id($current_user->ID);}
+        //clean up with graphic display of all steps and steps completed
+        $steps = $this->get_application_process_steps();
+        //ts_data($steps);
+        $sql = "SELECT * FROM applicationprocess,processsteps WHERE applicationprocess.ApplicantId = ".$applicant_id." AND applicationprocess.ProcessStepId = processsteps.StepId";
+        $result = $wpdb->get_results($sql);
+        if(count($result)>0) {
+            $hdr = $this->form->section_header('ProcessHeader', 'Application Process');
+            foreach ($result AS $r) {
+                $progress[] = $r->StepName;
+            }
+            return $hdr . '<ul><li>' . implode('</li>' . "\n" . '<li>', $progress) . '</li></ul>';
+        }
+    }
+
+    function get_application_process_steps(){
+        global $wpdb;
+        $sql = "SELECT * FROM processsteps";
+        $result = $wpdb->get_results($sql);
+        $ret = array();
+        foreach($result AS $r){
+            $ret[$r->StepId] = $r->StepName;
+        }
+        return $ret;
+    }
+
+    function get_applicant_id($user_id){
+        global $wpdb;
+        $sql = "SELECT ApplicantId FROM applicant WHERE UserId = ". $user_id;
+        error_log($sql);
+        $result = $wpdb->get_results($sql);
+        return $result[0]->ApplicantId;
+    }
+
+    function get_user_id($applicant_id){
+        global $wpdb;
+        $sql = "SELECT UserId FROM applicant WHERE ApplicantId = ". $applicant_id;
+        error_log($sql);
+        $result = $wpdb->get_results($sql);
+        return $result[0]->UserId;
+    }
 
     function get_attachment_type_ids(){
         global $wpdb;

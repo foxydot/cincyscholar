@@ -53,7 +53,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
         function set_up_globals(){
             global $current_user,$applicant_id,$user_id;
             $user_id = $current_user->ID;
-            $applicant_id = $this->get_applicant_id($user_id);
+            $applicant_id = $this->queries->get_applicant_id($user_id);
         }
 
         function add_admin_styles_and_scripts(){
@@ -101,10 +101,10 @@ if (!class_exists('MSDLab_CSF_Application')) {
                         $ret[2] = implode("\n\r",$this->get_form('application'));
                     }
                     if(current_user_can('view_application_process')){
-                        $ret[1] = $this->get_user_application_status_list();
+                        $ret[1] = $this->queries->get_user_application_status_list();
                     }
                     if(current_user_can('review_application')){
-                        $ret[1] = $this->get_user_application_status_list();
+                        $ret[1] = $this->queries->get_user_application_status_list();
                         $ret[2] = implode("\n\r",$this->get_form('application'));
                     }
                     //add admin ability to see based on GET var.
@@ -120,13 +120,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
 
         //ultilities
 
-        function get_applicant_id($user_id){
-            global $wpdb;
-            $sql = "SELECT ApplicantId FROM applicant WHERE UserId = ". $user_id;
-            error_log($sql);
-            $result = $wpdb->get_results($sql);
-            return $result[0]->ApplicantId;
-        }
+
 
         function numToOrdinalWord($num)
         {
@@ -156,7 +150,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
             switch($form_id) {
                 case 'application':
                     $form_page_number = isset($_POST['form_page_number']) ? $_POST['form_page_number'] : 1;
-                    if($this->get_user_application_status()>1){$form_page_number = $step = 7;}
+                    if($this->queries->get_user_application_status()>1){$form_page_number = $step = 7;}
                     if(current_user_can('review_application')){
                         $form_page_number = $step = 7;
                         $applicant_id = $_GET['applicant_id'];
@@ -194,7 +188,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     if ($_POST['application_form']) {
                         //Do the stuff
                         print $this->queries->set_data($form_id . $form_page_number, $set['where']);
-                        if(!$applicant_id){$applicant_id = $this->get_applicant_id($current_user->ID);}
+                        if(!$applicant_id){$applicant_id = $this->queries->get_applicant_id($current_user->ID);}
                         if(isset($_POST['SendEmails'])){
                             $this->send_form_emails($_POST['SendEmails']);
                         }
@@ -613,6 +607,9 @@ if (!class_exists('MSDLab_CSF_Application')) {
 
         function get_the_user_application($applicant_id){
             global $applicant_id;
+            if(current_user_can('review_application')) {
+                $adminview = true;
+            }
             $data['tables']['Applicant'] = array('*');
             $data['tables']['ApplicantCollege'] = array('CollegeId');
             $data['where'] = 'applicant.ApplicantId = ' . $applicant_id;
@@ -786,45 +783,9 @@ if (!class_exists('MSDLab_CSF_Application')) {
             return implode("\n\r",$ret);;
         }
 
-        function get_user_application_status(){
-            global $current_user,$applicant_id,$wpdb;
-            if(!$applicant_id){$applicant_id = $this->get_applicant_id($current_user->ID);}
-            $sql = "SELECT * FROM applicationprocess WHERE applicationprocess.ApplicantId = ".$applicant_id ." ORDER BY applicationprocess.ProcessStepId DESC";
-            $result = $wpdb->get_results($sql);
-            return $result[0]->ProcessStepId;
-        }
-
-        function get_user_application_status_list(){
-            global $current_user,$applicant_id,$wpdb;
-            if(!$applicant_id){$applicant_id = $this->get_applicant_id($current_user->ID);}
-            //clean up with graphic display of all steps and steps completed
-            $steps = $this->get_application_process_steps();
-            //ts_data($steps);
-            $sql = "SELECT * FROM applicationprocess,processsteps WHERE applicationprocess.ApplicantId = ".$applicant_id." AND applicationprocess.ProcessStepId = processsteps.StepId";
-            $result = $wpdb->get_results($sql);
-            if(count($result)>0) {
-                $hdr = $this->form->section_header('ProcessHeader', 'Application Process');
-                foreach ($result AS $r) {
-                    $progress[] = $r->StepName;
-                }
-                return $hdr . '<ul><li>' . implode('</li>' . "\n" . '<li>', $progress) . '</li></ul>';
-            }
-        }
-
-        function get_application_process_steps(){
-            global $wpdb;
-            $sql = "SELECT * FROM processsteps";
-            $result = $wpdb->get_results($sql);
-            $ret = array();
-            foreach($result AS $r){
-                $ret[$r->StepId] = $r->StepName;
-            }
-            return $ret;
-        }
-
         function send_form_emails($type){
             global $current_user,$applicant_id,$wpdb;
-            if(!$applicant_id){$applicant_id = $this->get_applicant_id($current_user->ID);}
+            if(!$applicant_id){$applicant_id = $this->queries->get_applicant_id($current_user->ID);}
             $headers = 'MIME-Version: 1.0' . "\r\n";
             $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
             $css = '<style>.table,label{max-width:100%}.row:after,hr{clear:both}td,th{text-align:left}html{font-family:sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}hr{height:0;-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box}input{margin:0;font:inherit;font-family:inherit;line-height:inherit}body,h3{font-family:sans-serif;text-rendering:optimizeLegibility!important;-webkit-font-smoothing:antialiased!important}input::-moz-focus-inner{padding:0;border:0}hr,table{border-collapse:collapse}.table .table,body{background-color:#fff}*,:after,:before{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}html{-webkit-tap-highlight-color:transparent;font-size:62.5%}h3{color:inherit;margin-top:20px;margin-bottom:10px}.row{margin-right:-15px;margin-left:-15px}.col-md-12,.col-md-2,.col-md-3,.col-md-5,.col-md-6,.col-sm-12,.col-xs-12{position:relative;min-height:1px;padding-right:15px;padding-left:15px}.col-xs-12{float:left;width:100%}@media (min-width:768px){.col-sm-12{float:left;width:100%}}@media (min-width:992px){.col-md-12,.col-md-2,.col-md-3,.col-md-5,.col-md-6{float:left}.col-md-12{width:100%}.col-md-6{width:50%}.col-md-5{width:41.66666667%}.col-md-3{width:25%}.col-md-2{width:16.66666667%}}.table,input,table{width:100%}table{background-color:transparent}.table{margin-bottom:20px}.table>tbody>tr>td,.table>tbody>tr>th{padding:8px;line-height:1.42857143;vertical-align:top;border-top:1px solid #ddd}input,input:focus{border:1px solid #CCC}label{display:inline-block;margin-bottom:5px;font-weight:700}.row:after,.row:before{display:table;content:" "}.hidden{display:none!important}@-ms-viewport{width:device-width}body{font-weight:400;font-size:1em;color:#2A2B30;line-height:1.625;margin:0}input:focus{transition:all .1s ease-in-out;outline:0}hr{border:0;border-top:1px solid #CCC;margin:1em 0}strong{font-weight:700}h3{font-weight:300;line-height:1.2;margin:0 0 10px;font-size:1.8em}input,th{font-weight:400}input{background-color:#FCFCFC;color:#333;font-size:18px;font-size:1.8rem;padding:16px}::-moz-placeholder{color:#333;opacity:1}::-webkit-input-placeholder{color:#333}table{border-spacing:0;line-height:2;margin-bottom:40px;word-break:normal}form h3.section-header,tbody{border-bottom:1px solid #CCC}td{border-top:1px solid #CCC;padding:6px}th{padding:0 6px}td:first-child,th:first-child{padding-left:0}form span.result{padding:0 1em}.documents.grid{margin-bottom:3em}.documents.grid .document.grid-item{text-align:center}.documents.grid .document.grid-item a{border:1px solid #3f829c;padding:1em;display:block}.documents.grid .document.grid-item a:hover{background-color:#ffbe0b}.documents.grid .document.grid-item a i{font-size:2em}</style>';
