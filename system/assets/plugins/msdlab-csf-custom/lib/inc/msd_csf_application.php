@@ -65,6 +65,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
         function add_styles_and_scripts(){
             wp_enqueue_script('jquery-validate',plugin_dir_url(__DIR__).'/../js/jquery.validate.min.js',array('jquery'));
             wp_enqueue_script('jquery-validate-addl',plugin_dir_url(__DIR__).'/../js/additional-methods.min.js',array('jquery','jquery-validate'));
+            wp_enqueue_script('jquery-mask',plugin_dir_url(__DIR__).'/../js/jquery.mask.js',array('jquery'));
             wp_enqueue_style( 'msdform-css', plugin_dir_url(__DIR__).'/../css/msdform.css' );
         }
 
@@ -250,6 +251,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                                 toggled.slideUp(500);
                             }
                         });";
+                    $jquery[] = "$('input[type=tel]').mask('(000) 000-0000');";
                     //jquery to handle file upload hider
                     //TODO: sort out js validation
                     $fwdBtnTitle = "Save & Continue";
@@ -416,7 +418,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             } else {
                                 //Dependent Form
                                 //sets up the query
-                                $data['tables']['Guardian'] = array('GuardianFullName1', 'GuardianEmployer1', 'GuardianFullName2', 'GuardianEmployer2', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
+                                $data['tables']['Guardian'] = array('CPSPublicSchools','GuardianFullName1', 'GuardianEmployer1', 'GuardianFullName2', 'GuardianEmployer2', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
                                 $data['where'] .= ' AND guardian.ApplicantId = ' . $applicant_id;
                                 $results = $this->queries->get_result_set($data);
                                 $result = $results[0];
@@ -439,6 +441,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                         });";
                                 $ret['hdrFinancialInfo'] = $this->form->section_header('hdrFinancialInfo', 'Student Guardianship and Financial Information');
                                 $ret['SingleParent'] = $this->form->field_boolean('SingleParent', strlen($result->GuardianFullName2 < 1), "Is this a single parent household?",null, array('required', 'col-md-12'));
+                                $ret['Guardian_CPSPublicSchools'] = $this->form->field_boolean('Guardian_CPSPublicSchools', $result->CPSPublicSchools?$result->CPSPublicSchools:0, "Is either of your parents employed by Cincinnati Public Schools?",null, array('required', 'col-md-12'));
                                 $ret['Guardian_ApplicantId'] = $this->form->field_hidden("Guardian_ApplicantId", $applicant_id);
                                 $ret['Guardian_GuardianFullName1'] = $this->form->field_textfield('Guardian_GuardianFullName1', $result->GuardianFullName1 ? $result->GuardianFullName1 : null, "First Guardian Full Name",null,array('minlength' => '2', 'required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
                                 $ret['Guardian_GuardianEmployer1'] = $this->form->field_textfield('Guardian_GuardianEmployer1', $result->GuardianEmployer1 ? $result->GuardianEmployer1 : null, "Place of Employment",null,array('minlength' => '2', 'required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
@@ -622,7 +625,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                 $data['tables']['ApplicantFinancial'] = array('ApplicantEmployer', 'ApplicantIncome', 'SpouseEmployer', 'SpouseIncome', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
                 $data['where'] .= ' AND applicantfinancial.ApplicantId = ' . $applicant_id;
             } else {
-                $data['tables']['Guardian'] = array('GuardianFullName1', 'GuardianEmployer1', 'GuardianFullName2', 'GuardianEmployer2', 'Homeowner', 'HomeValue', 'AmountOwedOnHome','InformationSharingAllowedByGuardian');
+                $data['tables']['Guardian'] = array('CPSPublicSchools','GuardianFullName1', 'GuardianEmployer1', 'GuardianFullName2', 'GuardianEmployer2', 'Homeowner', 'HomeValue', 'AmountOwedOnHome','InformationSharingAllowedByGuardian');
                 $data['where'] .= ' AND guardian.ApplicantId = ' . $applicant_id;
             }
             $data['tables']['Agreements'] = array('ApplicantHaveRead','ApplicantDueDate','ApplicantDocsReq','ApplicantReporting','GuardianHaveRead','GuardianDueDate','GuardianDocsReq','GuardianReporting');

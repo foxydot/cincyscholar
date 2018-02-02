@@ -135,6 +135,7 @@ class MSDLAB_Display{
                     case 'FirstGenerationStudent':
                     case 'IsIndependent':
                     case 'PlayedHighSchoolSports':
+                    case 'CPSPublicSchools':
                     case 'InformationSharingAllowed':
                     case 'IsComplete':
                     case 'ApplicantHaveRead':
