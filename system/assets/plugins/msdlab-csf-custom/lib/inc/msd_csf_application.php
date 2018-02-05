@@ -331,7 +331,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $ret['OtherWrapOpen'] = '<div class="otherwrap">';
                             $ret['Applicant_OtherSchool'] = $this->form->field_textfield('Applicant_OtherSchool', $result->OtherSchool?$result->OtherSchool:'','Name of Unlisted Institution',null, array('text'=>true),array('col-sm-12','required')); //how are we handling "other" in the new DB?
                             $ret['OtherWrapClose'] = '</div>';
-                            $ret['Applicant_EducationAttainmentId'] = $this->form->field_select("Applicant_EducationAttainmentId", $result->EducationAttainmentId ? $result->EducationAttainmentId : null, "Year in School Fall Semester", array('option' => 'Select', 'value' => '5'), $this->educationalattainment_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
+                            $ret['Applicant_EducationAttainmentId'] = $this->form->field_select("Applicant_EducationAttainmentId", $result->EducationAttainmentId ? $result->EducationAttainmentId : null, "Year in School Fall Semester, 2018", array('option' => 'Select', 'value' => '5'), $this->educationalattainment_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
                             $ret['Applicant_FirstGenerationStudent'] = $this->form->field_boolean('Applicant_FirstGenerationStudent', $result->FirstGenerationStudent ? $result->FirstGenerationStudent : 0, 'Are you the first person in your family to attend college?', null, array('col-md-6', 'col-sm-12'));
                             $ret[] = '<hr class="clear" />';
                             $ret['Applicant_HighSchoolId'] = $this->form->field_select('Applicant_HighSchoolId', $result->HighSchoolId ? $result->HighSchoolId : 136, "High School Attended", $result->HighSchoolId ? $result->HighSchoolId : null, $this->highschool_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
@@ -671,11 +671,11 @@ if (!class_exists('MSDLab_CSF_Application')) {
             $ret['hdrCollegeInfo'] = $this->form->section_header('hdrCollegeInfo', 'Academic Information');
 
             $ret[] = '<div class="row">';
-            $ret['ApplicantCollege_CollegeId'] = $this->form->field_result('ApplicantCollege_CollegeId', $results['college']->CollegeId ? $this->queries->get_college_by_id($results['college']->CollegeId) : null, 'College Applied To or Attending',  array('required', 'col-md-6', 'col-sm-12'));
+            $ret['ApplicantCollege_CollegeId'] = $this->form->field_result('ApplicantCollege_CollegeId', $results['college']->CollegeId ? $this->queries->get_college_by_id($results['college']->CollegeId) : '', 'College Applied To or Attending',  array('required', 'col-md-6', 'col-sm-12'));
             if($result->CollegeId == 343){
                 $ret['Applicant_OtherSchool'] = $this->form->field_result('Applicant_OtherSchool', $results['personal']->OtherSchool?$results['personal']->OtherSchool:'','Name of Unlisted Institution',array('col-sm-12','required')); //how are we handling "other" in the new DB?
             }
-            $ret['Applicant_MajorId'] = $this->form->field_result('Applicant_MajorId', $results['personal']->MajorId ? $this->queries->get_major_by_id($results['personal']->MajorId) : 5122, 'Intended Major (If Uncertain, select Undecided)', array('required', 'col-md-6', 'col-sm-12'));
+            $ret['Applicant_MajorId'] = $this->form->field_result('Applicant_MajorId', $results['personal']->MajorId ? $this->queries->get_major_by_id($results['personal']->MajorId) : '', 'Intended Major (If Uncertain, select Undecided)', array('required', 'col-md-6', 'col-sm-12'));
             $ret['Applicant_EducationAttainmentId'] = $this->form->field_result("Applicant_EducationAttainmentId", $results['personal']->EducationAttainmentId ? $this->queries->get_educationalattainment_by_id($results['personal']->EducationAttainmentId) : null, "Year in School Fall Semester, 2018", array('required', 'col-md-6', 'col-sm-12'));
             $ret['Applicant_FirstGenerationStudent'] = $this->form->field_result('Applicant_FirstGenerationStudent', $results['personal']->FirstGenerationStudent ? 'YES' : 'NO', 'Are you the first person in your family to attend college?',  array('col-md-6', 'col-sm-12'));
             $ret[] = '<hr class="clear" />';
