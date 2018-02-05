@@ -59,7 +59,7 @@ class MSDSocial{
         function add_admin_scripts() {
             global $current_screen;
             if($current_screen->id == 'settings_page_msdsocial-options'){
-                wp_enqueue_script('bootstrap-jquery','//maxcdn.bootstrapcdn.com/bootstrap/latest/js/bootstrap.min.js',array('jquery'),$this->ver,TRUE);
+                wp_enqueue_script('bootstrap-jquery','//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js',array('jquery'),$this->ver,TRUE);
                 wp_enqueue_script('timepicker-jquery',$this->the_url.'lib/js/jquery.timepicker.min.js',array('jquery'),$this->ver,FALSE);
                 wp_enqueue_script( 'jquery-ui-datepicker' );
                 wp_enqueue_script('msdsocial-jquery',$this->the_url.'lib/js/plugin-jquery.js',array('jquery','timepicker-jquery'),$this->ver,TRUE);
@@ -70,7 +70,7 @@ class MSDSocial{
         function add_admin_styles() {
             global $current_screen;
             if($current_screen->id == 'settings_page_msdsocial-options'){
-                wp_register_style('bootstrap-style','//maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css');
+                wp_register_style('bootstrap-style','//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css');
                 wp_register_style('font-awesome-style','//maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css',array('bootstrap-style'));
                 wp_register_style('timepicker-style',$this->the_url.'lib/css/jquery.timepicker.css');
                 wp_enqueue_style('font-awesome-style');

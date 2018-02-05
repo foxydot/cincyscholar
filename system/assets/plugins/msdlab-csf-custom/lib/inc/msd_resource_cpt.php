@@ -137,7 +137,7 @@ if (!class_exists('MSDResourceCPT')) {
         function add_admin_scripts() {
             global $current_screen;
             if($current_screen->post_type == $this->cpt){
-                wp_enqueue_script('bootstrap-jquery','//maxcdn.bootstrapcdn.com/bootstrap/latest/js/bootstrap.min.js',array('jquery'),$this->ver,TRUE);
+                wp_enqueue_script('bootstrap-jquery','//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js',array('jquery'),$this->ver,TRUE);
                 wp_enqueue_script('timepicker-jquery',plugin_dir_url(dirname(__FILE__)).'/js/jquery.timepicker.min.js',array('jquery'),$this->ver,FALSE);
                 wp_enqueue_script( 'jquery-ui-datepicker' );
                 wp_enqueue_script('msdsocial-jquery',plugin_dir_url(dirname(__FILE__)).'/js/plugin-jquery.js',array('jquery','timepicker-jquery'),$this->ver,TRUE);
