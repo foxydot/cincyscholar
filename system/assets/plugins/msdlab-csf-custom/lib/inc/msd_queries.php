@@ -28,9 +28,6 @@ class MSDLAB_Queries{
         if ( ! empty( $_POST ) ) { //add nonce
             $this->post_vars = $_POST;
         }
-        if(class_exists('MSDLAB_FormControls')){
-            $this->form = new MSDLAB_FormControls();
-        }
     }
 
 
@@ -281,7 +278,7 @@ class MSDLAB_Queries{
         $sql = "SELECT * FROM applicationprocess,processsteps WHERE applicationprocess.ApplicantId = ".$applicant_id." AND applicationprocess.ProcessStepId = processsteps.StepId";
         $result = $wpdb->get_results($sql);
         if(count($result)>0) {
-            $hdr = $this->form->section_header('ProcessHeader', 'Application Process');
+            $hdr = MSDLAB_FormControls::section_header('ProcessHeader', 'Application Process');
             foreach ($result AS $r) {
                 $progress[] = $r->StepName;
             }
