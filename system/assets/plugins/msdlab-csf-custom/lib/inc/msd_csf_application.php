@@ -480,10 +480,11 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $ret['AttachmentCopy'] = '<div class="copy col-sm-12">Please upload all documents in PDF format.</div>';
                             $ret['AttachmentDisplay'] = $this->form->attachment_display('AttachmentDisplay',$documents,"Your Uploaded Documents");
                             $ret[] = '<div class="row">';
-                            $ret['Attachment_Resume'] = $this->form->field_upload('Attachment_Resume','','Upload Resume',null,null,array('col-sm-3'));
-                            $ret['Attachment_Transcript'] = $this->form->field_upload('Attachment_Transcript','','Upload Transcript',null,null,array('col-sm-3'));
-                            $ret['Attachment_FAFSA'] = $this->form->field_upload('Attachment_FAFSA','','Upload FAFSA Need Evaluation Document',null,null,array('col-sm-3'));
-                            $ret['Attachment_FinancialAidAward'] = $this->form->field_upload('Attachment_FinancialAidAward','','Upload Financial Aid Award Letter From College',null,null,array('col-sm-3'));
+                            $ret['Attachment_Resume'] = $this->form->field_upload('Attachment_Resume','','Upload Resume',null,null,array('col-sm-4'));
+                            $ret['Attachment_Transcript'] = $this->form->field_upload('Attachment_Transcript','','Upload Transcript',null,null,array('col-sm-4'));
+                            $ret['Attachment_FAFSA'] = $this->form->field_upload('Attachment_FAFSA','','Upload FAFSA Need Evaluation Document',null,null,array('col-sm-4'));
+                            $ret['Attachment_FinancialAidAward'] = $this->form->field_upload('Attachment_FinancialAidAward','','Upload Financial Aid Award Letter From College',null,null,array('col-sm-6'));
+                            $ret['Attachment_Additional'] = $this->form->field_upload('Attachment_Additional','','Upload Additional Documents Requested by CSF',null,null,array('col-sm-6'));
                             $ret[] = '</div><br /><br />';
                             $ret['SRHeader'] = '<h3>Student Responsibility Agreements</h3>';
                             $ret['Agreements_ApplicantId'] = $this->form->field_hidden("Agreements_ApplicantId", $applicant_id);
