@@ -672,7 +672,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
 
             $ret[] = '<div class="row">';
             $ret['ApplicantCollege_CollegeId'] = $this->form->field_result('ApplicantCollege_CollegeId', $results['college']->CollegeId ? $this->queries->get_college_by_id($results['college']->CollegeId) : '', 'College Applied To or Attending',  array('required', 'col-md-6', 'col-sm-12'));
-            if($result->CollegeId == 343){
+            if($results['college']->CollegeId == 343){
                 $ret['Applicant_OtherSchool'] = $this->form->field_result('Applicant_OtherSchool', $results['personal']->OtherSchool?$results['personal']->OtherSchool:'','Name of Unlisted Institution',array('col-sm-12','required')); //how are we handling "other" in the new DB?
             }
             $ret['Applicant_MajorId'] = $this->form->field_result('Applicant_MajorId', $results['personal']->MajorId ? $this->queries->get_major_by_id($results['personal']->MajorId) : '', 'Intended Major (If Uncertain, select Undecided)', array('required', 'col-md-6', 'col-sm-12'));
@@ -680,7 +680,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
             $ret['Applicant_FirstGenerationStudent'] = $this->form->field_result('Applicant_FirstGenerationStudent', $results['personal']->FirstGenerationStudent ? 'YES' : 'NO', 'Are you the first person in your family to attend college?',  array('col-md-6', 'col-sm-12'));
             $ret[] = '<hr class="clear" />';
             $ret['Applicant_HighSchoolId'] = $this->form->field_result('Applicant_HighSchoolId', $results['personal']->HighSchoolId ? $this->queries->get_highschool_by_id($results['personal']->HighSchoolId) : '', "High School Attended",  array('required', 'col-md-6', 'col-sm-12'));
-            $ret['Applicant_HighSchoolGraduationDate'] = $this->form->field_result('Applicant_HighSchoolGraduationDate', $results['personal']->HighSchoolGraduationDate ? date("Y",strtotime($result->HighSchoolGraduationDate)) : '', "Year of High School Graduation", array('required', 'col-md-6', 'col-sm-12'));
+            $ret['Applicant_HighSchoolGraduationDate'] = $this->form->field_result('Applicant_HighSchoolGraduationDate', $results['personal']->HighSchoolGraduationDate ? date("Y",strtotime($results['personal']->HighSchoolGraduationDate)) : '', "Year of High School Graduation", array('required', 'col-md-6', 'col-sm-12'));
             $ret['Applicant_HighSchoolGPA'] = $this->form->field_result('Applicant_HighSchoolGPA', $results['personal']->HighSchoolGPA ? $results['personal']->HighSchoolGPA : null, 'HS Weighted GPA', array('required', 'col-md-6', 'col-sm-12'));
             $ret['Applicant_PlayedHighSchoolSports'] = $this->form->field_result('Applicant_PlayedHighSchoolSports', $results['personal']->PlayedHighSchoolSports ? 'YES' : 'NO', 'Did you participate in sports while attending High School?',array('col-md-6', 'col-sm-12'));
             $ret['Applicant_Activities'] = $this->form->field_result('Applicant_Activities',$results['personal']->Activities ? $results['personal']->Activities : '',"Please list any activities participated in, with years active.",array('col-md-12'));
@@ -697,7 +697,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                 $ret['ApplicantFinancial_SpouseIncome'] = $this->form->field_result('ApplicantFinancial_SpouseIncome', $results['financial']->SpouseIncome ? $results['financial']->SpouseIncome : null, "Spouse Annual Income",array('col-md-6', 'col-sm-12'));
 
                 $ret['ApplicantFinancial_Homeowner'] = $this->form->field_result('ApplicantFinancial_Homeowner', $results['financial']->Homeowner ? 'YES' : 'NO', "Is the applicant a homeowner?", array('required', 'col-md-12'));
-                if($result->Homeowner) {
+                if($results['financial']->Homeowner) {
                     $ret['ApplicantFinancial_HomeValue'] = $this->form->field_result('ApplicantFinancial_HomeValue', $results['financial']->HomeValue ? $results['financial']->HomeValue : null, "Current Value",  array('col-md-6', 'col-sm-12'));
                     $ret['ApplicantFinancial_AmountOwedOnHome'] = $this->form->field_result('ApplicantFinancial_AmountOwedOnHome', $results['financial']->AmountOwedOnHome ? $results['financial']->AmountOwedOnHome : null, "Amount Owed",  array('col-md-6', 'col-sm-12'));
                 }
@@ -707,14 +707,12 @@ if (!class_exists('MSDLab_CSF_Application')) {
                 $ret['FinancialInfoCopy'] = '<div class="copy col-sm-12">You are a <strong>Dependent Applicant</strong>.</div>';
                 $ret['Guardian_GuardianFullName1'] = $this->form->field_result('Guardian_GuardianFullName1', $results['financial']->GuardianFullName1 ? $results['financial']->GuardianFullName1 : null, "First Guardian Full Name", array('required', 'col-md-6', 'col-sm-12'));
                 $ret['Guardian_GuardianEmployer1'] = $this->form->field_result('Guardian_GuardianEmployer1', $results['financial']->GuardianEmployer1 ? $results['financial']->GuardianEmployer1 : null, "Place of Employment", array('required', 'col-md-6', 'col-sm-12'));
-                if(strlen($result->GuardianFullName2 > 1)) {
-                    $ret['Guardian_GuardianFullName2'] = $this->form->field_result('Guardian_GuardianFullName2', $results['financial']->GuardianFullName2 ? $results['financial']->GuardianFullName2 : null, "Second Guardian Full Name", array('col-md-6', 'col-sm-12'));
-                    $ret['Guardian_GuardianEmployer2'] = $this->form->field_result('Guardian_GuardianEmployer2', $results['financial']->GuardianEmployer2 ? $results['financial']->GuardianEmployer2 : null, "Place of Employment", array('col-md-6', 'col-sm-12'));
-                }
+                $ret['Guardian_GuardianFullName2'] = $this->form->field_result('Guardian_GuardianFullName2', $results['financial']->GuardianFullName2 ? $results['financial']->GuardianFullName2 : null, "Second Guardian Full Name", array('col-md-6', 'col-sm-12'));
+                $ret['Guardian_GuardianEmployer2'] = $this->form->field_result('Guardian_GuardianEmployer2', $results['financial']->GuardianEmployer2 ? $results['financial']->GuardianEmployer2 : null, "Place of Employment", array('col-md-6', 'col-sm-12'));
                 $ret['Applicant_Employer'] = $this->form->field_result('Applicant_Employer', $results['personal']->Employer ? $results['personal']->Employer : null, "Applicant Employer", array('col-md-6', 'col-sm-12'));
                 //property
                 $ret['Guardian_Homeowner'] = $this->form->field_result('Guardian_Homeowner', $results['financial']->Homeowner ? 'YES' : 'NO', "Do the applicant's parents own their home?",array('required', 'col-md-12'));
-                if($result->Homeowner) {
+                if($results['financial']->Homeowner) {
                     $ret['Guardian_HomeValue'] = $this->form->field_result('Guardian_HomeValue', $results['financial']->HomeValue ? $results['financial']->HomeValue : null, "Current Value",  array('col-md-6', 'col-sm-12'));
                     $ret['Guardian_AmountOwedOnHome'] = $this->form->field_result('Guardian_AmountOwedOnHome', $results['financial']->AmountOwedOnHome ? $results['financial']->AmountOwedOnHome : null, "Amount Owed",  array('col-md-6', 'col-sm-12'));
                 }
