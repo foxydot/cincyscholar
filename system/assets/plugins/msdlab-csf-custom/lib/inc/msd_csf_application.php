@@ -152,7 +152,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     $form_page_number = isset($_POST['form_page_number']) ? $_POST['form_page_number'] : 1;
                     if($this->queries->get_user_application_status()>1){$form_page_number = $step = 7;}
                     if(current_user_can('review_application')){
-                        $form_page_number = $step = 7;
+                        $form_page_number = isset($_POST['form_page_number']) ? $_POST['form_page_number'] : 7;
                         $applicant_id = $_GET['applicant_id'];
                     }
                     $step = isset($_POST['form_page_next']) ? $_POST['form_page_next'] : 1;
@@ -587,7 +587,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
         }
 });';
 
-                    if ($form_page_number != 1 && $form_page_number != 7){
+                    if (($form_page_number != 1 && $form_page_number != 7) || current_user_can('review_application')){
                         $ftr['prev'] = $this->form->field_button('prevBtn', $backBtnTitle, array('prev', 'btn'),'submit',false);
                     }
                     if($form_page_number != 7) {
