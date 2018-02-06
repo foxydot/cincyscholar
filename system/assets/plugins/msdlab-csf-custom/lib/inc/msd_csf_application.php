@@ -587,7 +587,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
         }
 });';
 
-                    if (($form_page_number != 1 && $form_page_number != 7) || current_user_can('review_application')){
+                    if (($form_page_number != 1 && $form_page_number != 7)){
                         $ftr['prev'] = $this->form->field_button('prevBtn', $backBtnTitle, array('prev', 'btn'),'submit',false);
                     }
                     if($form_page_number != 7) {
