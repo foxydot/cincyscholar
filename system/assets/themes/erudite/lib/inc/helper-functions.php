@@ -398,3 +398,32 @@ function sk_excerpts_search_page() {
 function sk_show_excerpts() {
     return 'excerpts';
 }
+
+/** WOJO */
+//always add banner
+
+add_action('msdlab_title_area','msdlab_do_wojo_banner' );
+function msdlab_do_wojo_banner(){
+    global $post, $page_banner_metabox;
+    $wojo_page = get_page_by_path('tony-wojo');
+    if(get_topmost_parent($post->ID) != $wojo_page->ID){return false;}
+    if(get_topmost_parent($post->ID) == $post->ID){return false;}
+    $page_banner_metabox->the_meta($wojo_page->ID);
+    $bannerclass = $page_banner_metabox->get_the_value('bannerclass');
+    $banneralign = $page_banner_metabox->get_the_value('banneralign');
+    $bannerimage = $page_banner_metabox->get_the_value('bannerimage');
+    $bannercontent = apply_filters('the_content', $page_banner_metabox->get_the_value('bannercontent'));
+    $background = strlen($bannerimage) > 0 ? ' style="background-image:url(' . $bannerimage . ')"' : '';
+    print '<div class="banner clearfix ' . $banneralign . ' ' . $bannerclass . '">';
+    print '<div class="wrap"' . $background . '>';
+    print '<div class="gradient">';
+    print '<div class="bannertext">';
+    print genesis_do_post_title();
+    if($bannercontent != '') {
+        print '<div class="bannercontent">' . $bannercontent . '</div>';
+    }
+    print '</div>';
+    print '</div>';
+    print '</div>';
+    print '</div>';
+}
