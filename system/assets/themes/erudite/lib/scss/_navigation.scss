@@ -333,19 +333,16 @@
 
 /* Sidebar nav */
 
-.widget_advanced_menu{
+.widget_nav_menu{
   .menu{
     display: block;
     >li{
-      display: none;
-      &.current-menu-item,&.current-menu-ancestor{
-        display: block;
         a{
           text-decoration: none;
           font-size: 22px;
           font-size: 2.2rem;
           border-bottom: 0;
-          color: $medgrey;
+          color: $yellow;
         }
         ul.sub-menu{
           max-height: 0;
@@ -405,7 +402,7 @@
             }
           }
         }
-      }
+
     }
   }
 }
