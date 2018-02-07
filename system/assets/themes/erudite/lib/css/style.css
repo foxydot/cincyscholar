@@ -1811,6 +1811,12 @@ form .documents.grid {
         font-size: 2em; }
 
 @media only screen and (min-width: 768px) {
+  .partition-tony-wojo .page-title-area {
+    margin-top: 9em; }
+  .partition-tony-wojo .site-inner {
+    margin-top: 1em; } }
+
+@media only screen and (min-width: 768px) {
   /* Accessible Menu
   --------------------------------------------- */
   .site-inner {

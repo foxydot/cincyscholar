@@ -101,3 +101,23 @@ form{
     }
   }
 }
+.partition-tony-wojo {
+  .page-title-area {
+    .banner{
+      .wrap{
+        .gradient{
+        }
+      }
+    }
+  }
+}
+@media only screen and (min-width: 768px) {
+  .partition-tony-wojo {
+    .page-title-area {
+      margin-top: 9em;
+    }
+    .site-inner {
+      margin-top: 1em;
+    }
+  }
+}
