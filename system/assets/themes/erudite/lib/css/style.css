@@ -869,38 +869,6 @@ img.alignright,
 
 /* ## Gravity Forms
 --------------------------------------------- */
-.site-inner .gform_wrapper {
-  margin: 0 -1em 0 0;
-  max-width: 101%; }
-  .site-inner .gform_wrapper .gform_heading .gform_description {
-    color: #3f829c;
-    font-weight: 600; }
-    .site-inner .gform_wrapper .gform_heading .gform_description a {
-      color: #3f829c; }
-  .site-inner .gform_wrapper .gform_body li.gfield {
-    background: #FFF;
-    margin-bottom: 0.5em; }
-    .site-inner .gform_wrapper .gform_body li.gfield label {
-      padding: 0 1em;
-      font-size: 0.7em;
-      font-weight: 400; }
-    .site-inner .gform_wrapper .gform_body li.gfield .ginput_container input, .site-inner .gform_wrapper .gform_body li.gfield .ginput_container textarea {
-      border: 0;
-      background: #FFF; }
-    .site-inner .gform_wrapper .gform_body li.gfield.white {
-      background: none; }
-  .site-inner .gform_wrapper .gform_footer input.button,
-  .site-inner .gform_wrapper .gform_footer input[type=submit] {
-    width: 50%;
-    display: block; }
-
-.site-inner .sidebar .gform_wrapper .gform_body li.gfield {
-  background: #eaf3fb; }
-  .site-inner .sidebar .gform_wrapper .gform_body li.gfield .ginput_container input, .site-inner .sidebar .gform_wrapper .gform_body li.gfield .ginput_container textarea {
-    background: rgba(234, 243, 251, 0); }
-  .site-inner .sidebar .gform_wrapper .gform_body li.gfield.white {
-    background: none; }
-
 /* # Site Header
 ---------------------------------------------------------------------------------------------------- */
 .site-header {
