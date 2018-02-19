@@ -239,6 +239,7 @@
     text-transform: uppercase;
     font-weight: 600;
     .menu-item{
+      max-width: 14em;
       a{
         text-transform: uppercase;
         letter-spacing: 1px;
@@ -252,6 +253,9 @@
     }
     .menu-item{
       .sub-menu{
+        .menu-item{
+          max-width: 100em;
+        }
         a, a:hover, a:focus{
           border-bottom: 0;
         }
