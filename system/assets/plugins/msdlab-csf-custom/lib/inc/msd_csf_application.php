@@ -541,7 +541,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $ret['InformationSharingCopy'] = '<td class="table-cell">Do you authorize the CSF to share the information on your scholarship application with other foundations looking for prospective recipients?</td>';
                             $ret['Applicant_InformationSharingAllowed'] = '<td class="table-cell">'.$this->form->field_boolean('Applicant_InformationSharingAllowed', $result->InformationSharingAllowed ? $result->InformationSharingAllowed : 0,'',array('required')).'</td>';
                             if(!$this->queries->is_indy($applicant_id) && !$this->queries->is_adult($applicant_id)){
-                                $ret['Guardian_InformationSharingAllowedByGuardian'] = '<td class="table-cell">'.$this->form->field_boolean('Guardian_InformationSharingAllowedByGuardian', $result->InformationSharingAllowedByGuardian ? $result->Guardian_InformationSharingAllowedByGuardian : 0,'',array('required')).'</td>';
+                                $ret['Guardian_InformationSharingAllowedByGuardian'] = '<td class="table-cell">'.$this->form->field_boolean('Guardian_InformationSharingAllowedByGuardian', $result->InformationSharingAllowedByGuardian ? $result->InformationSharingAllowedByGuardian : 0,'',array('required')).'</td>';
                             }
                             $ret[] = '</tr>';
                             $ret['SRATableFtr'] = '</table>';
@@ -781,9 +781,9 @@ if (!class_exists('MSDLab_CSF_Application')) {
 
             $ret[] = '<tr class="table-row">';
             $ret['InformationSharingCopy'] = '<td class="table-cell">Do you authorize the CSF to share the information on your scholarship application with other foundations looking for prospective recipients?</td>';
-            $ret['Applicant_InformationSharingAllowed'] = '<td class="table-cell">'.$this->form->field_result('Applicant_InformationSharingAllowed', $results['agreements']->InformationSharingAllowed ? 'YES' : 'NO').'</td>';
+            $ret['Applicant_InformationSharingAllowed'] = '<td class="table-cell">'.$this->form->field_result('Applicant_InformationSharingAllowed', $results['applicant']->InformationSharingAllowed ? 'YES' : 'NO').'</td>';
             if(!$this->queries->is_indy($applicant_id) && !$this->queries->is_adult($applicant_id)){
-                $ret['Guardian_InformationSharingAllowedByGuardian'] = '<td class="table-cell">'.$this->form->field_result('Guardian_InformationSharingAllowedByGuardian', $results['agreements']->InformationSharingAllowedByGuardian ? 'YES' : 'NO').'</td>';
+                $ret['Guardian_InformationSharingAllowedByGuardian'] = '<td class="table-cell">'.$this->form->field_result('Guardian_InformationSharingAllowedByGuardian', $results['guardian']->InformationSharingAllowedByGuardian ? 'YES' : 'NO').'</td>';
             }
             $ret[] = '</tr>';
             $ret['SRATableFtr'] = '</table>';
