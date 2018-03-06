@@ -9,9 +9,9 @@ jQuery(document).ready(function($) {
 		var cont = $(this);
 		var list = $(this).attr('class').split(/\s+/);
 		var link = $(this).find('a');
-		console.log(list);
+		//console.log(list);
 		$.each(list, function(index, item) {
-			console.log(item);
+			//console.log(item);
 			if (item.match(/fa-(.*)/)) {
 				//do something
 				link.addClass('fa');

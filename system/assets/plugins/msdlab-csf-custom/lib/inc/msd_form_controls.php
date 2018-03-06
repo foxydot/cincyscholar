@@ -23,6 +23,12 @@ class MSDLAB_FormControls{
     }
 
     public function __construct() {
+
+        add_action( 'wp_ajax_remove_pdf', array(&$this,'delete_file') );
+        add_action( 'wp_ajax_nopriv_remove_pdf', array(&$this,'delete_file') );
+        add_action( 'wp_ajax_add_pdf', array(&$this,'upload_file') );
+        add_action( 'wp_ajax_nopriv_add_pdf', array(&$this,'upload_file') );
+
         if(class_exists('MSDLAB_Queries')){
             $this->queries = new MSDLAB_Queries();
         }
@@ -211,8 +217,53 @@ class MSDLAB_FormControls{
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
 
-
     public function field_upload($id, $value, $title = "", $placeholder = null, $validation = null, $class = array('medium')){
+        if(is_object($value)){
+            $uploadshow = ' hidden';
+            $attachment_id = $value->AttachmentId;
+        } else {
+            $fileshow = ' hidden';
+            $attachment_id = $id.'_delete_btn';
+        }
+        $type = isset($validation['type'])?$validation['type']:'file';
+        $attachment_types = array_flip($this->queries->get_attachment_type_ids());
+        $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$title.'</label>');
+        $filename = array_pop(explode('/',$value->FilePath));
+        $fileext = strtolower(array_pop(explode('.',$filename)));
+        $file_display =  '<div class="document'.$fileshow.'">
+                    <a href="'.$value->FilePath.'" title="'.$filename.'"><i class="fa fa-file-'.$fileext.'-o" aria-hidden="true"></i><br /><span class="filename">'.$filename.'</span><br><span class="filecat">'.$attachment_types[$value->AttachmentTypeId].'</span></a>
+                    <button class="file-delete" value="'.$value->FilePath.'" id="'.$attachment_id.'">Delete</button>
+                </div>';
+        $form_field = '<div class="box'.$uploadshow.'">
+        <div class="box__input">
+			<svg class="box__icon" xmlns="http://www.w3.org/2000/svg" width="50" height="43" viewBox="0 0 50 43"><path d="M48.4 26.5c-.9 0-1.7.7-1.7 1.7v11.6h-43.3v-11.6c0-.9-.7-1.7-1.7-1.7s-1.7.7-1.7 1.7v13.2c0 .9.7 1.7 1.7 1.7h46.7c.9 0 1.7-.7 1.7-1.7v-13.2c0-1-.7-1.7-1.7-1.7zm-24.5 6.1c.3.3.8.5 1.2.5.4 0 .9-.2 1.2-.5l10-11.6c.7-.7.7-1.7 0-2.4s-1.7-.7-2.4 0l-7.1 8.3v-25.3c0-.9-.7-1.7-1.7-1.7s-1.7.7-1.7 1.7v25.3l-7.1-8.3c-.7-.7-1.7-.7-2.4 0s-.7 1.7 0 2.4l10 11.6z"></path></svg>
+			<input type="file" name="'.$id.'_input[]" id="'.$id.'_input" class="box__file">
+			<label for="'.$id.'_input"><strong>Choose a file</strong><span class="box__dragndrop"> or drag it here</span>.</label>
+			<button class="file-upload box__button">Upload</button>
+		</div>
+		<div class="box__uploading">Uploading…</div>
+		<div class="box__success">Done!</div>
+		<div class="box__error">Error!. <a href="?" class="box__restart" role="button">Try again!</a></div>
+	<input type="hidden" name="ajax" value="1">
+	</div>';
+        $form_field = apply_filters('msdlab_csf_'.$id.'_field',$form_field);
+        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
+        $ret = '<div id="'.$id.'_wrapper" class="upload-wrapper '.$class.'">'.$label.$file_display.$form_field.'</div>';
+        return apply_filters('msdlab_csf_'.$id.'', $ret);
+    }
+
+    public function get_files_of_type($type,$data){
+        $attachment_types = array_flip($this->queries->get_attachment_type_ids());
+        foreach($data AS $d){
+            if($attachment_types[$d->AttachmentTypeId] == $type){
+                $ret = $d;
+            }
+        }
+        return $ret;
+    }
+
+
+    /*public function field_upload($id, $value, $title = "", $placeholder = null, $validation = null, $class = array('medium')){
         if(is_null($value)){
             $value = $_POST[$id.'_input'];
         }
@@ -223,7 +274,7 @@ class MSDLAB_FormControls{
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
-    }
+    }*/
 
     public function field_button($id,$title = "Save", $class = array('submit'), $type = "submit", $validate = true){
         if(!$validate){$atts = ' formnovalidate ';}
@@ -254,6 +305,161 @@ class MSDLAB_FormControls{
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
 
+    public function file_management_front_end($id_prepend,$documents,$class){
+        $ret[$id_prepend.'Resume'] = $this->field_upload($id_prepend.'Resume',$this->get_files_of_type('Resume',$documents),'Resume',null,null,array_merge(array('col-sm-offset-1'),$class));
+        $ret[$id_prepend.'Transcript'] = $this->field_upload($id_prepend.'Transcript',$this->get_files_of_type('Transcript',$documents),'Transcript',null,null,$class);
+        $ret[$id_prepend.'FAFSA'] = $this->field_upload($id_prepend.'FAFSA',$this->get_files_of_type('FAFSA',$documents),'FAFSA Need Evaluation Document',null,null,$class);
+        $ret[$id_prepend.'FinancialAidAward'] = $this->field_upload($id_prepend.'FinancialAidAward',$this->get_files_of_type('FinancialAidAward',$documents),'Financial Aid Award Letter From College',null,null,$class);
+        $ret[$id_prepend.'Additional'] = $this->field_upload($id_prepend.'Additional','','Additional Documents',null,null,$class);
+
+        return implode("\n",apply_filters('msdlab_csf_file_management_front_end',$ret));
+    }
+
+    public function delete_file(){
+        global $wpdb;
+        $filename = ( $_POST['filename'] );
+        $ret = array();
+        if(file_exists($filename)){
+            $ret['file_exists'] = true;
+            if(unlink($filename)){
+                $ret['file_deleted'] = true;
+            } else {
+                $ret['file_deleted'] = false;
+            }
+        } else {
+            $ret['file_exists'] = false;
+        }
+        $attachment_id = ( $_POST['attachment_id'] );
+        $sql = 'DELETE FROM `attachment` WHERE `AttachmentId` = '.$attachment_id.' LIMIT 1;';
+        if($result = $wpdb->get_results($sql)){
+            $ret['database_deleted'] = true;
+        }
+        print(json_encode($ret));
+        wp_die();
+    }
+
+    public function upload_file(){
+        global $wpdb;
+        $filename = ( $_POST['filename'] );
+        $ret = array();
+        if(file_exists($filename)){
+            $ret['file_exists'] = true;
+            if(unlink($filename)){
+                $ret['file_deleted'] = true;
+            } else {
+                $ret['file_deleted'] = false;
+            }
+        } else {
+            $ret['file_exists'] = false;
+        }
+        $attachment_id = ( $_POST['attachment_id'] );
+        $sql = 'DELETE FROM `attachment` WHERE `AttachmentId` = '.$attachment_id.' LIMIT 1;';
+        if($result = $wpdb->get_results($sql)){
+            $ret['database_deleted'] = true;
+        }
+        print(json_encode($ret));
+        wp_die();
+    }
+
+    public function get_file_manager_ajax($id_prepend,$documents){
+        $ret = array();
+        $ret['del'] = "$('.file-delete').click(function(e){
+                e.preventDefault();
+                var my_upload_wrapper = $(this).parents('.upload-wrapper');
+                var ajaxurl = '". admin_url( 'admin-ajax.php' ) ."';
+                var myfn = $(this).attr('value');
+                var att_id = $(this).attr('id');
+                var data = {
+                    action: 'remove_pdf',
+                    filename: myfn,
+                    attachment_id: att_id
+                    }
+                $.post(ajaxurl, data, function(response){
+                    my_upload_wrapper.find('.document').addClass('hidden');
+                    my_upload_wrapper.find('.box').removeClass('hidden');
+                    console.log(response);
+                },'json');
+             });";
+
+        $ret['uploader'] = "var isAdvancedUpload = function() {
+            var div = document.createElement('div');
+            return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window;
+            }();
+            var the_form = $('.box');
+            var the_input;
+            if (isAdvancedUpload) {
+              the_form.addClass('has-advanced-upload');
+            
+              var droppedFiles = false;
+            
+              the_form.on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                the_input = $(this).find('input[type=\"file\"]').prop('fileList', droppedFiles);
+              })
+              .on('dragover dragenter', function() {
+                $(this).addClass('is-dragover');
+              })
+              .on('dragleave dragend drop', function() {
+                $(this).removeClass('is-dragover');
+              })
+              .on('drop', function(e) {
+                droppedFiles = e.originalEvent.dataTransfer.files;
+                $(this).find('.file-upload').trigger('click');
+              });
+            } else {
+                the_input.on('change', function(e) { // when drag & drop is NOT supported
+                    $(this).siblings('.file-upload').trigger('click');
+                });
+            }
+            $('.file-upload').on('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (the_form.hasClass('is-uploading')) return false;
+                the_input = $(this).siblings('input[type=\"file\"]').prop('fileList', droppedFiles);
+                $(this).parents($('.box')).addClass('is-uploading').removeClass('is-error');
+                if (isAdvancedUpload) {
+                    // ajax for modern browsers
+                    var ajaxurl = '". admin_url( 'admin-ajax.php' ) ."';
+                    var ajaxData = new FormData();
+                    if (droppedFiles) {
+                        $.each( droppedFiles, function(i, file) {
+                          ajaxData.append( the_input.attr('name'), file );
+                        });
+                      }
+                      var data = {
+                    filename: 'myfn',
+                    attachment_id: 'att_id'
+                    }
+                     $.ajax({
+                        url: ajaxurl,
+                        action: 'add_pdf',
+                        type: 'POST',
+                        data: data,
+                        dataType: 'json',
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        complete: function() {
+                          the_input.parents($('.box')).removeClass('is-uploading');
+                        },
+                        success: function(data) {
+                          the_input.parents($('.box')).addClass( data.success == true ? 'is-success' : 'is-error' );
+                          if (!data.success) the_errorMsg.text(data.error);
+                        },
+                        error: function(data) {
+                          console.log(data.error);
+                        }
+                      });
+                } else {
+                    // ajax for legacy browsers
+                }
+            });
+            ";
+
+        return implode("\n",apply_filters('msdlab_csf_file_management_ajax',$ret));
+    }
+
     public function attachment_display($id, $data, $title = "", $class = "", $display = "all", $style = "grid"){
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_result">'.$title.'</label>');
         $attachment_types = array_flip($this->queries->get_attachment_type_ids());
@@ -278,3 +484,57 @@ class MSDLAB_FormControls{
     }
 
 }
+/*
+
+
+
+
+
+
+
+
+
+
+              } else {
+                // ajax for legacy browsers
+                var iframeName  = 'uploadiframe' + new Date().getTime();
+                    the_iframe   = $('<iframe name=\"' + iframeName + '\" style=\"display: none;\"></iframe>');
+
+                  $('body').append(the_iframe);
+                  the_form.attr('target', iframeName);
+
+                  the_iframe.one('load', function() {
+                    var data = JSON.parse(the_iframe.contents().find('body' ).text());
+                    the_form
+                      .removeClass('is-uploading')
+                      .addClass(data.success == true ? 'is-success' : 'is-error')
+                      .removeAttr('target');
+                    if (!data.success) the_errorMsg.text(data.error);
+                    the_form.removeAttr('target');
+                    the_iframe.remove();
+                  });
+              }
+
+
+
+
+                    $.ajax({
+                        url: ajaxurl,
+                        action: 'upload_pdf',
+                        type: 'POST',
+                        data: ajaxData,
+                        dataType: 'json',
+                        cache: false,
+                        contentType: 'application/json',
+                        processData: false,
+                        complete: function() {
+                          the_input.parents($('.box')).removeClass('is-uploading');
+                        },
+                        success: function(data) {
+                          the_input.parents($('.box')).addClass( data.success == true ? 'is-success' : 'is-error' );
+                          if (!data.success) the_errorMsg.text(data.error);
+                        },
+                        error: function(data) {
+                          console.log(data.error);
+                        }
+                      });

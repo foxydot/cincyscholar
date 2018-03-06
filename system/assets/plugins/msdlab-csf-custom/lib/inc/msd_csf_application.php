@@ -474,18 +474,15 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             //fields
                             $fwdBtnTitle = "Save & Review";
                             $ret['form_page_number'] = $this->form->field_utility('form_page_number', 5);
-
                             $ret['hdrAgreements'] = $this->form->section_header('hdrAgreements', 'Documents and Agreements');
                             $ret['Attachment_ApplicantId'] = $this->form->field_hidden("Attachment_ApplicantId", $applicant_id);
                             $ret['AttachmentCopy'] = '<div class="copy col-sm-12">Please upload all documents in PDF format.</div>';
-                            $ret['AttachmentDisplay'] = $this->form->attachment_display('AttachmentDisplay',$documents,"Your Uploaded Documents");
+
                             $ret[] = '<div class="row">';
-                            $ret['Attachment_Resume'] = $this->form->field_upload('Attachment_Resume','','Upload Resume',null,null,array('col-sm-4'));
-                            $ret['Attachment_Transcript'] = $this->form->field_upload('Attachment_Transcript','','Upload Transcript',null,null,array('col-sm-4'));
-                            $ret['Attachment_FAFSA'] = $this->form->field_upload('Attachment_FAFSA','','Upload FAFSA Need Evaluation Document',null,null,array('col-sm-4'));
-                            $ret['Attachment_FinancialAidAward'] = $this->form->field_upload('Attachment_FinancialAidAward','','Upload Financial Aid Award Letter From College',null,null,array('col-sm-6'));
-                            $ret['Attachment_Additional'] = $this->form->field_upload('Attachment_Additional','','Upload Additional Documents Requested by CSF',null,null,array('col-sm-6'));
+                            $ret[] = $this->form->file_management_front_end('Attachment_',$documents,array('col-sm-2'));
+                            $jquery[0] = $this->form->get_file_manager_ajax('Attachment_',$documents);
                             $ret[] = '</div><br /><br />';
+
                             $ret['SRHeader'] = '<h3>Student Responsibility Agreements</h3>';
                             $ret['Agreements_ApplicantId'] = $this->form->field_hidden("Agreements_ApplicantId", $applicant_id);
                             if(!$this->queries->is_indy($applicant_id) && !$this->queries->is_adult($applicant_id)){
