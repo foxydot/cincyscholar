@@ -110,15 +110,15 @@ input.error, select.error, textarea.error {
   text-align: center;
   padding: 0.5em; }
 
-.upload-wrapper .box.has-advanced-upload {
+.upload-wrapper .box {
   background-color: white;
   outline: 2px dashed #ddd;
   outline-offset: 0; }
-  .upload-wrapper .box.has-advanced-upload.is-dragover {
+  .upload-wrapper .box.is-dragover {
     background-color: gray; }
-  .upload-wrapper .box.has-advanced-upload .box__dragndrop {
+  .upload-wrapper .box .box__dragndrop {
     display: inline; }
-  .upload-wrapper .box.has-advanced-upload .box__icon {
+  .upload-wrapper .box .box__icon {
     width: 100%;
     height: 3em;
     fill: #bbb;
