@@ -285,11 +285,12 @@ class MSDLAB_FormControls{
     }
 
     public function file_management_front_end($id_prepend,$documents,$class){
-        $ret[$id_prepend.'Resume'] = $this->field_upload($id_prepend.'Resume',$this->get_files_of_type('Resume',$documents),'Resume',null,null,array_merge(array('col-sm-offset-1'),$class));
+        $ret[$id_prepend.'Resume'] = $this->field_upload($id_prepend.'Resume',$this->get_files_of_type('Resume',$documents),'Resume',null,null,$class);
         $ret[$id_prepend.'Transcript'] = $this->field_upload($id_prepend.'Transcript',$this->get_files_of_type('Transcript',$documents),'Transcript',null,null,$class);
         $ret[$id_prepend.'FAFSA'] = $this->field_upload($id_prepend.'FAFSA',$this->get_files_of_type('FAFSA',$documents),'FAFSA Need Evaluation Document',null,null,$class);
         $ret[$id_prepend.'FinancialAidAward'] = $this->field_upload($id_prepend.'FinancialAidAward',$this->get_files_of_type('FinancialAidAward',$documents),'Financial Aid Award Letter From College',null,null,$class);
-        $ret[$id_prepend.'Additional'] = $this->field_upload($id_prepend.'Additional','','Additional Documents',null,null,$class);
+        $ret[$id_prepend.'Additional'] = $this->field_upload($id_prepend.'Additional',$this->get_files_of_type('Additional',$documents),'Additional Document Requested by CSF',null,null,$class);
+        $ret[$id_prepend.'Additional2'] = $this->field_upload($id_prepend.'Additional2',$this->get_files_of_type('Additional2',$documents),'Additional Document Requested by CSF',null,null,$class);
 
         return implode("\n",apply_filters('msdlab_csf_file_management_front_end',$ret));
     }
