@@ -256,7 +256,7 @@ class MSDLAB_FormControls{
     }
 
     public function field_button($id,$title = "Save", $class = array('submit'), $type = "submit", $validate = true){
-        if(!$validate){$atts = ' formnovalidate ';}
+        if($validate == false){$atts = ' formnovalidate=formnovalidate ';}
         $form_field = apply_filters('msdlab_csf_'.$id.'_button','<input id="'.$id.'_button" type="'.$type.'" value="'.$title.'"'.$atts.'/>');
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$form_field.'</div>';

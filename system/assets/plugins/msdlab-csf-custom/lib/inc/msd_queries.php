@@ -136,7 +136,7 @@ class MSDLAB_Queries{
          }
          $nonce = $_POST['_wpnonce'];
          if(wp_verify_nonce( $nonce, $form_id ) === false) {
-             return 'no nonce';
+             return 'Application coould not be saved.';
          }
          foreach ($this->post_vars AS $k => $v){
              if(stripos($k,'_input')){
@@ -282,6 +282,7 @@ class MSDLAB_Queries{
             foreach ($result AS $r) {
                 $progress[] = $r->StepName;
             }
+            return false;
             return $hdr . '<ul><li>' . implode('</li>' . "\n" . '<li>', $progress) . '</li></ul>';
         }
     }

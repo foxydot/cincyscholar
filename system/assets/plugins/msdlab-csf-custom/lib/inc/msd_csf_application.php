@@ -150,7 +150,9 @@ if (!class_exists('MSDLab_CSF_Application')) {
             switch($form_id) {
                 case 'application':
                     $form_page_number = isset($_POST['form_page_number']) ? $_POST['form_page_number'] : 1;
-                    if($this->queries->get_user_application_status()>1){$form_page_number = $step = 6;}
+                    if($this->queries->get_user_application_status()>1){
+                        $form_page_number = isset($_POST['form_page_number']) ? $_POST['form_page_number'] : 6;
+                    }
                     if(current_user_can('review_application')){
                         $form_page_number = isset($_POST['form_page_number']) ? $_POST['form_page_number'] : 6;
                         $applicant_id = $_GET['applicant_id'];
@@ -215,21 +217,18 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     }
                     $this->gradyr_array = array_reverse($this->gradyr_array);
                     //build the jquery
-                    $jquery[] = "$('#prevBtn_button').click(function(e){
+                    $jquery['prev'] = "$('#prevBtn_button').click(function(e){
                         e.preventDefault();
                         $('#".$form_id." #form_page_next').val(".($form_page_number - 1).");
-                        if(".$form_page_number." == 6){
-                           $('#ApplicationProcess_Update').remove();
-                        }
                         $('#".$form_id."').submit();
                     });";
                     //can I bypass save on back button? do I want to?
-                    $jquery[] = "$('#saveBtn_button').click(function(e){ 
+                    $jquery['save'] = "$('#saveBtn_button').click(function(e){ 
                         e.preventDefault();
                         $('#".$form_id." #form_page_next').val(".($form_page_number + 1).");
                         $('#".$form_id."').submit();
                     });";
-                    $jquery[] = "$('.ui-toggle-btn').each(function(){
+                    $jquery['toggleinit'] = "$('.ui-toggle-btn').each(function(){
                         var toggled = $(this).parent().next('.switchable');
                         if($(this).find('input[type=checkbox]').is(':checked')){
                             toggled.slideDown(0);
@@ -237,7 +236,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             toggled.slideUp(0);
                         }
                     });";
-                    $jquery[] = "$('.ui-toggle-btn').click(function(){
+                    $jquery['toggleclick'] = "$('.ui-toggle-btn').click(function(){
                             var toggled = $(this).parent().next('.switchable');
                             if($(this).find('input[type=checkbox]').is(':checked')){
                                 toggled.slideDown(500);
@@ -245,7 +244,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                                 toggled.slideUp(500);
                             }
                         });";
-                    $jquery[] = "$('input[type=tel]').mask('(000) 000-0000');";
+                    $jquery['phone'] = "$('input[type=tel]').mask('(000) 000-0000');";
                     //jquery to handle file upload hider
                     //TODO: sort out js validation
                     $fwdBtnTitle = "Save & Continue";
@@ -480,7 +479,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
 
                             $ret[] = '<div class="row">';
                             $ret[] = $this->form->file_management_front_end('Attachment_',$documents,array('col-sm-2'));
-                            $jquery[0] = $this->form->get_file_manager_ajax('Attachment_',$documents);
+                            $jquery['filemanager'] = $this->form->get_file_manager_ajax('Attachment_',$documents);
                             $ret[] = '</div><br /><br />';
 
                             $ret['SRHeader'] = '<h3>Student Responsibility Agreements</h3>';
@@ -554,7 +553,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                                 $ret['hdrSignature'] = $this->form->section_header('hdrSignature', 'Digital Signature and Submission');
                                 $ret[] = '<div class="row">';
                                 $ret['SigCopy'] = '<div class="copy col-sm-12">Please confirm application is ready for submission by signing with your last name and the last 4 digits of your Social Security Number.</div>';
-                                $ret['Applicant_Signature'] = $this->form->field_textfield('Applicant_Signature','','Digital Signature','Lastname 0000',array('required' => 'required'),array('required','col-sm-12'));
+                                $ret['Applicant_Signature'] = $this->form->field_textfield('Applicant_Signature','','Digital Signature','Lastname 0000',array(),array('required','col-sm-12'));
                                 $ret[] = '</div>';
                                 //to set the process "in motion"
                                 $ret[] = '<div class="" id="ApplicationProcess_Update">';
