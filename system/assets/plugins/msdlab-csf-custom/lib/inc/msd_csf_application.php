@@ -548,7 +548,11 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $ret['Application'] = $this->get_the_user_application($applicant_id);
                             if($form_page_number == 6){
                                 $fwdBtnTitle = "Submit Application";
-                                $backBtnTitle = "Go Back";
+                                if($this->queries->get_user_application_status()>1){
+                                    $backBtnTitle = "Update Application";
+                                } else {
+                                    $backBtnTitle = "Go Back";
+                                }
                                 // Add Signing option
                                 $ret['hdrSignature'] = $this->form->section_header('hdrSignature', 'Digital Signature and Submission');
                                 $ret[] = '<div class="row">';
