@@ -27,6 +27,7 @@ class MSDLAB_Display{
     }
 
     public function __construct() {
+        add_action('wp_ajax_get_report_csv',array(&$this,'get_report_csv'));
         if(class_exists('MSDLAB_Queries')){
             $this->queries = new MSDLAB_Queries();
         }
@@ -47,7 +48,7 @@ class MSDLAB_Display{
         $exh = array();
         foreach($fields AS $key => $value){
             $ret[] = '<th>'.$value.'</th>';
-            $exh[] = $value;
+            $exh[] = $this->csv_safe($value);
         }
 
         $this->export_header = implode(",",$exh);
@@ -167,7 +168,7 @@ class MSDLAB_Display{
             $i++;
         }
 
-        $this->export_csv = implode("\n", $ecsv);
+        $this->export_csv = implode('~~~newlinehere~~~', $ecsv);
 
         if($echo){
             print implode("\n\r", $ret);
@@ -180,12 +181,32 @@ class MSDLAB_Display{
      *
      */
     public function print_export_tools($id){
-        $ret =  '<form name="'.$id.'_export" action="'.plugin_dir_url(__FILE__).'exporttocsv.php" method="post">
-        <input type="submit" value="Export table to CSV">
+        $ret['form'] =  '<form name="'.$id.'_export" action="'.plugin_dir_url(__FILE__).'exporttocsv.php" method="post">
+        <input type="submit" id="csv_export_'.$id.'" class="csv-export export-'.$id.'" value="Export table to CSV">
         <input type="hidden" value="Cincinnati Scholarship Foundation Application Report '.$id.'" name="csv_hdr">
         <input type="hidden" value=\''.$this->export_header."\n".$this->export_csv.'\' name="csv_output">
         </form>';
-        return $ret;
+        /*$ret['js'] = "
+        <script type=\"text/javascript\">
+            jQuery(document).ready(function($) {
+                $('#csv_export_".$id."').click(function(e){
+                e.preventDefault();
+                console.log('click');
+                var ajaxurl = '". admin_url( 'admin-ajax.php' ) ."';
+                var data = {
+                    action: 'get_report_csv',
+                    csv_hdr: 'Cincinnati Scholarship Foundation Application Report ".$id."',
+                    csv_output: '".$this->export_header."~~~newlinehere~~~".$this->export_csv."'
+                    }
+                $.post(ajaxurl, data, function(response){
+                    console.log(response);
+                },'json');
+                console.log('ajaxed');
+             });
+            });
+        </script>
+        ";*/
+        return implode("\n\r", $ret);
     }
 
 
@@ -219,8 +240,41 @@ class MSDLAB_Display{
         $value = preg_replace('%\'%i','‘',$value);
         $value = strip_tags($value,'<p><a>');
         $value = preg_replace("/<a.+href=['|\"]([^\"\']*)['|\"].*>(.+)<\/a>/i",'\2 (\1)',$value);
+        $value = preg_replace('^[\r\n]+^','~~~newlinehere~~~',$value);
         $value = '"'.$value.'"';
         return $value;
+    }
+
+    public function get_report_csv(){
+        //First we'll generate an output variable called out. It'll have all of our text for the CSV file.
+        $out = '';
+
+        //Next we'll check to see if our variables posted and if they did we'll simply append them to out.
+        if (isset($_POST['csv_hdr'])) {
+            $file = preg_replace('/\s/i','_',$_POST['csv_hdr']);
+        } else {
+            $file = 'CSV_Export';
+        }
+
+        if (isset($_POST['csv_output'])) {
+            $csv_output = stripslashes($_POST['csv_output']);
+            $csv_output = preg_replace('|~~~newlinehere~~~|g',"\n",$csv_output);
+            $out .= $csv_output;
+        }
+
+        //Now we're ready to create a file. This method generates a filename based on the current date & time.
+        $filename = $file."_".date("Y-m-d_H-i",time());
+
+        //Generate the CSV file header
+        header("Content-type: application/vnd.ms-excel");
+        header("Content-disposition: csv" . date("Y-m-d") . ".csv");
+        header("Content-disposition: filename=".$filename.".csv");
+
+        //Print the contents of out to the generated file.
+        print $out;
+
+        //Exit the script
+        die();
     }
 
 }

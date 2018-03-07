@@ -16,16 +16,20 @@ if (isset($_POST['csv_hdr'])) {
 }
 
 if (isset($_POST['csv_output'])) {
-    $out .= stripslashes($_POST['csv_output']);
+    $csv_output = stripslashes($_POST['csv_output']);
+    print($csv_output);
+    $csv_output = preg_replace('/\~\~\~newlinehere\~\~\~/g',"\n",$csv_output);
+    print($csv_output);
+    $out .= $csv_output;
 }
 
 //Now we're ready to create a file. This method generates a filename based on the current date & time.
 $filename = $file."_".date("Y-m-d_H-i",time());
 
 //Generate the CSV file header
-header("Content-type: application/vnd.ms-excel");
-header("Content-disposition: csv" . date("Y-m-d") . ".csv");
-header("Content-disposition: filename=".$filename.".csv");
+//header("Content-type: application/vnd.ms-excel");
+//header("Content-disposition: csv" . date("Y-m-d") . ".csv");
+//header("Content-disposition: filename=".$filename.".csv");
 
 //Print the contents of out to the generated file.
 print $out;
