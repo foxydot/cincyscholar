@@ -238,7 +238,6 @@ class MSDLAB_FormControls{
 			<input type="file" name="'.$id.'_input" id="'.$id.'_input" class="box__file">
 			<label for="'.$id.'_input" class="button"><strong>Choose File</strong></label>
 		</div>
-	<input type="hidden" name="ajax" value="1">
 	</div>';
         $form_field = apply_filters('msdlab_csf_'.$id.'_field',$form_field);
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
