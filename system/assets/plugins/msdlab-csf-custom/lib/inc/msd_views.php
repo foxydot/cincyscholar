@@ -27,7 +27,7 @@ class MSDLAB_Display{
     }
 
     public function __construct() {
-        add_action('wp_ajax_get_report_csv',array(&$this,'get_report_csv'));
+        add_action('wp_ajax_get_report_csv',array($this,'get_report_csv'));
         if(class_exists('MSDLAB_Queries')){
             $this->queries = new MSDLAB_Queries();
         }
@@ -73,9 +73,10 @@ class MSDLAB_Display{
     public function table_footer($fields, $info, $echo = true){
         $ret = array();
         $numfields = count($fields);
-        foreach ($info as $key => $value) {
-            $ret[] = '<div class=""><label>'.$key.': </label><span class="">'.$value.'</span></div>';
-
+        if(count($info)>0) {
+            foreach ($info as $key => $value) {
+                $ret[] = '<div class=""><label>' . $key . ': </label><span class="">' . $value . '</span></div>';
+            }
         }
 
         $ret = apply_filters('msdlab_csf_report_display_table_footer', '<th colspan="'.$numfields.'">'.implode("\r\n",$ret).'</th>');
@@ -168,7 +169,7 @@ class MSDLAB_Display{
             $i++;
         }
 
-        $this->export_csv = implode('~~~newlinehere~~~', $ecsv);
+        $this->export_csv = implode("\n", $ecsv);
 
         if($echo){
             print implode("\n\r", $ret);
@@ -181,31 +182,23 @@ class MSDLAB_Display{
      *
      */
     public function print_export_tools($id){
-        $ret['form'] =  '<form name="'.$id.'_export" action="'.plugin_dir_url(__FILE__).'exporttocsv.php" method="post">
-        <input type="submit" id="csv_export_'.$id.'" class="csv-export export-'.$id.'" value="Export table to CSV">
-        <input type="hidden" value="Cincinnati Scholarship Foundation Application Report '.$id.'" name="csv_hdr">
-        <input type="hidden" value=\''.$this->export_header."\n".$this->export_csv.'\' name="csv_output">
-        </form>';
-        /*$ret['js'] = "
-        <script type=\"text/javascript\">
-            jQuery(document).ready(function($) {
-                $('#csv_export_".$id."').click(function(e){
-                e.preventDefault();
-                console.log('click');
-                var ajaxurl = '". admin_url( 'admin-ajax.php' ) ."';
-                var data = {
-                    action: 'get_report_csv',
-                    csv_hdr: 'Cincinnati Scholarship Foundation Application Report ".$id."',
-                    csv_output: '".$this->export_header."~~~newlinehere~~~".$this->export_csv."'
-                    }
-                $.post(ajaxurl, data, function(response){
-                    console.log(response);
-                },'json');
-                console.log('ajaxed');
-             });
-            });
-        </script>
-        ";*/
+        $temp_filename = 'Cincinnati Scholarship Foundation Application Report '.$id.'_'.date("Y-m-d_H-i",time()).'.csv';
+        //create or locate upload dir for tempfiles
+        $upload_dir   = wp_upload_dir();
+        if ( ! empty( $upload_dir['basedir'] ) ) {
+            $temp_dirname = $upload_dir['basedir'].'/exports/temp';
+            $temp_url = $upload_dir['baseurl'].'/exports/temp/'.$temp_filename;
+            //TODO: add a cron to clean out this directory once a day.
+            if ( ! file_exists( $temp_dirname ) ) {
+                wp_mkdir_p( $temp_dirname );
+            }
+        }
+        //create an empty file and open for writing
+        $temp_file = fopen($temp_dirname.'/'.$temp_filename,'w+b');
+        //write to file
+        fwrite($temp_file,$this->export_header."\n".$this->export_csv);
+        fclose($temp_file);
+        $ret['form'] = '<a href="'.$temp_url.'" id="csv_export_'.$id.'" class="button csv-export export-'.$id.'">Export to CSV</a>';
         return implode("\n\r", $ret);
     }
 
@@ -240,12 +233,13 @@ class MSDLAB_Display{
         $value = preg_replace('%\'%i','‘',$value);
         $value = strip_tags($value,'<p><a>');
         $value = preg_replace("/<a.+href=['|\"]([^\"\']*)['|\"].*>(.+)<\/a>/i",'\2 (\1)',$value);
-        $value = preg_replace('^[\r\n]+^','~~~newlinehere~~~',$value);
+        $value = preg_replace('^[\r\n]+^',"\n",$value);
         $value = '"'.$value.'"';
         return $value;
     }
 
     public function get_report_csv(){
+        print 'hello!'; die();
         //First we'll generate an output variable called out. It'll have all of our text for the CSV file.
         $out = '';
 
@@ -258,7 +252,6 @@ class MSDLAB_Display{
 
         if (isset($_POST['csv_output'])) {
             $csv_output = stripslashes($_POST['csv_output']);
-            $csv_output = preg_replace('|~~~newlinehere~~~|g',"\n",$csv_output);
             $out .= $csv_output;
         }
 
