@@ -27,7 +27,6 @@ class MSDLAB_Display{
     }
 
     public function __construct() {
-        add_action('wp_ajax_get_report_csv',array($this,'get_report_csv'));
         if(class_exists('MSDLAB_Queries')){
             $this->queries = new MSDLAB_Queries();
         }
@@ -237,37 +236,4 @@ class MSDLAB_Display{
         $value = '"'.$value.'"';
         return $value;
     }
-
-    public function get_report_csv(){
-        print 'hello!'; die();
-        //First we'll generate an output variable called out. It'll have all of our text for the CSV file.
-        $out = '';
-
-        //Next we'll check to see if our variables posted and if they did we'll simply append them to out.
-        if (isset($_POST['csv_hdr'])) {
-            $file = preg_replace('/\s/i','_',$_POST['csv_hdr']);
-        } else {
-            $file = 'CSV_Export';
-        }
-
-        if (isset($_POST['csv_output'])) {
-            $csv_output = stripslashes($_POST['csv_output']);
-            $out .= $csv_output;
-        }
-
-        //Now we're ready to create a file. This method generates a filename based on the current date & time.
-        $filename = $file."_".date("Y-m-d_H-i",time());
-
-        //Generate the CSV file header
-        header("Content-type: application/vnd.ms-excel");
-        header("Content-disposition: csv" . date("Y-m-d") . ".csv");
-        header("Content-disposition: filename=".$filename.".csv");
-
-        //Print the contents of out to the generated file.
-        print $out;
-
-        //Exit the script
-        die();
-    }
-
 }
