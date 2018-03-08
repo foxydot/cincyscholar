@@ -194,7 +194,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                         if(isset($_POST['SendEmails'])){
                             $this->send_form_emails($_POST['SendEmails']);
                         }
-                        if (!current_user_can('view_application_process')) {
+                        if (!current_user_can('view_application_process') && !current_user_can('csf')) {
                             wp_update_user(array('ID' => $user_id, 'role' => 'applicant'));
                         }
                         //Work out the page
