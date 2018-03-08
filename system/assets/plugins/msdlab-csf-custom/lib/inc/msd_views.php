@@ -27,6 +27,7 @@ class MSDLAB_Display{
     }
 
     public function __construct() {
+        add_action('wp_ajax_get_report_csv',array($this,'get_report_csv'));
         if(class_exists('MSDLAB_Queries')){
             $this->queries = new MSDLAB_Queries();
         }
@@ -47,7 +48,7 @@ class MSDLAB_Display{
         $exh = array();
         foreach($fields AS $key => $value){
             $ret[] = '<th>'.$value.'</th>';
-            $exh[] = $value;
+            $exh[] = $this->csv_safe($value);
         }
 
         $this->export_header = implode(",",$exh);
@@ -72,9 +73,10 @@ class MSDLAB_Display{
     public function table_footer($fields, $info, $echo = true){
         $ret = array();
         $numfields = count($fields);
-        foreach ($info as $key => $value) {
-            $ret[] = '<div class=""><label>'.$key.': </label><span class="">'.$value.'</span></div>';
-
+        if(count($info)>0) {
+            foreach ($info as $key => $value) {
+                $ret[] = '<div class=""><label>' . $key . ': </label><span class="">' . $value . '</span></div>';
+            }
         }
 
         $ret = apply_filters('msdlab_csf_report_display_table_footer', '<th colspan="'.$numfields.'">'.implode("\r\n",$ret).'</th>');
@@ -180,12 +182,24 @@ class MSDLAB_Display{
      *
      */
     public function print_export_tools($id){
-        $ret =  '<form name="'.$id.'_export" action="'.plugin_dir_url(__FILE__).'exporttocsv.php" method="post">
-        <input type="submit" value="Export table to CSV">
-        <input type="hidden" value="Cincinnati Scholarship Foundation Application Report '.$id.'" name="csv_hdr">
-        <input type="hidden" value=\''.$this->export_header."\n".$this->export_csv.'\' name="csv_output">
-        </form>';
-        return $ret;
+        $temp_filename = 'Cincinnati Scholarship Foundation Application Report '.$id.'_'.date("Y-m-d_H-i",time()).'.csv';
+        //create or locate upload dir for tempfiles
+        $upload_dir   = wp_upload_dir();
+        if ( ! empty( $upload_dir['basedir'] ) ) {
+            $temp_dirname = $upload_dir['basedir'].'/exports/temp';
+            $temp_url = $upload_dir['baseurl'].'/exports/temp/'.$temp_filename;
+            //TODO: add a cron to clean out this directory once a day.
+            if ( ! file_exists( $temp_dirname ) ) {
+                wp_mkdir_p( $temp_dirname );
+            }
+        }
+        //create an empty file and open for writing
+        $temp_file = fopen($temp_dirname.'/'.$temp_filename,'w+b');
+        //write to file
+        fwrite($temp_file,$this->export_header."\n".$this->export_csv);
+        fclose($temp_file);
+        $ret['form'] = '<a href="'.$temp_url.'" id="csv_export_'.$id.'" class="button csv-export export-'.$id.'">Export to CSV</a>';
+        return implode("\n\r", $ret);
     }
 
 
@@ -219,8 +233,41 @@ class MSDLAB_Display{
         $value = preg_replace('%\'%i','‘',$value);
         $value = strip_tags($value,'<p><a>');
         $value = preg_replace("/<a.+href=['|\"]([^\"\']*)['|\"].*>(.+)<\/a>/i",'\2 (\1)',$value);
+        $value = preg_replace('^[\r\n]+^',"\n",$value);
         $value = '"'.$value.'"';
         return $value;
+    }
+
+    public function get_report_csv(){
+        print 'hello!'; die();
+        //First we'll generate an output variable called out. It'll have all of our text for the CSV file.
+        $out = '';
+
+        //Next we'll check to see if our variables posted and if they did we'll simply append them to out.
+        if (isset($_POST['csv_hdr'])) {
+            $file = preg_replace('/\s/i','_',$_POST['csv_hdr']);
+        } else {
+            $file = 'CSV_Export';
+        }
+
+        if (isset($_POST['csv_output'])) {
+            $csv_output = stripslashes($_POST['csv_output']);
+            $out .= $csv_output;
+        }
+
+        //Now we're ready to create a file. This method generates a filename based on the current date & time.
+        $filename = $file."_".date("Y-m-d_H-i",time());
+
+        //Generate the CSV file header
+        header("Content-type: application/vnd.ms-excel");
+        header("Content-disposition: csv" . date("Y-m-d") . ".csv");
+        header("Content-disposition: filename=".$filename.".csv");
+
+        //Print the contents of out to the generated file.
+        print $out;
+
+        //Exit the script
+        die();
     }
 
 }

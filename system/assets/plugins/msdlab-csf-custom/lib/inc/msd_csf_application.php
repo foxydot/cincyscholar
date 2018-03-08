@@ -40,7 +40,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
 
             //register stylesheet
             //Actions
-            add_action('admin_menu', array(&$this,'settings_page'));
+            //add_action('admin_menu', array(&$this,'settings_page'));
             add_action('wp_enqueue_scripts', array(&$this,'add_styles_and_scripts'));
             add_action('wp_enqueue_scripts',array(&$this,'set_up_globals'));
             //Filters
