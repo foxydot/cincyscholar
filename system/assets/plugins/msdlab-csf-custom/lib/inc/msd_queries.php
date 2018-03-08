@@ -189,7 +189,7 @@ class MSDLAB_Queries{
         }
         $sql = 'SELECT '.implode(', ',$fields).' FROM '.implode(', ',$tables).' WHERE '.$data['where'].';';
         //TODO: refactor all queries to ue proper JOIN
-        error_log('select_sql:'.$sql);
+        //error_log('select_sql:'.$sql);
         $result = $wpdb->get_results($sql);
         return $result;
     }
@@ -301,7 +301,7 @@ class MSDLAB_Queries{
     function get_applicant_id($user_id){
         global $wpdb;
         $sql = "SELECT ApplicantId FROM applicant WHERE UserId = ". $user_id;
-        error_log($sql);
+        //error_log($sql);
         $result = $wpdb->get_results($sql);
         return $result[0]->ApplicantId;
     }
@@ -309,7 +309,7 @@ class MSDLAB_Queries{
     function get_user_id_by_applicant($applicant_id){
         global $wpdb;
         $sql = "SELECT UserId FROM applicant WHERE ApplicantId = ". $applicant_id;
-        error_log($sql);
+        //error_log($sql);
         $result = $wpdb->get_results($sql);
         return $result[0]->UserId;
     }
