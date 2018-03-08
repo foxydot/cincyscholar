@@ -6,7 +6,7 @@
 */
 
 //First we'll generate an output variable called out. It'll have all of our text for the CSV file.
-$out = '';
+$out = 'hello world';
 
 //Next we'll check to see if our variables posted and if they did we'll simply append them to out.
 if (isset($_POST['csv_hdr'])) {
@@ -25,9 +25,9 @@ if (isset($_POST['csv_output'])) {
 $filename = $file."_".date("Y-m-d_H-i",time());
 
 //Generate the CSV file header
-header("Content-type: application/vnd.ms-excel");
-header("Content-disposition: csv" . date("Y-m-d") . ".csv");
-header("Content-disposition: filename=".$filename.".csv");
+//header("Content-type: application/vnd.ms-excel");
+//header("Content-disposition: csv" . date("Y-m-d") . ".csv");
+//header("Content-disposition: filename=".$filename.".csv");
 
 //Print the contents of out to the generated file.
 print $out;
