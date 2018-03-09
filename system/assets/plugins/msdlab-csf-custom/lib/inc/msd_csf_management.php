@@ -58,15 +58,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
             add_menu_page(__('CSF Management and Reports'),__('CSF Management'), 'manage_csf', 'csf-report', array(&$this,'report_page_content'),'dashicons-chart-area');
             add_submenu_page('csf-report',__('Reports'),__('Reports'),'manage_csf','csf-report', array(&$this,'report_page_content'));
             add_submenu_page('csf-report',__('General Settings'),__('General Settings'),'manage_csf','csf-settings', array(&$this,'setting_page_content'));
-        }
-
-        function setting_page_content(){
-            //page content here
-            if($msg = $this->queries->set_option_data('csf_settings')){
-                print '<div class="updated notice notice-success is-dismissible">'.$msg.'</div>';
-            }
-            print '<h2>Scholarship Application Period</h2>';
-            $this->controls->print_settings();
+            add_submenu_page('csf-report',__('College Settings'),__('College Settings'),'manage_csf','csf-college', array(&$this,'college_page_content'));
         }
 
         function report_page_content(){
@@ -157,6 +149,29 @@ if (!class_exists('MSDLab_CSF_Management')) {
             $this->display->print_table('incomplete',$fields,$incomplete,$info,$class);
             print '</div>
   </div>';
+        }
+
+
+        function setting_page_content(){
+            //page content here
+            if($msg = $this->queries->set_option_data('csf_settings')){
+                print '<div class="updated notice notice-success is-dismissible">'.$msg.'</div>';
+            }
+            print '<h2>Scholarship Application Period</h2>';
+            $this->controls->print_settings();
+        }
+
+
+        function college_page_content(){
+            //page content here
+            if($msg = $this->queries->set_option_data('csf_college')){
+                print '<div class="updated notice notice-success is-dismissible">'.$msg.'</div>';
+            }
+            print '<h2>College Settings</h2>';
+            //button: add college
+            //list colleges with edit button, view contacts button
+            //contacts in a slidedown box?
+            //$this->controls->print_settings();
         }
 
         //ultilities

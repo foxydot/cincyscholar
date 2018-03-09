@@ -63,12 +63,12 @@ if (!class_exists('MSDLab_User_Levels_Management')) {
             $caps = new MSDLab_Capabilites;
             //Add Available Roles for CSF
             $subscriber_role = get_role('subscriber');
-            foreach($caps->subscriber AS $c) {
-                $subscriber_role->add_cap($c);
+            foreach($caps->subscriber AS $k => $c) {
+                $subscriber_role->add_cap($k);
             }
             $administrator_role = get_role('administrator');
-            foreach($caps->administrator AS $c) {
-                $administrator_role->add_cap($c);
+            foreach($caps->administrator AS $k => $c) {
+                $administrator_role->add_cap($k);
             }
             add_role('rejection','Student Non-awardee', $caps->rejection);
             add_role('applicant','Student Applicant', $caps->applicant);
@@ -103,8 +103,6 @@ if(!class_exists('MSDLab_Capabilites')){
         function get_my_caps($role){
             if($role == 'administrator'){
                 return array(
-                    'review_application' => 1,
-                    'manage_csf' => 1,
                     'review_application' => 1,
                     'manage_csf' => 1,
                     'view_application_process' => 1,
