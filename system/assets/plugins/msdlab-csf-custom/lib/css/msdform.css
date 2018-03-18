@@ -147,3 +147,10 @@ input.error, select.error, textarea.error {
 
 .box.is-uploading .box__uploading {
   display: block; }
+
+.report_table table tr:nth-child(2n+0) {
+  background: #ddd; }
+
+.report_table table tr td {
+  padding: 1em;
+  vertical-align: top; }

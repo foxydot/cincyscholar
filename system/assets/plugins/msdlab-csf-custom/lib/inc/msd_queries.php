@@ -62,6 +62,30 @@ class MSDLAB_Queries{
          return '<div class="message success">Data Updated</div>';
      }
 
+     public function get_all_colleges($options = array()){
+         $data['tables']['college'] = array('*');
+         $data['order'] = 'name ASC';
+         $results = $this->get_result_set($data);
+         return $results;
+     }
+
+     public function get_college($college_id){
+         $data['tables']['college'] = array('*');
+         $data['where'] = 'college.CollegeId = '.$college_id;
+         $results = $this->get_result_set($data);
+         return $results[0];
+     }
+
+     public function get_all_contacts($college_id){
+         $data['tables']['collegecontact'] = array('*');
+         $data['where'] = 'collegecontact.CollegeId = '.$college_id;
+         $results = $this->get_result_set($data);
+         return $results;
+     }
+
+     public function get_contact($contact_id){
+
+     }
      /*
       * Report Queries
       */
@@ -129,14 +153,20 @@ class MSDLAB_Queries{
 /*
  *  Form Queries
  */
-     public function set_data($form_id,$where){
+     public function set_data($form_id,$where,$notifications = array()){
          global $wpdb;
          if(empty($this->post_vars)){
              return false;
          }
+         $notifications = array_merge(
+             array(
+                 'nononce' => 'Application could not be saved.',
+                 'success' => 'Application saved!'
+             ),$notifications
+         );
          $nonce = $_POST['_wpnonce'];
          if(wp_verify_nonce( $nonce, $form_id ) === false) {
-             return 'Application coould not be saved.';
+             return $notifications['nononce'];
          }
          foreach ($this->post_vars AS $k => $v){
              if(stripos($k,'_input')){
@@ -171,7 +201,7 @@ class MSDLAB_Queries{
                  return '<div class="message error">Error updating '.$table.'</div>';
              }
         }
-         return '<div class="message success">Application saved!</div>';
+         return '<div class="message success">'.$notifications['success'].'</div>';
      }
     /**
      * Create the full result set
@@ -187,10 +217,18 @@ class MSDLAB_Queries{
                 $fields[] = strtolower($table).'.'.$field;
                 }
         }
-        $sql = 'SELECT '.implode(', ',$fields).' FROM '.implode(', ',$tables).' WHERE '.$data['where'].';';
+        $sql[] = 'SELECT '.implode(', ',$fields).' FROM '.implode(', ',$tables);
+        if(isset($data['where'])){
+            $sql[] = 'WHERE '.$data['where'];
+        }
+        if(isset($data['order'])){
+            $sql[] = 'ORDER BY '.$data['order'];
+        }
+        $sql[] = ';';
+
         //TODO: refactor all queries to ue proper JOIN
         //error_log('select_sql:'.$sql);
-        $result = $wpdb->get_results($sql);
+        $result = $wpdb->get_results(implode(' ',$sql));
         return $result;
     }
 
@@ -411,5 +449,11 @@ class MSDLAB_Queries{
         }
     }
 
+    function get_next_id($table,$id_field){
+        global $wpdb;
+        $sql = 'SELECT '.$id_field.' FROM '.$table.' ORDER BY '.$id_field.' DESC LIMIT 1';
+        $results = $wpdb->get_results($sql);
+        return $results[0]->{$id_field};
+    }
 
 }

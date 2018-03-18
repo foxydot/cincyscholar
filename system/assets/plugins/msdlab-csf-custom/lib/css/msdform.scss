@@ -184,3 +184,18 @@ input, select, textarea {
 .box.is-uploading .box__uploading {
   display: block;
 }
+
+//admin side
+.report_table{
+  table{
+    tr{
+      &:nth-child(2n+0){
+        background: #ddd;
+      }
+      td{
+        padding: 1em;
+        vertical-align: top;
+      }
+    }
+  }
+}

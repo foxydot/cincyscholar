@@ -59,6 +59,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
             add_submenu_page('csf-report',__('Reports'),__('Reports'),'manage_csf','csf-report', array(&$this,'report_page_content'));
             add_submenu_page('csf-report',__('General Settings'),__('General Settings'),'manage_csf','csf-settings', array(&$this,'setting_page_content'));
             add_submenu_page('csf-report',__('College Settings'),__('College Settings'),'manage_csf','csf-college', array(&$this,'college_page_content'));
+            add_submenu_page(null,__('Edit College'),__('Edit College'),'manage_csf','college-edit', array(&$this,'college_edit_page_content'));
         }
 
         function report_page_content(){
@@ -131,7 +132,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
             }
             $info = '';
             $class = array('table','table-bordered');
-            print '<h2>Scholarship Application Reports</h2>';
+            print '<h1 class="wp-heading-inline">Scholarship Application Reports</h1>';
             print '
   <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#submitted" aria-controls="submitted" role="tab" data-toggle="tab">Submitted</a></li>
@@ -157,21 +158,68 @@ if (!class_exists('MSDLab_CSF_Management')) {
             if($msg = $this->queries->set_option_data('csf_settings')){
                 print '<div class="updated notice notice-success is-dismissible">'.$msg.'</div>';
             }
-            print '<h2>Scholarship Application Period</h2>';
+            print '<h1 class="wp-heading-inline">Scholarship Application Period</h1>';
             $this->controls->print_settings();
         }
 
 
         function college_page_content(){
             //page content here
-            if($msg = $this->queries->set_option_data('csf_college')){
-                print '<div class="updated notice notice-success is-dismissible">'.$msg.'</div>';
-            }
-            print '<h2>College Settings</h2>';
+            print '<div class="wrap report_table">';
+            print '<h1 class="wp-heading-inline">College Settings</h1>';
             //button: add college
+            print '<a href="admin.php?page=college-edit&college_id=null" class="page-title-action">Add New College</a>
+            <hr class="wp-header-end">';
             //list colleges with edit button, view contacts button
             //contacts in a slidedown box?
             //$this->controls->print_settings();
+            $colleges = $this->queries->get_all_colleges();
+            if(count($colleges)>0) {
+                foreach ($colleges AS $college){
+                    $contacts = $this->queries->get_all_contacts($college->CollegeId);
+                    $cell['college_name'] = $college->Name;
+                    $con = array();
+                    foreach($contacts AS $contact){
+                        $c = array();
+                        $c['name'] = $contact->FirstName .' '.$contact->LastName;
+                        $c['dept'] = $contact->Department;
+                        $c['email'] = '<a href="mailto:'.antispambot($contact->Email).'">'.antispambot($contact->Email).'</a>';
+                        $c['phone'] = $contact->PhoneNumber;
+                        $con[] = implode('<br>',$c);
+                    }
+                    $cell['contacts'] = implode('<br><br>',$con);
+                    $cell['edit'] = '<a href="admin.php?page=college-edit&college_id='.$college->CollegeId.'" class="button">Edit</a>';
+                    $row[] = implode('</td><td>',$cell);
+                }
+                $table = implode("</td></tr>\n<tr><td>",$row);
+                print '<table><tr><td>'.$table.'</td></tr></table>';
+            }
+            print '</div>';
+        }
+
+        function college_edit_page_content(){
+            $college_id = $_GET['college_id'];
+            $college = null;
+            $title = 'New College';
+            if($_POST) {
+                $notifications = array(
+                    'nononce' => 'College could not be saved.',
+                    'success' => 'College saved!'
+                );
+                if ($msg = $this->queries->set_data('csf_college', array('college' => 'CollegeId = ' . $college_id), $notifications)) {
+                    print '<div class="updated notice notice-success is-dismissible">' . $msg . '</div>';
+                }
+            }
+            if(!is_null($college_id)){
+                $college = $this->queries->get_college($college_id);
+                $title = $college->Name;
+            } else {
+                $title = 'New College';
+            }
+            print '<h1 class="wp-heading-inline">'.$title.' Settings</h1>            
+            <hr class="wp-header-end">';
+            $form = $this->controls->get_form(array('form_id' => 'csf_college','data' => $college));
+            print $form;
         }
 
         //ultilities

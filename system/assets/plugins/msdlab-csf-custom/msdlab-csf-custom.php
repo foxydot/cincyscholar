@@ -59,7 +59,7 @@ class MSDLabClientCustom
         register_activation_hook(__FILE__, array('MSDLab_User_Levels_Management','register_user_levels'));
         register_deactivation_hook(__FILE__, array('MSDLab_User_Levels_Management','unregister_user_levels'));
     }
-
+    //TODO: break out Super admin tools, Admin tools, application stuff.
 }
 //instantiate
 $msd_custom = new MSDLabClientCustom();
