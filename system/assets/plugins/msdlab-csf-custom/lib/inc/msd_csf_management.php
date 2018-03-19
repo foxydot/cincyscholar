@@ -131,15 +131,15 @@ if (!class_exists('MSDLab_CSF_Management')) {
                 'InformationSharingAllowedByGuardian',
                 'Documents',
             );
-
-            $result = $this->queries->get_report_set($fields);
-            //$result = $this->queries->get_all_applications();
-            $submitted = $incomplete = array();
-            foreach($result AS $applicant){
-                if($applicant->status == 2){
-                    $submitted[] = $applicant;
-                } else {
-                    $incomplete[] = $applicant;
+            if($_POST) {
+                $result = $this->queries->get_report_set($fields);
+                $submitted = $incomplete = array();
+                foreach ($result AS $applicant) {
+                    if ($applicant->status == 2) {
+                        $submitted[] = $applicant;
+                    } else {
+                        $incomplete[] = $applicant;
+                    }
                 }
             }
             ts_data($incomplete);

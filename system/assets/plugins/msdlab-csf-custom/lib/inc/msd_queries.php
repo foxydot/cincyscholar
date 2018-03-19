@@ -271,7 +271,7 @@ class MSDLAB_Queries{
         if(empty($this->post_vars)){
             return $this->get_all_applications();
         }
-
+ts_data($this->post_vars);
         $usertable = $wpdb->prefix . 'users';
         $data['tables']['applicant'] = array('*');
         $data['where'] = 'applicant.ApplicationDateTime > 20180101000000'; //replace with dates from settings

@@ -46,7 +46,8 @@ class MSDLab_ReportControls{
 
    public function college_search($title = "College",$id = "college_search", $class = array('query-filter','college-search')){
         $colleges = $this->queries->get_select_array_from_db('College', 'CollegeId', 'Name','Name');
-       $options = array();
+       $options = array('<option value=""' . selected("", $default, false) . '>---Select---</option>');
+
        foreach($colleges AS $k => $v){
            if(empty( $_POST )) {
                $options[] = '<option value="' . $k . '"' . selected($k, $default, false) . '>' . $v . '</option>';
@@ -157,6 +158,7 @@ class MSDLab_ReportControls{
 
     public function print_form($echo = true){
         $ret = array();
+        $ret['search_all_button'] = $this->search_button('Load All Applications');
         $ret['search_by_name'] = $this->search_box('Search By Name','','name_search');
         $ret['search_by_email'] = $this->search_box('Search By Email','','email_search');
         $ret['college_search'] = $this->college_search();
