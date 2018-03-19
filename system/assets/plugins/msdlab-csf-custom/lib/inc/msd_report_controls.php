@@ -178,7 +178,7 @@ class MSDLab_ReportControls{
         return apply_filters('msdlab_csf_manage_search_button', $ret);
     }
     public function reset_button($button = "RESET", $id = "reset_button", $class = array('reset-button')){
-        $button = apply_filters('msdlab_csf_manage_reset_button','<button id="'.$id.'_button" name="'.$id.'_button" type="reset" class="button button-primary">'.$button.'</button>');
+        $button = apply_filters('msdlab_csf_manage_reset_button','<a href="" id="'.$id.'_button" name="'.$id.'_button" type="reset" class="button button-primary">'.$button.'</a>');
         $class = implode(" ",apply_filters('msdlab_csf_manage_reset_button_class', $class));
         $ret = '<div id="'.$id.'" class="'.$class.'">'.$button.'</div>';
         $this->javascript[] = '';
@@ -211,30 +211,24 @@ class MSDLab_ReportControls{
         $highschools = $this->queries->get_select_array_from_db('highschool', 'HighSchoolId', 'SchoolName','SchoolName');
         $ret['highschool_search'] = $this->select_search('High School: ','highschool_search', $highschools);
         $highschooltypes = $this->queries->get_select_array_from_db('highschooltype', 'HighSchoolTypeId', 'Description','HighSchoolTypeId');
-        $ret['highschool_type_search'] = $this->select_search('High School Type: ','highschooltype_search', $highschooltypes);
+        //$ret['highschool_type_search'] = $this->select_search('High School Type: ','highschooltype_search', $highschooltypes);
         $ret['gpa_search'] = $this->number_range_search('GPA Between','','gpa_range_search',array('query-filter'),0.00,5.00,0.1);
         $majors = $this->queries->get_select_array_from_db('major', 'MajorId', 'MajorName','MajorName');
         $ret['major_search'] = $this->select_search('Major: ','major_search', $majors);
         $ethnicity = $this->queries->get_select_array_from_db('ethnicity', 'EthnicityID', 'Ethnicity','EthnicityID');
         $ret['ethnicity_search'] = $this->select_search('Ethnicity: ','ethnicity_search', $ethnicity);
-
+        $athletics = array('0'=>'Non-althlete','1'=>'Athlete');
+        $ret['athlete_search'] = $this->select_search('Althletics:','athlete_search',$athletics);
+        $independence = array('0'=>'Dependent','1'=>'Independant');
+        $ret['independence_search'] = $this->select_search('Independence:','independence_search',$independence);
         //first gen student search
 
         /*
-
 Employer
-
-Are you an athlete?
-
-
-
 Need (there should be a place in the database where cost of attendance, EFC, grants, loans, federal and state aid are entered and calculated)
-
-Dependent or independent
-
 */
         $ret['search_button'] = $this->search_button();
-        //$ret['reset_button'] = $this->reset_button();
+        $ret['reset_button'] = $this->reset_button();
         $ret['nonce'] = wp_nonce_field( 'records_search' );
         $ret['javascript'] = $this->build_javascript();
 

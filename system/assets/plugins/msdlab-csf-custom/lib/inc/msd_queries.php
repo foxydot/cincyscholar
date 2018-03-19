@@ -288,7 +288,7 @@ ts_data($this->post_vars);
             $data['where'] .= ' AND applicant.City LIKE \'%'.$this->post_vars['city_search_input'].'%\'';
         }
         if(!empty($this->post_vars['state_search_input'])){
-            $data['where'] .= ' AND applicant.StateId = '.$this->post_vars['state_search_input'];
+            $data['where'] .= ' AND applicant.StateId = \''.$this->post_vars['state_search_input'].'\'';
         }
         if(!empty($this->post_vars['county_search_input'])){
             $data['where'] .= ' AND applicant.CountyId = '.$this->post_vars['county_search_input'];
@@ -311,6 +311,12 @@ ts_data($this->post_vars);
         }
         if(!empty($this->post_vars['ethnicity_search_input'])){
             $data['where'] .= ' AND applicant.EthnicityId = '.$this->post_vars['ethnicity_search_input'];
+        }
+        if(is_numeric($this->post_vars['athlete_search_input'])){
+            $data['where'] .= ' AND applicant.PlayedHighSchoolSports = '.$this->post_vars['athlete_search_input'];
+        }
+        if(is_numeric($this->post_vars['independence_search_input'])){
+            $data['where'] .= ' AND applicant.IsIndependent = '.$this->post_vars['independence_search_input'];
         }
 
 
