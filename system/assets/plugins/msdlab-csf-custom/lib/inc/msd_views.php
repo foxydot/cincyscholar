@@ -72,11 +72,11 @@ class MSDLAB_Display{
     public function table_footer($fields, $info, $echo = true){
         $ret = array();
         $numfields = count($fields);
-        if(count($info)>0) {
+        /*if(count($info)>0) {
             foreach ($info as $key => $value) {
                 $ret[] = '<div class=""><label>' . $key . ': </label><span class="">' . $value . '</span></div>';
             }
-        }
+        }*/
 
         $ret = apply_filters('msdlab_csf_report_display_table_footer', '<th colspan="'.$numfields.'">'.implode("\r\n",$ret).'</th>');
 

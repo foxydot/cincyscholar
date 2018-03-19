@@ -11,7 +11,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
             global $current_screen;
             //TODO: Add a user management panel
             //TODO: Add a scholarship management panel
-            $required_files = array('msd_csf_application','msd_setting_controls','msd_export','msd_queries','msd_views');
+            $required_files = array('msd_csf_application','msd_setting_controls','msd_report_controls','msd_export','msd_queries','msd_views');
             foreach($required_files AS $rq){
                 if(file_exists(plugin_dir_path(__FILE__).'/'.$rq . '.php')){
                     require_once(plugin_dir_path(__FILE__).'/'.$rq . '.php');
@@ -25,6 +25,9 @@ if (!class_exists('MSDLab_CSF_Management')) {
             }
             if(class_exists('MSDLAB_SettingControls')){
                 $this->controls = new MSDLAB_SettingControls();
+            }
+            if(class_exists('MSDLAB_ReportControls')){
+                $this->search = new MSDLAB_ReportControls();
             }
             if(class_exists('MSDLAB_Queries')){
                 $this->queries = new MSDLAB_Queries();
@@ -128,7 +131,9 @@ if (!class_exists('MSDLab_CSF_Management')) {
                 'InformationSharingAllowedByGuardian',
                 'Documents',
             );
-            $result = $this->queries->get_all_applications();
+
+            $result = $this->queries->get_report_set($fields);
+            //$result = $this->queries->get_all_applications();
             $submitted = $incomplete = array();
             foreach($result AS $applicant){
                 if($applicant->status == 2){
@@ -137,9 +142,13 @@ if (!class_exists('MSDLab_CSF_Management')) {
                     $incomplete[] = $applicant;
                 }
             }
+            ts_data($incomplete);
             $info = '';
             $class = array('table','table-bordered');
             print '<h2>Scholarship Application Reports</h2>';
+
+            $this->search->print_form();
+
             print '
   <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#submitted" aria-controls="submitted" role="tab" data-toggle="tab">Submitted</a></li>
