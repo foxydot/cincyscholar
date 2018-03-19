@@ -134,7 +134,14 @@ if (!class_exists('MSDLab_CSF_Management')) {
             if($_POST) {
                 $result = $this->queries->get_report_set($fields);
                 $submitted = $incomplete = array();
-                foreach ($result AS $applicant) {
+                foreach ($result AS $k => $applicant) {
+                    if(isset($_POST['employer_search_input'])){
+                        if(stripos($applicant->Employer,$_POST['employer_search_input'])===false &&
+                            stripos($applicant->GuardianEmployer1,$_POST['employer_search_input'])===false &&
+                            stripos($applicant->GuardianEmployer2,$_POST['employer_search_input'])===false){
+                            continue;
+                        }
+                    }
                     if ($applicant->status == 2) {
                         $submitted[] = $applicant;
                     } else {

@@ -221,10 +221,8 @@ class MSDLab_ReportControls{
         $ret['athlete_search'] = $this->select_search('Althletics:','athlete_search',$athletics);
         $independence = array('0'=>'Dependent','1'=>'Independant');
         $ret['independence_search'] = $this->select_search('Independence:','independence_search',$independence);
-        //$ret['search_by_employer'] = $this->search_box('Employer','','employer_search');
-
+        $ret['search_by_employer'] = $this->search_box('Employer','','employer_search'); //this is handled AFTER the query
         /*
-Employer
 Need (there should be a place in the database where cost of attendance, EFC, grants, loans, federal and state aid are entered and calculated)
 */
         $ret['search_button'] = $this->search_button();
