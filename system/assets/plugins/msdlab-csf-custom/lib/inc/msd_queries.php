@@ -306,6 +306,12 @@ ts_data($this->post_vars);
         if($this->post_vars['gpa_range_search_input_start']!=0 || $this->post_vars['gpa_range_search_input_end']!=5){
             $data['where'] .= ' AND (applicant.HighSchoolGPA >= '.$this->post_vars['gpa_range_search_input_start'].' AND applicant.HighSchoolGPA <= '.$this->post_vars['gpa_range_search_input_end'].')';
         }
+        if(!empty($this->post_vars['major_search_input'])){
+            $data['where'] .= ' AND applicant.MajorId = '.$this->post_vars['major_search_input'];
+        }
+        if(!empty($this->post_vars['ethnicity_search_input'])){
+            $data['where'] .= ' AND applicant.EthnicityId = '.$this->post_vars['ethnicity_search_input'];
+        }
 
 
         $data['tables'][$usertable] = array('user_email');

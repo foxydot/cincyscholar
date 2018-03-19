@@ -213,7 +213,11 @@ class MSDLab_ReportControls{
         $highschooltypes = $this->queries->get_select_array_from_db('highschooltype', 'HighSchoolTypeId', 'Description','HighSchoolTypeId');
         $ret['highschool_type_search'] = $this->select_search('High School Type: ','highschooltype_search', $highschooltypes);
         $ret['gpa_search'] = $this->number_range_search('GPA Between','','gpa_range_search',array('query-filter'),0.00,5.00,0.1);
-        
+        $majors = $this->queries->get_select_array_from_db('major', 'MajorId', 'MajorName','MajorName');
+        $ret['major_search'] = $this->select_search('Major: ','major_search', $majors);
+        $ethnicity = $this->queries->get_select_array_from_db('ethnicity', 'EthnicityID', 'Ethnicity','EthnicityID');
+        $ret['ethnicity_search'] = $this->select_search('Ethnicity: ','ethnicity_search', $ethnicity);
+
         //first gen student search
 
         /*
@@ -222,15 +226,12 @@ Employer
 
 Are you an athlete?
 
-            Major
 
-            Type of high school (CPS)
 
 Need (there should be a place in the database where cost of attendance, EFC, grants, loans, federal and state aid are entered and calculated)
 
 Dependent or independent
 
-Ethnicity
 */
         $ret['search_button'] = $this->search_button();
         //$ret['reset_button'] = $this->reset_button();
