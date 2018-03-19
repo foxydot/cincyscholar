@@ -211,7 +211,7 @@ class MSDLab_ReportControls{
         $highschools = $this->queries->get_select_array_from_db('highschool', 'HighSchoolId', 'SchoolName','SchoolName');
         $ret['highschool_search'] = $this->select_search('High School: ','highschool_search', $highschools);
         $highschooltypes = $this->queries->get_select_array_from_db('highschooltype', 'HighSchoolTypeId', 'Description','HighSchoolTypeId');
-        //$ret['highschool_type_search'] = $this->select_search('High School Type: ','highschooltype_search', $highschooltypes);
+        $ret['highschool_type_search'] = $this->select_search('High School Type: ','highschooltype_search', $highschooltypes);
         $ret['gpa_search'] = $this->number_range_search('GPA Between','','gpa_range_search',array('query-filter'),0.00,5.00,0.1);
         $majors = $this->queries->get_select_array_from_db('major', 'MajorId', 'MajorName','MajorName');
         $ret['major_search'] = $this->select_search('Major: ','major_search', $majors);
@@ -221,7 +221,7 @@ class MSDLab_ReportControls{
         $ret['athlete_search'] = $this->select_search('Althletics:','athlete_search',$athletics);
         $independence = array('0'=>'Dependent','1'=>'Independant');
         $ret['independence_search'] = $this->select_search('Independence:','independence_search',$independence);
-        //first gen student search
+        //$ret['search_by_employer'] = $this->search_box('Employer','','employer_search');
 
         /*
 Employer

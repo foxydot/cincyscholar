@@ -301,7 +301,12 @@ ts_data($this->post_vars);
         }
         if(!empty($this->post_vars['highschooltype_search_input'])){
             //subquery to get schools with a type?
-            //$data['where'] .= ' AND applicant.HighSchoolId = '.$this->post_vars['highschooltype_search_input'];
+            $highschools = $this->get_result_set(array('tables' => array('highschool' => array('HighSchoolId')),'where' => ' highschool.SchoolTypeId = '.$this->post_vars['highschooltype_search_input']));
+            foreach($highschools AS $school){
+                $hs[] = $school->HighSchoolId;
+            }
+            $highschools = implode(',',$hs);
+            $data['where'] .= ' AND applicant.HighSchoolId IN ('.$highschools.')';
         }
         if($this->post_vars['gpa_range_search_input_start']!=0 || $this->post_vars['gpa_range_search_input_end']!=5){
             $data['where'] .= ' AND (applicant.HighSchoolGPA >= '.$this->post_vars['gpa_range_search_input_start'].' AND applicant.HighSchoolGPA <= '.$this->post_vars['gpa_range_search_input_end'].')';
