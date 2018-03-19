@@ -271,7 +271,7 @@ class MSDLAB_Queries{
         if(empty($this->post_vars)){
             return $this->get_all_applications();
         }
-//ts_data($this->post_vars);
+ts_data($this->post_vars);
         $usertable = $wpdb->prefix . 'users';
         $data['tables']['applicant'] = array('*');
         $data['where'] = 'applicant.ApplicationDateTime > 20180101000000'; //replace with dates from settings
@@ -284,10 +284,29 @@ class MSDLAB_Queries{
             }
             $data['where'] .= ' AND (applicant.FirstName LIKE \'%'. $this->post_vars['name_search_input'] .'%\' OR applicant.LastName LIKE \'%'. $this->post_vars['name_search_input'] .'%\''.$fullnamesearch.') ';
         }
+        if(!empty($this->post_vars['city_search_input'])){
+            $data['where'] .= ' AND applicant.City LIKE \'%'.$this->post_vars['city_search_input'].'%\'';
+        }
+        if(!empty($this->post_vars['state_search_input'])){
+            $data['where'] .= ' AND applicant.StateId = '.$this->post_vars['state_search_input'];
+        }
+        if(!empty($this->post_vars['county_search_input'])){
+            $data['where'] .= ' AND applicant.CountyId = '.$this->post_vars['county_search_input'];
+        }
+        if(!empty($this->post_vars['zip_search_input'])){
+            $data['where'] .= ' AND applicant.ZipCode IN ('.$this->post_vars['zip_search_input'].')';
+        }
+        if(!empty($this->post_vars['highschool_search_input'])){
+            $data['where'] .= ' AND applicant.HighSchoolId = '.$this->post_vars['highschool_search_input'];
+        }
+        if(!empty($this->post_vars['highschooltype_search_input'])){
+            //subquery to get schools with a type?
+            //$data['where'] .= ' AND applicant.HighSchoolId = '.$this->post_vars['highschooltype_search_input'];
+        }
         if($this->post_vars['gpa_range_search_input_start']!=0 || $this->post_vars['gpa_range_search_input_end']!=5){
-            error_log('filtering GPA');
             $data['where'] .= ' AND (applicant.HighSchoolGPA >= '.$this->post_vars['gpa_range_search_input_start'].' AND applicant.HighSchoolGPA <= '.$this->post_vars['gpa_range_search_input_end'].')';
         }
+
 
         $data['tables'][$usertable] = array('user_email');
         $data['where'] .= ' AND ' . $usertable . '.ID  = applicant.UserId';

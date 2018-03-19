@@ -65,6 +65,26 @@ class MSDLab_ReportControls{
        return apply_filters('msdlab_csf_manage_college_search', $ret);
    }
 
+    public function select_search($title = "Select", $id = "select_search", $data = array(), $class = array('query-filter','college-search')){
+        $options = array('<option value=""' . selected("", $default, false) . '>---Select---</option>');
+
+        foreach($data AS $k => $v){
+            if(empty( $_POST )) {
+                $options[] = '<option value="' . $k . '"' . selected($k, $default, false) . '>' . $v . '</option>';
+            } else {
+                $options[] = '<option value="' . $k . '"' . selected($k, $_POST[$id . '_input'], false) . '>' . $v . '</option>';
+            }
+        }
+
+        $label = apply_filters('msdlab_csf_manage_college_search_label','<label for="'.$id.'_input">'.$title.'</label>');
+        $form_field = '<select id="'.$id.'_input" name="'.$id.'_input">'.implode("\r\n",$options).'</select>';
+        $form_field = apply_filters('msdlab_csf_manage_college_search_form_field',$form_field);
+        $button = apply_filters('msdlab_csf_manage_college_search_button','<input id="'.$id.'_button" type="submit" value="'.$button.'" />');
+        $class = implode(" ",apply_filters('msdlab_csf_manage_college_search_class', $class));
+        $ret = '<div id="'.$id.'" class="'.$class.'">'.$label.$form_field.'</div>';
+        return apply_filters('msdlab_csf_manage_college_search', $ret);
+    }
+
    public function role_search($title = "Limit To",$button = "SEARCH", $id = "role_search", $class = array('query-filter','role-search'), $roles = array()){
         if(count($roles)<1){
             $roles = array(
@@ -157,6 +177,13 @@ class MSDLab_ReportControls{
         $ret = '<div id="'.$id.'" class="'.$class.'">'.$button.'</div>';
         return apply_filters('msdlab_csf_manage_search_button', $ret);
     }
+    public function reset_button($button = "RESET", $id = "reset_button", $class = array('reset-button')){
+        $button = apply_filters('msdlab_csf_manage_reset_button','<button id="'.$id.'_button" name="'.$id.'_button" type="reset" class="button button-primary">'.$button.'</button>');
+        $class = implode(" ",apply_filters('msdlab_csf_manage_reset_button_class', $class));
+        $ret = '<div id="'.$id.'" class="'.$class.'">'.$button.'</div>';
+        $this->javascript[] = '';
+        return apply_filters('msdlab_csf_manage_reset_button', $ret);
+    }
 
     public function build_javascript(){
         $ret = '
@@ -173,12 +200,40 @@ class MSDLab_ReportControls{
         $ret['search_all_button'] = $this->search_button('Load All Applications');
         $ret['search_by_name'] = $this->search_box('Search By Name','','name_search');
         $ret['search_by_email'] = $this->search_box('Search By Email','','email_search');
-        $ret['college_search'] = $this->college_search();
+        $ret['search_by_city'] = $this->search_box('Search By City','','city_search');
+        $states = $this->queries->get_select_array_from_db('state', 'StateId', 'State','State');
+        $ret['state_search'] = $this->select_search('State: ','state_search', $states);
+        $counties = $this->queries->get_select_array_from_db('county', 'CountyId', 'County','County');
+        $ret['county_search'] = $this->select_search('County: ','county_search', $counties);
+        $ret['search_by_zip'] = $this->search_box('Search By ZipCode (comma separated list)','','zip_search');
+        $colleges = $this->queries->get_select_array_from_db('college', 'CollegeId', 'Name','Name');
+        $ret['college_search'] = $this->select_search('College: ','college_search', $colleges);
+        $highschools = $this->queries->get_select_array_from_db('highschool', 'HighSchoolId', 'SchoolName','SchoolName');
+        $ret['highschool_search'] = $this->select_search('High School: ','highschool_search', $highschools);
+        $highschooltypes = $this->queries->get_select_array_from_db('highschooltype', 'HighSchoolTypeId', 'Description','HighSchoolTypeId');
+        $ret['highschool_type_search'] = $this->select_search('High School Type: ','highschooltype_search', $highschooltypes);
         $ret['gpa_search'] = $this->number_range_search('GPA Between','','gpa_range_search',array('query-filter'),0.00,5.00,0.1);
-        //$ret['role_search'] = $this->role_search();
-        //$ret['date_search_type'] = $this->date_search_type();
-        //$ret['date_search'] = $this->date_search();
+        
+        //first gen student search
+
+        /*
+
+Employer
+
+Are you an athlete?
+
+            Major
+
+            Type of high school (CPS)
+
+Need (there should be a place in the database where cost of attendance, EFC, grants, loans, federal and state aid are entered and calculated)
+
+Dependent or independent
+
+Ethnicity
+*/
         $ret['search_button'] = $this->search_button();
+        //$ret['reset_button'] = $this->reset_button();
         $ret['nonce'] = wp_nonce_field( 'records_search' );
         $ret['javascript'] = $this->build_javascript();
 
