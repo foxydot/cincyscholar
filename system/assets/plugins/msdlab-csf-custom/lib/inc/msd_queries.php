@@ -271,7 +271,7 @@ class MSDLAB_Queries{
         if(empty($this->post_vars)){
             return $this->get_all_applications();
         }
-ts_data($this->post_vars);
+//ts_data($this->post_vars);
         $usertable = $wpdb->prefix . 'users';
         $data['tables']['applicant'] = array('*');
         $data['where'] = 'applicant.ApplicationDateTime > 20180101000000'; //replace with dates from settings
@@ -284,6 +284,11 @@ ts_data($this->post_vars);
             }
             $data['where'] .= ' AND (applicant.FirstName LIKE \'%'. $this->post_vars['name_search_input'] .'%\' OR applicant.LastName LIKE \'%'. $this->post_vars['name_search_input'] .'%\''.$fullnamesearch.') ';
         }
+        if($this->post_vars['gpa_range_search_input_start']!=0 || $this->post_vars['gpa_range_search_input_end']!=5){
+            error_log('filtering GPA');
+            $data['where'] .= ' AND (applicant.HighSchoolGPA >= '.$this->post_vars['gpa_range_search_input_start'].' AND applicant.HighSchoolGPA <= '.$this->post_vars['gpa_range_search_input_end'].')';
+        }
+
         $data['tables'][$usertable] = array('user_email');
         $data['where'] .= ' AND ' . $usertable . '.ID  = applicant.UserId';
         if(!empty($this->post_vars['email_search_input'])) {
@@ -343,14 +348,6 @@ ts_data($this->post_vars);
                 }
             }
         }
-
-
-
-
-
-
-
-
         return $results;
     }
 

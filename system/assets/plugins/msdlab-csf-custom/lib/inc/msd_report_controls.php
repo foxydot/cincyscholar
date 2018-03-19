@@ -139,6 +139,18 @@ class MSDLab_ReportControls{
         return apply_filters('msdlab_csf_manage_date_search', $ret);
     }
 
+    public function number_range_search($title = "Between",$button = "SEARCH", $id = "num_range_search", $class = array('query-filter','num-range-search'), $start_num = FALSE, $end_num = FALSE, $step = 1 ){
+        $start_num = $_POST[$id.'_input_start']?$_POST[$id.'_input_start']:$start_num;
+        $end_num = $_POST[$id.'_input_send']?$_POST[$id.'_input_end']:$end_num;
+        $label = apply_filters('msdlab_csf_manage_num_range_search_label','<label for="'.$id.'_input">'.$title.'</label>');
+        $form_field_start = apply_filters('msdlab_csf_manage_num_range_search_start_form_field','<input id="'.$id.'_input_start" name="'.$id.'_input_start" type="number" value="'.$start_num.'" step="'.$step.'" class="num-range" />');
+        $form_field_end = apply_filters('msdlab_csf_manage_num_range_search_end_form_field','<input id="'.$id.'_input_end" name="'.$id.'_input_end" type="number" value="'.$end_num.'" step="'.$step.'" class="num-range" />');
+        $button = apply_filters('msdlab_csf_manage_num_range_search_button','<input id="'.$id.'_button" type="submit" value="'.$button.'" />');
+        $class = implode(" ",apply_filters('msdlab_csf_manage_num_range_search_class', $class));
+        $ret = '<div id="'.$id.'" class="'.$class.'">'.$label.$form_field_start.$form_field_end.'</div>';
+        return apply_filters('msdlab_csf_manage_num_range_search', $ret);
+    }
+
     public function search_button($button = "SEARCH", $id = "search_button", $class = array('search-button')){
         $button = apply_filters('msdlab_csf_manage_search_button','<input id="'.$id.'_button" name="'.$id.'_button" type="submit" class="button button-primary" value="'.$button.'" />');
         $class = implode(" ",apply_filters('msdlab_csf_manage_search_button_class', $class));
@@ -162,6 +174,7 @@ class MSDLab_ReportControls{
         $ret['search_by_name'] = $this->search_box('Search By Name','','name_search');
         $ret['search_by_email'] = $this->search_box('Search By Email','','email_search');
         $ret['college_search'] = $this->college_search();
+        $ret['gpa_search'] = $this->number_range_search('GPA Between','','gpa_range_search',array('query-filter'),0.00,5.00,0.1);
         //$ret['role_search'] = $this->role_search();
         //$ret['date_search_type'] = $this->date_search_type();
         //$ret['date_search'] = $this->date_search();

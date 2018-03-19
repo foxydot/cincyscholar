@@ -142,7 +142,6 @@ if (!class_exists('MSDLab_CSF_Management')) {
                     }
                 }
             }
-            ts_data($incomplete);
             $info = '';
             $class = array('table','table-bordered');
             print '<h2>Scholarship Application Reports</h2>';
