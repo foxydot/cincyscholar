@@ -38,31 +38,10 @@ class MSDLab_ReportControls{
 
     public function search_box($title = "Search Students",$button = "SEARCH", $id = "student_search", $class = array('query-filter','search-box')){
        $label = apply_filters('msdlab_csf_manage_search_label','<label for="'.$id.'_input">'.$title.'</label>');
-       $form_field = apply_filters('msdlab_csf_manage_search_form_field','<input id="'.$id.'_input" name="'.$id.'_input" type="search" value="'.$_POST[$id.'_input'].'" placeholder="'.$title.'" />');
+       $form_field = apply_filters('msdlab_csf_manage_search_form_field','<input id="'.$id.'_input" name="'.$id.'_input" type="search" value="'.$_POST[$id.'_input'].'" placeholder="" />');
        $class = implode(" ",apply_filters('msdlab_csf_manage_search_class', $class));
        $ret = '<div id="'.$id.'" class="'.$class.'">'.$label.$form_field.'</div>';
        return apply_filters('msdlab_csf_manage_search', $ret);
-   }
-
-   public function college_search($title = "College",$id = "college_search", $class = array('query-filter','college-search')){
-        $colleges = $this->queries->get_select_array_from_db('College', 'CollegeId', 'Name','Name');
-       $options = array('<option value=""' . selected("", $default, false) . '>---Select---</option>');
-
-       foreach($colleges AS $k => $v){
-           if(empty( $_POST )) {
-               $options[] = '<option value="' . $k . '"' . selected($k, $default, false) . '>' . $v . '</option>';
-           } else {
-               $options[] = '<option value="' . $k . '"' . selected($k, $_POST[$id . '_input'], false) . '>' . $v . '</option>';
-           }
-       }
-
-       $label = apply_filters('msdlab_csf_manage_college_search_label','<label for="'.$id.'_input">'.$title.'</label>');
-       $form_field = '<select id="'.$id.'_input" name="'.$id.'_input">'.implode("\r\n",$options).'</select>';
-       $form_field = apply_filters('msdlab_csf_manage_college_search_form_field',$form_field);
-       $button = apply_filters('msdlab_csf_manage_college_search_button','<input id="'.$id.'_button" type="submit" value="'.$button.'" />');
-       $class = implode(" ",apply_filters('msdlab_csf_manage_college_search_class', $class));
-       $ret = '<div id="'.$id.'" class="'.$class.'">'.$label.$form_field.'</div>';
-       return apply_filters('msdlab_csf_manage_college_search', $ret);
    }
 
     public function select_search($title = "Select", $id = "select_search", $data = array(), $class = array('query-filter','college-search')){
@@ -197,7 +176,7 @@ class MSDLab_ReportControls{
 
     public function print_form($echo = true){
         $ret = array();
-        $ret['search_all_button'] = $this->search_button('Load All Applications');
+        $ret['search_all_button'] = $this->search_button('SEARCH','search_button_top');
         $ret['search_by_name'] = $this->search_box('Search By Name:','','name_search');
         $ret['search_by_email'] = $this->search_box('Search By Email:','','email_search');
         $ret['search_by_city'] = $this->search_box('Search By City:','','city_search');
@@ -205,7 +184,7 @@ class MSDLab_ReportControls{
         $ret['state_search'] = $this->select_search('Search By State: ','state_search', $states);
         $counties = $this->queries->get_select_array_from_db('county', 'CountyId', 'County','County');
         $ret['county_search'] = $this->select_search('Search By County: ','county_search', $counties);
-        $ret['search_by_zip'] = $this->search_box('Search By ZipCode (comma separated list)','','zip_search');
+        $ret['search_by_zip'] = $this->search_box('Search By ZipCode<br>(comma separated list)','','zip_search');
         $colleges = $this->queries->get_select_array_from_db('college', 'CollegeId', 'Name','Name');
         $ret['college_search'] = $this->select_search('Search By College: ','college_search', $colleges);
         $highschools = $this->queries->get_select_array_from_db('highschool', 'HighSchoolId', 'SchoolName','SchoolName');
@@ -217,21 +196,21 @@ class MSDLab_ReportControls{
         $ret['major_search'] = $this->select_search('Search By Major: ','major_search', $majors);
         $ethnicity = $this->queries->get_select_array_from_db('ethnicity', 'EthnicityID', 'Ethnicity','EthnicityID');
         $ret['ethnicity_search'] = $this->select_search('Search By Ethnicity: ','ethnicity_search', $ethnicity);
-        $athletics = array('0'=>'Non-althlete','1'=>'Athlete');
-        $ret['athlete_search'] = $this->select_search('Search By Althletics:','athlete_search',$athletics);
+        $athletics = array('0'=>'Non-athlete','1'=>'Athlete');
+        $ret['athlete_search'] = $this->select_search('Search By Athletics:','athlete_search',$athletics);
         $independence = array('0'=>'Dependent','1'=>'Independant');
         $ret['independence_search'] = $this->select_search('Search By Independence:','independence_search',$independence);
         $ret['search_by_employer'] = $this->search_box('Search By Employer:','','employer_search'); //this is handled AFTER the query
         /*
 Need (there should be a place in the database where cost of attendance, EFC, grants, loans, federal and state aid are entered and calculated)
-*/
-        $ret['search_button'] = $this->search_button();
+*/      $ret['footer_break'] = '<hr class="break">';
+        $ret['search_button'] = $this->search_button('SEARCH','search_button_btm');
         $ret['reset_button'] = $this->reset_button();
         $ret['nonce'] = wp_nonce_field( 'records_search' );
         $ret['javascript'] = $this->build_javascript();
 
         if($echo){
-            print $this->form_header();
+            print $this->form_header('csf_report_search_form');
             print implode("\n\r", $ret);
             print $this->form_footer();
         } else {

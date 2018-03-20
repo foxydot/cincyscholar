@@ -104,6 +104,20 @@ input, select, textarea {
 }
 
 .toplevel_page_csf-report{
+  form#csf_report_search_form{
+    background: #dddddd;
+    padding: 1em;
+    .query-filter{
+      width: 48%;
+      float: left;
+      label{
+        width: 33%;
+      }
+    }
+    hr.break{
+      clear: both;
+    }
+  }
   td>div{
     height: 4em;
     overflow: scroll;
