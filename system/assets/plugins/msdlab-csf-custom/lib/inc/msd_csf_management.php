@@ -11,7 +11,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
             global $current_screen;
             //TODO: Add a user management panel
             //TODO: Add a scholarship management panel
-            $required_files = array('msd_csf_application','msd_setting_controls','msd_export','msd_queries','msd_views');
+            $required_files = array('msd_csf_application','msd_setting_controls','msd_report_controls','msd_export','msd_queries','msd_views');
             foreach($required_files AS $rq){
                 if(file_exists(plugin_dir_path(__FILE__).'/'.$rq . '.php')){
                     require_once(plugin_dir_path(__FILE__).'/'.$rq . '.php');
@@ -25,6 +25,9 @@ if (!class_exists('MSDLab_CSF_Management')) {
             }
             if(class_exists('MSDLAB_SettingControls')){
                 $this->controls = new MSDLAB_SettingControls();
+            }
+            if(class_exists('MSDLAB_ReportControls')){
+                $this->search = new MSDLAB_ReportControls();
             }
             if(class_exists('MSDLAB_Queries')){
                 $this->queries = new MSDLAB_Queries();
@@ -128,35 +131,75 @@ if (!class_exists('MSDLab_CSF_Management')) {
                 'InformationSharingAllowedByGuardian',
                 'Documents',
             );
-            $result = $this->queries->get_all_applications();
-            $submitted = $incomplete = array();
-            foreach($result AS $applicant){
-                if($applicant->status == 2){
-                    $submitted[] = $applicant;
-                } else {
-                    $incomplete[] = $applicant;
+            $tabs = '';
+            $pane = array();
+            if($_POST) {
+                $result = $this->queries->get_report_set($fields);
+                $submitted = $incomplete = array();
+                foreach ($result AS $k => $applicant) {
+                    if(!empty($_POST['employer_search_input'])){
+                        if(stripos($applicant->Employer,$_POST['employer_search_input'])===false &&
+                            stripos($applicant->GuardianEmployer1,$_POST['employer_search_input'])===false &&
+                            stripos($applicant->GuardianEmployer2,$_POST['employer_search_input'])===false){
+                            continue;
+                        }
+                    }
+                    if ($applicant->status == 2) {
+                        $submitted[] = $applicant;
+                    } else {
+                        $incomplete[] = $applicant;
+                    }
                 }
-            }
-            $info = '';
-            $class = array('table','table-bordered');
-            print '<h2>Scholarship Application Reports</h2>';
-            print '
-  <ul class="nav nav-tabs" role="tablist">
+                $info = '';
+                $class = array('table','table-bordered');
+                if($result){
+                    $tabs = '
+<ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#submitted" aria-controls="submitted" role="tab" data-toggle="tab">Submitted</a></li>
     <li role="presentation"><a href="#incomplete" aria-controls="incomplete" role="tab" data-toggle="tab">incomplete</a></li>
-  </ul>
+  </ul>';
+
+                    if(count($submitted)>0){
+                        $pane['submitted'] = '<div role="tabpanel" class="tab-pane active" id="submitted">
+                            ' . implode("\n\r",$this->display->print_table('submitted',$fields,$submitted,$info,$class,false)) .'
+                        </div>';
+                    } else {
+                        $pane['submitted'] = '<div role="tabpanel" class="tab-pane active" id="submitted">
+                            <div class="notice bg-info text-info">No results</div>
+                        </div>';
+                    }
+                    if(count($incomplete)>0){
+                        $pane['incomplete'] = '<div role="tabpanel" class="tab-pane" id="incomplete">
+                            ' . implode("\n\r",$this->display->print_table('submitted',$fields,$incomplete,$info,$class,false)) .'
+                        </div>';
+                    } else {
+                        $pane['incomplete'] = '<div role="tabpanel" class="tab-pane" id="incomplete">
+                            <div class="notice bg-info text-info">No results</div>
+                        </div>';
+                    }
+                } else {
+                    $tabs = '<div class="notice bg-info text-info">No results</div>';
+                }
+            }
+            print '<h2>Scholarship Application Reports</h2>';
+            if(!$_POST) {
+                $this->search->javascript['search-btn'] = '
+        $(".search-button input").val("Load All Applications");
+        $(".query-filter input, .query-filter select").change(function(){
+            $(".search-button input").val("SEARCH");
+        });';
+            }
+            $this->search->print_form();
+
+            print $tabs;
+            print '
 
   <!-- Tab panes -->
-  <div class="tab-content">
-    <div role="tabpanel" class="tab-pane active" id="submitted">
-    ';
-            $this->display->print_table('submitted',$fields,$submitted,$info,$class);
-            print '
-</div>
-    <div role="tabpanel" class="tab-pane" id="incomplete">';
-            $this->display->print_table('incomplete',$fields,$incomplete,$info,$class);
-            print '</div>
-  </div>';
+  <div class="tab-content">';
+            print $pane['submitted'];
+            print $pane['incomplete'];
+
+            print '</div>';
         }
 
         //ultilities
