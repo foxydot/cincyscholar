@@ -198,30 +198,30 @@ class MSDLab_ReportControls{
     public function print_form($echo = true){
         $ret = array();
         $ret['search_all_button'] = $this->search_button('Load All Applications');
-        $ret['search_by_name'] = $this->search_box('Search By Name','','name_search');
-        $ret['search_by_email'] = $this->search_box('Search By Email','','email_search');
-        $ret['search_by_city'] = $this->search_box('Search By City','','city_search');
+        $ret['search_by_name'] = $this->search_box('Search By Name:','','name_search');
+        $ret['search_by_email'] = $this->search_box('Search By Email:','','email_search');
+        $ret['search_by_city'] = $this->search_box('Search By City:','','city_search');
         $states = $this->queries->get_select_array_from_db('state', 'StateId', 'State','State');
-        $ret['state_search'] = $this->select_search('State: ','state_search', $states);
+        $ret['state_search'] = $this->select_search('Search By State: ','state_search', $states);
         $counties = $this->queries->get_select_array_from_db('county', 'CountyId', 'County','County');
-        $ret['county_search'] = $this->select_search('County: ','county_search', $counties);
+        $ret['county_search'] = $this->select_search('Search By County: ','county_search', $counties);
         $ret['search_by_zip'] = $this->search_box('Search By ZipCode (comma separated list)','','zip_search');
         $colleges = $this->queries->get_select_array_from_db('college', 'CollegeId', 'Name','Name');
-        $ret['college_search'] = $this->select_search('College: ','college_search', $colleges);
+        $ret['college_search'] = $this->select_search('Search By College: ','college_search', $colleges);
         $highschools = $this->queries->get_select_array_from_db('highschool', 'HighSchoolId', 'SchoolName','SchoolName');
-        $ret['highschool_search'] = $this->select_search('High School: ','highschool_search', $highschools);
+        $ret['highschool_search'] = $this->select_search('Search By High School: ','highschool_search', $highschools);
         $highschooltypes = $this->queries->get_select_array_from_db('highschooltype', 'HighSchoolTypeId', 'Description','HighSchoolTypeId');
-        $ret['highschool_type_search'] = $this->select_search('High School Type: ','highschooltype_search', $highschooltypes);
-        $ret['gpa_search'] = $this->number_range_search('GPA Between','','gpa_range_search',array('query-filter'),0.00,5.00,0.1);
+        $ret['highschool_type_search'] = $this->select_search('Search By High School Type: ','highschooltype_search', $highschooltypes);
+        $ret['gpa_search'] = $this->number_range_search('Search By GPA Between:','','gpa_range_search',array('query-filter'),0.00,5.00,0.1);
         $majors = $this->queries->get_select_array_from_db('major', 'MajorId', 'MajorName','MajorName');
-        $ret['major_search'] = $this->select_search('Major: ','major_search', $majors);
+        $ret['major_search'] = $this->select_search('Search By Major: ','major_search', $majors);
         $ethnicity = $this->queries->get_select_array_from_db('ethnicity', 'EthnicityID', 'Ethnicity','EthnicityID');
-        $ret['ethnicity_search'] = $this->select_search('Ethnicity: ','ethnicity_search', $ethnicity);
+        $ret['ethnicity_search'] = $this->select_search('Search By Ethnicity: ','ethnicity_search', $ethnicity);
         $athletics = array('0'=>'Non-althlete','1'=>'Athlete');
-        $ret['athlete_search'] = $this->select_search('Althletics:','athlete_search',$athletics);
+        $ret['athlete_search'] = $this->select_search('Search By Althletics:','athlete_search',$athletics);
         $independence = array('0'=>'Dependent','1'=>'Independant');
-        $ret['independence_search'] = $this->select_search('Independence:','independence_search',$independence);
-        $ret['search_by_employer'] = $this->search_box('Employer','','employer_search'); //this is handled AFTER the query
+        $ret['independence_search'] = $this->select_search('Search By Independence:','independence_search',$independence);
+        $ret['search_by_employer'] = $this->search_box('Search By Employer:','','employer_search'); //this is handled AFTER the query
         /*
 Need (there should be a place in the database where cost of attendance, EFC, grants, loans, federal and state aid are entered and calculated)
 */
