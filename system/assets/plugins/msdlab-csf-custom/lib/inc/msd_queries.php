@@ -2,7 +2,6 @@
 class MSDLAB_Queries{
 
     private $post_vars;
-    
 
     /**
      * A reference to an instance of this class.
@@ -254,6 +253,153 @@ class MSDLAB_Queries{
             }
         }
         return true;
+    }
+
+    /*
+     * Report Queries
+     */
+    /**
+     * Create the full result set
+     *
+     * @return $array The parsed result set.
+     */
+    public function get_report_set($fields = array()){
+        global $wpdb;
+        //setup initial args
+        $user_args = array();
+        //get full set
+        if(empty($this->post_vars)){
+            return $this->get_all_applications();
+        }
+        //ts_data($this->post_vars);
+        $usertable = $wpdb->prefix . 'users';
+        $data['tables']['applicant'] = array('*');
+
+
+        if(empty($this->post_vars['application_date_search_input_start']) && empty($this->post_vars['application_date_search_input_end'])) {
+            $data['where'] = 'applicant.ApplicationDateTime > '.date('Ymdhis',strtotime(get_option('csf_settings_start_date'))); //replace with dates from settings
+        } else {
+            if(!empty($this->post_vars['application_date_search_input_start'])){
+                $where[] = 'applicant.ApplicationDateTime > '.date('Ymdhis',strtotime($this->post_vars['application_date_search_input_start']));
+            } else {
+                $where[] = 'applicant.ApplicationDateTime > '.date('Ymdhis',strtotime(get_option('csf_settings_start_date'))); //replace with dates from settings
+            }
+            if(!empty($this->post_vars['application_date_search_input_start'])){
+                $where[] = 'applicant.ApplicationDateTime < '.date('Ymdhis',strtotime($this->post_vars['application_date_search_input_end']));
+            }
+            $data['where'] = implode(' AND ',$where);
+        }
+
+        if(!empty($this->post_vars['name_search_input'])) {
+            //add search for name on application
+            $search_terms = explode(' ',$this->post_vars['name_search_input']);
+            if(count($search_terms>1)){
+                $fullnamesearch = ' OR (applicant.FirstName LIKE \'%'. $search_terms[0] .'%\' AND applicant.LastName LIKE \'%'. $search_terms[1] .'%\')';
+            }
+            $data['where'] .= ' AND (applicant.FirstName LIKE \'%'. $this->post_vars['name_search_input'] .'%\' OR applicant.LastName LIKE \'%'. $this->post_vars['name_search_input'] .'%\''.$fullnamesearch.') ';
+        }
+        if(!empty($this->post_vars['city_search_input'])){
+            $data['where'] .= ' AND applicant.City LIKE \'%'.$this->post_vars['city_search_input'].'%\'';
+        }
+        if(!empty($this->post_vars['state_search_input'])){
+            $data['where'] .= ' AND applicant.StateId = \''.$this->post_vars['state_search_input'].'\'';
+        }
+        if(!empty($this->post_vars['county_search_input'])){
+            $data['where'] .= ' AND applicant.CountyId = '.$this->post_vars['county_search_input'];
+        }
+        if(!empty($this->post_vars['zip_search_input'])){
+            $data['where'] .= ' AND applicant.ZipCode IN ('.$this->post_vars['zip_search_input'].')';
+        }
+        if(!empty($this->post_vars['highschool_search_input'])){
+            $data['where'] .= ' AND applicant.HighSchoolId = '.$this->post_vars['highschool_search_input'];
+        }
+        if(!empty($this->post_vars['highschooltype_search_input'])){
+            //subquery to get schools with a type?
+            $highschools = $this->get_result_set(array('tables' => array('highschool' => array('HighSchoolId')),'where' => ' highschool.SchoolTypeId = '.$this->post_vars['highschooltype_search_input']));
+            foreach($highschools AS $school){
+                $hs[] = $school->HighSchoolId;
+            }
+            $highschools = implode(',',$hs);
+            $data['where'] .= ' AND applicant.HighSchoolId IN ('.$highschools.')';
+        }
+        if($this->post_vars['gpa_range_search_input_start']!=0 || $this->post_vars['gpa_range_search_input_end']!=5){
+            $data['where'] .= ' AND (applicant.HighSchoolGPA >= '.$this->post_vars['gpa_range_search_input_start'].' AND applicant.HighSchoolGPA <= '.$this->post_vars['gpa_range_search_input_end'].')';
+        }
+        if(!empty($this->post_vars['major_search_input'])){
+            $data['where'] .= ' AND applicant.MajorId = '.$this->post_vars['major_search_input'];
+        }
+        if(!empty($this->post_vars['ethnicity_search_input'])){
+            $data['where'] .= ' AND applicant.EthnicityId = '.$this->post_vars['ethnicity_search_input'];
+        }
+        if(is_numeric($this->post_vars['athlete_search_input'])){
+            $data['where'] .= ' AND applicant.PlayedHighSchoolSports = '.$this->post_vars['athlete_search_input'];
+        }
+        if(is_numeric($this->post_vars['independence_search_input'])){
+            $data['where'] .= ' AND applicant.IsIndependent = '.$this->post_vars['independence_search_input'];
+        }
+
+
+        $data['tables'][$usertable] = array('user_email');
+        $data['where'] .= ' AND ' . $usertable . '.ID  = applicant.UserId';
+        if(!empty($this->post_vars['email_search_input'])) {
+            //add search for an email on application
+            $data['where'] .= ' AND ' . $usertable . '.user_email  LIKE \'%'.$this->post_vars['email_search_input'].'%\'';
+        }
+        $data['tables']['applicantcollege'] = array('CollegeId');
+        $data['where'] .= ' AND applicantcollege.ApplicantId = applicant.ApplicantId';
+        if(!empty($this->post_vars['college_search_input'])){
+            $data['where'] .= ' AND applicantcollege.CollegeId = '.$this->post_vars['college_search_input'];
+        }
+        //ts_data($data);
+        $results = $this->get_result_set($data);
+
+        foreach ($results AS $k => $r){
+            $applicant_id = $r->ApplicantId;
+            $agreements = $financial = $docs = array();
+            //add agreements
+            $agreements['tables']['agreements'] = array('ApplicantHaveRead','ApplicantDueDate','ApplicantDocsReq','ApplicantReporting','GuardianHaveRead','GuardianDueDate','GuardianDocsReq','GuardianReporting');
+            $agreements['where'] .= ' agreements.ApplicantId = ' . $applicant_id;
+            $agreements_results = $this->get_result_set($agreements);
+            foreach($agreements_results AS $ar){
+                foreach($ar as $y => $z){
+                    $results[$k]->$y = $z;
+                }
+            }
+            //add financial
+            if($this->is_indy($applicant_id)){
+                $financial['tables']['applicantfinancial'] = array('ApplicantEmployer', 'ApplicantIncome', 'SpouseEmployer', 'SpouseIncome', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
+                $financial['where'] .= ' applicantfinancial.ApplicantId = ' . $applicant_id;
+            } else {
+                $financial['tables']['guardian'] = array('GuardianFullName1', 'GuardianEmployer1', 'GuardianFullName2', 'GuardianEmployer2', 'Homeowner', 'HomeValue', 'AmountOwedOnHome','InformationSharingAllowedByGuardian');
+                $financial['where'] .= ' guardian.ApplicantId = ' . $applicant_id;
+            }
+            $financial_results = $this->get_result_set($financial);
+            foreach($financial_results AS $fr){
+                foreach($fr as $y => $z){
+                    $results[$k]->$y = $z;
+                }
+            }
+            //add docs
+            $docs['tables']['attachment'] = array('AttachmentTypeId','FilePath');
+            $docs['where'] = 'ApplicantId = '.$applicant_id;
+            $documents = $this->get_result_set($docs);
+            foreach($documents AS $d){
+                $results[$k]->Documents .= '<a href="'.$d->FilePath.'">'.$this->get_attachment_type_by_id($d->AttachmentTypeId).'</a><br />';
+            }
+
+            //add status
+            $status['tables']['applicationprocess'] = array('ProcessStepId','ProcessStepBool');
+            $status['where'] = 'ApplicantId = '.$applicant_id;
+            $status_results = $this->get_result_set($status);
+            foreach($status_results AS $sr){
+                if($sr->ProcessStepBool == 1) {
+                    if($sr->ProcessStepId > $results[$k]->Status) {
+                        $results[$k]->status = $sr->ProcessStepId;
+                    }
+                }
+            }
+        }
+        return $results;
     }
 
 

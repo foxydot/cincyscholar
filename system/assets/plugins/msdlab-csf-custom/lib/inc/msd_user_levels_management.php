@@ -105,8 +105,6 @@ if(!class_exists('MSDLab_Capabilites')){
                 return array(
                     'review_application' => 1,
                     'manage_csf' => 1,
-                    'review_application' => 1,
-                    'manage_csf' => 1,
                     'view_application_process' => 1,
                     'view_csf_reports' => 1,
                 );
