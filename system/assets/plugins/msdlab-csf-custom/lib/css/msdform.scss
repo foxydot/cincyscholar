@@ -103,11 +103,10 @@ input, select, textarea {
   }
 }
 
-.toplevel_page_csf-report{
-  form#csf_report_search_form{
+  form#csf_report_search_form,form#csf_college{
     background: #dddddd;
     padding: 1em;
-    .query-filter{
+    .query-filter,.setting-field{
       width: 49%;
       float: left;
       height: 3.5em;
@@ -119,6 +118,8 @@ input, select, textarea {
       clear: both;
     }
   }
+
+.toplevel_page_csf-report{
   td>div{
     height: 4em;
     overflow: scroll;
@@ -198,4 +199,19 @@ input, select, textarea {
 }
 .box.is-uploading .box__uploading {
   display: block;
+}
+
+//admin side
+.report_table{
+  table{
+    tr{
+      &:nth-child(2n+0){
+        background: #ddd;
+      }
+      td{
+        padding: 1em;
+        vertical-align: top;
+      }
+    }
+  }
 }

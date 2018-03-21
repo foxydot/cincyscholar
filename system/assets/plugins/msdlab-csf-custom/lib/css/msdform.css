@@ -83,16 +83,16 @@ input.error, select.error, textarea.error {
     content: attr(data-off);
     left: 100%; }
 
-.toplevel_page_csf-report form#csf_report_search_form {
+form#csf_report_search_form, form#csf_college {
   background: #dddddd;
   padding: 1em; }
-  .toplevel_page_csf-report form#csf_report_search_form .query-filter {
+  form#csf_report_search_form .query-filter, form#csf_report_search_form .setting-field, form#csf_college .query-filter, form#csf_college .setting-field {
     width: 49%;
     float: left;
     height: 3.5em; }
-    .toplevel_page_csf-report form#csf_report_search_form .query-filter label {
+    form#csf_report_search_form .query-filter label, form#csf_report_search_form .setting-field label, form#csf_college .query-filter label, form#csf_college .setting-field label {
       width: 33%; }
-  .toplevel_page_csf-report form#csf_report_search_form hr.break {
+  form#csf_report_search_form hr.break, form#csf_college hr.break {
     clear: both; }
 
 .toplevel_page_csf-report td > div {
@@ -159,3 +159,10 @@ input.error, select.error, textarea.error {
 
 .box.is-uploading .box__uploading {
   display: block; }
+
+.report_table table tr:nth-child(2n+0) {
+  background: #ddd; }
+
+.report_table table tr td {
+  padding: 1em;
+  vertical-align: top; }
