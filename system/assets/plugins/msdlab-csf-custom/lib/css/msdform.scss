@@ -103,11 +103,10 @@ input, select, textarea {
   }
 }
 
-.toplevel_page_csf-report{
-  form#csf_report_search_form{
+  form#csf_report_search_form,form#csf_college{
     background: #dddddd;
     padding: 1em;
-    .query-filter{
+    .query-filter,.setting-field{
       width: 49%;
       float: left;
       height: 3.5em;
@@ -119,6 +118,8 @@ input, select, textarea {
       clear: both;
     }
   }
+
+.toplevel_page_csf-report{
   td>div{
     height: 4em;
     overflow: scroll;
