@@ -83,6 +83,18 @@ input.error, select.error, textarea.error {
     content: attr(data-off);
     left: 100%; }
 
+.toplevel_page_csf-report form#csf_report_search_form {
+  background: #dddddd;
+  padding: 1em; }
+  .toplevel_page_csf-report form#csf_report_search_form .query-filter {
+    width: 49%;
+    float: left;
+    height: 3.5em; }
+    .toplevel_page_csf-report form#csf_report_search_form .query-filter label {
+      width: 33%; }
+  .toplevel_page_csf-report form#csf_report_search_form hr.break {
+    clear: both; }
+
 .toplevel_page_csf-report td > div {
   height: 4em;
   overflow: scroll; }

@@ -1,6 +1,6 @@
 <?php
 
-class rhinevestSections{
+class eruditeSections{
     
     function default_output($section,$i){
         //ts_data($section);
