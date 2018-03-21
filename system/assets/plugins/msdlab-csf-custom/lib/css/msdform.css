@@ -87,8 +87,9 @@ input.error, select.error, textarea.error {
   background: #dddddd;
   padding: 1em; }
   .toplevel_page_csf-report form#csf_report_search_form .query-filter {
-    width: 48%;
-    float: left; }
+    width: 49%;
+    float: left;
+    height: 3.5em; }
     .toplevel_page_csf-report form#csf_report_search_form .query-filter label {
       width: 33%; }
   .toplevel_page_csf-report form#csf_report_search_form hr.break {

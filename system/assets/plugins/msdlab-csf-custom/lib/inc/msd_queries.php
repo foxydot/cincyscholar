@@ -271,9 +271,24 @@ class MSDLAB_Queries{
         if(empty($this->post_vars)){
             return $this->get_all_applications();
         }
+        //ts_data($this->post_vars);
         $usertable = $wpdb->prefix . 'users';
         $data['tables']['applicant'] = array('*');
-        $data['where'] = 'applicant.ApplicationDateTime > 20180101000000'; //replace with dates from settings
+
+
+        if(empty($this->post_vars['application_date_search_input_start']) && empty($this->post_vars['application_date_search_input_end'])) {
+            $data['where'] = 'applicant.ApplicationDateTime > '.date('Ymdhis',strtotime(get_option('csf_settings_start_date'))); //replace with dates from settings
+        } else {
+            if(!empty($this->post_vars['application_date_search_input_start'])){
+                $where[] = 'applicant.ApplicationDateTime > '.date('Ymdhis',strtotime($this->post_vars['application_date_search_input_start']));
+            } else {
+                $where[] = 'applicant.ApplicationDateTime > '.date('Ymdhis',strtotime(get_option('csf_settings_start_date'))); //replace with dates from settings
+            }
+            if(!empty($this->post_vars['application_date_search_input_start'])){
+                $where[] = 'applicant.ApplicationDateTime < '.date('Ymdhis',strtotime($this->post_vars['application_date_search_input_end']));
+            }
+            $data['where'] = implode(' AND ',$where);
+        }
 
         if(!empty($this->post_vars['name_search_input'])) {
             //add search for name on application
@@ -335,6 +350,7 @@ class MSDLAB_Queries{
         if(!empty($this->post_vars['college_search_input'])){
             $data['where'] .= ' AND applicantcollege.CollegeId = '.$this->post_vars['college_search_input'];
         }
+        //ts_data($data);
         $results = $this->get_result_set($data);
 
         foreach ($results AS $k => $r){
