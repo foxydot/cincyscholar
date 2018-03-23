@@ -191,6 +191,9 @@ if (!class_exists('MSDLab_CSF_Application')) {
                         //Do the stuff
                         print $this->queries->set_data($form_id . $form_page_number, $set['where']);
                         if(!$applicant_id){$applicant_id = $this->queries->get_applicant_id($current_user->ID);}
+                        if(isset($_POST['UpdateApplicationDate'])){
+                            $this->update_application_submission_date($applicant_id,$_POST['UpdateApplicationDate']);
+                        }
                         if(isset($_POST['SendEmails'])){
                             $this->send_form_emails($_POST['SendEmails']);
                         }
@@ -478,7 +481,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $ret['AttachmentCopy'] = '<div class="copy col-sm-12">Please upload all documents in PDF format.</div>';
 
                             $ret[] = '<div class="row">';
-                            $ret[] = $this->form->file_management_front_end('Attachment_',$documents,array('col-sm-2'));
+                            $ret[] = $this->form->file_management_front_end('Attachment_',$documents,array('col-sm-3'));
                             $jquery['filemanager'] = $this->form->get_file_manager_ajax('Attachment_',$documents);
                             $ret[] = '</div><br /><br />';
 
@@ -565,6 +568,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                                 $ret['ApplicationProcess_ProcessStepId'] = $this->form->field_hidden("ApplicationProcess_ProcessStepId", 2);
                                 $ret['ApplicationProcess_ProcessStepBool'] = $this->form->field_hidden("ApplicationProcess_ProcessStepBool", 1);
                                 $ret['SendEmails'] = $this->form->field_utility('SendEmails','application_submitted');
+                                $ret['UpdateApplicationDate'] = $this->form->field_utility('UpdateApplicationDate',date('Y-m-d H:i:s'));
                                 $ret[] = '</div>';
                             }
                             if($form_page_number == 7){
@@ -818,5 +822,24 @@ if (!class_exists('MSDLab_CSF_Application')) {
                 wp_mail($email['to'],$email['subject'],$email['message'],$email['header']);
             }
         }
+
+        function update_application_submission_date($applicant_id,$time){
+            global $wpdb;
+            $get = array();
+            $get['tables']['Applicant'] = array('ApplicationDateTime','Notes');
+            $get['where'] = 'applicant.ApplicantId = ' . $applicant_id;
+            $results = $this->queries->get_result_set($get);
+            $result = $results[0];
+
+            $notes[] = $result->Notes;
+            $notes[] = '"Application started: '.$result->ApplicationDateTime.'"';
+
+            $sql = 'UPDATE applicant SET applicant.Notes = '.implode("\n",$notes).', applicant.ApplicationDateTime = "'.$time.'" WHERE applicant.ApplicantId = '.$applicant_id.';';
+            $result = $wpdb->get_results($sql);
+            if(is_wp_error($result)){
+                error_log('Error updating submission date');
+            }
+        }
+
     } //End Class
 } //End if class exists statement

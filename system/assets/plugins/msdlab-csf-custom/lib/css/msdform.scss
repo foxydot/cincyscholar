@@ -130,25 +130,31 @@ input, select, textarea {
 }
 
 .upload-wrapper {
+  margin-bottom: 1em;
   label {
     background: #ddd;
     text-align: center;
     min-height: 3em;
     width: 100%;
     line-height: 1.25;
+    display: block;
   }
-
   div.document{
     text-align: center;
     border: 2px solid #ddd;
     padding: 0.5em;
     a{
+      &.file-link{
+        display: block;
+      }
       i{
         font-size: 3em;
       }
       .filename{
         font-size: 0.8em;
       }
+    }
+    button.file-delete{
     }
   }
 
