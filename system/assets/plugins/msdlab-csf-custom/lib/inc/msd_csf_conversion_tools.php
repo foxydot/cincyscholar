@@ -17,6 +17,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action('admin_menu', array(&$this,'settings_page'));
             add_action( 'wp_ajax_create_student_users', array(&$this,'create_student_users') );
             add_action( 'wp_ajax_create_donor_users', array(&$this,'create_donor_users') );
+            add_action( 'wp_ajax_copy_application_dates', array(&$this,'copy_application_dates') );
         }
         //methods
         function create_student_users(){
@@ -70,6 +71,19 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                 $sql = 'UPDATE Donor SET UserId = '.$user_id.' WHERE DonorId = '.$donor->DonorId.';';
                 if($wpdb->get_results($sql)){
                     print strtolower($donor->FirstName . '_' . $donor->LastName) .' assigned UserId '. $user_id .'<br>';
+                }
+            }
+        }
+
+        function copy_application_dates(){
+            global $wpdb;
+            $sql = "SELECT ApplicantId, ApplicationDateTime FROM Applicant";
+            $students = $wpdb->get_results($sql);
+            //return ts_data($students,0);
+            foreach($students AS $student){
+                $sql = 'UPDATE Applicant SET SubmitDateTime = '.$student->ApplicationDateTime.' WHERE ApplicantId = '.$student->ApplicantId.';';
+                if($wpdb->get_results($sql)){
+                    print $student->ApplcantId .' updated<br>';
                 }
             }
         }
@@ -129,6 +143,15 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                             console.log(response);
                         });
                     });
+                    $('.copy_application_dates').click(function(){
+                        var data = {
+                            action: 'copy_application_dates',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
             </script>
             <div class="wrap">
@@ -136,8 +159,10 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                 <dl>
                     <dt>Create Student Users:</dt>
                    <dd><button class="create_student_users">Go</button></dd>
-                   <dt>Create Donor Users:</dt>
-                   <dd><button class="create_donor_users">Go</button></dd>
+                    <dt>Create Donor Users:</dt>
+                    <dd><button class="create_donor_users">Go</button></dd>
+                    <dt>Copy Application Dates:</dt>
+                    <dd><button class="copy_application_dates">Go</button></dd>
 
                 </dl>
                 <div class="response1"></div>
