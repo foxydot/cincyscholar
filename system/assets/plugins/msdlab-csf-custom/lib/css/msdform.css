@@ -102,57 +102,57 @@ form#csf_report_search_form, form#csf_college {
 .toplevel_page_csf-report td.HardshipNote > div, .toplevel_page_csf-report td.Activities > div {
   width: 24em; }
 
-.upload-wrapper label {
-  background: #ddd;
-  text-align: center;
-  min-height: 3em;
-  width: 100%;
-  line-height: 1.25; }
-
-.upload-wrapper div.document {
-  text-align: center;
-  border: 2px solid #ddd;
-  padding: 0.5em; }
-  .upload-wrapper div.document a i {
-    font-size: 3em; }
-  .upload-wrapper div.document a .filename {
-    font-size: 0.8em; }
-
-.upload-wrapper div.box {
-  text-align: center;
-  padding: 0.5em; }
-
-.upload-wrapper .box {
-  background-color: white;
-  outline: 2px dashed #ddd;
-  outline-offset: 0; }
-  .upload-wrapper .box.is-dragover {
-    background-color: gray; }
-  .upload-wrapper .box .box__dragndrop {
-    display: inline; }
-  .upload-wrapper .box .box__icon {
+.upload-wrapper {
+  margin-bottom: 1em; }
+  .upload-wrapper label {
+    background: #ddd;
+    text-align: center;
+    min-height: 3em;
     width: 100%;
-    height: 3em;
-    fill: #bbb;
-    display: block;
-    margin-bottom: 40px; }
-
-.upload-wrapper .box__dragndrop,
-.upload-wrapper .box__uploading,
-.upload-wrapper .box__success,
-.upload-wrapper .box__error {
-  display: none; }
-
-.upload-wrapper .box__file {
-  width: 0.1px;
-  height: 0.1px;
-  opacity: 0;
-  overflow: hidden;
-  position: absolute;
-  z-index: -1; }
-  .upload-wrapper .box__file + label {
-    font-weight: 500;
-    cursor: pointer; }
+    line-height: 1.25;
+    display: block; }
+  .upload-wrapper div.document {
+    text-align: center;
+    border: 2px solid #ddd;
+    padding: 0.5em; }
+    .upload-wrapper div.document a.file-link {
+      display: block; }
+    .upload-wrapper div.document a i {
+      font-size: 3em; }
+    .upload-wrapper div.document a .filename {
+      font-size: 0.8em; }
+  .upload-wrapper div.box {
+    text-align: center;
+    padding: 0.5em; }
+  .upload-wrapper .box {
+    background-color: white;
+    outline: 2px dashed #ddd;
+    outline-offset: 0; }
+    .upload-wrapper .box.is-dragover {
+      background-color: gray; }
+    .upload-wrapper .box .box__dragndrop {
+      display: inline; }
+    .upload-wrapper .box .box__icon {
+      width: 100%;
+      height: 3em;
+      fill: #bbb;
+      display: block;
+      margin-bottom: 40px; }
+  .upload-wrapper .box__dragndrop,
+  .upload-wrapper .box__uploading,
+  .upload-wrapper .box__success,
+  .upload-wrapper .box__error {
+    display: none; }
+  .upload-wrapper .box__file {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1; }
+    .upload-wrapper .box__file + label {
+      font-weight: 500;
+      cursor: pointer; }
 
 .box.is-uploading .box__input {
   visibility: none; }

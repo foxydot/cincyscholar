@@ -229,7 +229,7 @@ class MSDLAB_FormControls{
         $filename = array_pop(explode('/',$value->FilePath));
         $fileext = strtolower(array_pop(explode('.',$filename)));
         $file_display =  '<div class="document'.$fileshow.'">
-                    <a href="'.$value->FilePath.'" title="'.$filename.'"><i class="fa fa-file-pdf-o" aria-hidden="true"></i><br /><span class="filename">'.$filename.'</span><br><span class="filecat">'.$attachment_types[$value->AttachmentTypeId].'</span></a>
+                    <a href="'.$value->FilePath.'" title="'.$filename.'" class="file-link"><i class="fa fa-file-pdf-o" aria-hidden="true"></i><br /><span class="filename">'.$filename.'</span><br><span class="filecat">'.$attachment_types[$value->AttachmentTypeId].'</span></a>
                     <button class="file-delete" value="'.$value->FilePath.'" id="'.$attachment_id.'">Delete</button>
                 </div>';
         $form_field = '<div class="box'.$uploadshow.'">
@@ -289,8 +289,10 @@ class MSDLAB_FormControls{
         $ret[$id_prepend.'Transcript'] = $this->field_upload($id_prepend.'Transcript',$this->get_files_of_type('Transcript',$documents),'Transcript',null,null,$class);
         $ret[$id_prepend.'FAFSA'] = $this->field_upload($id_prepend.'FAFSA',$this->get_files_of_type('FAFSA',$documents),'FAFSA Need Evaluation Document',null,null,$class);
         $ret[$id_prepend.'FinancialAidAward'] = $this->field_upload($id_prepend.'FinancialAidAward',$this->get_files_of_type('FinancialAidAward',$documents),'Financial Aid Award Letter From College',null,null,$class);
-        $ret[$id_prepend.'Additional'] = $this->field_upload($id_prepend.'Additional',$this->get_files_of_type('Additional',$documents),'Additional Document Requested by CSF',null,null,$class);
-        $ret[$id_prepend.'Additional2'] = $this->field_upload($id_prepend.'Additional2',$this->get_files_of_type('Additional2',$documents),'Additional Document Requested by CSF',null,null,$class);
+        $ret[$id_prepend.'Additional_1'] = $this->field_upload($id_prepend.'Additional_1',$this->get_files_of_type('Additional_1',$documents),'Additional Document Requested by CSF',null,null,$class);
+        $ret[$id_prepend.'Additional_2'] = $this->field_upload($id_prepend.'Additional_2',$this->get_files_of_type('Additional_2',$documents),'Additional Document Requested by CSF',null,null,$class);
+        $ret[$id_prepend.'Additional_3'] = $this->field_upload($id_prepend.'Additional_3',$this->get_files_of_type('Additional_3',$documents),'Additional Document Requested by CSF',null,null,$class);
+        $ret[$id_prepend.'Additional_4'] = $this->field_upload($id_prepend.'Additional_4',$this->get_files_of_type('Additional_4',$documents),'Additional Document Requested by CSF',null,null,$class);
 
         return implode("\n",apply_filters('msdlab_csf_file_management_front_end',$ret));
     }
