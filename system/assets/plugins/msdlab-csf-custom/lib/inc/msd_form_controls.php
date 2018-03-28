@@ -229,7 +229,7 @@ class MSDLAB_FormControls{
         $filename = array_pop(explode('/',$value->FilePath));
         $fileext = strtolower(array_pop(explode('.',$filename)));
         $file_display =  '<div class="document'.$fileshow.'">
-                    <a href="'.$value->FilePath.'" title="'.$filename.'" class="file-link"><i class="fa fa-file-pdf-o" aria-hidden="true"></i><br /><span class="filename">'.$filename.'</span><br><span class="filecat">'.$attachment_types[$value->AttachmentTypeId].'</span></a>
+                    <a href="'.$value->FilePath.'" title="'.$filename.'" class="file-link"><i class="fa fa-file-pdf-o" aria-hidden="true"></i><br /><span class="filename">'.$filename.'</span><br><span class="filecat hidden">'.$attachment_types[$value->AttachmentTypeId].'</span></a>
                     <button class="file-delete" value="'.$value->FilePath.'" id="'.$attachment_id.'">Delete</button>
                 </div>';
         $form_field = '<div class="box'.$uploadshow.'">
@@ -287,7 +287,7 @@ class MSDLAB_FormControls{
     public function file_management_front_end($id_prepend,$documents,$class){
         $ret[$id_prepend.'Resume'] = $this->field_upload($id_prepend.'Resume',$this->get_files_of_type('Resume',$documents),'Resume',null,null,$class);
         $ret[$id_prepend.'Transcript'] = $this->field_upload($id_prepend.'Transcript',$this->get_files_of_type('Transcript',$documents),'Transcript',null,null,$class);
-        $ret[$id_prepend.'FAFSA'] = $this->field_upload($id_prepend.'FAFSA',$this->get_files_of_type('FAFSA',$documents),'FAFSA Need Evaluation Document',null,null,$class);
+        $ret[$id_prepend.'FAFSA'] = $this->field_upload($id_prepend.'FAFSA',$this->get_files_of_type('FAFSA',$documents),'Student Aid Report',null,null,$class);
         $ret[$id_prepend.'FinancialAidAward'] = $this->field_upload($id_prepend.'FinancialAidAward',$this->get_files_of_type('FinancialAidAward',$documents),'Financial Aid Award Letter From College',null,null,$class);
         $ret[$id_prepend.'Additional_1'] = $this->field_upload($id_prepend.'Additional_1',$this->get_files_of_type('Additional_1',$documents),'Additional Document Requested by CSF',null,null,$class);
         $ret[$id_prepend.'Additional_2'] = $this->field_upload($id_prepend.'Additional_2',$this->get_files_of_type('Additional_2',$documents),'Additional Document Requested by CSF',null,null,$class);
