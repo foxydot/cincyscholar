@@ -18,6 +18,8 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_create_student_users', array(&$this,'create_student_users') );
             add_action( 'wp_ajax_create_donor_users', array(&$this,'create_donor_users') );
             add_action( 'wp_ajax_copy_application_dates', array(&$this,'copy_application_dates') );
+            add_action( 'wp_ajax_move_applicant_majors', array(&$this,'move_applicant_majors') );
+            add_action( 'wp_ajax_reduce_majors', array(&$this,'reduce_majors') );
         }
         //methods
         function create_student_users(){
@@ -87,6 +89,53 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                 }
             }
         }
+
+        function get_major_array(){
+            global $wpdb;
+            $sql = "SELECT MajorId, MoveToId FROM temp_majors";
+            $majors_results = $wpdb->get_results($sql);
+            $majors = array();
+            foreach($majors_results AS $mj){
+                $majors[$mj->MajorId] = $mj->MoveToId;
+            }
+            return $majors;
+        }
+
+        function move_applicant_majors(){
+            global $wpdb;
+            $majors = $this->get_major_array();
+            $sql = "SELECT ApplicantId, MajorId FROM Applicant";
+            $students = $wpdb->get_results($sql);
+            //return ts_data($students,0);
+            foreach($students AS $student){
+                //print $student->MajorId;
+                if($student->MajorId != ''){
+                    if($majors[$student->MajorId] != ''){
+                        $newMajorId = $majors[$student->MajorId];
+                        $update_sql = 'UPDATE Applicant SET MajorId = '.$newMajorId.' WHERE ApplicantId = '.$student->ApplicantId.';';
+                        if($wpdb->get_results($update_sql)){
+                            print $student->ApplcantId .' updated<br>';
+                        }
+                    }
+                }
+            }
+        }
+
+        function reduce_majors(){
+            global $wpdb;
+            $majors = $this->get_major_array();
+            foreach ($majors AS $k => $v){
+                if(!is_null($v)){
+                    if($k!=$v){
+                        $sql = "DELETE FROM major WHERE MajorId = ".$k.";";
+                        if($wpdb->get_results($sql)){
+                            print $k .' deleted<br>';
+                        }
+                    }
+                }
+            }
+        }
+
         //utility
         function settings_page()
         {
@@ -152,6 +201,24 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                             console.log(response);
                         });
                     });
+                    $('.move_applicant_majors').click(function(){
+                        var data = {
+                            action: 'move_applicant_majors',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
+                    $('.reduce_majors').click(function(){
+                        var data = {
+                            action: 'reduce_majors',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
             </script>
             <div class="wrap">
@@ -163,6 +230,10 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                     <dd><button class="create_donor_users">Go</button></dd>
                     <dt>Copy Application Dates:</dt>
                     <dd><button class="copy_application_dates">Go</button></dd>
+                    <dt>Move Applicant Majors:</dt>
+                    <dd><button class="move_applicant_majors">Go</button></dd>
+                    <dt>Reduce Majors:</dt>
+                    <dd><button class="reduce_majors">Go</button></dd>
 
                 </dl>
                 <div class="response1"></div>
