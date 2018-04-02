@@ -63,6 +63,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
             add_submenu_page('csf-report',__('General Settings'),__('General Settings'),'manage_csf','csf-settings', array(&$this,'setting_page_content'));
             add_submenu_page('csf-report',__('College Settings'),__('College Settings'),'manage_csf','csf-college', array(&$this,'college_page_content'));
             add_submenu_page(null,__('Edit College'),__('Edit College'),'manage_csf','college-edit', array(&$this,'college_edit_page_content'));
+            add_submenu_page(null,__('Edit Contact'),__('Edit Contact'),'manage_csf','contact-edit', array(&$this,'contact_edit_page_content'));
 
         }
 
@@ -210,7 +211,8 @@ if (!class_exists('MSDLab_CSF_Management')) {
             print '<div class="wrap report_table">';
             print '<h1 class="wp-heading-inline">College Settings</h1>';
             //button: add college
-            print '<a href="admin.php?page=college-edit&college_id=null" class="page-title-action">Add New College</a>
+            print ' <a href="admin.php?page=college-edit" class="page-title-action">Add New College</a>
+           <a href="admin.php?page=contact-edit" class="page-title-action">Add New Contact</a>
             <hr class="wp-header-end">';
             //list colleges with edit button, view contacts button
             //contacts in a slidedown box?
@@ -219,7 +221,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
             if(count($colleges)>0) {
                 foreach ($colleges AS $college){
                     $contacts = $this->queries->get_all_contacts($college->CollegeId);
-                    $cell['college_name'] = $college->Name;
+                    $cell['college_name'] = $college->Name.'<br /><a href="admin.php?page=college-edit&college_id='.$college->CollegeId.'" class="button">Edit College</a>';
                     $con = array();
                     foreach($contacts AS $contact){
                         $c = array();
@@ -227,10 +229,10 @@ if (!class_exists('MSDLab_CSF_Management')) {
                         $c['dept'] = $contact->Department;
                         $c['email'] = '<a href="mailto:'.antispambot($contact->Email).'">'.antispambot($contact->Email).'</a>';
                         $c['phone'] = $contact->PhoneNumber;
+                        $c['edit'] = '<a href="admin.php?page=contact-edit&contact_id='.$contact->CollegeContactId.'" class="button">Edit '.$contact->FirstName .' '.$contact->LastName.'</a>';
                         $con[] = implode('<br>',$c);
                     }
                     $cell['contacts'] = implode('<br><br>',$con);
-                    $cell['edit'] = '<a href="admin.php?page=college-edit&college_id='.$college->CollegeId.'" class="button">Edit</a>';
                     $row[] = implode('</td><td>',$cell);
                 }
                 $table = implode("</td></tr>\n<tr><td>",$row);
@@ -258,10 +260,39 @@ if (!class_exists('MSDLab_CSF_Management')) {
             } else {
                 $title = 'New College';
             }
-            print '<h1 class="wp-heading-inline">'.$title.' Settings</h1>            
+            print '<div class="wrap">';
+            print '<h1 class="wp-heading-inline">'.$title.' Settings</h1>  <a href="admin.php?page=csf-college" class="page-title-action">Return To List</a>          
             <hr class="wp-header-end">';
             $form = $this->controls->get_form(array('form_id' => 'csf_college','data' => $college));
             print $form;
+            print '</div>';
+        }
+
+        function contact_edit_page_content(){
+            $contact_id = $_GET['contact_id'];
+            $contact = null;
+            $title = 'New Contact';
+            if($_POST) {
+                $notifications = array(
+                    'nononce' => 'Contact could not be saved.',
+                    'success' => 'Contact saved!'
+                );
+                if ($msg = $this->queries->set_data('csf_contact', array('collegecontact' => 'CollegeContactId = ' . $contact_id), $notifications)) {
+                    print '<div class="updated notice notice-success is-dismissible">' . $msg . '</div>';
+                }
+            }
+            if(!is_null($contact_id)){
+                $contact = $this->queries->get_contact($contact_id);
+                $title = $contact->FirstName .' '. $contact->LastName;
+            } else {
+                $title = 'New Contact';
+            }
+            print '<div class="wrap">';
+            print '<h1 class="wp-heading-inline">'.$title.' Settings</h1> <a href="admin.php?page=csf-college" class="page-title-action">Return To List</a>         
+            <hr class="wp-header-end">';
+            $form = $this->controls->get_form(array('form_id' => 'csf_contact','data' => $contact));
+            print $form;
+            print '</div>';
         }
 
         //ultilities

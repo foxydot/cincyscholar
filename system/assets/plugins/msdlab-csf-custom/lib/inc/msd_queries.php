@@ -83,7 +83,10 @@ class MSDLAB_Queries{
      }
 
      public function get_contact($contact_id){
-
+         $data['tables']['collegecontact'] = array('*');
+         $data['where'] = 'collegecontact.CollegecontactId = '.$contact_id;
+         $results = $this->get_result_set($data);
+         return $results[0];
      }
      /*
       * Report Queries

@@ -196,6 +196,30 @@ class MSDLAB_SettingControls{
                 $ret['javascript'] = $this->build_javascript($form_id);
                 $ret['ftr'] = $this->form_footer();
                 break;
+            case 'csf_contact':
+                $states = $this->queries->get_select_array_from_db('state','StateId','State');
+                $colleges = $this->queries->get_select_array_from_db('college','CollegeId','Name');
+                $ret['hdr'] = $this->form_header($form_id);
+                $ret['contact_id'] = $this->settings_hidden('collegecontact_CollegeContactId',$contact_id,'Contact ID',null,null);
+                $ret['firstname'] = $this->settings_textfield('First Name','collegecontact_FirstName',array('large','setting-field'),$data->FirstName);
+                $ret['lastname'] = $this->settings_textfield('Last Name','collegecontact_LastName',array('large','setting-field'),$data->LastName);
+                $ret['Address1'] = $this->settings_textfield('Address','collegecontact_Address1',array('large','setting-field'),$data->Address1);
+                $ret['Address2'] = $this->settings_textfield('Address','collegecontact_Address2',array('large','setting-field'),$data->Address2);
+                $ret['City'] = $this->settings_textfield('City','collegecontact_City',array('large','setting-field'),$data->City);
+                $ret['StateId'] = $this->settings_select('collegecontact_StateId',$data->StateId,'State',array('','Select'),$states,null, array('large','setting-field'));
+                $ret['ZipCode'] = $this->settings_textfield('ZipCode','collegecontact_ZipCode',array('large','setting-field'),$data->ZipCode);
+                $ret['PhoneNumber'] = $this->settings_textfield('Phone Number','collegecontact_PhoneNumber',array('large','setting-field'),$data->PhoneNumber);
+                $ret['FaxNumber'] = $this->settings_textfield('Fax Number','collegecontact_FaxNumber',array('large','setting-field'),$data->FaxNumber);
+                $ret['Department'] = $this->settings_textfield('Department','collegecontact_Department',array('large','setting-field'),$data->Department);
+                $ret['Email'] = $this->settings_textfield('Email','collegecontact_Email',array('large','setting-field'),$data->Email);
+                $ret['CollegeId'] = $this->settings_select('collegecontact_CollegeId',$data->CollegeId,'College',array('','Select'),$colleges,null, array('large','setting-field'));
+                $ret['Notes'] = $this->settings_textarea('Notes','collegecontact_Notes',array('large','setting-field'),$data->Notes);
+                $ret['submit'] = $this->settings_button();
+                //delete?
+                $ret['nonce'] = wp_nonce_field( $form_id );
+                $ret['javascript'] = $this->build_javascript($form_id);
+                $ret['ftr'] = $this->form_footer();
+                break;
         }
         return implode("\n",$ret);
     }
