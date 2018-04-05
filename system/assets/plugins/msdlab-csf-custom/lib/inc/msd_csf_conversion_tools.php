@@ -20,6 +20,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_copy_application_dates', array(&$this,'copy_application_dates') );
             add_action( 'wp_ajax_move_applicant_majors', array(&$this,'move_applicant_majors') );
             add_action( 'wp_ajax_reduce_majors', array(&$this,'reduce_majors') );
+            add_action( 'wp_ajax_fix_emails', array(&$this,'fix_emails') );
         }
         //methods
         function create_student_users(){
@@ -136,6 +137,21 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             }
         }
 
+        function fix_emails(){
+            global $wpdb;
+            $sql = "SELECT ApplicantId, Email, UserId FROM Applicant";
+            $students = $wpdb->get_results($sql);
+            foreach ($students AS $student){
+                $user = get_user_by('id',$student->UserId);
+                if($student->Email != $user->user_email){
+                    $update_sql = 'UPDATE Applicant SET Email = '.$user->user_email.' WHERE ApplicantId = '.$student->ApplicantId.';';
+                }
+                if($wpdb->get_results($update_sql)){
+                    print $student->Email .' updated to '. $user->user_email .'<br>';
+                }
+            }
+        }
+
         //utility
         function settings_page()
         {
@@ -219,6 +235,15 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                             console.log(response);
                         });
                     });
+                    $('.fix_emails').click(function(){
+                        var data = {
+                            action: 'fix_emails',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
             </script>
             <div class="wrap">
@@ -234,6 +259,8 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                     <dd><button class="move_applicant_majors">Go</button></dd>
                     <dt>Reduce Majors:</dt>
                     <dd><button class="reduce_majors">Go</button></dd>
+                    <dt>Fix Emails:</dt>
+                    <dd><button class="fix_emails">Go</button></dd>
 
                 </dl>
                 <div class="response1"></div>
