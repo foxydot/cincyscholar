@@ -185,7 +185,7 @@ class MSDLAB_SettingControls{
                 //TODO: Add state code OR array for figuring out in/out state
                 $ret['indirect_cost'] = $this->settings_textfield('Indirect Cost','college_IndirectCost',array('large','setting-field'),$data->IndirectCost);
                 $ret['inst_type'] = $this->settings_hidden('college_InstitutionTypeId',0,'Institution Type',null,null);
-                $ret['inst_term'] = $this->settings_select('college_InstitutionTermTypeId',$data->InstitutionTermTypeId,'Institution Term',array('','Select'),$institution_term_type_options,null, array('large','setting-field'));
+                $ret['inst_term'] = $this->settings_select('college_InstitutionTermTypeId',$data->InstitutionTermTypeId?$data->InstitutionTermTypeId:1,'Institution Term',array('','Select'),$institution_term_type_options,null, array('large','setting-field'));
                 $ret['books'] = $this->settings_textfield('Book Fee','college_BookFee',array('large','setting-field'),$data->BookFee);
                 $ret['rboff'] = $this->settings_textfield('Room &amp; Board Off Campus','college_RoomBoardOffCampus',array('large','setting-field'),$data->RoomBoardOffCampus);
                 $ret['rbon'] = $this->settings_textfield('Room &amp; Board On Campus','college_RoomBoardOnCampus',array('large','setting-field'),$data->RoomBoardOnCampus);
@@ -206,13 +206,13 @@ class MSDLAB_SettingControls{
                 $ret['Address1'] = $this->settings_textfield('Address','collegecontact_Address1',array('large','setting-field'),$data->Address1);
                 $ret['Address2'] = $this->settings_textfield('Address','collegecontact_Address2',array('large','setting-field'),$data->Address2);
                 $ret['City'] = $this->settings_textfield('City','collegecontact_City',array('large','setting-field'),$data->City);
-                $ret['StateId'] = $this->settings_select('collegecontact_StateId',$data->StateId,'State',array('','Select'),$states,null, array('large','setting-field'));
+                $ret['StateId'] = $this->settings_select('collegecontact_StateId',$data->StateId?$data->StateId:'OH','State',array('','Select'),$states,null, array('large','setting-field'));
                 $ret['ZipCode'] = $this->settings_textfield('ZipCode','collegecontact_ZipCode',array('large','setting-field'),$data->ZipCode);
                 $ret['PhoneNumber'] = $this->settings_textfield('Phone Number','collegecontact_PhoneNumber',array('large','setting-field'),$data->PhoneNumber);
                 $ret['FaxNumber'] = $this->settings_textfield('Fax Number','collegecontact_FaxNumber',array('large','setting-field'),$data->FaxNumber);
                 $ret['Department'] = $this->settings_textfield('Department','collegecontact_Department',array('large','setting-field'),$data->Department);
                 $ret['Email'] = $this->settings_textfield('Email','collegecontact_Email',array('large','setting-field'),$data->Email);
-                $ret['CollegeId'] = $this->settings_select('collegecontact_CollegeId',$data->CollegeId,'College',array('','Select'),$colleges,null, array('large','setting-field'));
+                $ret['CollegeId'] = $this->settings_select('collegecontact_CollegeId',$data->CollegeId?$data->CollegeId:343,'College',array('','Select'),$colleges,null, array('large','setting-field'));
                 $ret['Notes'] = $this->settings_textarea('Notes','collegecontact_Notes',array('large','setting-field'),$data->Notes);
                 $ret['submit'] = $this->settings_button();
                 //delete?
