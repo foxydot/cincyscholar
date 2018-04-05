@@ -52,8 +52,10 @@ if (!class_exists('MSDLab_CSF_Application')) {
 
         function set_up_globals(){
             global $current_user,$applicant_id,$user_id;
-            $user_id = $current_user->ID;
-            $applicant_id = $this->queries->get_applicant_id($user_id);
+            if(!current_user_can('csf') && !current_user_can('administrator')) {
+                $user_id = $current_user->ID;
+                $applicant_id = $this->queries->get_applicant_id($user_id);
+            }
         }
 
         function add_admin_styles_and_scripts(){
@@ -270,7 +272,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $ret['form_page_number'] = $this->form->field_utility('form_page_number', 1);
                             $ret['hdrPersInfo'] = $this->form->section_header('hdrPersInfo', 'Personal Information');
                             $ret['Applicant_ApplicationDateTime'] = $this->form->field_hidden("Applicant_ApplicationDateTime", (strtotime($result->ApplicationDateTime) > 0) ? $result->ApplicationDateTime : date("Y-m-d H:i:s"));
-                            $ret['Applicant_UserId'] = $this->form->field_hidden("Applicant_UserId", $user_id);
+                            $ret['Applicant_UserId'] = $this->form->field_hidden("Applicant_UserId", $result->UserId ? $result->UserId: $user_id);
                             $ret['Applicant_Email'] = $this->form->field_hidden("Applicant_Email", $result->Email ? $result->Email : $current_user->user_email);
                             $ret['Applicant_FirstName'] = $this->form->field_textfield('Applicant_FirstName', $result->FirstName ? $result->FirstName : null, 'First Name', null, array('minlength' => '2', 'required' => 'required'), array('required', 'col-md-5', 'col-sm-12'));
                             $ret['Applicant_MiddleInitial'] = $this->form->field_textfield('Applicant_MiddleInitial', $result->MiddleInitial ? $result->MiddleInitial : null, 'Middle Initial', null, array(), array('col-md-2', 'col-sm-12'));
