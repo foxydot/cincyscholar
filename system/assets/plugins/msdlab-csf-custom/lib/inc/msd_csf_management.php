@@ -219,9 +219,14 @@ if (!class_exists('MSDLab_CSF_Management')) {
             //$this->controls->print_settings();
             $colleges = $this->queries->get_all_colleges();
             if(count($colleges)>0) {
+                $alphas = range('A', 'Z');
+                foreach ($alphas AS $a){
+                    $links[] = '<a href="#colleges-'.$a.'">'.$a.'</a>';
+                }
+                $linkstrip = implode(' | ',$links);
                 foreach ($colleges AS $college){
                     $contacts = $this->queries->get_all_contacts($college->CollegeId);
-                    $cell['college_name'] = $college->Name.'<br /><a href="admin.php?page=college-edit&college_id='.$college->CollegeId.'" class="button">Edit College</a>';
+                    $cell['college_name'] = '<span id="colleges-'.substr($college->Name,0,1).'">'.$college->Name.'</span><br /><a href="admin.php?page=college-edit&college_id='.$college->CollegeId.'" class="button">Edit College</a>';
                     $con = array();
                     foreach($contacts AS $contact){
                         $c = array();
@@ -236,6 +241,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
                     $row[] = implode('</td><td>',$cell);
                 }
                 $table = implode("</td></tr>\n<tr><td>",$row);
+                print $linkstrip;
                 print '<table><tr><td>'.$table.'</td></tr></table>';
             }
             print '</div>';
