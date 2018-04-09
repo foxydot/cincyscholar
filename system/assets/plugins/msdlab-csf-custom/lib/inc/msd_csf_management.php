@@ -138,6 +138,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
             $tabs = '';
             $pane = array();
             if($_POST) {
+                //ts_data($_POST);
                 $result = $this->queries->get_report_set($fields);
                 $submitted = $incomplete = array();
                 foreach ($result AS $k => $applicant) {
@@ -148,6 +149,13 @@ if (!class_exists('MSDLab_CSF_Management')) {
                             continue;
                         }
                     }
+
+                    if(isset($_POST['cps_employee_search_input'])){
+                        if($applicant->CPSPublicSchools != 1){
+                            continue;
+                        }
+                    }
+
                     if ($applicant->status == 2) {
                         $submitted[] = $applicant;
                     } else {

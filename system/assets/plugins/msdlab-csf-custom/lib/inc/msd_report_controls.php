@@ -44,6 +44,15 @@ class MSDLab_ReportControls{
        return apply_filters('msdlab_csf_manage_search', $ret);
    }
 
+
+    public function boolean_search($title = "",$id = "boolean_search", $class = array('query-filter','search-bool')){
+        $label = apply_filters('msdlab_csf_manage_boolean_search_'.$id.'_label','<label for="'.$id.'_input">'.$title.'</label>');
+        $form_field = apply_filters('msdlab_csf_manage_boolean_search_'.$id.'_field','<input id="'.$id.'_input" name="'.$id.'_input" value="1" type="checkbox" '.checked(1,$_POST[$id.'_input'],0).'/>');
+        $class = implode(" ",apply_filters('msdlab_csf_manage_boolean_search_'.$id.'_class', $class));
+        $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
+        return apply_filters('msdlab_csf_manage_boolean_search_'.$id.'', $ret);
+    }
+
     public function select_search($title = "Select", $id = "select_search", $data = array(), $class = array('query-filter','college-search')){
         $options = array('<option value=""' . selected("", $default, false) . '>---Select---</option>');
 
@@ -203,6 +212,7 @@ class MSDLab_ReportControls{
         $independence = array('0'=>'Dependent','1'=>'Independant');
         $ret['independence_search'] = $this->select_search('Independence:','independence_search',$independence);
         $ret['search_by_employer'] = $this->search_box('Employer:','','employer_search'); //this is handled AFTER the query
+        $ret['search_by_CPS_employee'] = $this->boolean_search('CPS Employee:','cps_employee_search'); //this is handled AFTER the query
         /*
 Need (there should be a place in the database where cost of attendance, EFC, grants, loans, federal and state aid are entered and calculated)
 */      $ret['footer_break'] = '<hr class="break">';

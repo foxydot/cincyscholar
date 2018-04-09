@@ -197,8 +197,8 @@ class MSDLAB_SettingControls{
                 $ret['ftr'] = $this->form_footer();
                 break;
             case 'csf_contact':
-                $states = $this->queries->get_select_array_from_db('state','StateId','State');
-                $colleges = $this->queries->get_select_array_from_db('college','CollegeId','Name');
+                $states = $this->queries->get_select_array_from_db('state','StateId','State','State');
+                $colleges = $this->queries->get_select_array_from_db('college','CollegeId','Name','Name');
                 $ret['hdr'] = $this->form_header($form_id);
                 $ret['contact_id'] = $this->settings_hidden('collegecontact_CollegeContactId',$contact_id,'Contact ID',null,null);
                 $ret['firstname'] = $this->settings_textfield('First Name','collegecontact_FirstName',array('large','setting-field'),$data->FirstName);
