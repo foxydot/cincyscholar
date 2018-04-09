@@ -138,6 +138,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
             $tabs = '';
             $pane = array();
             if($_POST) {
+                ts_data($_POST);
                 $result = $this->queries->get_report_set($fields);
                 $submitted = $incomplete = array();
                 foreach ($result AS $k => $applicant) {
@@ -148,6 +149,15 @@ if (!class_exists('MSDLab_CSF_Management')) {
                             continue;
                         }
                     }
+                    /*
+                    if(!empty($_POST['cps_employee_search_input'])){
+                        if(
+                            stripos($applicant->GuardianEmployer1,$_POST['employer_search_input'])===false &&
+                            stripos($applicant->GuardianEmployer2,$_POST['employer_search_input'])===false){
+                            continue;
+                        }
+                    }
+                    */
                     if ($applicant->status == 2) {
                         $submitted[] = $applicant;
                     } else {
