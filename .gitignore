@@ -37,6 +37,8 @@ system/wp-content/*
 # specify (see the commented-out examples for hints on how to do this.)
 system/assets/plugins/*
 !system/assets/plugins/msd*
+system/assets/plugins/msd_site_settings
+system/assets/plugins/msd-specialty-pages
 # !system/assets/plugins/my-directory-plugin/
 system/wp-content/plugins/*
 !system/wp-content/plugins/msd*
