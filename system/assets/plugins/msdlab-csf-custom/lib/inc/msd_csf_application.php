@@ -257,7 +257,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     switch ($form_page_number) {
                         case 1: //personal info
                             //sets up the query
-                            $data['tables']['Applicant'] = array('ApplicationDateTime', 'FirstName', 'MiddleInitial', 'LastName', 'Last4SSN', 'Address1', 'Address2', 'City', 'StateId',
+                            $data['tables']['Applicant'] = array('UserId','Email','ApplicationDateTime', 'FirstName', 'MiddleInitial', 'LastName', 'Last4SSN', 'Address1', 'Address2', 'City', 'StateId',
                                 'CountyId', 'ZipCode', 'CellPhone', 'AlternativePhone', 'DateOfBirth', 'EthnicityId', 'SexId');
                             $results = $this->queries->get_result_set($data);
                             $result = $results[0];
@@ -600,22 +600,22 @@ if (!class_exists('MSDLab_CSF_Application')) {
                 case "renewal":
                     if ($_POST['renewal_form']) {
                         //Do the stuff
-                        print $this->queries->set_data($form_id, $set['where']);
+                        //print $this->queries->set_data($form_id, $set['where']);
                         if(!$applicant_id){$applicant_id = $this->queries->get_applicant_id($current_user->ID);}
                     }
                     //sets up the query
                     //get the applicant data
-                    //get the renewal data
-                    //merge
-                    $data['tables']['Applicant'] = array('ApplicationDateTime', 'FirstName', 'MiddleInitial', 'LastName', 'Last4SSN', 'Address1', 'Address2', 'City', 'StateId',
+                    $data['tables']['Applicant'] = array('UserId','Email','ApplicationDateTime', 'FirstName', 'MiddleInitial', 'LastName', 'Last4SSN', 'Address1', 'Address2', 'City', 'StateId',
                         'CountyId', 'ZipCode', 'CellPhone', 'AlternativePhone', 'DateOfBirth', 'EthnicityId', 'SexId');
                     $results = $this->queries->get_result_set($data);
                     $result = $results[0];
+                    //get the renewal data
+                    //merge
                     //the fields
                     $ret['renewal_RenewalDateTime'] = $this->form->field_hidden("renewal_RenewalDateTime", (strtotime($result->RenewalDateTime) > 0) ? $result->RenewalDateTime : date("Y-m-d H:i:s"));
                     $ret['Renewal_ApplicantId'] = $this->form->field_hidden("Renewal_ApplicantId", $applicant_id);
                     $ret['Renewal_RenewalId'] = $this->form->field_hidden("Renewal_RenewalId", $result->RenewalId);
-                    $ret['Applicant_Email'] = $this->form->field_hidden("Applicant_Email", $current_user->user_email);
+                    $ret['Applicant_Email'] = $this->form->field_hidden("Applicant_Email", $result->Email?$result->Email:$current_user->user_email);
                     $ret['Applicant_FirstName'] = $this->form->field_textfield('Applicant_FirstName', $result->FirstName ? $result->FirstName : null, 'First Name', null, array('minlength' => '2', 'required' => 'required'), array('required', 'col-md-5', 'col-sm-12'));
                     $ret['Applicant_MiddleInitial'] = $this->form->field_textfield('Applicant_MiddleInitial', $result->MiddleInitial ? $result->MiddleInitial : null, 'Middle Initial', null, array(), array('col-md-2', 'col-sm-12'));
                     $ret['Applicant_LastName'] = $this->form->field_textfield('Applicant_LastName', $result->LastName ? $result->LastName : null, 'Last Name', null, array('minlength' => '2', 'required' => 'required'), array('required', 'col-md-5', 'col-sm-12'));
