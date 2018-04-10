@@ -191,13 +191,13 @@ class MSDLAB_Queries{
                  }
              }
              $select_sql = 'SELECT * FROM '.$table.' WHERE '.$where[$table].';';
-error_log('check_sql: '.$select_sql);
+//error_log('check_sql: '.$select_sql);
              if($r = $wpdb->get_row($select_sql)){
                  $sql = 'UPDATE '.$table.' SET '.implode(', ',$data[$table]).' WHERE '.$where[$table].';';
              } else {
                  $sql = 'INSERT INTO '.$table.' SET '.implode(', ',$data[$table]).';';
              }
-error_log('update_sql: '.$sql);
+//error_log('update_sql: '.$sql);
              $result = $wpdb->get_results($sql);
              if(is_wp_error($result)){
                  return '<div class="message error">Error updating '.$table.'</div>';
@@ -229,7 +229,7 @@ error_log('update_sql: '.$sql);
         $sql[] = ';';
 
         //TODO: refactor all queries to ue proper JOIN
-        //error_log('select_sql:'.$sql);
+        //error_log('select_sql:'.implode(' ',$sql));
         $result = $wpdb->get_results(implode(' ',$sql));
         return $result;
     }
@@ -393,6 +393,7 @@ error_log('update_sql: '.$sql);
         }
         //ts_data($data);
         $results = $this->get_result_set($data);
+        //error_log($wpdb->last_query);
 
         foreach ($results AS $k => $r){
             $applicant_id = $r->ApplicantId;

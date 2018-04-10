@@ -182,7 +182,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
                     }
                     if(count($incomplete)>0){
                         $pane['incomplete'] = '<div role="tabpanel" class="tab-pane" id="incomplete">
-                            ' . implode("\n\r",$this->display->print_table('submitted',$fields,$incomplete,$info,$class,false)) .'
+                            ' . implode("\n\r",$this->display->print_table('incomplete',$fields,$incomplete,$info,$class,false)) .'
                         </div>';
                     } else {
                         $pane['incomplete'] = '<div role="tabpanel" class="tab-pane" id="incomplete">
