@@ -264,7 +264,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     switch ($form_page_number) {
                         case 1: //personal info
                             //sets up the query
-                            $data['tables']['Applicant'] = array('ApplicationDateTime', 'FirstName', 'MiddleInitial', 'LastName', 'Last4SSN', 'Address1', 'Address2', 'City', 'StateId',
+                            $data['tables']['Applicant'] = array('UserId','Email','ApplicationDateTime', 'FirstName', 'MiddleInitial', 'LastName', 'Last4SSN', 'Address1', 'Address2', 'City', 'StateId',
                                 'CountyId', 'ZipCode', 'CellPhone', 'AlternativePhone', 'DateOfBirth', 'EthnicityId', 'SexId');
                             $results = $this->queries->get_result_set($data);
                             $result = $results[0];
