@@ -93,14 +93,11 @@ if (!class_exists('MSDLab_CSF_Application')) {
             if($today >= $start_date && $today <= $end_date){
                 if(is_user_logged_in()){
                     $ret = array();
-                    if(current_user_can('submit_renewal')){
-                        $ret[2] = implode("\n\r",$this->get_form('renewal'));
-                    }
                     if(current_user_can('view_renewal_process')){
-                        $ret[] = 'VIEW RENEWAL PROCESS';
+                        //$ret[] = 'VIEW RENEWAL PROCESS';
                     }
                     if(current_user_can('view_award')){
-                        $ret[] = 'VIEW AWARD';
+                        //$ret[] = 'VIEW AWARD';
                     }
                     if(current_user_can('submit_application')){
                         $ret[2] = implode("\n\r",$this->get_form('application'));
@@ -111,6 +108,9 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     if(current_user_can('review_application')){
                         $ret[1] = $this->queries->get_user_application_status_list();
                         $ret[2] = implode("\n\r",$this->get_form('application'));
+                    }
+                    if(current_user_can('submit_renewal')){
+                        $ret[2] = implode("\n\r",$this->get_form('renewal'));
                     }
                     //add admin ability to see based on GET var.
                     sort($ret);
@@ -154,6 +154,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
             //setup vars
             $jquery = $ret = array();
             $ret['form_header'] = $this->form->form_header($form_id,array($form_id));
+            $form_nonce = $form_id;
             switch($form_id) {
                 case 'application':
                     $form_page_number = isset($_POST['form_page_number']) ? $_POST['form_page_number'] : 1;
@@ -597,41 +598,84 @@ if (!class_exists('MSDLab_CSF_Application')) {
 
                     $ret['javascript'] = $this->form->build_jquery($form_id,$jquery);
                     break;
-                case "renewal":
+                case 'renewal':
+                    ts_data($_POST);
                     if ($_POST['renewal_form']) {
                         //Do the stuff
-                        //print $this->queries->set_data($form_id, $set['where']);
-                        if(!$applicant_id){$applicant_id = $this->queries->get_applicant_id($current_user->ID);}
+                        $set['where']['renewal'] = 'renewal.ApplicantId = ' . $applicant_id;
+                        print $this->queries->set_data($form_id, $set['where']);
+                        if(isset($_POST['SendEmails'])){
+                            $this->send_form_emails($_POST['SendEmails']);
+                        }
                     }
                     //sets up the query
-                    //get the applicant data
-                    $data['tables']['Applicant'] = array('UserId','Email','ApplicationDateTime', 'FirstName', 'MiddleInitial', 'LastName', 'Last4SSN', 'Address1', 'Address2', 'City', 'StateId',
-                        'CountyId', 'ZipCode', 'CellPhone', 'AlternativePhone', 'DateOfBirth', 'EthnicityId', 'SexId');
+                    //get the renewal data
+                    $data['tables']['Renewal'] = array('*');
+                    $data['where'] .= 'renewal.ApplicantId = ' . $applicant_id;
                     $results = $this->queries->get_result_set($data);
                     $result = $results[0];
-                    //get the renewal data
-                    //merge
+                    if(!$result){ //there is no renewal! oh no! get the application data and populate the form with that.
+                        unset($data['tables']['Renewal']);
+                        $data['tables']['Applicant'] = array('UserId','Email','ApplicationDateTime', 'FirstName', 'MiddleInitial', 'LastName', 'Last4SSN', 'Address1', 'Address2', 'City', 'StateId',
+                            'CountyId', 'ZipCode', 'CellPhone', 'AlternativePhone', 'DateOfBirth','MajorId');
+                        $data['tables']['applicantcollege'] = array('CollegeId');
+                        $data['where'] = 'applicant.ApplicantId = ' . $applicant_id .' AND applicantcollege.ApplicantId = applicant.ApplicantId';
+                        $results = $this->queries->get_result_set($data);
+                        $result = $results[0];
+                    }
+
+                    //ts_data($result);
+
+
+                    $jquery['phone'] = "$('input[type=tel]').mask('(000) 000-0000');";
+                    $jquery[] = '$("#' . $form_id . '").validate({
+                    
+		errorPlacement: function(error, element) {
+			// Append error within linked label
+			$( element )
+				.closest( "form" )
+					.find( "label[for=\'" + element.attr( "id" ) + "\']" )
+						.append( error );
+		},
+		errorElement: "span",
+		onfocusout: function(element) {
+            // "eager" validation
+            this.element(element);  
+        }
+});';
+
                     //the fields
-                    $ret['renewal_RenewalDateTime'] = $this->form->field_hidden("renewal_RenewalDateTime", (strtotime($result->RenewalDateTime) > 0) ? $result->RenewalDateTime : date("Y-m-d H:i:s"));
+
+                    $ret['form_type'] = $this->form->field_utility('renewal_form', true);
+                    $ret['save_data'] = $this->form->field_utility('save_data', true);
+                    $ret['SendEmails'] = $this->form->field_utility('SendEmails','renewal_submitted');
+                    $ret['renewal_header'] = $this->form->section_header('renewal_form','Renew Your Scholarship');
+                    $ret['renewal_RenewalDateTime'] = $this->form->field_hidden('renewal_RenewalDateTime', (strtotime($result->RenewalDateTime) > 0) ? $result->RenewalDateTime : date("Y-m-d H:i:s"));
                     $ret['Renewal_ApplicantId'] = $this->form->field_hidden("Renewal_ApplicantId", $applicant_id);
                     $ret['Renewal_RenewalId'] = $this->form->field_hidden("Renewal_RenewalId", $result->RenewalId);
-                    $ret['Applicant_Email'] = $this->form->field_hidden("Applicant_Email", $result->Email?$result->Email:$current_user->user_email);
-                    $ret['Applicant_FirstName'] = $this->form->field_textfield('Applicant_FirstName', $result->FirstName ? $result->FirstName : null, 'First Name', null, array('minlength' => '2', 'required' => 'required'), array('required', 'col-md-5', 'col-sm-12'));
-                    $ret['Applicant_MiddleInitial'] = $this->form->field_textfield('Applicant_MiddleInitial', $result->MiddleInitial ? $result->MiddleInitial : null, 'Middle Initial', null, array(), array('col-md-2', 'col-sm-12'));
-                    $ret['Applicant_LastName'] = $this->form->field_textfield('Applicant_LastName', $result->LastName ? $result->LastName : null, 'Last Name', null, array('minlength' => '2', 'required' => 'required'), array('required', 'col-md-5', 'col-sm-12'));
-                    $ret['Renewal_Address1'] = $this->form->field_textfield('Renewal_Address1', $result->Address1 ? $result->Address1 : null, 'Address', '123 Any Street', array('type' => 'text', 'minlength' => '2', 'required' => 'required'), array('required', 'col-md-12'));
+                    $ret['Renewal_UserId'] = $this->form->field_hidden("Renewal_UserId", $result->UserId);
+                    $ret['Renewal_Email'] = $this->form->field_hidden("Renewal_Email", $result->Email?$result->Email:$current_user->user_email);
+                    $ret['Renewal_CountyId'] = $this->form->field_hidden("Renewal_CountyId", $result->CountyId?$result->CountyId:null);
+                    $ret['Renewal_Last4SSN'] = $this->form->field_hidden("Renewal_Last4SSN", $result->Last4SSN?$result->Last4SSN:null);
+                    $ret['Renewal_DateOfBirth'] = $this->form->field_hidden("Renewal_DateOfBirth", $result->DateOfBirth?$result->DateOfBirth:null);
+                    $ret['Renewal_FirstName'] = $this->form->field_textfield('Renewal_FirstName', $result->FirstName ? $result->FirstName : null, 'First Name', null, array('minlength' => '2', 'required' => 'required'), array('required', 'col-md-5', 'col-sm-12'));
+                    $ret['Renewal_MiddleInitial'] = $this->form->field_textfield('Renewal_MiddleInitial', $result->MiddleInitial ? $result->MiddleInitial : null, 'Middle Initial', null, array(), array('col-md-2', 'col-sm-12'));
+                    $ret['Renewal_LastName'] = $this->form->field_textfield('Renewal_LastName', $result->LastName ? $result->LastName : null, 'Last Name', null, array('minlength' => '2', 'required' => 'required'), array('required', 'col-md-5', 'col-sm-12'));
+                    $ret['Renewal_Address1'] = $this->form->field_textfield('Renewal_Address1', $result->Address1 ? $result->Address1 : null, 'Permanent Address', '123 Any Street', array('type' => 'text', 'minlength' => '2', 'required' => 'required'), array('required','col-md-12'));
                     $ret['Renewal_Address2'] = $this->form->field_textfield('Renewal_Address2', $result->Address2 ? $result->Address2 : null, '', 'Apartment or Box number', array('type' => 'text'), array('col-md-12'));
                     $ret['Renewal_City'] = $this->form->field_textfield('Renewal_City', $result->City ? $result->City : null, 'City', null, array('type' => 'text', 'required' => 'required'), array('required', 'col-md-5', 'col-sm-12'));
                     $ret['Renewal_StateId'] = $this->form->field_select('Renewal_StateId', $result->StateId ? $result->StateId : 'OH', 'State', array('option' => 'Select', 'value' => 'OH'), $this->states_array, array('required' => 'required'), array('required', 'col-md-2', 'col-sm-12'));
                     $ret['Renewal_ZipCode'] = $this->form->field_textfield('Renewal_ZipCode', $result->ZipCode ? $result->ZipCode : null, 'ZIP Code', '00000', array('type' => 'number', 'minlength' => 5, 'maxlength' => 10, 'required' => 'required'), array('required', 'col-md-2', 'col-sm-12'));
-                    $ret['Applicant_CellPhone'] = $this->form->field_textfield('Applicant_CellPhone', $result->CellPhone ? $result->CellPhone : null, 'Mobile Phone Number', '(000)000-0000', array('required' => 'required', 'type' => 'tel'), array('required', 'col-md-6', 'col-sm-12'));
-                    $ret['Applicant_AlternativePhone'] = $this->form->field_textfield('Applicant_AlternativePhone', $result->AlternativePhone ? $result->AlternativePhone : null, 'Alternative Phone Number', '(000)000-0000', array('type' => 'tel'), array('col-md-6', 'col-sm-12'));
-                    $ret['RenewalCollege_CollegeId'] = $this->form->field_select('RenewalCollege_CollegeId', $result->CollegeId ? $result->CollegeId : null, 'College Applied To or Attending', null, $this->college_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
+                    $ret['Renewal_CellPhone'] = $this->form->field_textfield('Renewal_CellPhone', $result->CellPhone ? $result->CellPhone : null, 'Mobile Phone Number', '(000)000-0000', array('required' => 'required', 'type' => 'tel'), array('required', 'col-md-6', 'col-sm-12'));
+                    $ret['Renewal_AlternativePhone'] = $this->form->field_textfield('Renewal_AlternativePhone', $result->AlternativePhone ? $result->AlternativePhone : null, 'Alternative Phone Number', '(000)000-0000', array('type' => 'tel'), array('col-md-6', 'col-sm-12'));
+                    $ret['Renewal_CollegeId'] = $this->form->field_select('Renewal_CollegeId', $result->CollegeId ? $result->CollegeId : null, 'College Applied To or Attending', null, $this->college_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
                     $ret['Renewal_MajorId'] = $this->form->field_select('Renewal_MajorId', $result->MajorId ? $result->MajorId : 5122, 'Intended Major (If Uncertain, select Undecided)', null, $this->major_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
-//TODO: Edit database, add major field to renewal, remove renewal/major table and replace with renewal collge table
                     $ret['Renewal_AnticipatedGraduationDate'] = $this->form->field_select('Renewal_AnticipatedGraduationDate', $result->AnticipatedGraduationDate ? $result->AnticipatedGraduationDate : date("Y").'-01-01', "Anticipated Graduation Date", array('value' => date("Y").'-01-01','option' => date("Y")), $this->gradyr_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
                     $ret['Renewal_CurrentCumulativeGPA'] = $this->form->field_textfield('Renewal_CurrentCumulativeGPA', $result->CurrentCumulativeGPA ? $result->CurrentCumulativeGPA : null, 'Current Cumulative GPA', '0.00', array('required' => 'required', 'type' => 'number', 'minlength' => 1), array('required', 'col-md-6', 'col-sm-12'));
                     $ret['Renewal_CoopStudyAbroadNote'] = $this->form->field_textarea('Renewal_CoopStudyAbroadNote',$result->CoopStudyAbroadNote ? $result->CoopStudyAbroadNote : '',"Please indicate any plans to co-op or study abroad here so that your scholarship may be paid accordingly (scholarship is applied only to terms when enrolled full-time) :",null,array('col-md-12'));
+                    $ftr['button'] = $this->form->field_button('saveBtn', 'Save', array('submit', 'btn'));
+                    $ret['form_footer'] = $this->form->form_footer('form_footer',implode("\n",$ftr),array('form-footer', 'col-md-12'));
+                    $ret['javascript'] = $this->form->build_jquery($form_id,$jquery);
 
                     break;
                 default:
@@ -824,11 +868,45 @@ if (!class_exists('MSDLab_CSF_Application')) {
             $ret[] = '</tr>';
             $ret['SRATableFtr'] = '</table>';
 
-            return implode("\n\r",$ret);;
+            return implode("\n\r",$ret);
+        }
+
+        function get_the_user_renewal($applicant_id){
+            $data['tables']['Renewal'] = array('*');
+            $data['where'] .= 'renewal.ApplicantId = ' . $applicant_id;
+            $results = $this->queries->get_result_set($data);
+            $result = $results[0];
+
+            $ret['Renewal_FirstName'] = $this->form->field_result('Renewal_FirstName', $result->FirstName ? $result->FirstName : null, 'First Name', null, array('minlength' => '2', 'required' => 'required'), array('required', 'col-md-5', 'col-sm-12'));
+            $ret['Renewal_MiddleInitial'] = $this->form->field_result('Renewal_MiddleInitial', $result->MiddleInitial ? $result->MiddleInitial : null, 'Middle Initial', null, array(), array('col-md-2', 'col-sm-12'));
+            $ret['Renewal_LastName'] = $this->form->field_result('Renewal_LastName', $result->LastName ? $result->LastName : null, 'Last Name', null, array('minlength' => '2', 'required' => 'required'), array('required', 'col-md-5', 'col-sm-12'));
+            //$ret['renewal_RenewalDateTime'] = $this->form->field_hidden('renewal_RenewalDateTime', (strtotime($result->RenewalDateTime) > 0) ? $result->RenewalDateTime : date("Y-m-d H:i:s"));
+            //$ret['Renewal_ApplicantId'] = $this->form->field_hidden("Renewal_ApplicantId", $applicant_id);
+            //$ret['Renewal_RenewalId'] = $this->form->field_hidden("Renewal_RenewalId", $result->RenewalId);
+            //$ret['Renewal_UserId'] = $this->form->field_hidden("Renewal_UserId", $result->UserId);
+            $ret['Renewal_Email'] = $this->form->field_result("Renewal_Email", $result->Email?$result->Email:$current_user->user_email);
+            //$ret['Renewal_CountyId'] = $this->form->field_hidden("Renewal_CountyId", $result->CountyId?$result->CountyId:null);
+            //$ret['Renewal_Last4SSN'] = $this->form->field_hidden("Renewal_Last4SSN", $result->Last4SSN?$result->Last4SSN:null;
+            $ret['Renewal_DateOfBirth'] = $this->form->field_hidden("Renewal_DateOfBirth", $result->DateOfBirth?$result->DateOfBirth:null);
+            $ret['Renewal_Address1'] = $this->form->field_result('Renewal_Address1', $result->Address1 ? $result->Address1 : null, 'Permanent Address', '123 Any Street', array('type' => 'text', 'minlength' => '2', 'required' => 'required'), array('required','col-md-12'));
+            $ret['Renewal_Address2'] = $this->form->field_result('Renewal_Address2', $result->Address2 ? $result->Address2 : null, '', 'Apartment or Box number', array('type' => 'text'), array('col-md-12'));
+            $ret['Renewal_City'] = $this->form->field_result('Renewal_City', $result->City ? $result->City : null, 'City', null, array('type' => 'text', 'required' => 'required'), array('required', 'col-md-5', 'col-sm-12'));
+            $ret['Renewal_StateId'] = $this->form->field_result('Renewal_StateId', $result->StateId ? $result->StateId : 'OH', 'State', array('option' => 'Select', 'value' => 'OH'), $this->states_array, array('required' => 'required'), array('required', 'col-md-2', 'col-sm-12'));
+            $ret['Renewal_ZipCode'] = $this->form->field_result('Renewal_ZipCode', $result->ZipCode ? $result->ZipCode : null, 'ZIP Code', '00000', array('type' => 'number', 'minlength' => 5, 'maxlength' => 10, 'required' => 'required'), array('required', 'col-md-2', 'col-sm-12'));
+            $ret['Renewal_CellPhone'] = $this->form->field_result('Renewal_CellPhone', $result->CellPhone ? $result->CellPhone : null, 'Mobile Phone Number', '(000)000-0000', array('required' => 'required', 'type' => 'tel'), array('required', 'col-md-6', 'col-sm-12'));
+            $ret['Renewal_AlternativePhone'] = $this->form->field_result('Renewal_AlternativePhone', $result->AlternativePhone ? $result->AlternativePhone : null, 'Alternative Phone Number', '(000)000-0000', array('type' => 'tel'), array('col-md-6', 'col-sm-12'));
+            $ret['Renewal_CollegeId'] = $this->form->field_result('Renewal_CollegeId', $result->CollegeId ? $result->CollegeId : null, 'College Applied To or Attending', null, $this->college_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
+            $ret['Renewal_MajorId'] = $this->form->field_result('Renewal_MajorId', $result->MajorId ? $result->MajorId : 5122, 'Intended Major (If Uncertain, select Undecided)', null, $this->major_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
+            $ret['Renewal_AnticipatedGraduationDate'] = $this->form->field_result('Renewal_AnticipatedGraduationDate', $result->AnticipatedGraduationDate ? $result->AnticipatedGraduationDate : date("Y").'-01-01', "Anticipated Graduation Date", array('value' => date("Y").'-01-01','option' => date("Y")), $this->gradyr_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
+            $ret['Renewal_CurrentCumulativeGPA'] = $this->form->field_result('Renewal_CurrentCumulativeGPA', $result->CurrentCumulativeGPA ? $result->CurrentCumulativeGPA : null, 'Current Cumulative GPA', '0.00', array('required' => 'required', 'type' => 'number', 'minlength' => 1), array('required', 'col-md-6', 'col-sm-12'));
+            $ret['Renewal_CoopStudyAbroadNote'] = $this->form->field_result('Renewal_CoopStudyAbroadNote',$result->CoopStudyAbroadNote ? $result->CoopStudyAbroadNote : '',"Please indicate any plans to co-op or study abroad here so that your scholarship may be paid accordingly (scholarship is applied only to terms when enrolled full-time) :",null,array('col-md-12'));
+
+            return implode("\n\r",$ret);
+
         }
 
         function send_form_emails($type){
-            global $current_user,$applicant_id,$wpdb;
+            global $current_user,$applicant_id;
             if(!$applicant_id){$applicant_id = $this->queries->get_applicant_id($current_user->ID);}
             $headers = 'MIME-Version: 1.0' . "\r\n";
             $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
@@ -846,6 +924,20 @@ if (!class_exists('MSDLab_CSF_Application')) {
                         $emails['admin_' . $k]['to'] = $addy;
                         $emails['admin_' . $k]['subject'] = $current_user->display_name . ' Submitted an Application';
                         $emails['admin_' . $k]['message'] = '<html><head>' . $css . '</head><body>' . $this->get_the_user_application($applicant_id) . '</body></html>';
+                    }
+                    break;
+                case 'renewal_submitted':
+                    $emails['user']['header'] = $headers;
+                    $emails['user']['to'] = $current_user->display_name . ' <' . $current_user->user_email . '>';
+                    $emails['user']['subject'] = 'Your Renewal Application has been Submitted';
+                    $emails['user']['message'] = 'Your renewal application has been received. If you have any questions regarding the renewal process, please call or email the Cincinnati Scholarship Foundation.';
+
+                    $adminaddys = explode(',', get_option('csf_settings_admin_address'));
+                    foreach ($adminaddys AS $k => $addy) {
+                        $emails['admin_' . $k]['header'] = $headers;
+                        $emails['admin_' . $k]['to'] = $addy;
+                        $emails['admin_' . $k]['subject'] = $current_user->display_name . ' Submitted a Renewal Application';
+                        $emails['admin_' . $k]['message'] = '<html><head>' . $css . '</head><body>' . $this->get_the_user_renewal($applicant_id) . '</body></html>';
                     }
                     break;
             }

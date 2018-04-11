@@ -158,6 +158,7 @@ class MSDLAB_Queries{
      public function set_data($form_id,$where,$notifications = array()){
          global $wpdb;
          if(empty($this->post_vars)){
+             error_log('no post');
              return false;
          }
          $notifications = array_merge(
@@ -168,6 +169,7 @@ class MSDLAB_Queries{
          );
          $nonce = $_POST['_wpnonce'];
          if(wp_verify_nonce( $nonce, $form_id ) === false) {
+             error_log('nonce issue');
              return $notifications['nononce'];
          }
          foreach ($this->post_vars AS $k => $v){

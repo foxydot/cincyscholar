@@ -268,6 +268,7 @@ class MSDLAB_FormControls{
         foreach($validation_array AS $k => $v){
             $validation_str[] = $k . ' = "' . $v .'"';
         }
+        if($validation_str)
         return implode(' ',$validation_str);
     }
 

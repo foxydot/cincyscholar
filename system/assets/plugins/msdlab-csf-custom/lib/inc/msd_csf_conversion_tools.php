@@ -21,6 +21,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_move_applicant_majors', array(&$this,'move_applicant_majors') );
             add_action( 'wp_ajax_reduce_majors', array(&$this,'reduce_majors') );
             add_action( 'wp_ajax_fix_emails', array(&$this,'fix_emails') );
+            add_action( 'wp_ajax_update_renewal_table', array(&$this,'update_renewal_table') );
         }
         //methods
         function create_student_users(){
@@ -152,6 +153,32 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             }
         }
 
+        function update_renewal_table(){
+            global $wpdb;
+            $sql = "ALTER TABLE renewal ADD `UserId` bigint(20) unsigned NOT NULL,
+  ADD `FirstName` varchar(50) NOT NULL,
+  ADD `MiddleInitial` varchar(1) NOT NULL,
+  ADD `LastName` varchar(50) NOT NULL,
+  ADD `Address1` varchar(254) NOT NULL,
+  ADD `Address2` varchar(254) NOT NULL,
+  ADD `City` varchar(50) NOT NULL,
+  ADD `StateId` char(2) DEFAULT NULL,
+  ADD `ZipCode` varchar(10) NOT NULL,
+  ADD `CountyId` int(11) DEFAULT NULL,
+  ADD `CellPhone` varchar(25) NOT NULL,
+  ADD `AlternativePhone` varchar(25) NOT NULL,
+  ADD `Email` varchar(50) NOT NULL,
+  ADD `Last4SSN` varchar(4) NOT NULL,
+  ADD `DateOfBirth` date NOT NULL,
+  ADD `CollegeId` int(11) NOT NULL,
+  ADD `MajorId` int(11) DEFAULT NULL,
+  ADD `Notes` text,
+  DROP PermanentAddress;";
+            if($wpdb->get_results($sql)) {
+                print "updated!";
+            }
+        }
+
         //utility
         function settings_page()
         {
@@ -244,6 +271,15 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                             console.log(response);
                         });
                     });
+                    $('.update_renewal_table').click(function(){
+                        var data = {
+                            action: 'update_renewal_table',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
             </script>
             <div class="wrap">
@@ -261,6 +297,8 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                     <dd><button class="reduce_majors">Go</button></dd>
                     <dt>Fix Emails:</dt>
                     <dd><button class="fix_emails">Go</button></dd>
+                    <dt>Update Renewal Table:</dt>
+                    <dd><button class="update_renewal_table">Go</button></dd>
 
                 </dl>
                 <div class="response1"></div>
