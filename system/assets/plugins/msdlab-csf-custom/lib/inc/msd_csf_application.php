@@ -599,7 +599,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     $ret['javascript'] = $this->form->build_jquery($form_id,$jquery);
                     break;
                 case 'renewal':
-                    ts_data($_POST);
+                    //ts_data($_POST);
                     if ($_POST['renewal_form']) {
                         //Do the stuff
                         $set['where']['renewal'] = 'renewal.ApplicantId = ' . $applicant_id;
