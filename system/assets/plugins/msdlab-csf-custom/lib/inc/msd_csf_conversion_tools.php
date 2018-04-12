@@ -172,6 +172,8 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
   ADD `DateOfBirth` date NOT NULL,
   ADD `CollegeId` int(11) NOT NULL,
   ADD `MajorId` int(11) DEFAULT NULL,
+  ADD `TermsAcknowledged` tinyint(1) unsigned zerofill NOT NULL,
+  ADD `RenewalLocked` tinyint(1) unsigned zerofill NOT NULL,
   ADD `Notes` text,
   DROP PermanentAddress;";
             if($wpdb->get_results($sql)) {

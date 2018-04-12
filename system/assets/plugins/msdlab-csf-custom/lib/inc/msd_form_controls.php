@@ -215,6 +215,17 @@ class MSDLAB_FormControls{
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
 
+    public function field_checkbox($id, $value = 0, $title = "", $validation = null, $class = array('checkbox','col-md-12')){
+        if(is_null($value)){
+            $value = $_POST[$id.'_input'];
+        }
+        $form_field = apply_filters('msdlab_csf_'.$id.'_field','<input id="'.$id.'_input" name="'.$id.'_input"  value="1" type="checkbox" '.checked(1,$_POST[$id.'_input'],0).' />');
+        $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$form_field.$title.'</label>');
+        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
+        $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.'</div>';
+        return apply_filters('msdlab_csf_'.$id.'', $ret);
+    }
+
     public function field_upload($id, $value, $title = "", $placeholder = null, $validation = null, $class = array('medium')){
         if(is_object($value)){
             $uploadshow = ' hidden';
