@@ -651,7 +651,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                         $result = $results[0];
                     }
 
-                    ts_data($result);
+                    //ts_data($result);
 
 
                     $jquery['phone'] = "$('input[type=tel]').mask('(000) 000-0000');";
