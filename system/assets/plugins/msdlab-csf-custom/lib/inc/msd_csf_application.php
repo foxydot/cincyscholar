@@ -11,6 +11,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
         var $educationalattainment_array;
         var $highschool_array;
         var $gradyr_array;
+        var $col_gradyr_array;
 
         //Methods
         /**
@@ -672,14 +673,15 @@ if (!class_exists('MSDLab_CSF_Application')) {
 });';
 
                     //the fields
+                    $renewal_datetime = (strtotime($result->RenewalDateTime) > 0) && ($result->RenewalLocked != 1) ? $result->RenewalDateTime : date("Y-m-d H:i:s");
+                    $renewal_id = $result->RenewalId && ($result->RenewalLocked != 1)?$result->RenewalId:null;
 
                     $ret['form_type'] = $this->form->field_utility('renewal_form', true);
                     $ret['save_data'] = $this->form->field_utility('save_data', true);
                     $ret['SendEmails'] = $this->form->field_utility('SendEmails','renewal_submitted');
                     $ret['renewal_header'] = $this->form->section_header('renewal_form','Renew Your '.date("Y").' Scholarship');
-                    $ret['renewal_RenewalDateTime'] = $this->form->field_hidden('renewal_RenewalDateTime', (strtotime($result->RenewalDateTime) > 0) ? $result->RenewalDateTime : date("Y-m-d H:i:s"));
+                    $ret['renewal_RenewalDateTime'] = $this->form->field_hidden('renewal_RenewalDateTime', $renewal_datetime);
                     $ret['Renewal_ApplicantId'] = $this->form->field_hidden("Renewal_ApplicantId", $applicant_id);
-                    $renewal_id = $result->RenewalId && ($result->RenewalLocked != 1)?$result->RenewalId:null;
                     $ret['Renewal_RenewalId'] = $this->form->field_hidden("Renewal_RenewalId", $renewal_id);
                     $ret['Renewal_UserId'] = $this->form->field_hidden("Renewal_UserId", $result->UserId);
                     $ret['Renewal_Email'] = $this->form->field_hidden("Renewal_Email", $result->Email?$result->Email:$current_user->user_email);
@@ -698,7 +700,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     $ret['Renewal_AlternativePhone'] = $this->form->field_textfield('Renewal_AlternativePhone', $result->AlternativePhone ? $result->AlternativePhone : null, 'Alternative Phone Number', '(000)000-0000', array('type' => 'tel'), array('col-md-6', 'col-sm-12'));
                     $ret['Renewal_CollegeId'] = $this->form->field_select('Renewal_CollegeId', $result->CollegeId ? $result->CollegeId : null, 'College Applied To or Attending', null, $this->college_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
                     $ret['Renewal_MajorId'] = $this->form->field_select('Renewal_MajorId', $result->MajorId ? $result->MajorId : 5122, 'Intended Major (If Uncertain, select Undecided)', null, $this->major_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
-                    $ret['Renewal_AnticipatedGraduationDate'] = $this->form->field_select('Renewal_AnticipatedGraduationDate', $result->AnticipatedGraduationDate ? $result->AnticipatedGraduationDate : date("Y").'-01-01', "Anticipated Graduation Date", array('value' => date("Y").'-01-01','option' => date("Y")), $this->gradyr_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
+                    $ret['Renewal_AnticipatedGraduationDate'] = $this->form->field_select('Renewal_AnticipatedGraduationDate', $result->AnticipatedGraduationDate ? $result->AnticipatedGraduationDate : date("Y").'-01-01', "Anticipated Graduation Date", array('value' => date("Y").'-01-01','option' => date("Y")), $this->col_gradyr_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
                     $ret['Renewal_CurrentCumulativeGPA'] = $this->form->field_textfield('Renewal_CurrentCumulativeGPA', $result->CurrentCumulativeGPA ? $result->CurrentCumulativeGPA : null, 'Current Cumulative GPA', '0.00', array('required' => 'required', 'type' => 'number', 'minlength' => 1), array('required', 'col-md-6', 'col-sm-12'));
                     $ret['Renewal_CoopStudyAbroadNote'] = $this->form->field_textarea('Renewal_CoopStudyAbroadNote',$result->CoopStudyAbroadNote ? $result->CoopStudyAbroadNote : '',"Please indicate any plans to co-op or study abroad here so that your scholarship may be paid accordingly (scholarship is applied only to terms when enrolled full-time) :",null,array('col-md-12'));
                     $ret['Renewal_TermsAcknowledged'] = $this->form->field_checkbox('Renewal_TermsAcknowledged',$result->TermsAcknowledged?$result->TermsAcknowledged:0,'In order to be renewed, I understand that I must continue to meet the criteria of my scholarship.');
@@ -1005,10 +1007,14 @@ if (!class_exists('MSDLab_CSF_Application')) {
             $this->major_array = $this->queries->get_select_array_from_db('Major', 'MajorId', 'MajorName','MajorName');
             $this->educationalattainment_array = $this->queries->get_select_array_from_db('EducationalAttainment', 'EducationalAttainmentId', 'EducationalAttainment');
             $this->highschool_array = $this->queries->get_select_array_from_db('HighSchool', 'HighSchoolId', 'SchoolName','SchoolName');
-            for ($yr = 2000; $yr <= date("Y"); $yr++) {
+            for ($yr = date("Y")-18; $yr <= date("Y")+2; $yr++) {
                 $this->gradyr_array[$yr.'-01-01'] = $yr;
             }
             $this->gradyr_array = array_reverse($this->gradyr_array);
+            for ($yr = date("Y"); $yr <= date("Y")+10; $yr++) {
+                $this->col_gradyr_array[$yr.'-01-01'] = $yr;
+            }
+            $this->col_gradyr_array = array_reverse($this->col_gradyr_array);
         }
     } //End Class
 } //End if class exists statement
