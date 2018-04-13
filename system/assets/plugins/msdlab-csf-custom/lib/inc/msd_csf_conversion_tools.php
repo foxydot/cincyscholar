@@ -22,6 +22,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_reduce_majors', array(&$this,'reduce_majors') );
             add_action( 'wp_ajax_fix_emails', array(&$this,'fix_emails') );
             add_action( 'wp_ajax_update_renewal_table', array(&$this,'update_renewal_table') );
+            add_action( 'wp_ajax_update_applicant_table', array(&$this,'update_applicant_table') );
         }
         //methods
         function create_student_users(){
@@ -169,6 +170,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
   ADD `AlternativePhone` varchar(25) NOT NULL,
   ADD `Email` varchar(50) NOT NULL,
   ADD `Last4SSN` varchar(4) NOT NULL,
+  ADD `StudentId` varchar(50) NOT NULL,
   ADD `DateOfBirth` date NOT NULL,
   ADD `CollegeId` int(11) NOT NULL,
   ADD `MajorId` int(11) DEFAULT NULL,
@@ -176,6 +178,20 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
   ADD `RenewalLocked` tinyint(1) unsigned zerofill NOT NULL,
   ADD `Notes` text,
   DROP PermanentAddress;";
+            if($wpdb->get_results($sql)) {
+                print "updated!";
+            }
+        }
+
+        function update_applicant_table(){
+            global $wpdb;
+            $sql = "ALTER TABLE applicant
+  ADD `StudentId` varchar(50) NOT NULL,
+  ADD `ResumeOK` tinyint(1) unsigned zerofill NOT NULL,
+  ADD `TranscriptOK` tinyint(1) unsigned zerofill NOT NULL,
+  ADD `FinancialAidOK` tinyint(1) unsigned zerofill NOT NULL,
+  ADD `FAFSAOK` tinyint(1) unsigned zerofill NOT NULL,
+  ADD `ApplicationlLocked` tinyint(1) unsigned zerofill NOT NULL;";
             if($wpdb->get_results($sql)) {
                 print "updated!";
             }
@@ -282,6 +298,15 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                             console.log(response);
                         });
                     });
+                    $('.update_applicant_table').click(function(){
+                        var data = {
+                            action: 'update_applicant_table',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
             </script>
             <div class="wrap">
@@ -301,6 +326,8 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                     <dd><button class="fix_emails">Go</button></dd>
                     <dt>Update Renewal Table:</dt>
                     <dd><button class="update_renewal_table">Go</button></dd>
+                    <dt>Update Applicant Table:</dt>
+                    <dd><button class="update_applicant_table">Go</button></dd>
 
                 </dl>
                 <div class="response1"></div>
