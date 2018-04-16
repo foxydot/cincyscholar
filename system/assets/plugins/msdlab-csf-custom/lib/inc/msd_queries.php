@@ -235,7 +235,7 @@ class MSDLAB_Queries{
         $sql[] = ';';
 
         //TODO: refactor all queries to ue proper JOIN
-        //error_log('select_sql:'.$sql);
+        //error_log('select_sql:'.implode(' ',$sql));
         $result = $wpdb->get_results(implode(' ',$sql));
         return $result;
     }
@@ -399,6 +399,7 @@ class MSDLAB_Queries{
         }
         //ts_data($data);
         $results = $this->get_result_set($data);
+        //error_log($wpdb->last_query);
 
         foreach ($results AS $k => $r){
             $applicant_id = $r->ApplicantId;

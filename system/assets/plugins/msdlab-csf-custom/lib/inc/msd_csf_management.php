@@ -335,7 +335,6 @@ if (!class_exists('MSDLab_CSF_Management')) {
 
             print '</div>';
         }
-
         function college_page_content(){
             //page content here
             print '<div class="wrap report_table">';
