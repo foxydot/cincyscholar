@@ -23,6 +23,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_fix_emails', array(&$this,'fix_emails') );
             add_action( 'wp_ajax_update_renewal_table', array(&$this,'update_renewal_table') );
             add_action( 'wp_ajax_update_applicant_table', array(&$this,'update_applicant_table') );
+            add_action( 'wp_ajax_parse_emails', array(&$this,'parse_emails') );
         }
         //methods
         function create_student_users(){
@@ -197,6 +198,56 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             }
         }
 
+
+        function parse_emails(){
+            global $wpdb;
+            $sql = "SELECT * FROM temp_emails";
+            $students = $wpdb->get_results($sql);
+            //return ts_data($students,0);
+            foreach($students AS $student){
+                $user = get_user_by('email',$student->email);
+                if(!$user) {
+                    $sql = 'SELECT UserId FROM applicant WHERE LastName = "'.$student->LastName.'" AND DateOfBirth = "'.$student->DOB.'";';
+                    if($res = $wpdb->get_results($sql)){
+                        $user = get_user_by('ID',$res[0]->UserId);
+                    }
+                    if(!$user){
+                        $user = get_user_by('login',strtolower($student->FirstName . '_' . $student->LastName));
+                    }
+                }
+                if($user){
+                    $sql = 'UPDATE temp_emails SET user_id = '.$user->ID.', permissions = "'.implode(',',$user->roles).'" WHERE id = "'.$student->id.'";';
+                    if($wpdb->get_results($sql)){
+                        print $user->display_name .' <br>';
+                    }
+                    if($student->email != $user->user_email){
+                        wp_update_user(array('ID' => $user->ID,'user_email' => $student->email, 'role' => 'awardee'));
+                    } else {
+                        wp_update_user(array('ID' => $user->ID, 'role' => 'awardee'));
+
+                    }
+                } else { //there is still not a user! Create One.
+                    $args = array(
+                        'first_name' => $student->FirstName,
+                        'last_name' => $student->LastName,
+                        'user_login' => strtolower($student->FirstName . '_' . $student->LastName),
+                        'user_email' => $student->Email, //doublecheck that no one is actually going to get emailed.
+                        'role' => 'awardee',
+                        'user_pass' => 'This is a lousy pa$$word.',
+                    );
+                    $user_id = wp_insert_user($args);
+                    if(is_wp_error($user_id)){
+                        ts_data($user_id);
+                        continue;
+                    }
+                    $sql = 'UPDATE temp_emails SET user_id = '.$user_id.' WHERE id = "'.$student->id.'";';
+                    if($wpdb->get_results($sql)){
+                        print $user->display_name .' <br>';
+                    }
+                }
+            }
+        }
+
         //utility
         function settings_page()
         {
@@ -307,6 +358,15 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                             console.log(response);
                         });
                     });
+                    $('.parse_emails').click(function(){
+                        var data = {
+                            action: 'parse_emails',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
             </script>
             <div class="wrap">
@@ -328,6 +388,8 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                     <dd><button class="update_renewal_table">Go</button></dd>
                     <dt>Update Applicant Table:</dt>
                     <dd><button class="update_applicant_table">Go</button></dd>
+                    <dt>Parse Emails:</dt>
+                    <dd><button class="parse_emails">Go</button></dd>
 
                 </dl>
                 <div class="response1"></div>
