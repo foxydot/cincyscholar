@@ -1,13 +1,11 @@
 <?php
 class MSDLAB_Queries{
 
-    private $post_vars;
-
     /**
      * A reference to an instance of this class.
      */
     private static $instance;
-
+    private $post_vars;
 
     /**
      * Returns an instance of this class.
@@ -21,18 +19,6 @@ class MSDLAB_Queries{
         return self::$instance;
 
     }
-
-    public function __construct() {
-        global $wpdb;
-        if ( ! empty( $_POST ) ) { //add nonce
-            $this->post_vars = $_POST;
-        }
-    }
-
-
-    /*
-     * Setting Queries
-     */
 
     /**
      * Save any updated data
@@ -61,12 +47,53 @@ class MSDLAB_Queries{
          return '<div class="message success">Data Updated</div>';
      }
 
+
+    /*
+     * Setting Queries
+     */
+
      public function get_all_colleges($options = array()){
          $data['tables']['college'] = array('*');
          $data['order'] = 'name ASC';
          $results = $this->get_result_set($data);
          return $results;
      }
+
+    /**
+     * Create the full result set
+     *
+     * @return $array The parsed result set.
+     */
+    public function get_result_set($data){
+        global $wpdb;
+        $this->__construct();
+        foreach($data['tables'] AS $table => $fieldslist){
+            $tables[] = strtolower($table);
+                foreach($fieldslist AS $field){
+                $fields[] = strtolower($table).'.'.$field;
+                }
+        }
+        $sql[] = 'SELECT '.implode(', ',$fields).' FROM '.implode(', ',$tables);
+        if(isset($data['where'])){
+            $sql[] = 'WHERE '.$data['where'];
+        }
+        if(isset($data['order'])){
+            $sql[] = 'ORDER BY '.$data['order'];
+        }
+        $sql[] = ';';
+
+        //TODO: refactor all queries to ue proper JOIN
+        error_log('select_sql:'.implode(' ',$sql));
+        $result = $wpdb->get_results(implode(' ',$sql));
+        return $result;
+    }
+
+    public function __construct() {
+        global $wpdb;
+        if ( ! empty( $_POST ) ) { //add nonce
+            $this->post_vars = $_POST;
+        }
+    }
 
      public function get_college($college_id){
          $data['tables']['college'] = array('*');
@@ -81,6 +108,9 @@ class MSDLAB_Queries{
          $results = $this->get_result_set($data);
          return $results;
      }
+     /*
+      * Report Queries
+      */
 
      public function get_contact($contact_id){
          $data['tables']['collegecontact'] = array('*');
@@ -88,73 +118,11 @@ class MSDLAB_Queries{
          $results = $this->get_result_set($data);
          return $results[0];
      }
-     /*
-      * Report Queries
-      */
-
-     public function get_all_applications(){
-         global $wpdb;
-         $usertable = $wpdb->prefix . 'users';
-         $data['tables']['applicant'] = array('*');
-         $data['where'] = 'applicant.ApplicationDateTime > 20180101000000'; //replace with dates from settings
-         $data['tables'][$usertable] = array('user_email');
-         $data['where'] .= ' AND ' . $usertable . '.ID  = applicant.UserId';
-         $data['tables']['applicantcollege'] = array('CollegeId');
-         $data['where'] .= ' AND applicantcollege.ApplicantId = applicant.ApplicantId';
-         $results = $this->get_result_set($data);
-
-         foreach ($results AS $k => $r){
-             $applicant_id = $r->ApplicantId;
-             $agreements = $financial = $docs = array();
-             //add agreements
-             $agreements['tables']['agreements'] = array('ApplicantHaveRead','ApplicantDueDate','ApplicantDocsReq','ApplicantReporting','GuardianHaveRead','GuardianDueDate','GuardianDocsReq','GuardianReporting');
-             $agreements['where'] .= ' agreements.ApplicantId = ' . $applicant_id;
-             $agreements_results = $this->get_result_set($agreements);
-             foreach($agreements_results AS $ar){
-                 foreach($ar as $y => $z){
-                     $results[$k]->$y = $z;
-                 }
-             }
-             //add financial
-             if($this->is_indy($applicant_id)){
-                 $financial['tables']['applicantfinancial'] = array('ApplicantEmployer', 'ApplicantIncome', 'SpouseEmployer', 'SpouseIncome', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
-                 $financial['where'] .= ' applicantfinancial.ApplicantId = ' . $applicant_id;
-             } else {
-                 $financial['tables']['guardian'] = array('GuardianFullName1', 'GuardianEmployer1', 'GuardianFullName2', 'GuardianEmployer2', 'Homeowner', 'HomeValue', 'AmountOwedOnHome','InformationSharingAllowedByGuardian');
-                 $financial['where'] .= ' guardian.ApplicantId = ' . $applicant_id;
-             }
-             $financial_results = $this->get_result_set($financial);
-             foreach($financial_results AS $fr){
-                 foreach($fr as $y => $z){
-                     $results[$k]->$y = $z;
-                 }
-             }
-             //add docs
-             $docs['tables']['attachment'] = array('AttachmentTypeId','FilePath');
-             $docs['where'] = 'ApplicantId = '.$applicant_id;
-             $documents = $this->get_result_set($docs);
-             foreach($documents AS $d){
-                 $results[$k]->Documents .= '<a href="'.$d->FilePath.'">'.$this->get_attachment_type_by_id($d->AttachmentTypeId).'</a><br />';
-             }
-
-             //add status
-             $status['tables']['applicationprocess'] = array('ProcessStepId','ProcessStepBool');
-             $status['where'] = 'ApplicantId = '.$applicant_id;
-             $status_results = $this->get_result_set($status);
-             foreach($status_results AS $sr){
-                 if($sr->ProcessStepBool == 1) {
-                     if($sr->ProcessStepId > $results[$k]->Status) {
-                         $results[$k]->status = $sr->ProcessStepId;
-                     }
-                 }
-             }
-         }
-         return $results;
-     }
 
 /*
  *  Form Queries
  */
+
      public function set_data($form_id,$where,$notifications = array()){
          global $wpdb;
          if(empty($this->post_vars)){
@@ -207,47 +175,6 @@ error_log('update_sql: '.$sql);
         }
          return '<div class="message success">'.$notifications['success'].'</div>';
      }
-    /**
-     * Create the full result set
-     *
-     * @return $array The parsed result set.
-     */
-    public function get_result_set($data){
-        global $wpdb;
-        $this->__construct();
-        foreach($data['tables'] AS $table => $fieldslist){
-            $tables[] = strtolower($table);
-                foreach($fieldslist AS $field){
-                $fields[] = strtolower($table).'.'.$field;
-                }
-        }
-        $sql[] = 'SELECT '.implode(', ',$fields).' FROM '.implode(', ',$tables);
-        if(isset($data['where'])){
-            $sql[] = 'WHERE '.$data['where'];
-        }
-        if(isset($data['order'])){
-            $sql[] = 'ORDER BY '.$data['order'];
-        }
-        $sql[] = ';';
-
-        //TODO: refactor all queries to ue proper JOIN
-        //error_log('select_sql:'.$sql);
-        $result = $wpdb->get_results(implode(' ',$sql));
-        return $result;
-    }
-
-    function get_select_array_from_db($table,$id_field,$field,$orderby = false){
-        global $wpdb;
-        if(!$orderby){
-            $orderby = $id_field;
-        }
-        $sql = 'SELECT `'.$id_field.'`,`'.$field.'` FROM `'.strtolower($table).'` ORDER BY `'.$orderby.'` ASC;';
-        $result = $wpdb->get_results( $sql, ARRAY_A );
-        foreach ($result AS $k=>$v){
-            $array[$v[$id_field]] = $v[$field];
-        }
-        return $array;
-    }
 
     function handle_attachments($data){
         global $wpdb;
@@ -298,9 +225,34 @@ error_log('update_sql: '.$sql);
         return true;
     }
 
+    function get_attachment_type_ids(){
+        global $wpdb;
+        $sql = 'SELECT * FROM attachmenttype;';
+        $result = $wpdb->get_results( $sql, ARRAY_A );
+        $attachment_type_ids = array();
+        foreach ($result as $r) {
+            $attachment_type_ids[$r['AttachmentType']] = $r['AttachmentTypeId'];
+        }
+        return $attachment_type_ids;
+    }
+
+    function get_select_array_from_db($table,$id_field,$field,$orderby = false){
+        global $wpdb;
+        if(!$orderby){
+            $orderby = $id_field;
+        }
+        $sql = 'SELECT `'.$id_field.'`,`'.$field.'` FROM `'.strtolower($table).'` ORDER BY `'.$orderby.'` ASC;';
+        $result = $wpdb->get_results( $sql, ARRAY_A );
+        foreach ($result AS $k=>$v){
+            $array[$v[$id_field]] = $v[$field];
+        }
+        return $array;
+    }
+
     /*
      * Report Queries
      */
+
     /**
      * Create the full result set
      *
@@ -445,10 +397,158 @@ error_log('update_sql: '.$sql);
         return $results;
     }
 
+     public function get_all_applications(){
+         global $wpdb;
+         $usertable = $wpdb->prefix . 'users';
+         $data['tables']['applicant'] = array('*');
+         $data['where'] = 'applicant.ApplicationDateTime > 20180101000000'; //replace with dates from settings
+         $data['tables'][$usertable] = array('user_email');
+         $data['where'] .= ' AND ' . $usertable . '.ID  = applicant.UserId';
+         $data['tables']['applicantcollege'] = array('CollegeId');
+         $data['where'] .= ' AND applicantcollege.ApplicantId = applicant.ApplicantId';
+         $results = $this->get_result_set($data);
+
+         foreach ($results AS $k => $r){
+             $applicant_id = $r->ApplicantId;
+             $agreements = $financial = $docs = array();
+             //add agreements
+             $agreements['tables']['agreements'] = array('ApplicantHaveRead','ApplicantDueDate','ApplicantDocsReq','ApplicantReporting','GuardianHaveRead','GuardianDueDate','GuardianDocsReq','GuardianReporting');
+             $agreements['where'] .= ' agreements.ApplicantId = ' . $applicant_id;
+             $agreements_results = $this->get_result_set($agreements);
+             foreach($agreements_results AS $ar){
+                 foreach($ar as $y => $z){
+                     $results[$k]->$y = $z;
+                 }
+             }
+             //add financial
+             if($this->is_indy($applicant_id)){
+                 $financial['tables']['applicantfinancial'] = array('ApplicantEmployer', 'ApplicantIncome', 'SpouseEmployer', 'SpouseIncome', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
+                 $financial['where'] .= ' applicantfinancial.ApplicantId = ' . $applicant_id;
+             } else {
+                 $financial['tables']['guardian'] = array('GuardianFullName1', 'GuardianEmployer1', 'GuardianFullName2', 'GuardianEmployer2', 'Homeowner', 'HomeValue', 'AmountOwedOnHome','InformationSharingAllowedByGuardian');
+                 $financial['where'] .= ' guardian.ApplicantId = ' . $applicant_id;
+             }
+             $financial_results = $this->get_result_set($financial);
+             foreach($financial_results AS $fr){
+                 foreach($fr as $y => $z){
+                     $results[$k]->$y = $z;
+                 }
+             }
+             //add docs
+             $docs['tables']['attachment'] = array('AttachmentTypeId','FilePath');
+             $docs['where'] = 'ApplicantId = '.$applicant_id;
+             $documents = $this->get_result_set($docs);
+             foreach($documents AS $d){
+                 $results[$k]->Documents .= '<a href="'.$d->FilePath.'">'.$this->get_attachment_type_by_id($d->AttachmentTypeId).'</a><br />';
+             }
+
+             //add status
+             $status['tables']['applicationprocess'] = array('ProcessStepId','ProcessStepBool');
+             $status['where'] = 'ApplicantId = '.$applicant_id;
+             $status_results = $this->get_result_set($status);
+             foreach($status_results AS $sr){
+                 if($sr->ProcessStepBool == 1) {
+                     if($sr->ProcessStepId > $results[$k]->Status) {
+                         $results[$k]->status = $sr->ProcessStepId;
+                     }
+                 }
+             }
+         }
+         return $results;
+     }
+
 
     /*
     *  Resource Queries
     */
+
+    function is_indy($applicant_id){
+        $indy['where'] = 'applicant.ApplicantId = ' . $applicant_id;;
+        $indy['tables']['applicant'] = array('IsIndependent');
+        $results = $this->get_result_set($indy);
+        $result = $results[0];
+        if($result->IsIndependent){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function get_attachment_type_by_id($id){
+        global $wpdb;
+        $sql = "SELECT AttachmentType FROM attachmenttype WHERE AttachmentTypeId = ".$id.";";
+        $result = $wpdb->get_results( $sql );
+        return $result[0]->AttachmentType;
+    }
+
+    function get_renewal_report_set($fields){
+        global $wpdb;
+        //setup initial args
+        $user_args = array();
+        //get full set
+        if(empty($this->post_vars)){
+            return $this->get_all_renewals();
+        }
+        //ts_data($this->post_vars);
+        $usertable = $wpdb->prefix . 'users';
+        $data['tables']['renewal'] = array('*');
+
+        if(empty($this->post_vars['application_date_search_input_start']) && empty($this->post_vars['application_date_search_input_end'])) {
+            $data['where'] = 'renewal.RenewalDateTime > '.date('Ymdhis',strtotime(get_option('csf_settings_start_date'))); //replace with dates from settings
+        } else {
+            if(!empty($this->post_vars['application_date_search_input_start'])){
+                $where[] = 'renewal.RenewalDateTime > '.date('Ymdhis',strtotime($this->post_vars['application_date_search_input_start']));
+            } else {
+                $where[] = 'renewal.RenewalDateTime > '.date('Ymdhis',strtotime(get_option('csf_settings_start_date'))); //replace with dates from settings
+            }
+            if(!empty($this->post_vars['application_date_search_input_start'])){
+                $where[] = 'renewal.RenewalDateTime < '.date('Ymdhis',strtotime($this->post_vars['application_date_search_input_end']));
+            }
+            $data['where'] = implode(' AND ',$where);
+        }
+
+        if(!empty($this->post_vars['name_search_input'])) {
+            //add search for name on application
+            $search_terms = explode(' ',$this->post_vars['name_search_input']);
+            if(count($search_terms>1)){
+                $fullnamesearch = ' OR (renewal.FirstName LIKE \'%'. $search_terms[0] .'%\' AND renewal.LastName LIKE \'%'. $search_terms[1] .'%\')';
+            }
+            $data['where'] .= ' AND (renewal.FirstName LIKE \'%'. $this->post_vars['name_search_input'] .'%\' OR renewal.LastName LIKE \'%'. $this->post_vars['name_search_input'] .'%\''.$fullnamesearch.') ';
+        }
+        if(!empty($this->post_vars['city_search_input'])){
+            $data['where'] .= ' AND renewal.City LIKE \'%'.$this->post_vars['city_search_input'].'%\'';
+        }
+        if(!empty($this->post_vars['state_search_input'])){
+            $data['where'] .= ' AND renewal.StateId = \''.$this->post_vars['state_search_input'].'\'';
+        }
+        if(!empty($this->post_vars['county_search_input'])){
+            $data['where'] .= ' AND renewal.CountyId = '.$this->post_vars['county_search_input'];
+        }
+        if(!empty($this->post_vars['zip_search_input'])){
+            $data['where'] .= ' AND renewal.ZipCode IN ('.$this->post_vars['zip_search_input'].')';
+        }
+
+        if($this->post_vars['gpa_range_search_input_start']!=0 || $this->post_vars['gpa_range_search_input_end']!=5){
+            $data['where'] .= ' AND (renewal.CurrentCumulativeGPA >= '.$this->post_vars['gpa_range_search_input_start'].' AND renewal.CurrentCumulativeGPA <= '.$this->post_vars['gpa_range_search_input_end'].')';
+        }
+        if(!empty($this->post_vars['major_search_input'])){
+            $data['where'] .= ' AND renewal.MajorId = '.$this->post_vars['major_search_input'];
+        }
+        if(!empty($this->post_vars['college_search_input'])){
+            $data['where'] .= ' AND renewal.CollegeId = '.$this->post_vars['college_search_input'];
+        }
+
+
+        $data['tables'][$usertable] = array('user_email');
+        $data['where'] .= ' AND ' . $usertable . '.ID  = renewal.UserId';
+        if(!empty($this->post_vars['email_search_input'])) {
+            //add search for an email on application
+            $data['where'] .= ' AND ' . $usertable . '.user_email  LIKE \'%'.$this->post_vars['email_search_input'].'%\'';
+        }
+        //ts_data($data);
+        $results = $this->get_result_set($data);
+        return $results;
+    }
 
     function get_user_application_status(){
         global $current_user,$applicant_id,$wpdb;
@@ -456,6 +556,14 @@ error_log('update_sql: '.$sql);
         $sql = "SELECT * FROM applicationprocess WHERE applicationprocess.ApplicantId = ".$applicant_id ." ORDER BY applicationprocess.ProcessStepId DESC";
         $result = $wpdb->get_results($sql);
         return $result[0]->ProcessStepId;
+    }
+
+    function get_applicant_id($user_id){
+        global $wpdb;
+        $sql = "SELECT ApplicantId FROM applicant WHERE UserId = ". $user_id;
+        //error_log($sql);
+        $result = $wpdb->get_results($sql);
+        return $result[0]->ApplicantId;
     }
 
     function get_user_application_status_list(){
@@ -487,14 +595,6 @@ error_log('update_sql: '.$sql);
         return $ret;
     }
 
-    function get_applicant_id($user_id){
-        global $wpdb;
-        $sql = "SELECT ApplicantId FROM applicant WHERE UserId = ". $user_id;
-        //error_log($sql);
-        $result = $wpdb->get_results($sql);
-        return $result[0]->ApplicantId;
-    }
-
     function get_user_id_by_applicant($applicant_id){
         global $wpdb;
         $sql = "SELECT UserId FROM applicant WHERE ApplicantId = ". $applicant_id;
@@ -503,71 +603,62 @@ error_log('update_sql: '.$sql);
         return $result[0]->UserId;
     }
 
-    function get_attachment_type_ids(){
-        global $wpdb;
-        $sql = 'SELECT * FROM attachmenttype;';
-        $result = $wpdb->get_results( $sql, ARRAY_A );
-        $attachment_type_ids = array();
-        foreach ($result as $r) {
-            $attachment_type_ids[$r['AttachmentType']] = $r['AttachmentTypeId'];
-        }
-        return $attachment_type_ids;
-    }
-
-    function get_attachment_type_by_id($id){
-        global $wpdb;
-        $sql = "SELECT AttachmentType FROM attachmenttype WHERE AttachmentTypeId = ".$id.";";
-        $result = $wpdb->get_results( $sql );
-        return $result[0]->AttachmentType;
-    }
     function get_state_by_id($id){
         global $wpdb;
         $sql = "SELECT State FROM state WHERE StateId = '".$id."';";
         $result = $wpdb->get_results( $sql );
         return $result[0]->State;
     }
+
     function get_county_by_id($id){
         global $wpdb;
         $sql = "SELECT County FROM county WHERE CountyId = '".$id."';";
         $result = $wpdb->get_results( $sql );
         return $result[0]->County;
     }
+
     function get_ethnicity_by_id($id){
         global $wpdb;
         $sql = "SELECT Ethnicity FROM ethnicity WHERE EthnicityId = '".$id."';";
         $result = $wpdb->get_results( $sql );
         return $result[0]->Ethnicity;
     }
+
     function get_sex_by_id($id){
         global $wpdb;
         $sql = "SELECT Sex FROM sex WHERE SexId = '".$id."';";
         $result = $wpdb->get_results( $sql );
         return $result[0]->Sex;
     }
+
     function get_college_by_id($id){
         global $wpdb;
         $sql = "SELECT Name FROM college WHERE CollegeId = '".$id."';";
         $result = $wpdb->get_results( $sql );
         return $result[0]->Name;
     }
+
     function get_major_by_id($id){
         global $wpdb;
         $sql = "SELECT MajorName FROM major WHERE MajorId = '".$id."';";
         $result = $wpdb->get_results( $sql );
         return $result[0]->MajorName;
     }
+
     function get_educationalattainment_by_id($id){
         global $wpdb;
         $sql = "SELECT EducationalAttainment FROM educationalattainment WHERE EducationalAttainmentId = '".$id."';";
         $result = $wpdb->get_results( $sql );
         return $result[0]->EducationalAttainment;
     }
+
     function get_highschool_by_id($id){
         global $wpdb;
         $sql = "SELECT SchoolName FROM highschool WHERE HighSchoolId = '".$id."';";
         $result = $wpdb->get_results( $sql );
         return $result[0]->SchoolName;
     }
+
     function get_status_by_id($id){
         global $wpdb;
         $sql = "SELECT StepName FROM processsteps WHERE StepId = '".$id."';";
@@ -575,17 +666,6 @@ error_log('update_sql: '.$sql);
         return $result[0]->StepName;
     }
 
-    function is_indy($applicant_id){
-        $indy['where'] = 'applicant.ApplicantId = ' . $applicant_id;;
-        $indy['tables']['applicant'] = array('IsIndependent');
-        $results = $this->get_result_set($indy);
-        $result = $results[0];
-        if($result->IsIndependent){
-            return true;
-        } else {
-            return false;
-        }
-    }
     function is_adult($applicant_id){
         $indy['where'] = 'applicant.ApplicantId = ' . $applicant_id;;
         $indy['tables']['applicant'] = array('DateOfBirth');

@@ -1,17 +1,20 @@
 <?php
 class MSDLAB_Display{
 
-    private $variable;
-
-    private $export_header;
-
-    private $export_csv;
-
     /**
      * A reference to an instance of this class.
      */
     private static $instance;
+    private $variable;
+    private $export_header;
+    private $export_csv;
 
+    public function __construct() {
+        if(class_exists('MSDLAB_Queries')){
+            $this->queries = new MSDLAB_Queries();
+        }
+
+    }
 
     /**
      * Returns an instance of this class.
@@ -26,11 +29,30 @@ class MSDLAB_Display{
 
     }
 
-    public function __construct() {
-        if(class_exists('MSDLAB_Queries')){
-            $this->queries = new MSDLAB_Queries();
-        }
+    /**
+     * Print a table
+     *
+     * @param array $fields An array of field objects.
+     * @param array $info The result information.
+     * @param bool $echo Whether to print the return value with appropriate wrappers, or return it.
+     *
+     * @return string The footer to be printed, or void if the param $echo is true.
+     */
+    public function print_table($id, $fields, $result, $info, $class = array(), $echo = true){
+        $class = implode(" ",apply_filters('msdlab_csf_report_display_table_class', $class));
+        $ret = array();
+        $ret['start_table'] = '<table id="'.$id.'" class="'.$class.'">';
+        $ret['table_header'] = $this->table_header($fields,false);
+        $ret['table_data'] = $this->table_data($fields,$result,false);
+        $ret['table_footer'] = $this->table_footer($fields,$info,false);
+        $ret['end_table'] = '</table>';
+        $ret['export'] = $this->print_export_tools($id);
 
+        if($echo){
+            print implode("\n\r", $ret);
+        } else {
+            return $ret;
+        }
     }
 
     /**
@@ -59,32 +81,13 @@ class MSDLAB_Display{
         }
     }
 
-
-    /**
-     * Create a Table Footer for the result set display
-     *
-     * @param array $fields An array of field objects.
-     * @param array $info The result information.
-     * @param bool $echo Whether to print the return value with appropriate wrappers, or return it.
-     *
-     * @return string The footer to be printed, or void if the param $echo is true.
-     */
-    public function table_footer($fields, $info, $echo = true){
-        $ret = array();
-        $numfields = count($fields);
-        /*if(count($info)>0) {
-            foreach ($info as $key => $value) {
-                $ret[] = '<div class=""><label>' . $key . ': </label><span class="">' . $value . '</span></div>';
-            }
-        }*/
-
-        $ret = apply_filters('msdlab_csf_report_display_table_footer', '<th colspan="'.$numfields.'">'.implode("\r\n",$ret).'</th>');
-
-        if($echo){
-            print '<tr>'.$ret.'</tr>';
-        } else {
-            return '<tr>'.$ret.'</tr>';
-        }
+    public function csv_safe($value){
+        $value = preg_replace('%\'%i','‘',$value);
+        $value = strip_tags($value,'<p><a>');
+        $value = preg_replace("/<a.+href=['|\"]([^\"\']*)['|\"].*>(.+)<\/a>/i",'\2 (\1)',$value);
+        $value = preg_replace('^[\r\n]+^',"\n",$value);
+        $value = '"'.$value.'"';
+        return $value;
     }
 
     /**
@@ -178,10 +181,37 @@ class MSDLAB_Display{
     }
 
     /**
+     * Create a Table Footer for the result set display
+     *
+     * @param array $fields An array of field objects.
+     * @param array $info The result information.
+     * @param bool $echo Whether to print the return value with appropriate wrappers, or return it.
+     *
+     * @return string The footer to be printed, or void if the param $echo is true.
+     */
+    public function table_footer($fields, $info, $echo = true){
+        $ret = array();
+        $numfields = count($fields);
+        /*if(count($info)>0) {
+            foreach ($info as $key => $value) {
+                $ret[] = '<div class=""><label>' . $key . ': </label><span class="">' . $value . '</span></div>';
+            }
+        }*/
+
+        $ret = apply_filters('msdlab_csf_report_display_table_footer', '<th colspan="'.$numfields.'">'.implode("\r\n",$ret).'</th>');
+
+        if($echo){
+            print '<tr>'.$ret.'</tr>';
+        } else {
+            return '<tr>'.$ret.'</tr>';
+        }
+    }
+
+    /**
      *
      */
     public function print_export_tools($id){
-        $temp_filename = 'Cincinnati Scholarship Foundation Application Report '.$id.'_'.date("Y-m-d_H-i",time()).'.csv';
+        $temp_filename = 'CSF Report '.$id.'_'.date("Y-m-d_H-i",time()).'.csv';
         //create or locate upload dir for tempfiles
         $upload_dir   = wp_upload_dir();
         if ( ! empty( $upload_dir['basedir'] ) ) {
@@ -199,41 +229,5 @@ class MSDLAB_Display{
         fclose($temp_file);
         $ret['form'] = '<a href="'.$temp_url.'" id="csv_export_'.$id.'" class="button csv-export export-'.$id.'">Export to CSV</a>';
         return implode("\n\r", $ret);
-    }
-
-
-    /**
-     * Print a table
-     *
-     * @param array $fields An array of field objects.
-     * @param array $info The result information.
-     * @param bool $echo Whether to print the return value with appropriate wrappers, or return it.
-     *
-     * @return string The footer to be printed, or void if the param $echo is true.
-     */
-    public function print_table($id, $fields, $result, $info, $class = array(), $echo = true){
-        $class = implode(" ",apply_filters('msdlab_csf_report_display_table_class', $class));
-        $ret = array();
-        $ret['start_table'] = '<table id="'.$id.'" class="'.$class.'">';
-        $ret['table_header'] = $this->table_header($fields,false);
-        $ret['table_data'] = $this->table_data($fields,$result,false);
-        $ret['table_footer'] = $this->table_footer($fields,$info,false);
-        $ret['end_table'] = '</table>';
-        $ret['export'] = $this->print_export_tools($id);
-
-        if($echo){
-            print implode("\n\r", $ret);
-        } else {
-            return $ret;
-        }
-    }
-
-    public function csv_safe($value){
-        $value = preg_replace('%\'%i','‘',$value);
-        $value = strip_tags($value,'<p><a>');
-        $value = preg_replace("/<a.+href=['|\"]([^\"\']*)['|\"].*>(.+)<\/a>/i",'\2 (\1)',$value);
-        $value = preg_replace('^[\r\n]+^',"\n",$value);
-        $value = '"'.$value.'"';
-        return $value;
     }
 }
