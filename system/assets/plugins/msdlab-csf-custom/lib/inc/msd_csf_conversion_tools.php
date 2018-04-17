@@ -12,6 +12,7 @@
 if(!class_exists('MSDLab_CSF_Conversion_Tools')){
     class MSDLab_CSF_Conversion_Tools{
         //properties
+        private $queries;
         //constructor
         function __construct(){
             add_action('admin_menu', array(&$this,'settings_page'));
@@ -24,6 +25,8 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_update_renewal_table', array(&$this,'update_renewal_table') );
             add_action( 'wp_ajax_update_applicant_table', array(&$this,'update_applicant_table') );
             add_action( 'wp_ajax_parse_emails', array(&$this,'parse_emails') );
+
+            $this->queries = new MSDLAB_Queries();
         }
         //methods
         function create_student_users(){
@@ -212,10 +215,11 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                         $user = get_user_by('ID',$res[0]->UserId);
                     }
                     if(!$user){
-                        $user = get_user_by('login',strtolower($student->FirstName . '_' . $student->LastName));
+                        $user = get_user_by('login',sanitize_title_with_dashes(strtolower($student->FirstName . '_' . $student->LastName)));
                     }
                 }
                 if($user){
+                    $user_id = $user->ID;
                     $sql = 'UPDATE temp_emails SET user_id = '.$user->ID.', permissions = "'.implode(',',$user->roles).'" WHERE id = "'.$student->id.'";';
                     if($wpdb->get_results($sql)){
                         print $user->display_name .' <br>';
@@ -230,8 +234,8 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                     $args = array(
                         'first_name' => $student->FirstName,
                         'last_name' => $student->LastName,
-                        'user_login' => strtolower($student->FirstName . '_' . $student->LastName),
-                        'user_email' => $student->Email, //doublecheck that no one is actually going to get emailed.
+                        'user_login' => sanitize_title_with_dashes(strtolower($student->FirstName . '_' . $student->LastName)),
+                        'user_email' => $student->email, //doublecheck that no one is actually going to get emailed.
                         'role' => 'awardee',
                         'user_pass' => 'This is a lousy pa$$word.',
                     );
@@ -243,6 +247,19 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                     $sql = 'UPDATE temp_emails SET user_id = '.$user_id.' WHERE id = "'.$student->id.'";';
                     if($wpdb->get_results($sql)){
                         print $user->display_name .' <br>';
+                    }
+                }
+                //attach to an application. if there is no application, create one.
+                $applicant = $this->queries->get_applicant_id($user_id);
+                if(!$applicant){
+                    $sql = 'INSERT INTO applicant SET applicant.ApplicationDateTime = "2017-04-16 21:32:33", applicant.UserId = "'.$user_id.'", applicant.Email = "'.$student->email.'", applicant.FirstName = "'.$student->FirstName.'", applicant.MiddleInitial = "", applicant.LastName = "'.$student->LastName.'", applicant.Last4SSN = "0000", applicant.DateOfBirth = "'.$student->DOB.'", applicant.Address1 = "Unknown", applicant.Address2 = "", applicant.City = "Unknown", applicant.StateId = "OH", applicant.CountyId = "24", applicant.ZipCode = "00000", applicant.CellPhone = "unknown", applicant.AlternativePhone = "", applicant.EthnicityId = "24", applicant.StudentId = "'.$student->StudentId.'";';
+                    $wpdb->query($sql);
+                    $applicant_id = $wpdb->insert_id;
+                    $sql = 'SELECT * FROM applicantcollege WHERE applicantcollege.ApplicantId = "'.$applicant_id.'";';
+                    $test = $wpdb->get_results($sql);
+                    if(count($test) == 0){
+                        $sql = 'INSERT INTO applicantcollege SET applicantcollege.ApplicantId = "'.$applicant_id.'", applicantcollege.CollegeId = "343";';
+                        $wpdb->query($sql);
                     }
                 }
             }

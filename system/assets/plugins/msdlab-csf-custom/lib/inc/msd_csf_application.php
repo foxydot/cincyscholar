@@ -629,12 +629,18 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     //ts_data($_POST);
                     if ($_POST['renewal_form']) {
                         //Do the stuff
-                        $set['where']['renewal'] = 'renewal.RenewalId = ' . $_POST['Renewal_RenewalId_input'];
+                        if(is_set($_POST['Renewal_RenewalId_input'])) {
+                            $set['where']['renewal'] = 'renewal.RenewalId = ' . $_POST['Renewal_RenewalId_input'];
+                        }
                         print $this->queries->set_data($form_id, $set['where']);
                         $renewal_user = get_user_by('ID',$_POST['Renewal_UserId_input']);
                         if($_POST['Renewal_Email_input'] != $renewal_user->user_email){
-                            error_log('update email');
+                            //error_log('update email');
                             wp_update_user(array('ID' => $_POST['Renewal_UserId_input'],'user_email' => $_POST['Renewal_Email_input']));
+                        }
+
+                        if (!current_user_can('view_renewal_process') && !current_user_can('csf')) {
+                            wp_update_user(array('ID' => $user_id, 'role' => 'renewal'));
                         }
                         if(isset($_POST['SendEmails'])){
                             $this->send_form_emails($_POST['SendEmails']);
