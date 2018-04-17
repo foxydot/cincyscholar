@@ -58,13 +58,27 @@ if (!class_exists('MSDLab_CSF_Management')) {
         }
 
         function settings_page(){
-            add_menu_page(__('CSF Management and Reports'),__('CSF Management'), 'manage_csf', 'csf-report', array(&$this,'report_page_content'),'dashicons-chart-area');
-            add_submenu_page('csf-report',__('Reports'),__('Reports'),'manage_csf','csf-report', array(&$this,'report_page_content'));
-            add_submenu_page('csf-report',__('General Settings'),__('General Settings'),'manage_csf','csf-settings', array(&$this,'setting_page_content'));
-            add_submenu_page('csf-report',__('College Settings'),__('College Settings'),'manage_csf','csf-college', array(&$this,'college_page_content'));
+            add_menu_page(__('CSF Management and Reports'),__('CSF Management'), 'manage_csf', 'csf-manage', array(&$this,'management_page_content'),'dashicons-chart-area');
+            add_submenu_page('csf-manage',__('Application Reports'),__('Application Reports'),'manage_csf','csf-report', array(&$this,'report_page_content'));
+            add_submenu_page('csf-manage',__('Renewal Reports'),__('Renewal Reports'),'manage_csf','csf-renewals', array(&$this,'renewal_report_page_content'));
+            add_submenu_page('csf-manage',__('General Settings'),__('General Settings'),'manage_csf','csf-settings', array(&$this,'setting_page_content'));
+            add_submenu_page('csf-manage',__('College Settings'),__('College Settings'),'manage_csf','csf-college', array(&$this,'college_page_content'));
             add_submenu_page(null,__('Edit College'),__('Edit College'),'manage_csf','college-edit', array(&$this,'college_edit_page_content'));
             add_submenu_page(null,__('Edit Contact'),__('Edit Contact'),'manage_csf','contact-edit', array(&$this,'contact_edit_page_content'));
+            //match below
+        }
 
+        function management_page_content(){
+            //page content here
+            print '<div class="wrap report_table">';
+            print '<h1 class="wp-heading-inline">'.get_bloginfo('name').' Admin Tools</h1>
+            <hr class="wp-header-end">';
+            print '<h3>Reporting</h3>';
+            print '<a href="admin.php?page=csf-report" class="page-title-action">Application Reports</a>';
+            print '<a href="admin.php?page=csf-renewal" class="page-title-action">Renewal Reports</a>';
+            print '<h3>Settings</h3>';
+            print '<a href="admin.php?page=csf-settings" class="page-title-action">General Settings</a>';
+            print '<a href="admin.php?page=csf-college" class="page-title-action">College and Contact Settings</a>';
         }
 
         function setting_page_content(){
@@ -173,7 +187,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
 
                     if(count($submitted)>0){
                         $pane['submitted'] = '<div role="tabpanel" class="tab-pane active" id="submitted">
-                            ' . implode("\n\r",$this->display->print_table('submitted',$fields,$submitted,$info,$class,false)) .'
+                            ' . implode("\n\r",$this->display->print_table('application_submitted',$fields,$submitted,$info,$class,false)) .'
                         </div>';
                     } else {
                         $pane['submitted'] = '<div role="tabpanel" class="tab-pane active" id="submitted">
@@ -182,7 +196,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
                     }
                     if(count($incomplete)>0){
                         $pane['incomplete'] = '<div role="tabpanel" class="tab-pane" id="incomplete">
-                            ' . implode("\n\r",$this->display->print_table('submitted',$fields,$incomplete,$info,$class,false)) .'
+                            ' . implode("\n\r",$this->display->print_table('application_incomplete',$fields,$incomplete,$info,$class,false)) .'
                         </div>';
                     } else {
                         $pane['incomplete'] = '<div role="tabpanel" class="tab-pane" id="incomplete">
@@ -201,7 +215,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
             $(".search-button input").val("SEARCH");
         });';
             }
-            $this->search->print_form();
+            $this->search->print_form('application');
 
             print $tabs;
             print '
@@ -214,6 +228,113 @@ if (!class_exists('MSDLab_CSF_Management')) {
             print '</div>';
         }
 
+        function renewal_report_page_content(){
+            $fields = array(
+                'RenewalId',
+                'ApplicantId',
+                'FirstName',
+                'MiddleInitial',
+                'LastName',
+                'Address1',
+                'Address2',
+                'City',
+                'StateId',
+                'ZipCode',
+                'CountyId',
+                'CellPhone',
+                'AlternativePhone',
+                'Email',
+                'Last4SSN',
+                'DateOfBirth',
+                'CurrentCumulativeGPA',
+                'CoopStudyAbroadNote',
+                'RenewalDateTime',
+                'AnticipatedGraduationDate',
+                'YearsWithCSF',
+                'CollegeId',
+                'MajorId',
+                'TermsAcknowledged',
+                'RenewalLocked',
+                'Notes'
+            );
+            $tabs = '';
+            $pane = array();
+            if($_POST) {
+                //ts_data($_POST);
+                $result = $this->queries->get_renewal_report_set($fields);
+                $submitted = $incomplete = array();
+                foreach ($result AS $k => $renewal) {
+                    if(!empty($_POST['employer_search_input'])){
+                        if(stripos($renewal->Employer,$_POST['employer_search_input'])===false &&
+                            stripos($renewal->GuardianEmployer1,$_POST['employer_search_input'])===false &&
+                            stripos($renewal->GuardianEmployer2,$_POST['employer_search_input'])===false){
+                            continue;
+                        }
+                    }
+
+                    if(isset($_POST['cps_employee_search_input'])){
+                        if($renewal->CPSPublicSchools != 1){
+                            continue;
+                        }
+                    }
+
+                    if ($renewal->status == 2) {
+                        $submitted[] = $renewal;
+                    } else {
+                        $incomplete[] = $renewal;
+                    }
+                }
+                $info = '';
+                $class = array('table','table-bordered');
+                if($result){
+                    $tabs = '
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#submitted" aria-controls="submitted" role="tab" data-toggle="tab">Submitted</a></li>
+    <li role="presentation"><a href="#incomplete" aria-controls="incomplete" role="tab" data-toggle="tab">incomplete</a></li>
+  </ul>';
+
+                    if(count($submitted)>0){
+                        $pane['submitted'] = '<div role="tabpanel" class="tab-pane active" id="submitted">
+                            ' . implode("\n\r",$this->display->print_table('renewal_submitted',$fields,$submitted,$info,$class,false)) .'
+                        </div>';
+                    } else {
+                        $pane['submitted'] = '<div role="tabpanel" class="tab-pane active" id="submitted">
+                            <div class="notice bg-info text-info">No results</div>
+                        </div>';
+                    }
+                    if(count($incomplete)>0){
+                        $pane['incomplete'] = '<div role="tabpanel" class="tab-pane" id="incomplete">
+                            ' . implode("\n\r",$this->display->print_table('renewal_incomplete',$fields,$incomplete,$info,$class,false)) .'
+                        </div>';
+                    } else {
+                        $pane['incomplete'] = '<div role="tabpanel" class="tab-pane" id="incomplete">
+                            <div class="notice bg-info text-info">No results</div>
+                        </div>';
+                    }
+                } else {
+                    $tabs = '<div class="notice bg-info text-info">No results</div>';
+                }
+            }
+            print '<h2>Scholarship Renewal Reports</h2>';
+            if(!$_POST) {
+                $this->search->javascript['search-btn'] = '
+        $(".search-button input").val("Load All Renewals");
+        $(".query-filter input, .query-filter select").change(function(){
+            $(".search-button input").val("SEARCH");
+        });';
+            }
+            $this->search->print_form('renewal');
+
+            print $tabs;
+            print '
+
+  <!-- Tab panes -->
+  <div class="tab-content">';
+            print $pane['submitted'];
+            print $pane['incomplete'];
+
+            print '</div>';
+        }
         function college_page_content(){
             //page content here
             print '<div class="wrap report_table">';
