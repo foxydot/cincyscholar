@@ -41,14 +41,6 @@ class Parsedown
     # Multiton (http://en.wikipedia.org/wiki/Multiton_pattern)
     #
 
-    private static $instances = array();
-    private $reference_map = array();
-
-    #
-    # Fields
-    #
-    private $escape_sequence_map = array();
-
     static function instance($name = 'default')
     {
         if (isset(self::$instances[$name]))
@@ -60,6 +52,15 @@ class Parsedown
 
         return $instance;
     }
+
+    private static $instances = array();
+
+    #
+    # Fields
+    #
+
+    private $reference_map = array();
+    private $escape_sequence_map = array();
 
     #
     # Public Methods

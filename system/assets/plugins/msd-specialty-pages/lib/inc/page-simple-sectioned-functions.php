@@ -5,24 +5,25 @@ class MSDSimpleSectionedPage{
          */
         private static $instance;
 
+
         /**
-         * Initializes the plugin by setting filters and administration functions.
-         */
-        private function __construct() {
-            add_action('admin_footer',array(&$this,'info_footer_hook') );
-        }
-        
-        /**
-         * Returns an instance of this class.
+         * Returns an instance of this class. 
          */
         public static function get_instance() {
 
                 if( null == self::$instance ) {
                         self::$instance = new MSDSimpleSectionedPage();
-                }
+                } 
 
                 return self::$instance;
 
+        } 
+        
+        /**
+         * Initializes the plugin by setting filters and administration functions.
+         */
+        private function __construct() {
+            add_action('admin_footer',array(&$this,'info_footer_hook') );            
         }
     
     function sectioned_page_output(){

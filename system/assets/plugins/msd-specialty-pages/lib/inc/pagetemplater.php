@@ -2,17 +2,33 @@
 class PageTemplater {
 
         /**
-         * A reference to an instance of this class.
-         */
-        private static $instance;
-        /**
          * A Unique Identifier
          */
          protected $plugin_slug;
+
+        /**
+         * A reference to an instance of this class.
+         */
+        private static $instance;
+
         /**
          * The array of templates that this plugin tracks.
          */
         protected $templates;
+
+
+        /**
+         * Returns an instance of this class. 
+         */
+        public static function get_instance() {
+
+                if( null == self::$instance ) {
+                        self::$instance = new PageTemplater();
+                } 
+
+                return self::$instance;
+
+        } 
 
         /**
          * Initializes the plugin by setting filters and administration functions.
@@ -35,14 +51,14 @@ class PageTemplater {
                 }
                 // Add a filter to the save post to inject out template into the page cache
                 add_filter(
-                    'wp_insert_post_data',
-                    array( $this, 'register_project_templates' )
+                    'wp_insert_post_data', 
+                    array( $this, 'register_project_templates' ) 
                 );
-                // Add a filter to the template include to determine if the page has our
+                // Add a filter to the template include to determine if the page has our 
                 // template assigned and return it's path
                 add_filter(
-                    'template_include',
-                    array( $this, 'view_project_template')
+                    'template_include', 
+                    array( $this, 'view_project_template') 
                 );
 
 
@@ -51,21 +67,8 @@ class PageTemplater {
                         'page-sectioned.php'     => 'Sectioned Page',
                         'page-simple-sectioned.php'     => 'Simple Sectioned Page',
                 );
-
-        }
-
-        /**
-         * Returns an instance of this class.
-         */
-        public static function get_instance() {
-
-                if( null == self::$instance ) {
-                        self::$instance = new PageTemplater();
-                }
-
-                return self::$instance;
-
-        }
+                
+        } 
 
     /**
          * Adds our template to the page dropdown for v4.7+

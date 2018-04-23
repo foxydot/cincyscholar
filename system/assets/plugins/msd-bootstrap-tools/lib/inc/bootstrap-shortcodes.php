@@ -5,6 +5,20 @@ class MSDBootstrapShortcodes{
          */
         private static $instance;
 
+
+        /**
+         * Returns an instance of this class. 
+         */
+        public static function get_instance() {
+
+                if( null == self::$instance ) {
+                        self::$instance = new MSDBootstrapShortcodes();
+                } 
+
+                return self::$instance;
+
+        } 
+        
     /**
      * Initializes the plugin by setting filters and administration functions.
      */
@@ -23,19 +37,6 @@ class MSDBootstrapShortcodes{
         add_shortcode('cols-12',array(&$this,'make_columns_shortcode'));
         add_filter('the_content',array(&$this,'wrap_up_columns'), 1);
     }
-        
-        /**
-         * Returns an instance of this class.
-         */
-        public static function get_instance() {
-
-                if( null == self::$instance ) {
-                        self::$instance = new MSDBootstrapShortcodes();
-                }
-
-                return self::$instance;
-
-        }
     
     function make_columns_shortcode($atts, $content = null, $shortcode_name){
         $atts = shortcode_atts( array(
