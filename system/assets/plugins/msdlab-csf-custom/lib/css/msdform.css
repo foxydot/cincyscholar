@@ -95,12 +95,12 @@ form#csf_report_search_form, form#csf_college {
   form#csf_report_search_form hr.break, form#csf_college hr.break {
     clear: both; }
 
-.toplevel_page_csf-report td > div {
-  height: 4em;
-  overflow: scroll; }
+.toplevel_page_csf-report td > div, .csf-management_page_csf-report td > div, .csf-management_page_csf-renewals td > div {
+  height: 6em; }
 
-.toplevel_page_csf-report td.HardshipNote > div, .toplevel_page_csf-report td.Activities > div {
-  width: 24em; }
+.toplevel_page_csf-report td.HardshipNote > div, .toplevel_page_csf-report td.Activities > div, .csf-management_page_csf-report td.HardshipNote > div, .csf-management_page_csf-report td.Activities > div, .csf-management_page_csf-renewals td.HardshipNote > div, .csf-management_page_csf-renewals td.Activities > div {
+  width: 50em;
+  overflow-y: scroll; }
 
 .upload-wrapper {
   margin-bottom: 1em; }

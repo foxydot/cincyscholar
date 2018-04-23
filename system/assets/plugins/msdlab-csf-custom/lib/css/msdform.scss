@@ -119,13 +119,13 @@ input, select, textarea {
     }
   }
 
-.toplevel_page_csf-report{
+.toplevel_page_csf-report, .csf-management_page_csf-report, .csf-management_page_csf-renewals{
   td>div{
-    height: 4em;
-    overflow: scroll;
+    height: 6em;
   }
   td.HardshipNote>div,td.Activities>div{
-    width: 24em;
+    width: 50em;
+    overflow-y: scroll;
   }
 }
 
