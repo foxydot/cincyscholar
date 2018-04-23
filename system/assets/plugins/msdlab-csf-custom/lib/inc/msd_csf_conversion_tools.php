@@ -12,6 +12,7 @@
 if(!class_exists('MSDLab_CSF_Conversion_Tools')){
     class MSDLab_CSF_Conversion_Tools{
         //properties
+        private $queries;
         //constructor
         function __construct(){
             add_action('admin_menu', array(&$this,'settings_page'));
@@ -21,6 +22,15 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_move_applicant_majors', array(&$this,'move_applicant_majors') );
             add_action( 'wp_ajax_reduce_majors', array(&$this,'reduce_majors') );
             add_action( 'wp_ajax_fix_emails', array(&$this,'fix_emails') );
+            add_action( 'wp_ajax_update_renewal_table', array(&$this,'update_renewal_table') );
+            add_action( 'wp_ajax_update_applicant_table', array(&$this,'update_applicant_table') );
+            add_action( 'wp_ajax_parse_emails', array(&$this,'parse_emails') );
+
+
+            add_filter('send_password_change_email',array(&$this,'return_false'));
+            add_filter('send_email_change_email',array(&$this,'return_false'));
+
+            $this->queries = new MSDLAB_Queries();
         }
         //methods
         function create_student_users(){
@@ -152,6 +162,118 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             }
         }
 
+        function update_renewal_table(){
+            global $wpdb;
+            $sql = "ALTER TABLE renewal ADD `UserId` bigint(20) unsigned NOT NULL,
+  ADD `FirstName` varchar(50) NOT NULL,
+  ADD `MiddleInitial` varchar(1) NOT NULL,
+  ADD `LastName` varchar(50) NOT NULL,
+  ADD `Address1` varchar(254) NOT NULL,
+  ADD `Address2` varchar(254) NOT NULL,
+  ADD `City` varchar(50) NOT NULL,
+  ADD `StateId` char(2) DEFAULT NULL,
+  ADD `ZipCode` varchar(10) NOT NULL,
+  ADD `CountyId` int(11) DEFAULT NULL,
+  ADD `CellPhone` varchar(25) NOT NULL,
+  ADD `AlternativePhone` varchar(25) NOT NULL,
+  ADD `Email` varchar(50) NOT NULL,
+  ADD `Last4SSN` varchar(4) NOT NULL,
+  ADD `StudentId` varchar(50) NOT NULL,
+  ADD `DateOfBirth` date NOT NULL,
+  ADD `CollegeId` int(11) NOT NULL,
+  ADD `MajorId` int(11) DEFAULT NULL,
+  ADD `TermsAcknowledged` tinyint(1) unsigned zerofill NOT NULL,
+  ADD `RenewalLocked` tinyint(1) unsigned zerofill NOT NULL,
+  ADD `Notes` text,
+  DROP PermanentAddress;";
+            if($wpdb->get_results($sql)) {
+                print "updated!";
+            }
+        }
+
+        function update_applicant_table(){
+            global $wpdb;
+            $sql = "ALTER TABLE applicant
+  ADD `StudentId` varchar(50) NOT NULL,
+  ADD `ResumeOK` tinyint(1) unsigned zerofill NOT NULL,
+  ADD `TranscriptOK` tinyint(1) unsigned zerofill NOT NULL,
+  ADD `FinancialAidOK` tinyint(1) unsigned zerofill NOT NULL,
+  ADD `FAFSAOK` tinyint(1) unsigned zerofill NOT NULL,
+  ADD `ApplicationlLocked` tinyint(1) unsigned zerofill NOT NULL;";
+            if($wpdb->get_results($sql)) {
+                print "updated!";
+            }
+        }
+
+        function return_false(){
+            return false;
+        }
+
+        function parse_emails(){
+            global $wpdb;
+            $sql = "SELECT * FROM temp_emails";
+            $students = $wpdb->get_results($sql);
+            add_filter('send_password_change_email',array(&$this,'return_false'));
+            add_filter('send_email_change_email',array(&$this,'return_false'));
+            //return ts_data($students,0);
+            foreach($students AS $student){
+                $user = get_user_by('email',$student->email);
+                if(!$user) {
+                    $sql = 'SELECT UserId FROM applicant WHERE LastName = "'.$student->LastName.'" AND DateOfBirth = "'.$student->DOB.'";';
+                    if($res = $wpdb->get_results($sql)){
+                        $user = get_user_by('ID',$res[0]->UserId);
+                    }
+                    if(!$user){
+                        $user = get_user_by('login',sanitize_title_with_dashes(strtolower($student->FirstName . '_' . $student->LastName)));
+                    }
+                }
+                if($user){
+                    $user_id = $user->ID;
+                    $sql = 'UPDATE temp_emails SET user_id = '.$user->ID.', permissions = "'.implode(',',$user->roles).'" WHERE id = "'.$student->id.'";';
+                    if($wpdb->get_results($sql)){
+                        print $user->display_name .' <br>';
+                    }
+                    if($student->email != $user->user_email){
+                        wp_update_user(array('ID' => $user->ID,'user_email' => $student->email, 'role' => 'awardee'));
+                    } else {
+                        wp_update_user(array('ID' => $user->ID, 'role' => 'awardee'));
+
+                    }
+                } else { //there is still not a user! Create One.
+                    $args = array(
+                        'first_name' => $student->FirstName,
+                        'last_name' => $student->LastName,
+                        'user_login' => sanitize_title_with_dashes(strtolower($student->FirstName . '_' . $student->LastName)),
+                        'user_email' => $student->email, //doublecheck that no one is actually going to get emailed.
+                        'role' => 'awardee',
+                        'user_pass' => 'This is a lousy pa$$word.',
+                    );
+                    $user_id = wp_insert_user($args);
+                    if(is_wp_error($user_id)){
+                        ts_data($user_id);
+                        continue;
+                    }
+                    $sql = 'UPDATE temp_emails SET user_id = '.$user_id.' WHERE id = "'.$student->id.'";';
+                    if($wpdb->get_results($sql)){
+                        print $user->display_name .' <br>';
+                    }
+                }
+                //attach to an application. if there is no application, create one.
+                $applicant = $this->queries->get_applicant_id($user_id);
+                if(!$applicant){
+                    $sql = 'INSERT INTO applicant SET applicant.ApplicationDateTime = "2017-04-16 21:32:33", applicant.UserId = "'.$user_id.'", applicant.Email = "'.$student->email.'", applicant.FirstName = "'.$student->FirstName.'", applicant.MiddleInitial = "", applicant.LastName = "'.$student->LastName.'", applicant.Last4SSN = "0000", applicant.DateOfBirth = "'.$student->DOB.'", applicant.Address1 = "Unknown", applicant.Address2 = "", applicant.City = "Unknown", applicant.StateId = "OH", applicant.CountyId = "24", applicant.ZipCode = "00000", applicant.CellPhone = "unknown", applicant.AlternativePhone = "", applicant.EthnicityId = "24", applicant.StudentId = "'.$student->StudentId.'";';
+                    $wpdb->query($sql);
+                    $applicant_id = $wpdb->insert_id;
+                    $sql = 'SELECT * FROM applicantcollege WHERE applicantcollege.ApplicantId = "'.$applicant_id.'";';
+                    $test = $wpdb->get_results($sql);
+                    if(count($test) == 0){
+                        $sql = 'INSERT INTO applicantcollege SET applicantcollege.ApplicantId = "'.$applicant_id.'", applicantcollege.CollegeId = "343";';
+                        $wpdb->query($sql);
+                    }
+                }
+            }
+        }
+
         //utility
         function settings_page()
         {
@@ -244,6 +366,33 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                             console.log(response);
                         });
                     });
+                    $('.update_renewal_table').click(function(){
+                        var data = {
+                            action: 'update_renewal_table',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
+                    $('.update_applicant_table').click(function(){
+                        var data = {
+                            action: 'update_applicant_table',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
+                    $('.parse_emails').click(function(){
+                        var data = {
+                            action: 'parse_emails',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
             </script>
             <div class="wrap">
@@ -261,6 +410,12 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                     <dd><button class="reduce_majors">Go</button></dd>
                     <dt>Fix Emails:</dt>
                     <dd><button class="fix_emails">Go</button></dd>
+                    <dt>Update Renewal Table:</dt>
+                    <dd><button class="update_renewal_table">Go</button></dd>
+                    <dt>Update Applicant Table:</dt>
+                    <dd><button class="update_applicant_table">Go</button></dd>
+                    <dt>Parse Emails:</dt>
+                    <dd><button class="parse_emails">Go</button></dd>
 
                 </dl>
                 <div class="response1"></div>

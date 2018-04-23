@@ -61,12 +61,18 @@ class MSDLAB_Queries{
          return '<div class="message success">Data Updated</div>';
      }
 
+
+    /*
+     * Setting Queries
+     */
+
      public function get_all_colleges($options = array()){
          $data['tables']['college'] = array('*');
          $data['order'] = 'name ASC';
          $results = $this->get_result_set($data);
          return $results;
      }
+
 
      public function get_college($college_id){
          $data['tables']['college'] = array('*');
@@ -443,7 +449,74 @@ class MSDLAB_Queries{
         }
         return $results;
     }
+    function get_renewal_report_set($fields){
+        global $wpdb;
+        //setup initial args
+        $user_args = array();
+        //get full set
+        if(empty($this->post_vars)){
+            return $this->get_all_renewals();
+        }
+        //ts_data($this->post_vars);
+        $usertable = $wpdb->prefix . 'users';
+        $data['tables']['renewal'] = array('*');
 
+        if(empty($this->post_vars['application_date_search_input_start']) && empty($this->post_vars['application_date_search_input_end'])) {
+            $data['where'] = 'renewal.RenewalDateTime > '.date('Ymdhis',strtotime(get_option('csf_settings_start_date'))); //replace with dates from settings
+        } else {
+            if(!empty($this->post_vars['application_date_search_input_start'])){
+                $where[] = 'renewal.RenewalDateTime > '.date('Ymdhis',strtotime($this->post_vars['application_date_search_input_start']));
+            } else {
+                $where[] = 'renewal.RenewalDateTime > '.date('Ymdhis',strtotime(get_option('csf_settings_start_date'))); //replace with dates from settings
+            }
+            if(!empty($this->post_vars['application_date_search_input_start'])){
+                $where[] = 'renewal.RenewalDateTime < '.date('Ymdhis',strtotime($this->post_vars['application_date_search_input_end']));
+            }
+            $data['where'] = implode(' AND ',$where);
+        }
+
+        if(!empty($this->post_vars['name_search_input'])) {
+            //add search for name on application
+            $search_terms = explode(' ',$this->post_vars['name_search_input']);
+            if(count($search_terms>1)){
+                $fullnamesearch = ' OR (renewal.FirstName LIKE \'%'. $search_terms[0] .'%\' AND renewal.LastName LIKE \'%'. $search_terms[1] .'%\')';
+            }
+            $data['where'] .= ' AND (renewal.FirstName LIKE \'%'. $this->post_vars['name_search_input'] .'%\' OR renewal.LastName LIKE \'%'. $this->post_vars['name_search_input'] .'%\''.$fullnamesearch.') ';
+        }
+        if(!empty($this->post_vars['city_search_input'])){
+            $data['where'] .= ' AND renewal.City LIKE \'%'.$this->post_vars['city_search_input'].'%\'';
+        }
+        if(!empty($this->post_vars['state_search_input'])){
+            $data['where'] .= ' AND renewal.StateId = \''.$this->post_vars['state_search_input'].'\'';
+        }
+        if(!empty($this->post_vars['county_search_input'])){
+            $data['where'] .= ' AND renewal.CountyId = '.$this->post_vars['county_search_input'];
+        }
+        if(!empty($this->post_vars['zip_search_input'])){
+            $data['where'] .= ' AND renewal.ZipCode IN ('.$this->post_vars['zip_search_input'].')';
+        }
+
+        if($this->post_vars['gpa_range_search_input_start']!=0 || $this->post_vars['gpa_range_search_input_end']!=5){
+            $data['where'] .= ' AND (renewal.CurrentCumulativeGPA >= '.$this->post_vars['gpa_range_search_input_start'].' AND renewal.CurrentCumulativeGPA <= '.$this->post_vars['gpa_range_search_input_end'].')';
+        }
+        if(!empty($this->post_vars['major_search_input'])){
+            $data['where'] .= ' AND renewal.MajorId = '.$this->post_vars['major_search_input'];
+        }
+        if(!empty($this->post_vars['college_search_input'])){
+            $data['where'] .= ' AND renewal.CollegeId = '.$this->post_vars['college_search_input'];
+        }
+
+
+        $data['tables'][$usertable] = array('user_email');
+        $data['where'] .= ' AND ' . $usertable . '.ID  = renewal.UserId';
+        if(!empty($this->post_vars['email_search_input'])) {
+            //add search for an email on application
+            $data['where'] .= ' AND ' . $usertable . '.user_email  LIKE \'%'.$this->post_vars['email_search_input'].'%\'';
+        }
+        //ts_data($data);
+        $results = $this->get_result_set($data);
+        return $results;
+    }
 
     /*
     *  Resource Queries

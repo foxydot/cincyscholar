@@ -1,13 +1,21 @@
 <?php
 class MSDLAB_FormControls{
 
-    public $javascript;
-
     /**
      * A reference to an instance of this class.
      */
     private static $instance;
+    public $javascript;
 
+    public function __construct() {
+
+        add_action( 'wp_ajax_remove_pdf', array(&$this,'delete_file') );
+        add_action( 'wp_ajax_nopriv_remove_pdf', array(&$this,'delete_file') );
+
+        if(class_exists('MSDLAB_Queries')){
+            $this->queries = new MSDLAB_Queries();
+        }
+    }
 
     /**
      * Returns an instance of this class.
@@ -21,17 +29,6 @@ class MSDLAB_FormControls{
         return self::$instance;
 
     }
-
-    public function __construct() {
-
-        add_action( 'wp_ajax_remove_pdf', array(&$this,'delete_file') );
-        add_action( 'wp_ajax_nopriv_remove_pdf', array(&$this,'delete_file') );
-
-        if(class_exists('MSDLAB_Queries')){
-            $this->queries = new MSDLAB_Queries();
-        }
-    }
-
 
     public function form_header($id = "csf_form", $class = array()){
         $class = implode(" ",apply_filters('msdlab_'.$id.'_header_class', $class));
@@ -108,6 +105,15 @@ class MSDLAB_FormControls{
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$bkp_field.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
+    }
+
+    public function build_validation($validation_array){
+        if(is_null($validation_array)){return;}
+        foreach($validation_array AS $k => $v){
+            $validation_str[] = $k . ' = "' . $v .'"';
+        }
+        if($validation_str)
+        return implode(' ',$validation_str);
     }
 
     public function field_date($id, $value = null, $title = "Date", $validation = null, $class = array('datepicker')){
@@ -197,7 +203,6 @@ class MSDLAB_FormControls{
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
 
-
     public function field_checkbox_array($id, $value = null, $title = "", $options = array(), $validation = null, $class = array('checkbox')){
         if(is_null($value)){
             $value = $_POST[$id.'_input'];
@@ -213,6 +218,50 @@ class MSDLAB_FormControls{
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
+    }
+
+    public function field_checkbox($id, $value = 0, $title = "", $validation = null, $class = array('checkbox','col-md-12')){
+        if(is_null($value)){
+            $value = $_POST[$id.'_input'];
+        }
+        $form_field = apply_filters('msdlab_csf_'.$id.'_field','<input id="'.$id.'_input" name="'.$id.'_input"  value="1" type="checkbox" '.checked(1,$_POST[$id.'_input'],0).' />');
+        $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$form_field.$title.'</label>');
+        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
+        $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.'</div>';
+        return apply_filters('msdlab_csf_'.$id.'', $ret);
+    }
+
+    public function field_button($id,$title = "Save", $class = array('submit'), $type = "submit", $validate = true){
+        if($validate == false){$atts = ' formnovalidate=formnovalidate ';}
+        $form_field = apply_filters('msdlab_csf_'.$id.'_button','<input id="'.$id.'_button" type="'.$type.'" value="'.$title.'"'.$atts.'/>');
+        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
+        $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$form_field.'</div>';
+        return apply_filters('msdlab_csf_'.$id.'', $ret);
+    }
+
+    public function field_result($id, $value, $title = "", $class = array('medium')){
+        if(is_null($value)){
+            $value = $_POST[$id.'_input'];
+        }
+        if($placeholder == null){$placeholder = $title;}
+        $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_result">'.$title.'</label>');
+        $form_field = apply_filters('msdlab_csf_'.$id.'_field','<span class="result">'.$value.'</span>');
+        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
+        $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
+        return apply_filters('msdlab_csf_'.$id.'', $ret);
+    }
+
+    public function file_management_front_end($id_prepend,$documents,$class){
+        $ret[$id_prepend.'Resume'] = $this->field_upload($id_prepend.'Resume',$this->get_files_of_type('Resume',$documents),'Resume',null,null,$class);
+        $ret[$id_prepend.'Transcript'] = $this->field_upload($id_prepend.'Transcript',$this->get_files_of_type('Transcript',$documents),'Transcript',null,null,$class);
+        $ret[$id_prepend.'FAFSA'] = $this->field_upload($id_prepend.'FAFSA',$this->get_files_of_type('FAFSA',$documents),'Student Aid Report',null,null,$class);
+        $ret[$id_prepend.'FinancialAidAward'] = $this->field_upload($id_prepend.'FinancialAidAward',$this->get_files_of_type('FinancialAidAward',$documents),'Financial Aid Award Letter From College',null,null,$class);
+        $ret[$id_prepend.'Additional_1'] = $this->field_upload($id_prepend.'Additional_1',$this->get_files_of_type('Additional_1',$documents),'Additional Document Requested by CSF',null,null,$class);
+        $ret[$id_prepend.'Additional_2'] = $this->field_upload($id_prepend.'Additional_2',$this->get_files_of_type('Additional_2',$documents),'Additional Document Requested by CSF',null,null,$class);
+        $ret[$id_prepend.'Additional_3'] = $this->field_upload($id_prepend.'Additional_3',$this->get_files_of_type('Additional_3',$documents),'Additional Document Requested by CSF',null,null,$class);
+        $ret[$id_prepend.'Additional_4'] = $this->field_upload($id_prepend.'Additional_4',$this->get_files_of_type('Additional_4',$documents),'Additional Document Requested by CSF',null,null,$class);
+
+        return implode("\n",apply_filters('msdlab_csf_file_management_front_end',$ret));
     }
 
     public function field_upload($id, $value, $title = "", $placeholder = null, $validation = null, $class = array('medium')){
@@ -253,48 +302,6 @@ class MSDLAB_FormControls{
             }
         }
         return $ret;
-    }
-
-    public function field_button($id,$title = "Save", $class = array('submit'), $type = "submit", $validate = true){
-        if($validate == false){$atts = ' formnovalidate=formnovalidate ';}
-        $form_field = apply_filters('msdlab_csf_'.$id.'_button','<input id="'.$id.'_button" type="'.$type.'" value="'.$title.'"'.$atts.'/>');
-        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
-        $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$form_field.'</div>';
-        return apply_filters('msdlab_csf_'.$id.'', $ret);
-    }
-
-    public function build_validation($validation_array){
-        if(is_null($validation_array)){return;}
-        foreach($validation_array AS $k => $v){
-            $validation_str[] = $k . ' = "' . $v .'"';
-        }
-        return implode(' ',$validation_str);
-    }
-
-
-    public function field_result($id, $value, $title = "", $class = array('medium')){
-        if(is_null($value)){
-            $value = $_POST[$id.'_input'];
-        }
-        if($placeholder == null){$placeholder = $title;}
-        $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_result">'.$title.'</label>');
-        $form_field = apply_filters('msdlab_csf_'.$id.'_field','<span class="result">'.$value.'</span>');
-        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
-        $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
-        return apply_filters('msdlab_csf_'.$id.'', $ret);
-    }
-
-    public function file_management_front_end($id_prepend,$documents,$class){
-        $ret[$id_prepend.'Resume'] = $this->field_upload($id_prepend.'Resume',$this->get_files_of_type('Resume',$documents),'Resume',null,null,$class);
-        $ret[$id_prepend.'Transcript'] = $this->field_upload($id_prepend.'Transcript',$this->get_files_of_type('Transcript',$documents),'Transcript',null,null,$class);
-        $ret[$id_prepend.'FAFSA'] = $this->field_upload($id_prepend.'FAFSA',$this->get_files_of_type('FAFSA',$documents),'Student Aid Report',null,null,$class);
-        $ret[$id_prepend.'FinancialAidAward'] = $this->field_upload($id_prepend.'FinancialAidAward',$this->get_files_of_type('FinancialAidAward',$documents),'Financial Aid Award Letter From College',null,null,$class);
-        $ret[$id_prepend.'Additional_1'] = $this->field_upload($id_prepend.'Additional_1',$this->get_files_of_type('Additional_1',$documents),'Additional Document Requested by CSF',null,null,$class);
-        $ret[$id_prepend.'Additional_2'] = $this->field_upload($id_prepend.'Additional_2',$this->get_files_of_type('Additional_2',$documents),'Additional Document Requested by CSF',null,null,$class);
-        $ret[$id_prepend.'Additional_3'] = $this->field_upload($id_prepend.'Additional_3',$this->get_files_of_type('Additional_3',$documents),'Additional Document Requested by CSF',null,null,$class);
-        $ret[$id_prepend.'Additional_4'] = $this->field_upload($id_prepend.'Additional_4',$this->get_files_of_type('Additional_4',$documents),'Additional Document Requested by CSF',null,null,$class);
-
-        return implode("\n",apply_filters('msdlab_csf_file_management_front_end',$ret));
     }
 
     public function delete_file(){
@@ -343,12 +350,12 @@ class MSDLAB_FormControls{
         $ret['uploader'] = "$('.box__file').change(function(e){
             var myfn = $(this).attr('value').replace(/^.*[\\\/]/, '')
             var str_sub = myfn.substr(myfn.lastIndexOf(\".\")+1);
-            if(str_sub == 'pdf'){
+            if(str_sub == 'pdf' || str_sub == 'jpg' || str_sub == 'jpeg' || str_sub == 'doc' || str_sub == 'docx'){
                 var my_upload_wrapper = $(this).parents('.upload-wrapper');
                 my_upload_wrapper.find('.document').removeClass('hidden').find('.filename').html(myfn);
                 my_upload_wrapper.find('.box').addClass('hidden');
             } else {
-                alert('Please upload all documents in PDF format.');
+                alert('Please upload all documents in PDF, DOC, or JPG format.');
                 $(this).attr('value','');
             }
         });";

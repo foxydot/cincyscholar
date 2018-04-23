@@ -1,0 +1,10 @@
+0.0.1: initial design. Sectioned page with: Title (text), Subtitle (edit), Content(edit), Feature image (file). floating nav, etc. Designed for Adex.
+0.0.2: Improvements to initial design
+0.0.3: Change design of sectioned page to include layout option (unused,select), background-image (file) background-parallax (bool), background-color (colorpicker), Title (text), Subtitle (text), Content(edit), Feature image (file), feature image float (radio)
+0.0.4: Move Simple sections back into plugin as an option.
+0.0.5: Change plugin name to allow for exclusion in sitewide .gitignore. Add updater classes and move to MSDLAB github account
+0.0.6: Bug fix to repair bad paths created by name change
+0.0.7: Just issues with updates
+0.0.8: Just issues with updates
+0.0.9: Allow for overrides of templates in themes
+0.2.1: Implement temporary fix for issue created by default values in column widths
