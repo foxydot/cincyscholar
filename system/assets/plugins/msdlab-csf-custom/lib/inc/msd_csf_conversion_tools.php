@@ -26,6 +26,10 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_update_applicant_table', array(&$this,'update_applicant_table') );
             add_action( 'wp_ajax_parse_emails', array(&$this,'parse_emails') );
 
+
+            add_filter('send_password_change_email',array(&$this,'return_false'));
+            add_filter('send_email_change_email',array(&$this,'return_false'));
+
             $this->queries = new MSDLAB_Queries();
         }
         //methods
@@ -201,11 +205,16 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             }
         }
 
+        function return_false(){
+            return false;
+        }
 
         function parse_emails(){
             global $wpdb;
             $sql = "SELECT * FROM temp_emails";
             $students = $wpdb->get_results($sql);
+            add_filter('send_password_change_email',array(&$this,'return_false'));
+            add_filter('send_email_change_email',array(&$this,'return_false'));
             //return ts_data($students,0);
             foreach($students AS $student){
                 $user = get_user_by('email',$student->email);
