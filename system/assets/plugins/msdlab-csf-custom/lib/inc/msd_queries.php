@@ -140,7 +140,7 @@ class MSDLAB_Queries{
              ),$notifications
          );
          $nonce = $_POST['_wpnonce'];
-         //error_log('form_id:'.$form_id);
+         error_log('form_id:'.$form_id);
          if(wp_verify_nonce( $nonce, $form_id ) === false) {
              return $notifications['nononce'];
          }

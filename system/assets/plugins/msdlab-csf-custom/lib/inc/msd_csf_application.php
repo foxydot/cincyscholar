@@ -725,7 +725,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                 default:
                     break;
             }
-            //error_log('form_nonce:'.$form_nonce);
+            error_log('form_nonce:'.$form_nonce);
             $ret['nonce'] = wp_nonce_field( $form_nonce );
             $ret['form_close'] = $this->form->form_close();
             return $ret;
