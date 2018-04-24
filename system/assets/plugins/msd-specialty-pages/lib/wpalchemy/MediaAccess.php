@@ -86,6 +86,18 @@
 	}
 
 	/**
+	 * Used to generate short unique/random names
+	 *
+	 * @since	0.1
+	 * @access	public
+	 * @return	string
+	 */
+	private function getName()
+	{
+		return substr(md5(microtime() . rand()), rand(0,25), 6);
+	}
+
+	/**
 	 * Used to set the insert button label in the media upload box, this can be
 	 * set once or per field and button pair.
 	 *
@@ -170,6 +182,47 @@
 	}
 
 	/**
+	 * Used to get the link used for the button element. If creating custom
+	 * buttons, this method should be used to get the link needed for proper
+	 * functionality.
+	 *
+	 * @since	0.1
+	 * @access	public
+	 * @param	string $tab name that the media upload box will initially load
+	 * @return	string link
+	 * @see		getButtonClass(), getButton()
+	 */
+	public function getButtonLink($tab = null)
+	{
+		// this is set even for new posts/pages
+		global $post_ID; //wp
+
+		$tab = ! empty($tab) ? $tab : $this->tab ;
+
+		$tab = ! empty($tab) ? $tab : 'library' ;
+
+		return 'media-upload.php?post_id=' . $post_ID . '&tab=' . $tab . '&TB_iframe=1';
+	}
+
+	/**
+	 * Used to get the CSS class name(s) used for the button element. If
+	 * creating custom buttons, this method should be used to get the css class
+	 * names needed for proper functionality.
+	 *
+	 * @since	0.1
+	 * @access	public
+	 * @param	string $groupname name used when pairing a text field and button
+	 * @return	string css class(es)
+	 * @see		getButtonLink(), getButton()
+	 */
+	public function getButtonClass($groupname = null)
+	{
+		$groupname = isset($groupname) ? $groupname : $this->groupname ;
+
+		return $this->button_class_name . '-' . $groupname . ' thickbox';
+	}
+
+	/**
 	 * Used to get the CSS class name used for the field element. If
 	 * creating a custom field, this method should be used to get the css class
 	 * name needed for proper functionality.
@@ -239,47 +292,6 @@
 		###
 
 		return '<a ' . implode(' ', $elem_attr) . '>' . $label . '</a>';
-	}
-
-	/**
-	 * Used to get the link used for the button element. If creating custom
-	 * buttons, this method should be used to get the link needed for proper
-	 * functionality.
-	 *
-	 * @since	0.1
-	 * @access	public
-	 * @param	string $tab name that the media upload box will initially load
-	 * @return	string link
-	 * @see		getButtonClass(), getButton()
-	 */
-	public function getButtonLink($tab = null)
-	{
-		// this is set even for new posts/pages
-		global $post_ID; //wp
-
-		$tab = ! empty($tab) ? $tab : $this->tab ;
-
-		$tab = ! empty($tab) ? $tab : 'library' ;
-
-		return 'media-upload.php?post_id=' . $post_ID . '&tab=' . $tab . '&TB_iframe=1';
-	}
-
-	/**
-	 * Used to get the CSS class name(s) used for the button element. If
-	 * creating custom buttons, this method should be used to get the css class
-	 * names needed for proper functionality.
-	 *
-	 * @since	0.1
-	 * @access	public
-	 * @param	string $groupname name used when pairing a text field and button
-	 * @return	string css class(es)
-	 * @see		getButtonLink(), getButton()
-	 */
-	public function getButtonClass($groupname = null)
-	{
-		$groupname = isset($groupname) ? $groupname : $this->groupname ;
-
-		return $this->button_class_name . '-' . $groupname . ' thickbox';
 	}
 
 	/**
@@ -396,17 +408,5 @@
 			/* ]]> */
 			</script><?php
 		}
-	}
-
-	/**
-	 * Used to generate short unique/random names
-	 *
-	 * @since	0.1
-	 * @access	public
-	 * @return	string
-	 */
-	private function getName()
-	{
-		return substr(md5(microtime() . rand()), rand(0,25), 6);
 	}
 }

@@ -373,12 +373,7 @@ class WPAlchemy_MetaBox
     var $meta;
     var $name;
     var $subname;
-    var $length = 0;
-    var $current = -1;
-    var $in_loop = FALSE;
-    var $in_template = FALSE;
-    var $group_tag;
-    var $current_post_id;
+
     /**
      * Used to provide field type hinting
      *
@@ -387,6 +382,14 @@ class WPAlchemy_MetaBox
      * @see     the_field()
      */
     protected $hint;
+
+    var $length = 0;
+    var $current = -1;
+    var $in_loop = FALSE;
+    var $in_template = FALSE;
+    var $group_tag;
+    var $current_post_id;
+
     /**
      * Used to store current loop details, cleared after loop ends
      *
@@ -466,194 +469,6 @@ class WPAlchemy_MetaBox
     }
 
     /**
-     * Used to insert global STYLE or SCRIPT tags into the head, called on
-     * WordPress admin_footer action.
-     *
-     * @since   1.3
-     * @see     _global_foot()
-     */
-    static public function _global_head()
-    {
-        // must be creating or editing a post or page
-        if ( ! self::_is_post() AND ! self::_is_page()) return;
-
-        // todo: you're assuming people will want to use this exact functionality
-        // consider giving a developer access to change this via hooks/callbacks
-
-        // include javascript for special functionality
-        ?><style type="text/css"> .wpa_group.tocopy { display:none; } </style>
-        <script type="text/javascript">
-        /* <![CDATA[ */
-        jQuery(function($)
-        {
-            $(document).click(function(e)
-            {
-                var elem = $(e.target);
-
-                if (elem.attr('class') && elem.filter('[class*=dodelete]').length)
-                {
-                    e.preventDefault();
-
-                    var p = elem.parents('.postbox'); /*wp*/
-
-                    var the_name = elem.attr('class').match(/dodelete-([a-zA-Z0-9_-]*)/i);
-
-                    the_name = (the_name && the_name[1]) ? the_name[1] : null ;
-
-                    /* todo: expose and allow editing of this message */
-                    if (confirm('This action can not be undone, are you sure?'))
-                    {
-                        if (the_name)
-                        {
-                            $('.wpa_group-'+ the_name, p).not('.tocopy').remove();
-                        }
-                        else
-                        {
-                            elem.parents('.wpa_group').remove();
-                        }
-
-                        var the_group = elem.parents('.wpa_group');
-
-                        if(the_group && the_group.attr('class'))
-                        {
-                            the_name = the_group.attr('class').match(/wpa_group-([a-zA-Z0-9_-]*)/i);
-
-                            the_name = (the_name && the_name[1]) ? the_name[1] : null ;
-
-                            checkLoopLimit(the_name);
-                        }
-
-                        $.wpalchemy.trigger('wpa_delete');
-                    }
-                }
-            });
-
-            $('[class*=docopy-]').click(function(e)
-            {
-                e.preventDefault();
-
-                var p = $(this).parents('.postbox'); /*wp*/
-
-                var the_name = $(this).attr('class').match(/docopy-([a-zA-Z0-9_-]*)/i)[1];
-
-                var the_group = $('.wpa_group-'+ the_name +'.tocopy', p).first();
-
-                var the_clone = the_group.clone().removeClass('tocopy last');
-
-                var the_props = ['name', 'id', 'for', 'class'];
-
-                the_group.find('*').each(function(i, elem)
-                {
-                    for (var j = 0; j < the_props.length; j++)
-                    {
-                        var the_prop = $(elem).attr(the_props[j]);
-
-                        if (the_prop)
-                        {
-                            var the_match = the_prop.match(/\[(\d+)\]/i);
-
-                            if (the_match)
-                            {
-                                the_prop = the_prop.replace(the_match[0],'['+ (+the_match[1]+1) +']');
-
-                                $(elem).attr(the_props[j], the_prop);
-                            }
-
-                            the_match = null;
-
-                            // todo: this may prove to be too broad of a search
-                            the_match = the_prop.match(/n(\d+)/i);
-
-                            if (the_match)
-                            {
-                                the_prop = the_prop.replace(the_match[0], 'n' + (+the_match[1]+1));
-
-                                $(elem).attr(the_props[j], the_prop);
-                            }
-                        }
-                    }
-                });
-
-                if ($(this).hasClass('ontop'))
-                {
-                    $('.wpa_group-'+ the_name, p).first().before(the_clone);
-                }
-                else
-                {
-                    the_group.before(the_clone);
-                }
-
-                checkLoopLimit(the_name);
-
-                $.wpalchemy.trigger('wpa_copy', [the_clone]);
-            });
-
-            function checkLoopLimit(name)
-            {
-                var elem = $('.docopy-' + name);
-
-                var the_class = $('.wpa_loop-' + name).attr('class');
-
-                if (the_class)
-                {
-                    var the_match = the_class.match(/wpa_loop_limit-([0-9]*)/i);
-
-                    if (the_match)
-                    {
-                        var the_limit = the_match[1];
-
-                        if ($('.wpa_group-' + name).not('.wpa_group.tocopy').length >= the_limit)
-                        {
-                            elem.hide();
-                        }
-                        else
-                        {
-                            elem.show();
-                        }
-                    }
-                }
-            }
-
-            /* do an initial limit check, show or hide buttons */
-            $('[class*=docopy-]').each(function()
-            {
-                var the_name = $(this).attr('class').match(/docopy-([a-zA-Z0-9_-]*)/i)[1];
-
-                checkLoopLimit(the_name);
-            });
-        });
-        /* ]]> */
-        </script>
-        <?php
-    }
-
-    /**
-     * Used to insert global SCRIPT tags into the footer, called on WordPress
-     * admin_footer action.
-     *
-     * @since   1.3
-     * @see     _global_head()
-     */
-    static public function _global_foot()
-    {
-        // must be creating or editing a post or page
-        if ( ! self::_is_post() AND ! self::_is_page()) return;
-
-        ?>
-        <script type="text/javascript">
-        /* <![CDATA[ */
-        (function($){ /* not using jQuery ondomready, code runs right away in footer */
-
-            /* use a global dom element to attach events to */
-            $.wpalchemy = $('<div></div>').attr('id','wpalchemy').appendTo('body');
-
-        })(jQuery);
-        /* ]]> */
-        </script>
-        <?php
-    }
-
-    /**
      * Used to correct double serialized data during post/page export/import,
      * additionally will try to fix corrupted serialized data by recalculating
      * string length values
@@ -696,6 +511,13 @@ class WPAlchemy_MetaBox
      */
     protected function fix_serialized_string_type( $serialized_data ) {
         return preg_replace_callback( '!s:(\d+):"(.*?)";!s', array( $this, 'fix_serialized_string_type_callback' ), stripslashes( $serialized_data ) );
+    }
+
+    /**
+     * @since   1.6
+     */
+    protected function fix_serialized_string_type_callback( $matches ) {
+        return sprintf( 's:%s:"%s";', strlen( $matches[2] ), $matches[2] );
     }
 
     /**
@@ -774,6 +596,342 @@ class WPAlchemy_MetaBox
     }
 
     /**
+     * Used to insert STYLE or SCRIPT tags into the head, called on WordPress
+     * admin_head action.
+     *
+     * @since   1.3
+     * @see     _foot()
+     */
+    public function _head()
+    {
+        $content = NULL;
+
+        ob_start();
+
+        ?>
+        <style type="text/css">
+            <?php if ($this->hide_editor) { ?> #wp-content-editor-container, #post-status-info, <?php if ($this->use_media_buttons) { ?> #content-html, #content-tmce<?php } else { ?> #wp-content-wrap<?php } ?> { display:none; } <?php } ?>
+        </style>
+        <?php
+
+        $content = ob_get_contents();
+
+        ob_end_clean();
+
+        // filter: head
+        if ($this->has_filter('head'))
+        {
+            $content = $this->apply_filters('head', $content);
+        }
+
+        echo $content;
+
+        // action: head
+        if ($this->has_action('head'))
+        {
+            $this->do_action('head');
+        }
+    }
+
+    /**
+     * Used to insert SCRIPT tags into the footer, called on WordPress
+     * admin_footer action.
+     *
+     * @since   1.3
+     * @see     _head()
+     */
+    public function _foot()
+    {
+        $content = NULL;
+
+        if
+        (
+            $this->lock OR
+            $this->hide_title OR
+            $this->view OR
+            $this->hide_screen_option
+        )
+        {
+            ob_start();
+
+            ?>
+            <script type="text/javascript">
+            /* <![CDATA[ */
+            (function($){ /* not using jQuery ondomready, code runs right away in footer */
+
+                var mb_id = '<?php echo $this->id; ?>';
+                var mb = $('#' + mb_id + '_metabox');
+
+                <?php if (WPALCHEMY_LOCK_TOP == $this->lock): ?>
+                <?php if ('side' == $this->context): ?>
+                var id = 'wpalchemy-side-top';
+                if ( ! $('#'+id).length)
+                {
+                    $('<div></div>').attr('id',id).prependTo('#side-info-column');
+                }
+                <?php else: ?>
+                var id = 'wpalchemy-content-top';
+                if ( ! $('#'+id).length)
+                {
+                    $('<div></div>').attr('id',id).insertAfter('#postdiv, #postdivrich');
+                }
+                <?php endif; ?>
+                $('#'+id).append(mb);
+                <?php elseif (WPALCHEMY_LOCK_BOTTOM == $this->lock): ?>
+                <?php if ('side' == $this->context): ?>
+                var id = 'wpalchemy-side-bottom';
+                if ( ! $('#'+id).length)
+                {
+                    $('<div></div>').attr('id',id).appendTo('#side-info-column');
+                }
+                <?php else: ?>
+                if ( ! $('#advanced-sortables').children().length)
+                {
+                    $('#advanced-sortables').css('display','none');
+                }
+
+                var id = 'wpalchemy-content-bottom';
+                if ( ! $('#'+id).length)
+                {
+                    $('<div></div>').attr('id',id).insertAfter('#advanced-sortables');
+                }
+                <?php endif; ?>
+                $('#'+id).append(mb);
+                <?php elseif (WPALCHEMY_LOCK_BEFORE_POST_TITLE == $this->lock): ?>
+                <?php if ('side' != $this->context): ?>
+                var id = 'wpalchemy-content-bpt';
+                if ( ! $('#'+id).length)
+                {
+                    $('<div></div>').attr('id',id).prependTo('#post-body-content');
+                }
+                $('#'+id).append(mb);
+                <?php endif; ?>
+                <?php elseif (WPALCHEMY_LOCK_AFTER_POST_TITLE == $this->lock): ?>
+                <?php if ('side' != $this->context): ?>
+                var id = 'wpalchemy-content-apt';
+                if ( ! $('#'+id).length)
+                {
+                    $('<div></div>').attr('id',id).insertAfter('#titlediv');
+                }
+                $('#'+id).append(mb);
+                <?php endif; ?>
+                <?php endif; ?>
+
+                <?php if ( ! empty($this->lock)): ?>
+                $('.hndle', mb).css('cursor','pointer');
+                $('.handlediv', mb).remove();
+                <?php endif; ?>
+
+                <?php if ($this->hide_title): ?>
+                $('.hndle', mb).remove();
+                $('.handlediv', mb).remove();
+                mb.removeClass('closed'); /* start opened */
+                <?php endif; ?>
+
+                <?php if (WPALCHEMY_VIEW_START_OPENED == $this->view): ?>
+                mb.removeClass('closed');
+                <?php elseif (WPALCHEMY_VIEW_START_CLOSED == $this->view): ?>
+                mb.addClass('closed');
+                <?php elseif (WPALCHEMY_VIEW_ALWAYS_OPENED == $this->view): ?>
+                /* todo: need to find a way to add this script block below, load-scripts.php?... */
+                var h3 = mb.children('h3');
+                setTimeout(function(){ h3.unbind('click'); }, 1000);
+                $('.handlediv', mb).remove();
+                mb.removeClass('closed'); /* start opened */
+                $('.hndle', mb).css('cursor','auto');
+                <?php endif; ?>
+
+                <?php if ($this->hide_screen_option): ?>
+                    $('.metabox-prefs label[for='+ mb_id +'_metabox-hide]').remove();
+                <?php endif; ?>
+
+                mb = null;
+
+            })(jQuery);
+            /* ]]> */
+            </script>
+            <?php
+
+            $content = ob_get_contents();
+
+            ob_end_clean();
+        }
+
+        // filter: foot
+        if ($this->has_filter('foot'))
+        {
+            $content = $this->apply_filters('foot', $content);
+        }
+
+        echo $content;
+
+        // action: foot
+        if ($this->has_action('foot'))
+        {
+            $this->do_action('foot');
+        }
+    }
+
+    /**
+     * Used to setup the meta box content template
+     *
+     * @since   1.0
+     * @see     _init()
+     */
+    public function _setup()
+    {
+        $this->in_template = TRUE;
+
+        // also make current post data available
+        global $post;
+
+        // shortcuts
+        $mb =& $this;
+        $metabox =& $this;
+        $id = $this->id;
+        $meta = $this->_meta(NULL, TRUE);
+
+        // use include because users may want to use one templete for multiple meta boxes
+        include $this->template;
+
+        // create a nonce for verification
+        echo '<input type="hidden" name="'. $this->id .'_nonce" value="' . wp_create_nonce($this->id) . '" />';
+
+        $this->in_template = FALSE;
+    }
+
+    /**
+     * Used to properly prefix the filter tag, the tag is unique to the meta
+     * box instance
+     *
+     * @since   1.3
+     * @param   string $tag name of the filter
+     * @return  string uniquely prefixed tag name
+     */
+    protected function _get_filter_tag($tag)
+    {
+        $prefix = 'wpalchemy_filter_' . $this->id . '_';
+        $prefix = preg_replace('/_+/', '_', $prefix);
+
+        $tag = preg_replace('/^'. $prefix .'/i', '', $tag);
+        return $prefix . $tag;
+    }
+
+    /**
+     * Uses WordPress add_filter() function, see WordPress add_filter()
+     *
+     * @since   1.3
+     * @link    http://core.trac.wordpress.org/browser/trunk/wp-includes/plugin.php#L65
+     */
+    public function add_filter($tag, $function_to_add, $priority = 10, $accepted_args = 1)
+    {
+        $tag = $this->_get_filter_tag($tag);;
+        add_filter($tag, $function_to_add, $priority, $accepted_args);
+    }
+
+    /**
+     * Uses WordPress has_filter() function, see WordPress has_filter()
+     *
+     * @since   1.3
+     * @link    http://core.trac.wordpress.org/browser/trunk/wp-includes/plugin.php#L86
+     */
+    public function has_filter($tag, $function_to_check = FALSE)
+    {
+        $tag = $this->_get_filter_tag($tag);
+        return has_filter($tag, $function_to_check);
+    }
+
+    /**
+     * Uses WordPress apply_filters() function, see WordPress apply_filters()
+     *
+     * @since   1.3
+     * @link    http://core.trac.wordpress.org/browser/trunk/wp-includes/plugin.php#L134
+     */
+    public function apply_filters($tag, $value)
+    {
+        $args = func_get_args();
+        $args[0] = $this->_get_filter_tag($tag);
+        return call_user_func_array('apply_filters', $args);
+    }
+
+    /**
+     * Uses WordPress remove_filter() function, see WordPress remove_filter()
+     *
+     * @since   1.3
+     * @link    http://core.trac.wordpress.org/browser/trunk/wp-includes/plugin.php#L250
+     */
+    public function remove_filter($tag, $function_to_remove, $priority = 10, $accepted_args = 1)
+    {
+        $tag = $this->_get_filter_tag($tag);
+        return remove_filter($tag, $function_to_remove, $priority, $accepted_args);
+    }
+
+    /**
+     * Used to properly prefix the action tag, the tag is unique to the meta
+     * box instance
+     *
+     * @since   1.3
+     * @param   string $tag name of the action
+     * @return  string uniquely prefixed tag name
+     */
+    protected function _get_action_tag($tag)
+    {
+        $prefix = 'wpalchemy_action_' . $this->id . '_';
+        $prefix = preg_replace('/_+/', '_', $prefix);
+
+        $tag = preg_replace('/^'. $prefix .'/i', '', $tag);
+        return $prefix . $tag;
+    }
+
+    /**
+     * Uses WordPress add_action() function, see WordPress add_action()
+     *
+     * @since   1.3
+     * @link    http://core.trac.wordpress.org/browser/trunk/wp-includes/plugin.php#L324
+     */
+    public function add_action($tag, $function_to_add, $priority = 10, $accepted_args = 1)
+    {
+        $tag = $this->_get_action_tag($tag);
+        add_action($tag, $function_to_add, $priority, $accepted_args);
+    }
+
+    /**
+     * Uses WordPress has_action() function, see WordPress has_action()
+     *
+     * @since   1.3
+     * @link    http://core.trac.wordpress.org/browser/trunk/wp-includes/plugin.php#L492
+     */
+    public function has_action($tag, $function_to_check = FALSE)
+    {
+        $tag = $this->_get_action_tag($tag);
+        return has_action($tag, $function_to_check);
+    }
+
+    /**
+     * Uses WordPress remove_action() function, see WordPress remove_action()
+     *
+     * @since   1.3
+     * @link    http://core.trac.wordpress.org/browser/trunk/wp-includes/plugin.php#L513
+     */
+    public function remove_action($tag, $function_to_remove, $priority = 10, $accepted_args = 1)
+    {
+        $tag = $this->_get_action_tag($tag);
+        return remove_action($tag, $function_to_remove, $priority, $accepted_args);
+    }
+
+    /**
+     * Uses WordPress do_action() function, see WordPress do_action()
+     * @since   1.3
+     * @link    http://core.trac.wordpress.org/browser/trunk/wp-includes/plugin.php#L352
+     */
+    public function do_action($tag, $arg = '')
+    {
+        $args = func_get_args();
+        $args[0] = $this->_get_action_tag($tag);
+        return call_user_func_array('do_action', $args);
+    }
+
+    /**
      * Used to check if creating a new post or editing one
      *
      * @since   1.3.7
@@ -783,6 +941,23 @@ class WPAlchemy_MetaBox
     static public function _is_post()
     {
         if ('post' == self::_is_post_or_page())
+        {
+            return TRUE;
+        }
+
+        return FALSE;
+    }
+
+    /**
+     * Used to check if creating a new page or editing one
+     *
+     * @since   1.3.7
+     * @return  bool
+     * @see     _is_post()
+     */
+    static public function _is_page()
+    {
+        if ('page' == self::_is_post_or_page())
         {
             return TRUE;
         }
@@ -880,52 +1055,6 @@ class WPAlchemy_MetaBox
         }
 
         return null;
-    }
-
-    /**
-     * Used to check if creating a new page or editing one
-     *
-     * @since   1.3.7
-     * @return  bool
-     * @see     _is_post()
-     */
-    static public function _is_page()
-    {
-        if ('page' == self::_is_post_or_page())
-        {
-            return TRUE;
-        }
-
-        return FALSE;
-    }
-
-    /**
-     * Uses WordPress add_filter() function, see WordPress add_filter()
-     *
-     * @since   1.3
-     * @link    http://core.trac.wordpress.org/browser/trunk/wp-includes/plugin.php#L65
-     */
-    public function add_filter($tag, $function_to_add, $priority = 10, $accepted_args = 1)
-    {
-        $tag = $this->_get_filter_tag($tag);;
-        add_filter($tag, $function_to_add, $priority, $accepted_args);
-    }
-
-    /**
-     * Used to properly prefix the filter tag, the tag is unique to the meta
-     * box instance
-     *
-     * @since   1.3
-     * @param   string $tag name of the filter
-     * @return  string uniquely prefixed tag name
-     */
-    protected function _get_filter_tag($tag)
-    {
-        $prefix = 'wpalchemy_filter_' . $this->id . '_';
-        $prefix = preg_replace('/_+/', '_', $prefix);
-
-        $tag = preg_replace('/^'. $prefix .'/i', '', $tag);
-        return $prefix . $tag;
     }
 
     /**
@@ -1160,286 +1289,204 @@ class WPAlchemy_MetaBox
     }
 
     /**
-     * Uses WordPress has_filter() function, see WordPress has_filter()
+     * Used to insert global STYLE or SCRIPT tags into the head, called on
+     * WordPress admin_footer action.
      *
      * @since   1.3
-     * @link    http://core.trac.wordpress.org/browser/trunk/wp-includes/plugin.php#L86
+     * @see     _global_foot()
      */
-    public function has_filter($tag, $function_to_check = FALSE)
+    static public function _global_head()
     {
-        $tag = $this->_get_filter_tag($tag);
-        return has_filter($tag, $function_to_check);
-    }
+        // must be creating or editing a post or page
+        if ( ! self::_is_post() AND ! self::_is_page()) return;
 
-    /**
-     * Uses WordPress apply_filters() function, see WordPress apply_filters()
-     *
-     * @since   1.3
-     * @link    http://core.trac.wordpress.org/browser/trunk/wp-includes/plugin.php#L134
-     */
-    public function apply_filters($tag, $value)
-    {
-        $args = func_get_args();
-        $args[0] = $this->_get_filter_tag($tag);
-        return call_user_func_array('apply_filters', $args);
-    }
+        // todo: you're assuming people will want to use this exact functionality
+        // consider giving a developer access to change this via hooks/callbacks
 
-    /**
-     * Uses WordPress add_action() function, see WordPress add_action()
-     *
-     * @since   1.3
-     * @link    http://core.trac.wordpress.org/browser/trunk/wp-includes/plugin.php#L324
-     */
-    public function add_action($tag, $function_to_add, $priority = 10, $accepted_args = 1)
-    {
-        $tag = $this->_get_action_tag($tag);
-        add_action($tag, $function_to_add, $priority, $accepted_args);
-    }
+        // include javascript for special functionality
+        ?><style type="text/css"> .wpa_group.tocopy { display:none; } </style>
+        <script type="text/javascript">
+        /* <![CDATA[ */
+        jQuery(function($)
+        {
+            $(document).click(function(e)
+            {
+                var elem = $(e.target);
 
-    /**
-     * Used to properly prefix the action tag, the tag is unique to the meta
-     * box instance
-     *
-     * @since   1.3
-     * @param   string $tag name of the action
-     * @return  string uniquely prefixed tag name
-     */
-    protected function _get_action_tag($tag)
-    {
-        $prefix = 'wpalchemy_action_' . $this->id . '_';
-        $prefix = preg_replace('/_+/', '_', $prefix);
+                if (elem.attr('class') && elem.filter('[class*=dodelete]').length)
+                {
+                    e.preventDefault();
 
-        $tag = preg_replace('/^'. $prefix .'/i', '', $tag);
-        return $prefix . $tag;
-    }
+                    var p = elem.parents('.postbox'); /*wp*/
 
-    /**
-     * Uses WordPress has_action() function, see WordPress has_action()
-     *
-     * @since   1.3
-     * @link    http://core.trac.wordpress.org/browser/trunk/wp-includes/plugin.php#L492
-     */
-    public function has_action($tag, $function_to_check = FALSE)
-    {
-        $tag = $this->_get_action_tag($tag);
-        return has_action($tag, $function_to_check);
-    }
+                    var the_name = elem.attr('class').match(/dodelete-([a-zA-Z0-9_-]*)/i);
 
-    /**
-     * Uses WordPress do_action() function, see WordPress do_action()
-     * @since   1.3
-     * @link    http://core.trac.wordpress.org/browser/trunk/wp-includes/plugin.php#L352
-     */
-    public function do_action($tag, $arg = '')
-    {
-        $args = func_get_args();
-        $args[0] = $this->_get_action_tag($tag);
-        return call_user_func_array('do_action', $args);
-    }
+                    the_name = (the_name && the_name[1]) ? the_name[1] : null ;
 
-    /**
-     * Used to insert STYLE or SCRIPT tags into the head, called on WordPress
-     * admin_head action.
-     *
-     * @since   1.3
-     * @see     _foot()
-     */
-    public function _head()
-    {
-        $content = NULL;
+                    /* todo: expose and allow editing of this message */
+                    if (confirm('This action can not be undone, are you sure?'))
+                    {
+                        if (the_name)
+                        {
+                            $('.wpa_group-'+ the_name, p).not('.tocopy').remove();
+                        }
+                        else
+                        {
+                            elem.parents('.wpa_group').remove();
+                        }
 
-        ob_start();
+                        var the_group = elem.parents('.wpa_group');
 
-        ?>
-        <style type="text/css">
-            <?php if ($this->hide_editor) { ?> #wp-content-editor-container, #post-status-info, <?php if ($this->use_media_buttons) { ?> #content-html, #content-tmce<?php } else { ?> #wp-content-wrap<?php } ?> { display:none; } <?php } ?>
-        </style>
+                        if(the_group && the_group.attr('class'))
+                        {
+                            the_name = the_group.attr('class').match(/wpa_group-([a-zA-Z0-9_-]*)/i);
+
+                            the_name = (the_name && the_name[1]) ? the_name[1] : null ;
+
+                            checkLoopLimit(the_name);
+                        }
+
+                        $.wpalchemy.trigger('wpa_delete');
+                    }
+                }
+            });
+
+            $('[class*=docopy-]').click(function(e)
+            {
+                e.preventDefault();
+
+                var p = $(this).parents('.postbox'); /*wp*/
+
+                var the_name = $(this).attr('class').match(/docopy-([a-zA-Z0-9_-]*)/i)[1];
+
+                var the_group = $('.wpa_group-'+ the_name +'.tocopy', p).first();
+
+                var the_clone = the_group.clone().removeClass('tocopy last');
+
+                var the_props = ['name', 'id', 'for', 'class'];
+
+                the_group.find('*').each(function(i, elem)
+                {
+                    for (var j = 0; j < the_props.length; j++)
+                    {
+                        var the_prop = $(elem).attr(the_props[j]);
+
+                        if (the_prop)
+                        {
+                            var the_match = the_prop.match(/\[(\d+)\]/i);
+
+                            if (the_match)
+                            {
+                                the_prop = the_prop.replace(the_match[0],'['+ (+the_match[1]+1) +']');
+
+                                $(elem).attr(the_props[j], the_prop);
+                            }
+
+                            the_match = null;
+
+                            // todo: this may prove to be too broad of a search
+                            the_match = the_prop.match(/n(\d+)/i);
+
+                            if (the_match)
+                            {
+                                the_prop = the_prop.replace(the_match[0], 'n' + (+the_match[1]+1));
+
+                                $(elem).attr(the_props[j], the_prop);
+                            }
+                        }
+                    }
+                });
+
+                if ($(this).hasClass('ontop'))
+                {
+                    $('.wpa_group-'+ the_name, p).first().before(the_clone);
+                }
+                else
+                {
+                    the_group.before(the_clone);
+                }
+
+                checkLoopLimit(the_name);
+
+                $.wpalchemy.trigger('wpa_copy', [the_clone]);
+            });
+
+            function checkLoopLimit(name)
+            {
+                var elem = $('.docopy-' + name);
+
+                var the_class = $('.wpa_loop-' + name).attr('class');
+
+                if (the_class)
+                {
+                    var the_match = the_class.match(/wpa_loop_limit-([0-9]*)/i);
+
+                    if (the_match)
+                    {
+                        var the_limit = the_match[1];
+
+                        if ($('.wpa_group-' + name).not('.wpa_group.tocopy').length >= the_limit)
+                        {
+                            elem.hide();
+                        }
+                        else
+                        {
+                            elem.show();
+                        }
+                    }
+                }
+            }
+
+            /* do an initial limit check, show or hide buttons */
+            $('[class*=docopy-]').each(function()
+            {
+                var the_name = $(this).attr('class').match(/docopy-([a-zA-Z0-9_-]*)/i)[1];
+
+                checkLoopLimit(the_name);
+            });
+        });
+        /* ]]> */
+        </script>
         <?php
-
-        $content = ob_get_contents();
-
-        ob_end_clean();
-
-        // filter: head
-        if ($this->has_filter('head'))
-        {
-            $content = $this->apply_filters('head', $content);
-        }
-
-        echo $content;
-
-        // action: head
-        if ($this->has_action('head'))
-        {
-            $this->do_action('head');
-        }
     }
 
     /**
-     * Used to insert SCRIPT tags into the footer, called on WordPress
+     * Used to insert global SCRIPT tags into the footer, called on WordPress
      * admin_footer action.
      *
      * @since   1.3
-     * @see     _head()
+     * @see     _global_head()
      */
-    public function _foot()
+    static public function _global_foot()
     {
-        $content = NULL;
+        // must be creating or editing a post or page
+        if ( ! self::_is_post() AND ! self::_is_page()) return;
 
-        if
-        (
-            $this->lock OR
-            $this->hide_title OR
-            $this->view OR
-            $this->hide_screen_option
-        )
-        {
-            ob_start();
+        ?>
+        <script type="text/javascript">
+        /* <![CDATA[ */
+        (function($){ /* not using jQuery ondomready, code runs right away in footer */
 
-            ?>
-            <script type="text/javascript">
-            /* <![CDATA[ */
-            (function($){ /* not using jQuery ondomready, code runs right away in footer */
+            /* use a global dom element to attach events to */
+            $.wpalchemy = $('<div></div>').attr('id','wpalchemy').appendTo('body');
 
-                var mb_id = '<?php echo $this->id; ?>';
-                var mb = $('#' + mb_id + '_metabox');
-
-                <?php if (WPALCHEMY_LOCK_TOP == $this->lock): ?>
-                <?php if ('side' == $this->context): ?>
-                var id = 'wpalchemy-side-top';
-                if ( ! $('#'+id).length)
-                {
-                    $('<div></div>').attr('id',id).prependTo('#side-info-column');
-                }
-                <?php else: ?>
-                var id = 'wpalchemy-content-top';
-                if ( ! $('#'+id).length)
-                {
-                    $('<div></div>').attr('id',id).insertAfter('#postdiv, #postdivrich');
-                }
-                <?php endif; ?>
-                $('#'+id).append(mb);
-                <?php elseif (WPALCHEMY_LOCK_BOTTOM == $this->lock): ?>
-                <?php if ('side' == $this->context): ?>
-                var id = 'wpalchemy-side-bottom';
-                if ( ! $('#'+id).length)
-                {
-                    $('<div></div>').attr('id',id).appendTo('#side-info-column');
-                }
-                <?php else: ?>
-                if ( ! $('#advanced-sortables').children().length)
-                {
-                    $('#advanced-sortables').css('display','none');
-                }
-
-                var id = 'wpalchemy-content-bottom';
-                if ( ! $('#'+id).length)
-                {
-                    $('<div></div>').attr('id',id).insertAfter('#advanced-sortables');
-                }
-                <?php endif; ?>
-                $('#'+id).append(mb);
-                <?php elseif (WPALCHEMY_LOCK_BEFORE_POST_TITLE == $this->lock): ?>
-                <?php if ('side' != $this->context): ?>
-                var id = 'wpalchemy-content-bpt';
-                if ( ! $('#'+id).length)
-                {
-                    $('<div></div>').attr('id',id).prependTo('#post-body-content');
-                }
-                $('#'+id).append(mb);
-                <?php endif; ?>
-                <?php elseif (WPALCHEMY_LOCK_AFTER_POST_TITLE == $this->lock): ?>
-                <?php if ('side' != $this->context): ?>
-                var id = 'wpalchemy-content-apt';
-                if ( ! $('#'+id).length)
-                {
-                    $('<div></div>').attr('id',id).insertAfter('#titlediv');
-                }
-                $('#'+id).append(mb);
-                <?php endif; ?>
-                <?php endif; ?>
-
-                <?php if ( ! empty($this->lock)): ?>
-                $('.hndle', mb).css('cursor','pointer');
-                $('.handlediv', mb).remove();
-                <?php endif; ?>
-
-                <?php if ($this->hide_title): ?>
-                $('.hndle', mb).remove();
-                $('.handlediv', mb).remove();
-                mb.removeClass('closed'); /* start opened */
-                <?php endif; ?>
-
-                <?php if (WPALCHEMY_VIEW_START_OPENED == $this->view): ?>
-                mb.removeClass('closed');
-                <?php elseif (WPALCHEMY_VIEW_START_CLOSED == $this->view): ?>
-                mb.addClass('closed');
-                <?php elseif (WPALCHEMY_VIEW_ALWAYS_OPENED == $this->view): ?>
-                /* todo: need to find a way to add this script block below, load-scripts.php?... */
-                var h3 = mb.children('h3');
-                setTimeout(function(){ h3.unbind('click'); }, 1000);
-                $('.handlediv', mb).remove();
-                mb.removeClass('closed'); /* start opened */
-                $('.hndle', mb).css('cursor','auto');
-                <?php endif; ?>
-
-                <?php if ($this->hide_screen_option): ?>
-                    $('.metabox-prefs label[for='+ mb_id +'_metabox-hide]').remove();
-                <?php endif; ?>
-
-                mb = null;
-
-            })(jQuery);
-            /* ]]> */
-            </script>
-            <?php
-
-            $content = ob_get_contents();
-
-            ob_end_clean();
-        }
-
-        // filter: foot
-        if ($this->has_filter('foot'))
-        {
-            $content = $this->apply_filters('foot', $content);
-        }
-
-        echo $content;
-
-        // action: foot
-        if ($this->has_action('foot'))
-        {
-            $this->do_action('foot');
-        }
+        })(jQuery);
+        /* ]]> */
+        </script>
+        <?php
     }
 
     /**
-     * Used to setup the meta box content template
+     * Gets the meta data for a meta box
      *
      * @since   1.0
-     * @see     _init()
+     * @param   int $post_id optional post ID for which to retrieve the meta data
+     * @return  array
+     * @see     _meta
      */
-    public function _setup()
+    public function the_meta($post_id = NULL)
     {
-        $this->in_template = TRUE;
-
-        // also make current post data available
-        global $post;
-
-        // shortcuts
-        $mb =& $this;
-        $metabox =& $this;
-        $id = $this->id;
-        $meta = $this->_meta(NULL, TRUE);
-
-        // use include because users may want to use one templete for multiple meta boxes
-        include $this->template;
-
-        // create a nonce for verification
-        echo '<input type="hidden" name="'. $this->id .'_nonce" value="' . wp_create_nonce($this->id) . '" />';
-
-        $this->in_template = FALSE;
+        return $this->_meta($post_id);
     }
 
     /**
@@ -1499,43 +1546,7 @@ class WPAlchemy_MetaBox
         return $this->meta;
     }
 
-    /**
-     * Uses WordPress remove_filter() function, see WordPress remove_filter()
-     *
-     * @since   1.3
-     * @link    http://core.trac.wordpress.org/browser/trunk/wp-includes/plugin.php#L250
-     */
-    public function remove_filter($tag, $function_to_remove, $priority = 10, $accepted_args = 1)
-    {
-        $tag = $this->_get_filter_tag($tag);
-        return remove_filter($tag, $function_to_remove, $priority, $accepted_args);
-    }
-
-    /**
-     * Uses WordPress remove_action() function, see WordPress remove_action()
-     *
-     * @since   1.3
-     * @link    http://core.trac.wordpress.org/browser/trunk/wp-includes/plugin.php#L513
-     */
-    public function remove_action($tag, $function_to_remove, $priority = 10, $accepted_args = 1)
-    {
-        $tag = $this->_get_action_tag($tag);
-        return remove_action($tag, $function_to_remove, $priority, $accepted_args);
-    }
-
-    /**
-     * Gets the meta data for a meta box
-     *
-     * @since   1.0
-     * @param   int $post_id optional post ID for which to retrieve the meta data
-     * @return  array
-     * @see     _meta
-     */
-    public function the_meta($post_id = NULL)
-    {
-        return $this->_meta($post_id);
-    }
-
+    // user can also use the_ID(), php functions are case-insensitive
     /**
      * @since   1.0
      */
@@ -1543,8 +1554,6 @@ class WPAlchemy_MetaBox
     {
         echo $this->get_the_id();
     }
-
-    // user can also use the_ID(), php functions are case-insensitive
 
     /**
      * @since   1.0
@@ -1573,6 +1582,14 @@ class WPAlchemy_MetaBox
         if ($this->get_the_value($n)) return TRUE;
 
         return FALSE;
+    }
+
+    /**
+     * @since   1.0
+     */
+    public function the_value($n = NULL)
+    {
+        echo $this->get_the_value($n);
     }
 
     /**
@@ -1662,14 +1679,6 @@ class WPAlchemy_MetaBox
     /**
      * @since   1.0
      */
-    public function the_value($n = NULL)
-    {
-        echo $this->get_the_value($n);
-    }
-
-    /**
-     * @since   1.0
-     */
     public function the_name($n = NULL)
     {
         echo $this->get_the_name($n);
@@ -1732,6 +1741,26 @@ class WPAlchemy_MetaBox
     }
 
     /**
+     * @since   1.0
+     */
+    public function is_first()
+    {
+        if ($this->in_loop AND $this->current == 0) return TRUE;
+
+        return FALSE;
+    }
+
+    /**
+     * @since   1.0
+     */
+    public function is_last()
+    {
+        if ($this->in_loop AND ($this->current+1) == $this->length) return TRUE;
+
+        return FALSE;
+    }
+
+    /**
      * Used to check if a value is a match
      *
      * @since   1.1
@@ -1756,35 +1785,6 @@ class WPAlchemy_MetaBox
         if($v == $the_value) return TRUE;
 
         return FALSE;
-    }
-
-    /**
-     * Prints the current state of a checkbox field and should be used inline
-     * within the INPUT tag.
-     *
-     * @since   1.3
-     * @param   string $n the field name to check or the value to check for (if the_field() is used prior)
-     * @param   string $v optional the value to check for
-     * @see     get_the_checkbox_state()
-     */
-    public function the_checkbox_state($n, $v = NULL, $is_default = FALSE)
-    {
-        echo $this->get_the_checkbox_state($n, $v, $is_default);
-    }
-
-    /**
-     * Returns the current state of a checkbox field, the returned string is
-     * suitable to be used inline within the INPUT tag.
-     *
-     * @since   1.3
-     * @param   string $n the field name to check or the value to check for (if the_field() is used prior)
-     * @param   string $v optional the value to check for
-     * @return  string suitable to be used inline within the INPUT tag
-     * @see     the_checkbox_state()
-     */
-    public function get_the_checkbox_state($n, $v = NULL, $is_default = FALSE)
-    {
-        if ($this->is_selected($n, $v, $is_default)) return ' checked="checked"';
     }
 
     /**
@@ -1825,6 +1825,35 @@ class WPAlchemy_MetaBox
         }
 
         return FALSE;
+    }
+
+    /**
+     * Prints the current state of a checkbox field and should be used inline
+     * within the INPUT tag.
+     *
+     * @since   1.3
+     * @param   string $n the field name to check or the value to check for (if the_field() is used prior)
+     * @param   string $v optional the value to check for
+     * @see     get_the_checkbox_state()
+     */
+    public function the_checkbox_state($n, $v = NULL, $is_default = FALSE)
+    {
+        echo $this->get_the_checkbox_state($n, $v, $is_default);
+    }
+
+    /**
+     * Returns the current state of a checkbox field, the returned string is
+     * suitable to be used inline within the INPUT tag.
+     *
+     * @since   1.3
+     * @param   string $n the field name to check or the value to check for (if the_field() is used prior)
+     * @param   string $v optional the value to check for
+     * @return  string suitable to be used inline within the INPUT tag
+     * @see     the_checkbox_state()
+     */
+    public function get_the_checkbox_state($n, $v = NULL, $is_default = FALSE)
+    {
+        if ($this->is_selected($n, $v, $is_default)) return ' checked="checked"';
     }
 
     /**
@@ -1934,26 +1963,6 @@ class WPAlchemy_MetaBox
     }
 
     /**
-     * @since   1.0
-     */
-    public function is_first()
-    {
-        if ($this->in_loop AND $this->current == 0) return TRUE;
-
-        return FALSE;
-    }
-
-    /**
-     * @since   1.0
-     */
-    public function is_last()
-    {
-        if ($this->in_loop AND ($this->current+1) == $this->length) return TRUE;
-
-        return FALSE;
-    }
-
-    /**
      * @since   1.1
      */
     public function the_group_close()
@@ -2001,6 +2010,27 @@ class WPAlchemy_MetaBox
         $this->in_loop = 'multi';
 
         return $this->_loop($n, $length, 2);
+    }
+
+    /**
+     * @deprecated
+     * @since   1.0
+     */
+    public function have_fields_and_one($n)
+    {
+        $this->_meta(NULL, TRUE);
+        $this->in_loop = 'single';
+        return $this->_loop($n,NULL,1);
+    }
+
+    /**
+     * @since   1.0
+     */
+    public function have_fields($n,$length=NULL)
+    {
+        $this->_meta(NULL, TRUE);
+        $this->in_loop = 'normal';
+        return $this->_loop($n,$length);
     }
 
     /**
@@ -2057,27 +2087,6 @@ class WPAlchemy_MetaBox
         $this->_loop_data = new \stdClass;
 
         return FALSE;
-    }
-
-    /**
-     * @deprecated
-     * @since   1.0
-     */
-    public function have_fields_and_one($n)
-    {
-        $this->_meta(NULL, TRUE);
-        $this->in_loop = 'single';
-        return $this->_loop($n,NULL,1);
-    }
-
-    /**
-     * @since   1.0
-     */
-    public function have_fields($n,$length=NULL)
-    {
-        $this->_meta(NULL, TRUE);
-        $this->in_loop = 'normal';
-        return $this->_loop($n,$length);
     }
 
     /**
@@ -2277,12 +2286,5 @@ class WPAlchemy_MetaBox
                 }
             }
         }
-    }
-
-    /**
-     * @since   1.6
-     */
-    protected function fix_serialized_string_type_callback( $matches ) {
-        return sprintf( 's:%s:"%s";', strlen( $matches[2] ), $matches[2] );
     }
 }

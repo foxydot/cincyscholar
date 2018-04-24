@@ -41,47 +41,6 @@ class GitHubPluginUpdater {
     }
  
     /**
-     * Push in plugin version information to get the update notification
-     *
-     * @param  object $transient
-     * @return object
-     */
-    public function setTransitent( $transient )
-    {
-        if ( empty( $transient->checked ) )
-        {
-                return $transient;
-                }
-
-                // Get plugin & GitHub release information
-                $this->initPluginData();
-                $this->getRepoReleaseInfo();
-
-                $doUpdate = version_compare( $this->githubAPIResult->tag_name, $transient->checked[$this->slug] );
-
-                if ( $doUpdate )
-                {
-                        $package = $this->githubAPIResult->zipball_url;
-
-                        if ( ! empty( $this->accessToken ) )
-                        {
-                            $package = esc_url(add_query_arg( array( "access_token" => $this->accessToken ), $package ) );
-                        }
-
-                        // Plugin object
-                        $obj = new stdClass();
-                        $obj->slug = $this->slug;
-                        $obj->new_version = $this->githubAPIResult->tag_name;
-                        $obj->url = $this->pluginData["PluginURI"];
-                        $obj->package = $package;
-
-                        $transient->response[$this->slug] = $obj;
-                }
-
-        return $transient;
-    }
- 
-    /**
      * Get information regarding our plugin from WordPress
      *
      * @return null
@@ -89,7 +48,7 @@ class GitHubPluginUpdater {
     private function initPluginData()
     {
                 $this->slug = plugin_basename( $this->pluginFile );
-
+ 
                 $this->pluginData = get_plugin_data( $this->pluginFile );
     }
  
@@ -104,28 +63,69 @@ class GitHubPluginUpdater {
         {
                 return;
                 }
-
+ 
                 // Query the GitHub API
                 $url = "https://api.github.com/repos/{$this->username}/{$this->repo}/releases";
-
+ 
                 if ( ! empty( $this->accessToken ) )
                 {
                     $url = esc_url(add_query_arg( array( "access_token" => $this->accessToken ), $url ) );
                 }
-
+ 
                 // Get the results
                 $this->githubAPIResult = wp_remote_retrieve_body( wp_remote_get( $url ) );
-
+ 
                 if ( ! empty( $this->githubAPIResult ) )
                 {
                     $this->githubAPIResult = @json_decode( $this->githubAPIResult );
                 }
-
+ 
                 // Use only the latest release
                 if ( is_array( $this->githubAPIResult ) )
                 {
                     $this->githubAPIResult = $this->githubAPIResult[0];
                 }
+    }
+ 
+    /**
+     * Push in plugin version information to get the update notification
+     *
+     * @param  object $transient
+     * @return object
+     */
+    public function setTransitent( $transient )
+    {
+        if ( empty( $transient->checked ) )
+        {
+                return $transient;
+                }
+ 
+                // Get plugin & GitHub release information
+                $this->initPluginData();
+                $this->getRepoReleaseInfo();
+ 
+                $doUpdate = version_compare( $this->githubAPIResult->tag_name, $transient->checked[$this->slug] );
+ 
+                if ( $doUpdate )
+                {
+                        $package = $this->githubAPIResult->zipball_url;
+ 
+                        if ( ! empty( $this->accessToken ) )
+                        {
+                            $package = esc_url(add_query_arg( array( "access_token" => $this->accessToken ), $package ) );
+                        }
+ 
+                        // Plugin object
+                        $obj = new stdClass();
+                        $obj->slug = $this->slug;
+                        $obj->new_version = $this->githubAPIResult->tag_name;
+                        $obj->url = $this->pluginData["PluginURI"];
+                        $obj->package = $package;
+ 
+                        $transient->response[$this->slug] = $obj;
+                }
+ 
+        return $transient;
     }
  
     /**
