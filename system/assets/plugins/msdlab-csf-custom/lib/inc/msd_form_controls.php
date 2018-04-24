@@ -108,7 +108,7 @@ class MSDLAB_FormControls{
     }
 
     public function build_validation($validation_array){
-        if(is_null($validation_array)){return;}
+        if(empty($validation_array)){return;}
         foreach($validation_array AS $k => $v){
             $validation_str[] = $k . ' = "' . $v .'"';
         }

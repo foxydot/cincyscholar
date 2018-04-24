@@ -240,6 +240,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                         if (isset($_POST['form_page_next'])) {
                             $form_page_number = $_POST['form_page_next'];
                         }
+                        $form_nonce = $form_id . $form_page_number;
                     }
 
                     //build the jquery
@@ -724,6 +725,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                 default:
                     break;
             }
+            //error_log('form_nonce:'.$form_nonce);
             $ret['nonce'] = wp_nonce_field( $form_nonce );
             $ret['form_close'] = $this->form->form_close();
             return $ret;
