@@ -363,7 +363,7 @@ class MSDLAB_FormControls{
         return implode("\n",apply_filters('msdlab_csf_file_management_ajax',$ret));
     }
 
-    public function attachment_display($id, $data, $title = "", $class = "", $display = "all", $style = "grid"){
+    public function attachment_display($id, $data, $title = "", $class = "attachment", $display = "all", $style = "grid"){
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_result">'.$title.'</label>');
         $attachment_types = array_flip($this->queries->get_attachment_type_ids());
         if($display == "all" && $style == "grid"){

@@ -291,11 +291,11 @@ class MSDLAB_Queries{
 
         if(!empty($this->post_vars['name_search_input'])) {
             //add search for name on application
-            $search_terms = explode(' ',$this->post_vars['name_search_input']);
+            $search_terms = explode(' ',addslashes($this->post_vars['name_search_input']));
             if(count($search_terms>1)){
                 $fullnamesearch = ' OR (applicant.FirstName LIKE \'%'. $search_terms[0] .'%\' AND applicant.LastName LIKE \'%'. $search_terms[1] .'%\')';
             }
-            $data['where'] .= ' AND (applicant.FirstName LIKE \'%'. $this->post_vars['name_search_input'] .'%\' OR applicant.LastName LIKE \'%'. $this->post_vars['name_search_input'] .'%\''.$fullnamesearch.') ';
+            $data['where'] .= ' AND (applicant.FirstName LIKE \'%'. addslashes($this->post_vars['name_search_input']) .'%\' OR applicant.LastName LIKE \'%'. addslashes($this->post_vars['name_search_input']) .'%\''.$fullnamesearch.') ';
         }
         if(!empty($this->post_vars['city_search_input'])){
             $data['where'] .= ' AND applicant.City LIKE \'%'.$this->post_vars['city_search_input'].'%\'';
@@ -323,6 +323,9 @@ class MSDLAB_Queries{
         }
         if($this->post_vars['gpa_range_search_input_start']!=0 || $this->post_vars['gpa_range_search_input_end']!=5){
             $data['where'] .= ' AND (applicant.HighSchoolGPA >= '.$this->post_vars['gpa_range_search_input_start'].' AND applicant.HighSchoolGPA <= '.$this->post_vars['gpa_range_search_input_end'].')';
+        }
+        if($this->post_vars['gradyear_range_search_input_start']!=0 || $this->post_vars['gradyear_range_search_input_end']!=5){
+            $data['where'] .= ' AND (YEAR(applicant.HighSchoolGraduationDate) >= '.$this->post_vars['gradyear_range_search_input_start'].' AND YEAR(applicant.HighSchoolGraduationDate) <= '.$this->post_vars['gradyear_range_search_input_end'].')';
         }
         if(!empty($this->post_vars['major_search_input'])){
             $data['where'] .= ' AND applicant.MajorId = '.$this->post_vars['major_search_input'];
