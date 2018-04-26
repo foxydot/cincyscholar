@@ -124,6 +124,7 @@ class MSDLab_ReportControls{
                 $ret['highschool_search'] = $this->select_search('High School: ','highschool_search', $highschools);
                 $ret['highschool_type_search'] = $this->select_search('High School Type: ','highschooltype_search', $highschooltypes);
                 $ret['gpa_search'] = $this->number_range_search('GPA Between:','','gpa_range_search',array('query-filter'),0.00,5.00,0.1);
+                $ret['gradyear_search'] = $this->number_range_search('Graduation Between:','','gradyear_range_search',array('query-filter'),date('Y')-20,date('Y'),1);
                 $ret['major_search'] = $this->select_search('Major: ','major_search', $majors);
                 $ret['ethnicity_search'] = $this->select_search('Ethnicity: ','ethnicity_search', $ethnicity);
                 $ret['athlete_search'] = $this->select_search('Athletics:','athlete_search',$athletics);
@@ -158,7 +159,7 @@ class MSDLab_ReportControls{
 
     public function search_box($title = "Search Students",$button = "SEARCH", $id = "student_search", $class = array('query-filter','search-box')){
        $label = apply_filters('msdlab_csf_manage_search_label','<label for="'.$id.'_input">'.$title.'</label>');
-       $form_field = apply_filters('msdlab_csf_manage_search_form_field','<input id="'.$id.'_input" name="'.$id.'_input" type="search" value="'.$_POST[$id.'_input'].'" placeholder="" />');
+       $form_field = apply_filters('msdlab_csf_manage_search_form_field','<input id="'.$id.'_input" name="'.$id.'_input" type="search" value="'.stripslashes($_POST[$id.'_input']).'" placeholder="" />');
        $class = implode(" ",apply_filters('msdlab_csf_manage_search_class', $class));
        $ret = '<div id="'.$id.'" class="'.$class.'">'.$label.$form_field.'</div>';
        return apply_filters('msdlab_csf_manage_search', $ret);
