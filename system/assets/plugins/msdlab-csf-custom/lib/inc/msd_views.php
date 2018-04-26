@@ -82,7 +82,7 @@ class MSDLAB_Display{
     }
 
     public function csv_safe($value){
-        $value = preg_replace('%\'%i','‘',$value);
+        //$value = preg_replace('%\'%i','‘',$value);
         $value = strip_tags($value,'<p><a>');
         $value = preg_replace("/<a.+href=['|\"]([^\"\']*)['|\"].*>(.+)<\/a>/i",'\2 (\1)',$value);
         $value = preg_replace('^[\r\n]+^',"\n",$value);
