@@ -256,7 +256,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                         ts_data($user_id);
                         continue;
                     }
-                    $sql = 'UPDATE temp_emails SET user_id = '.$user_id.', TempPwd = '.$pwd.' WHERE id = "'.$student->id.'";';
+                    $sql = 'UPDATE temp_emails SET user_id = '.$user_id.', TempPwd = "'.$pwd.'" WHERE id = "'.$student->id.'";';
                     if($wpdb->get_results($sql)){
                         print $user->display_name .' <br>';
                     }

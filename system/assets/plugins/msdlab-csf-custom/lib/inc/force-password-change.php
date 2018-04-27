@@ -76,10 +76,12 @@ class force_password_change {
 
 		add_action( 'init',                    array( $this, 'init' ) );
 		add_action( 'user_register',           array( $this, 'registered' ) );
-		add_action( 'personal_options_update', array( $this, 'updated' ) );
+        add_action( 'personal_options_update', array( $this, 'updated' ) );
+        add_action( 'wppb_edit_profile_success', array( $this, 'updated_frontend' ), 10, 3 );
 		add_action( 'template_redirect',       array( $this, 'redirect' ) );
 		add_action( 'current_screen',          array( $this, 'redirect' ) );
-		add_action( 'admin_notices',           array( $this, 'notice' ) );
+        add_action( 'admin_notice',            array( $this, 'notice' ) );
+        add_action( 'genesis_entry_content',   array( $this, 'notice' ), 8 );
 
 	}
 
@@ -105,7 +107,30 @@ class force_password_change {
 
 	}
 
+// delete the user meta field when a user successfully changes their password
+    function updated_frontend( $req, $formname, $user_id ) {
+        $passw1 = $passw2 = '';
 
+        if ( isset( $req['passw1'] ) )
+            $pass1 = $req['passw1'];
+
+        if ( isset( $req['passw2'] ) )
+            $pass2 = $req['passw2'];
+
+        if (
+            $pass1 != $pass2
+            or
+            empty( $pass1 )
+            or
+            empty( $pass2 )
+            or
+            false !== strpos( stripslashes( $pass1 ), "\\" )
+        )
+            return;
+
+        delete_user_meta( $user_id, 'force-password-change' );
+
+    }
 
 	// delete the user meta field when a user successfully changes their password
 	function updated( $user_id ) {
@@ -144,6 +169,12 @@ class force_password_change {
 
 		global $current_user;
 
+		if(!is_admin() && is_page()){
+		    global $post;
+		    if('profile' == $post->post_name)
+		        return;
+        }
+
 		if ( is_admin() ) {
 			$screen = get_current_screen();
 			if ( 'profile' == $screen->base )
@@ -158,7 +189,8 @@ class force_password_change {
 		wp_get_current_user();
 
 		if ( get_user_meta( $current_user->ID, 'force-password-change', true ) ) {
-			wp_redirect( admin_url( 'profile.php' ) );
+			//wp_redirect( admin_url( 'profile.php' ) );
+            wp_safe_redirect( home_url('profile') );
 			exit; // never forget this after wp_redirect!
 		}
 
