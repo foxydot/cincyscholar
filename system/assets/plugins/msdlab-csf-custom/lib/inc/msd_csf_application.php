@@ -117,36 +117,36 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     return '<div class="login-trigger"><span class="button">Login/Register</span></div>';
                 }
             }
-            if($today >= $start_date && $today <= $end_date){
-                if(is_user_logged_in()){
-                    $ret = array();
-                    if(current_user_can('view_renewal_process')){
-                        //$ret[] = 'VIEW RENEWAL PROCESS';
-                    }
-                    if(current_user_can('view_award')){
-                        //$ret[] = 'VIEW AWARD';
-                    }
-                    if(current_user_can('submit_application')){
-                        $ret[2] = implode("\n\r",$this->get_form('application'));
-                    }
-                    if(current_user_can('view_application_process')){
-                        $ret[1] = $this->queries->get_user_application_status_list();
-                    }
-                    if(current_user_can('review_application')){
-                        $ret[1] = $this->queries->get_user_application_status_list();
-                        $ret[2] = implode("\n\r",$this->get_form('application'));
-                    }
-                    if(current_user_can('submit_renewal')){
-                        $ret[2] = implode("\n\r",$this->get_form('renewal'));
-                    }
-                    //add admin ability to see based on GET var.
-                    sort($ret);
-                    return implode("\n\r",$ret);
-                } else {
-                    return '<div class="login-trigger"><span class="button">Login/Register</span></div>';
+            if(is_user_logged_in()){
+                $ret = array();
+                if(current_user_can('view_renewal_process')){
+                    //$ret[] = 'VIEW RENEWAL PROCESS';
                 }
+                if(current_user_can('view_award')){
+                    //$ret[] = 'VIEW AWARD';
+                }
+                if(current_user_can('submit_application')){
+                    if($today >= $start_date && $today <= $end_date || current_user_can('view_application_process')){
+                        $ret[2] = implode("\n\r",$this->get_form('application'));
+                    } else {
+                        return $content;
+                    }
+                }
+                if(current_user_can('view_application_process')){
+                    $ret[1] = $this->queries->get_user_application_status_list();
+                }
+                if(current_user_can('review_application')){
+                    $ret[1] = $this->queries->get_user_application_status_list();
+                    $ret[2] = implode("\n\r",$this->get_form('application'));
+                }
+                if(current_user_can('submit_renewal')){
+                    $ret[2] = implode("\n\r",$this->get_form('renewal'));
+                }
+                //add admin ability to see based on GET var.
+                sort($ret);
+                return implode("\n\r",$ret);
             } else {
-                return $content;
+                return '<div class="login-trigger"><span class="button">Login/Register</span></div>';
             }
         }
 
