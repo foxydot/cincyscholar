@@ -195,11 +195,13 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             global $wpdb;
             $sql = "ALTER TABLE applicant
   ADD `StudentId` varchar(50) NOT NULL,
+  ADD `CollegeId` int(11) NOT NULL,
   ADD `ResumeOK` tinyint(1) unsigned zerofill NOT NULL,
   ADD `TranscriptOK` tinyint(1) unsigned zerofill NOT NULL,
   ADD `FinancialAidOK` tinyint(1) unsigned zerofill NOT NULL,
   ADD `FAFSAOK` tinyint(1) unsigned zerofill NOT NULL,
   ADD `ApplicationlLocked` tinyint(1) unsigned zerofill NOT NULL;";
+  //ADD CONSTRAINT `FK_Applicant_College` FOREIGN KEY (`CollegeId`) REFERENCES `college` (`CollegeId`)*/;";
             if($wpdb->get_results($sql)) {
                 print "updated!";
             }
@@ -414,7 +416,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                     <dd><button class="update_renewal_table">Go</button></dd>
                     <dt>Update Applicant Table:</dt>
                     <dd><button class="update_applicant_table">Go</button></dd>
-                    <dt>Parse Emails:</dt>
+                    <dt>Parse Emails for Renewals:</dt>
                     <dd><button class="parse_emails">Go</button></dd>
 
                 </dl>
