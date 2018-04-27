@@ -242,20 +242,21 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
 
                     }
                 } else { //there is still not a user! Create One.
+                    $pwd = $this->random_str();
                     $args = array(
                         'first_name' => $student->FirstName,
                         'last_name' => $student->LastName,
                         'user_login' => sanitize_title_with_dashes(strtolower($student->FirstName . '_' . $student->LastName)),
                         'user_email' => $student->email, //doublecheck that no one is actually going to get emailed.
                         'role' => 'awardee',
-                        'user_pass' => 'This is a lousy pa$$word.',
+                        'user_pass' => $pwd,
                     );
                     $user_id = wp_insert_user($args);
                     if(is_wp_error($user_id)){
                         ts_data($user_id);
                         continue;
                     }
-                    $sql = 'UPDATE temp_emails SET user_id = '.$user_id.' WHERE id = "'.$student->id.'";';
+                    $sql = 'UPDATE temp_emails SET user_id = '.$user_id.', TempPwd = '.$pwd.' WHERE id = "'.$student->id.'";';
                     if($wpdb->get_results($sql)){
                         print $user->display_name .' <br>';
                     }
@@ -423,6 +424,52 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                 <div class="response1"></div>
             </div>
             <?php
+        }
+
+        /**
+         * Generate and return a random characters string
+         *
+         * Useful for generating passwords or hashes.
+         *
+         * The default string returned is 8 alphanumeric characters string.
+         *
+         * The type of string returned can be changed with the "type" parameter.
+         * Seven types are - by default - available: basic, alpha, alphanum, num, nozero, unique and md5.
+         *
+         * @param   string  $type    Type of random string.  basic, alpha, alphanum, num, nozero, unique and md5.
+         * @param   integer $length  Length of the string to be generated, Default: 8 characters long.
+         * @return  string
+         */
+        function random_str($type = 'alphanum', $length = 8)
+        {
+            switch($type)
+            {
+                case 'basic'    : return mt_rand();
+                    break;
+                case 'alpha'    :
+                case 'alphanum' :
+                case 'num'      :
+                case 'nozero'   :
+                    $seedings             = array();
+                    $seedings['alpha']    = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                    $seedings['alphanum'] = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                    $seedings['num']      = '0123456789';
+                    $seedings['nozero']   = '123456789';
+
+                    $pool = $seedings[$type];
+
+                    $str = '';
+                    for ($i=0; $i < $length; $i++)
+                    {
+                        $str .= substr($pool, mt_rand(0, strlen($pool) -1), 1);
+                    }
+                    return $str;
+                    break;
+                case 'unique'   :
+                case 'md5'      :
+                    return md5(uniqid(mt_rand()));
+                    break;
+            }
         }
     }
 }

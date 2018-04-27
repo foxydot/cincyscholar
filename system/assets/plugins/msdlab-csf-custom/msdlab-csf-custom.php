@@ -39,6 +39,8 @@ class MSDLabClientCustom
         require_once(plugin_dir_path(__FILE__) . 'lib/inc/msd_user_levels_management.php');
         require_once(plugin_dir_path(__FILE__) . 'lib/inc/sidebar_content_support.php');
         require_once(plugin_dir_path(__FILE__) . 'lib/inc/gravity-forms.php');
+        require_once(plugin_dir_path(__FILE__) . 'lib/inc/force-password-change.php');
+
 
         //add_action('widgets_init', @array($this,'widgets_init'));
         if(class_exists('MSDLab_Sidebar_Content_Support')){
