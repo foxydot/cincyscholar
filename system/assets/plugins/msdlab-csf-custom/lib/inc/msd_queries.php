@@ -346,19 +346,31 @@ class MSDLAB_Queries{
         if(!empty($this->post_vars['email_search_input'])) {
             //add search for an email on application
             $data['where'] .= ' AND ' . $usertable . '.user_email  LIKE \'%'.$this->post_vars['email_search_input'].'%\'';
-        }
+        }/*
         $data['tables']['applicantcollege'] = array('CollegeId');
-        $data['where'] .= ' AND applicantcollege.ApplicantId = applicant.ApplicantId';
+        $data['where'] .= ' AND (applicantcollege.ApplicantId = applicant.ApplicantId)';
         if(!empty($this->post_vars['college_search_input'])){
             $data['where'] .= ' AND applicantcollege.CollegeId = '.$this->post_vars['college_search_input'];
-        }
+        }*/
         //ts_data($data);
         $results = $this->get_result_set($data);
         //error_log($wpdb->last_query);
 
         foreach ($results AS $k => $r){
             $applicant_id = $r->ApplicantId;
-            $agreements = $financial = $docs = array();
+
+            $college = $agreements = $financial = $docs = array();
+
+            //add college
+            $college['tables']['applicantcollege'] = array('CollegeId');
+            $college['where'] .= ' AND (applicantcollege.ApplicantId = applicant.ApplicantId)';
+            $college_results = $this->get_result_set($college);
+            foreach($college_results AS $ar){
+                foreach($ar as $y => $z){
+                    $results[$k]->$y = $z;
+                }
+            }
+
             //add agreements
             $agreements['tables']['agreements'] = array('ApplicantHaveRead','ApplicantDueDate','ApplicantDocsReq','ApplicantReporting','GuardianHaveRead','GuardianDueDate','GuardianDocsReq','GuardianReporting');
             $agreements['where'] .= ' agreements.ApplicantId = ' . $applicant_id;

@@ -156,6 +156,13 @@ if (!class_exists('MSDLab_CSF_Management')) {
                 $result = $this->queries->get_report_set($fields);
                 $submitted = $incomplete = array();
                 foreach ($result AS $k => $applicant) {
+
+                    if(!empty($this->post_vars['college_search_input'])){
+                        if($applicant->CollegeID != $_POST['college_search_input']){
+                            continue;
+                        }
+                    }
+
                     if(!empty($_POST['employer_search_input'])){
                         if(stripos($applicant->Employer,$_POST['employer_search_input'])===false &&
                             stripos($applicant->GuardianEmployer1,$_POST['employer_search_input'])===false &&
