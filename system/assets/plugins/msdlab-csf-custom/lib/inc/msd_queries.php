@@ -188,13 +188,25 @@ class MSDLAB_Queries{
         }
         //peel off the applicant id
         $applicant_id = $attdat['ApplicantId'];
-        unset($attdat['ApplicantId']);
+
+        //check for renewal id
+        $renewal_id = false;
+        if(isset($attdat['RenewalId'])) {
+            $renewal_id = $attdat['RenewalId'];
+            unset($attdat['RenewalId']);
+        }
+
 
         //create or locate upload dir for applicant
         $upload_dir   = wp_upload_dir();
         if ( isset( $applicant_id ) && ! empty( $upload_dir['basedir'] ) ) {
-            $user_dirname = $upload_dir['basedir'].'/attachments/'.date("Y").'/'.$applicant_id;
-            $user_url = $upload_dir['baseurl'].'/attachments/'.date("Y").'/'.$applicant_id;
+            if($renewal_id){
+                $user_dirname = $upload_dir['basedir'].'/attachments/'.date("Y").'/renewals/'.$applicant_id;
+                $user_url = $upload_dir['baseurl'].'/attachments/'.date("Y").'/renewals/'.$applicant_id;
+            } else {
+                $user_dirname = $upload_dir['basedir'].'/attachments/'.date("Y").'/'.$applicant_id;
+                $user_url = $upload_dir['baseurl'].'/attachments/'.date("Y").'/'.$applicant_id;
+            }
             if ( ! file_exists( $user_dirname ) ) {
                 wp_mkdir_p( $user_dirname );
             }
@@ -210,10 +222,11 @@ class MSDLAB_Queries{
             $attachment_type_id = $atids[$attachment_type];
             //handle the upload
             $ufile = $user_dirname .'/'. basename($fileinfo['name']);
+            //TODO: add test to replace files
             if (move_uploaded_file($fileinfo['tmp_name'], $ufile)) {
                 //$ret[] = '<div class="message success">' . basename($fileinfo['name']) . ' successfully uploaded.</div>';
                 $filepath = $user_url.'/'.basename($fileinfo['name']);
-                $sql = "INSERT INTO `attachment` SET `ApplicantId` = '".$applicant_id."', `AttachmentTypeId` = '".$attachment_type_id."', `FilePath` = '".$filepath."';";
+                $sql = "INSERT INTO `attachment` SET `ApplicantId` = '".$applicant_id."',`RenewalId` = '".$renewal_id."', `AttachmentTypeId` = '".$attachment_type_id."', `FilePath` = '".$filepath."';";
                // error_log('attachemnt_sql: '.$sql);
                 $result = $wpdb->get_results($sql);
                 if(is_wp_error($result)){

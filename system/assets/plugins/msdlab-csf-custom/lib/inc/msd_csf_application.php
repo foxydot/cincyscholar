@@ -627,14 +627,15 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     $ret['javascript'] = $this->form->build_jquery($form_id,$jquery);
                     break;
                 case 'renewal':
-                    //ts_data($_POST);
                     if ($_POST['renewal_form']) {
+                        //ts_data($_POST);
                         //Do the stuff
-                        if(is_set($_POST['Renewal_RenewalId_input'])) {
+                        if(isset($_POST['Renewal_RenewalId_input'])) {
                             $set['where']['renewal'] = 'renewal.RenewalId = ' . $_POST['Renewal_RenewalId_input'];
                         }
                         print $this->queries->set_data($form_id, $set['where']);
                         $renewal_user = get_user_by('ID',$_POST['Renewal_UserId_input']);
+
                         if($_POST['Renewal_Email_input'] != $renewal_user->user_email){
                             //error_log('update email');
                             wp_update_user(array('ID' => $_POST['Renewal_UserId_input'],'user_email' => $_POST['Renewal_Email_input']));
@@ -654,6 +655,10 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     $data['order'] = 'RenewalDateTime DESC';
                     $results = $this->queries->get_result_set($data);
                     $result = $results[0];
+                    $docs['tables']['Attachment'] = array('AttachmentId','AttachmentTypeId','FilePath');
+                    $docs['where'] = 'RenewalId = '.$result->RenewalId;
+                    $documents = $this->queries->get_result_set($docs);
+                    //ts_data($result->RenewalId);
                     if(!$result){ //there is no renewal! oh no! get the application data and populate the form with that.
                         $data = array();
                         $data['tables']['Applicant'] = array('UserId','Email','ApplicationDateTime', 'FirstName', 'MiddleInitial', 'LastName', 'Last4SSN', 'Address1', 'Address2', 'City', 'StateId',
@@ -716,7 +721,14 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     $ret['Renewal_AnticipatedGraduationDate'] = $this->form->field_select('Renewal_AnticipatedGraduationDate', $result->AnticipatedGraduationDate ? $result->AnticipatedGraduationDate : date("Y").'-01-01', "Anticipated Graduation Date", array('value' => date("Y").'-01-01','option' => date("Y")), $this->col_gradyr_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
                     $ret['Renewal_CurrentCumulativeGPA'] = $this->form->field_textfield('Renewal_CurrentCumulativeGPA', $result->CurrentCumulativeGPA ? $result->CurrentCumulativeGPA : null, 'Current Cumulative GPA', '0.00', array('required' => 'required', 'type' => 'number', 'minlength' => 1), array('required', 'col-md-6', 'col-sm-12'));
                     $ret['Renewal_CoopStudyAbroadNote'] = $this->form->field_textarea('Renewal_CoopStudyAbroadNote',$result->CoopStudyAbroadNote ? $result->CoopStudyAbroadNote : '',"Please indicate any plans to co-op or study abroad here so that your scholarship may be paid accordingly (scholarship is applied only to terms when enrolled full-time) :",null,array('col-md-12'));
-                    $ret['Renewal_TermsAcknowledged'] = $this->form->field_checkbox('Renewal_TermsAcknowledged',$result->TermsAcknowledged?$result->TermsAcknowledged:0,'In order to be renewed, I understand that I must continue to meet the criteria of my scholarship.');
+
+                    $ret['Attachment_ApplicantId'] = $this->form->field_hidden("Attachment_ApplicantId", $applicant_id);
+                    $ret['Attachment_RenewalId'] = $this->form->field_hidden("Attachment_RenewalId", $renewal_id);
+                    $ret['AttachmentCopy'] = '<div class="copy col-sm-12">Please upload all documents in PDF format.</div>';
+                    $ret[] = '<div class="row">';
+                    $ret[] = $this->form->file_management_front_end('Attachment_',$documents,array('col-sm-3'));
+                    $jquery['filemanager'] = $this->form->get_file_manager_ajax('Attachment_',$documents);
+                    $ret[] = '</div><br /><br />';                    $ret['Renewal_TermsAcknowledged'] = $this->form->field_checkbox('Renewal_TermsAcknowledged',$result->TermsAcknowledged?$result->TermsAcknowledged:0,'In order to be renewed, I understand that I must continue to meet the criteria of my scholarship.');
                     $ftr['button'] = $this->form->field_button('saveBtn', 'Save', array('submit', 'btn'));
                     $ret['form_footer'] = $this->form->form_footer('form_footer',implode("\n",$ftr),array('form-footer', 'col-md-12'));
                     $ret['javascript'] = $this->form->build_jquery($form_id,$jquery);
