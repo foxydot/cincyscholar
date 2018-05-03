@@ -1164,6 +1164,7 @@ img.alignright,
     .nav-primary .menu .menu-item .sub-menu a, .nav-primary .menu .menu-item .sub-menu a:hover, .nav-primary .menu .menu-item .sub-menu a:focus {
       border-bottom: 0; }
     .nav-primary .menu .menu-item.icon a, .nav-primary .menu .menu-item.icon a:hover, .nav-primary .menu .menu-item.icon a:focus {
+      font-size: 2em;
       border-bottom: 0; }
     .nav-primary .menu .menu-item.icon a:hover, .nav-primary .menu .menu-item.icon a:focus {
       color: #ffbe0b; }
