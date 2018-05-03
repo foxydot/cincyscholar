@@ -25,6 +25,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_update_renewal_table', array(&$this,'update_renewal_table') );
             add_action( 'wp_ajax_update_applicant_table', array(&$this,'update_applicant_table') );
             add_action( 'wp_ajax_parse_emails', array(&$this,'parse_emails') );
+            add_action( 'wp_ajax_move_collegeid', array(&$this,'move_collegeid') );
 
 
             add_filter('send_password_change_email',array(&$this,'return_false'));
@@ -277,6 +278,20 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             }
         }
 
+        function move_collegeid(){
+            global $wpdb;
+            $sql = "SELECT * FROM applicantcollege";
+            $results = $wpdb->get_results($sql);
+            $ac = array();
+            foreach($results AS $r){
+                $ac[$r->ApplicantId] = $r->CollegeId;
+            }
+            foreach($ac AS $k => $v){
+                $sql = 'UPDATE applicant SET CollegeId = '.$v.' WHERE ApplicantId = '.$k.';';
+                $wpdb->query($sql);
+            }
+        }
+
         //utility
         function settings_page()
         {
@@ -396,11 +411,22 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                             console.log(response);
                         });
                     });
+                    $('.move_collegeid').click(function(){
+                        var data = {
+                            action: 'move_collegeid',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
             </script>
             <div class="wrap">
                 <h2>Data Conversion Tools</h2>
                 <dl>
+                    <?php
+                    /*
                     <dt>Create Student Users:</dt>
                    <dd><button class="create_student_users">Go</button></dd>
                     <dt>Create Donor Users:</dt>
@@ -413,12 +439,15 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                     <dd><button class="reduce_majors">Go</button></dd>
                     <dt>Fix Emails:</dt>
                     <dd><button class="fix_emails">Go</button></dd>
+                    */ ?>
                     <dt>Update Renewal Table:</dt>
                     <dd><button class="update_renewal_table">Go</button></dd>
                     <dt>Update Applicant Table:</dt>
                     <dd><button class="update_applicant_table">Go</button></dd>
                     <dt>Parse Emails for Renewals:</dt>
                     <dd><button class="parse_emails">Go</button></dd>
+                    <dt>Move CollegeID to applicant table:</dt>
+                    <dd><button class="move_collegeid">Go</button></dd>
 
                 </dl>
                 <div class="response1"></div>
