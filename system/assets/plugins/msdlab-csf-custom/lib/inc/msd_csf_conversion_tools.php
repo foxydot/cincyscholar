@@ -26,6 +26,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_update_applicant_table', array(&$this,'update_applicant_table') );
             add_action( 'wp_ajax_parse_emails', array(&$this,'parse_emails') );
             add_action( 'wp_ajax_move_collegeid', array(&$this,'move_collegeid') );
+            add_action( 'wp_ajax_add_renewal_to_attachment_table', array(&$this,'add_renewal_to_attachment_table') );
 
 
             add_filter('send_password_change_email',array(&$this,'return_false'));
@@ -292,6 +293,16 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             }
         }
 
+
+        function add_renewal_to_attachment_table(){
+            global $wpdb;
+            $sql = "ALTER TABLE attachment
+            ADD `RenewalId` int(11) NULL AFTER `ApplicantId`;";
+            if($wpdb->query($sql)) {
+                print "updated!";
+            }
+        }
+
         //utility
         function settings_page()
         {
@@ -420,6 +431,15 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                             console.log(response);
                         });
                     });
+                    $('.add_renewal_to_attachment_table').click(function(){
+                        var data = {
+                            action: 'add_renewal_to_attachment_table',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
             </script>
             <div class="wrap">
@@ -448,6 +468,8 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                     <dd><button class="parse_emails">Go</button></dd>
                     <dt>Move CollegeID to applicant table:</dt>
                     <dd><button class="move_collegeid">Go</button></dd>
+                    <dt>Add renewal to attachment table:</dt>
+                    <dd><button class="add_renewal_to_attachment_table">Go</button></dd>
 
                 </dl>
                 <div class="response1"></div>
