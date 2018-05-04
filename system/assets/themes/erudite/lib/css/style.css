@@ -1755,6 +1755,11 @@ i.fa {
 .single-post .content-sidebar-wrap main.content {
   border-right: 1px solid #CCC; }
 
+.menu-item.not-logged-in {
+  background: #ffbe0b; }
+  .menu-item.not-logged-in > a {
+    color: #FFF; }
+
 .menu-item.logged-in {
   display: none; }
 
@@ -1762,7 +1767,10 @@ i.fa {
   display: none; }
 
 .logged-in .menu-item.logged-in {
-  display: inline-block; }
+  display: inline-block;
+  background: #ffbe0b; }
+  .logged-in .menu-item.logged-in > a {
+    color: #FFF; }
 
 form h3.section-header {
   border-bottom: 1px solid #CCC; }

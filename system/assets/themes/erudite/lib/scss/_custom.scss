@@ -63,7 +63,12 @@ i.fa{
     }
   }
 }
-
+.menu-item.not-logged-in{
+  background: $yellow;
+  >a {
+    color: $white;
+  }
+}
 .menu-item.logged-in{
     display: none;
   }
@@ -73,6 +78,10 @@ i.fa{
   }
   &.logged-in{
     display: inline-block;
+    background: $yellow;
+    >a {
+      color: $white;
+    }
   }
 }
 
