@@ -251,9 +251,10 @@ class MSDLAB_FormControls{
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
 
-    public function file_management_front_end($id_prepend,$documents,$class){
+    public function file_management_front_end($id_prepend,$documents,$class,$style = 'application'){
+        $transcripttitle = ($style == 'renewal')?'Grade Report':'Transcript';
         $ret[$id_prepend.'Resume'] = $this->field_upload($id_prepend.'Resume',$this->get_files_of_type('Resume',$documents),'Resume',null,null,$class);
-        $ret[$id_prepend.'Transcript'] = $this->field_upload($id_prepend.'Transcript',$this->get_files_of_type('Transcript',$documents),'Transcript',null,null,$class);
+        $ret[$id_prepend.'Transcript'] = $this->field_upload($id_prepend.'Transcript',$this->get_files_of_type('Transcript',$documents),$transcripttitle,null,null,$class);
         $ret[$id_prepend.'FAFSA'] = $this->field_upload($id_prepend.'FAFSA',$this->get_files_of_type('FAFSA',$documents),'Student Aid Report',null,null,$class);
         $ret[$id_prepend.'FinancialAidAward'] = $this->field_upload($id_prepend.'FinancialAidAward',$this->get_files_of_type('FinancialAidAward',$documents),'Financial Aid Award Letter From College',null,null,$class);
         $ret[$id_prepend.'Additional_1'] = $this->field_upload($id_prepend.'Additional_1',$this->get_files_of_type('Additional_1',$documents),'Additional Document Requested by CSF',null,null,$class);
@@ -261,6 +262,9 @@ class MSDLAB_FormControls{
         $ret[$id_prepend.'Additional_3'] = $this->field_upload($id_prepend.'Additional_3',$this->get_files_of_type('Additional_3',$documents),'Additional Document Requested by CSF',null,null,$class);
         $ret[$id_prepend.'Additional_4'] = $this->field_upload($id_prepend.'Additional_4',$this->get_files_of_type('Additional_4',$documents),'Additional Document Requested by CSF',null,null,$class);
 
+        if($style == 'renewal'){
+            unset($ret[$id_prepend.'Resume'],$ret[$id_prepend.'Additional_1'],$ret[$id_prepend.'Additional_2'],$ret[$id_prepend.'Additional_3'],$ret[$id_prepend.'Additional_4']);
+        }
         return implode("\n",apply_filters('msdlab_csf_file_management_front_end',$ret));
     }
 

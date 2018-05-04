@@ -726,9 +726,10 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     $ret['Attachment_RenewalId'] = $this->form->field_hidden("Attachment_RenewalId", $renewal_id);
                     $ret['AttachmentCopy'] = '<div class="copy col-sm-12">Please upload all documents in PDF format.</div>';
                     $ret[] = '<div class="row">';
-                    $ret[] = $this->form->file_management_front_end('Attachment_',$documents,array('col-sm-3'));
+                    $ret[] = $this->form->file_management_front_end('Attachment_',$documents,array('col-sm-4'),'renewal');
                     $jquery['filemanager'] = $this->form->get_file_manager_ajax('Attachment_',$documents);
-                    $ret[] = '</div><br /><br />';                    $ret['Renewal_TermsAcknowledged'] = $this->form->field_checkbox('Renewal_TermsAcknowledged',$result->TermsAcknowledged?$result->TermsAcknowledged:0,'In order to be renewed, I understand that I must continue to meet the criteria of my scholarship.');
+                    $ret[] = '</div><br /><br />';
+                    $ret['Renewal_TermsAcknowledged'] = $this->form->field_checkbox('Renewal_TermsAcknowledged',$result->TermsAcknowledged?$result->TermsAcknowledged:0,'In order to be renewed, I understand that I must continue to meet the criteria of my scholarship.');
                     $ftr['button'] = $this->form->field_button('saveBtn', 'Save', array('submit', 'btn'));
                     $ret['form_footer'] = $this->form->form_footer('form_footer',implode("\n",$ftr),array('form-footer', 'col-md-12'));
                     $ret['javascript'] = $this->form->build_jquery($form_id,$jquery);
