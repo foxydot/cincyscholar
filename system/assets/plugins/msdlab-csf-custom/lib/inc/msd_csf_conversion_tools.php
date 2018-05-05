@@ -188,8 +188,8 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
   ADD `RenewalLocked` tinyint(1) unsigned zerofill NOT NULL,
   ADD `Notes` text,
   DROP PermanentAddress;";
-            if($wpdb->get_results($sql)) {
-                print "updated!";
+            if($wpdb->query($sql)) {
+                print "renewal table updated!";
             }
         }
 
@@ -204,8 +204,8 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
   ADD `FAFSAOK` tinyint(1) unsigned zerofill NOT NULL,
   ADD `ApplicationlLocked` tinyint(1) unsigned zerofill NOT NULL;";
   //ADD CONSTRAINT `FK_Applicant_College` FOREIGN KEY (`CollegeId`) REFERENCES `college` (`CollegeId`)*/;";
-            if($wpdb->get_results($sql)) {
-                print "updated!";
+            if($wpdb->query($sql)) {
+                print "applicant table updated!";
             }
         }
 
@@ -259,7 +259,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                         continue;
                     }
                     $sql = 'UPDATE temp_emails SET user_id = '.$user_id.', TempPwd = "'.$pwd.'" WHERE id = "'.$student->id.'";';
-                    if($wpdb->get_results($sql)){
+                    if($wpdb->query($sql)){
                         print $user->display_name .' <br>';
                     }
                 }
@@ -290,6 +290,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             foreach($ac AS $k => $v){
                 $sql = 'UPDATE applicant SET CollegeId = '.$v.' WHERE ApplicantId = '.$k.';';
                 $wpdb->query($sql);
+                print $k .' college id copied.<br>';
             }
         }
 
@@ -299,7 +300,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             $sql = "ALTER TABLE attachment
             ADD `RenewalId` int(11) NULL AFTER `ApplicantId`;";
             if($wpdb->query($sql)) {
-                print "updated!";
+                print "attachment table updated!";
             }
         }
 
