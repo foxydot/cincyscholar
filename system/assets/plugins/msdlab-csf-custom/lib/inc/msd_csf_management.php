@@ -75,7 +75,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
             <hr class="wp-header-end">';
             print '<h3>Reporting</h3>';
             print '<a href="admin.php?page=csf-report" class="page-title-action">Application Reports</a>';
-            print '<a href="admin.php?page=csf-renewal" class="page-title-action">Renewal Reports</a>';
+            print '<a href="admin.php?page=csf-renewals" class="page-title-action">Renewal Reports</a>';
             print '<h3>Settings</h3>';
             print '<a href="admin.php?page=csf-settings" class="page-title-action">General Settings</a>';
             print '<a href="admin.php?page=csf-college" class="page-title-action">College and Contact Settings</a>';
