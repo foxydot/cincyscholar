@@ -27,6 +27,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_parse_emails', array(&$this,'parse_emails') );
             add_action( 'wp_ajax_move_collegeid', array(&$this,'move_collegeid') );
             add_action( 'wp_ajax_add_renewal_to_attachment_table', array(&$this,'add_renewal_to_attachment_table') );
+            add_action( 'wp_ajax_send_renewal_emails', array(&$this,'send_renewal_emails') );
 
 
             add_filter('send_password_change_email',array(&$this,'return_false'));
@@ -304,6 +305,56 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             }
         }
 
+        function send_renewal_emails(){
+            global $wpdb;
+            $subject = 'Your application to renew your scholarship is now available!';
+            $headers[] = 'From: Elizabeth Collins <beth@cincinnatischolarshipfoundation.org>';
+            $headers[] = 'Content-Type: text/html; charset=UTF-8';
+            $headers[] = 'Bcc: beth@cincinnatischolarshipfoundation.org';
+
+            $email_str = '
+            <p>Your application to renew your scholarship is now available.  To begin the process, an account has been created for you. Please surf to <a href = "http://cincinnatischolarshipfoundation.org">http://cincinnatischolarshipfoundation.org</a>, click the Login/Register button, and login with the following information:</p>
+ <p>
+email: [[email]]<br/>
+password: [[TempPwd]]
+ </p><p>
+Immediately upon logging in, you may be prompted to change your password. Please choose a secure password you will remember. Once you have changed your password, you will be redirected to the renewal form.
+ </p><p>
+If your scholarship is need-based, you will be required to submit your 2018-2019 student aid report (SAR), financial aid award notification, and grade report to complete your renewal application. 
+</p><p>
+Please submit your renewal application by June 20, 2018 to be considered.
+  </p><p>
+Elizabeth Collins<br/>
+Program Administrator
+</p><p>
+602 Main St., Suite 1000<br/>
+Cincinnati OH  45202
+ </p><p>
+Ph:  (513)345-6701<br/>
+Fax:  (513)345-6705
+ </p><p>
+beth@cincinnatischolarshipfoundation.org<br/>
+<a href = "http://cincinnatischolarshipfoundation.org">www.cincinnatischolarshipfoundation.org</a>
+</p>
+';
+            $sql = "SELECT `email`,`FirstName`,`LastName`,`TempPwd` FROM temp_emails WHERE `id` NOT IN (54,55,62,63,64,76,77,128,129,211,212,242,243,303,304,352,353,365,366,513,514,544,545);";
+            $results = $wpdb->get_results($sql);
+            foreach ($results AS $r){
+                $to = $r->FirstName.' '.$r->LastName.' <'.$r->email.'>';
+
+                $temppwd = is_null($r->TempPwd)?'Please use the "forgot password" system to retrieve your password.':$r->TempPwd;
+                $pattern = array('/\[\[email\]\]/','/\[\[TempPwd\]\]/');
+                $replacement = array($r->email,$temppwd);
+                $message = preg_replace($pattern,$replacement,$email_str);
+
+
+                //send the email
+                if(wp_mail($to, $subject, $message, $headers)){
+                    print $r->FirstName.' '.$r->LastName.', '.$r->email.'<br />';
+                }
+            }
+        }
+
         //utility
         function settings_page()
         {
@@ -441,6 +492,15 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                             console.log(response);
                         });
                     });
+                    $('.send_renewal_emails').click(function(){
+                        var data = {
+                            action: 'send_renewal_emails',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
             </script>
             <div class="wrap">
@@ -471,7 +531,8 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                     <dd><button class="move_collegeid">Go</button></dd>
                     <dt>Add renewal to attachment table:</dt>
                     <dd><button class="add_renewal_to_attachment_table">Go</button></dd>
-
+                    <dt>Send renewal emails:</dt>
+                    <dd><button class="send_renewal_emails">Go</button></dd>
                 </dl>
                 <div class="response1"></div>
             </div>
