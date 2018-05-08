@@ -24,7 +24,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_fix_emails', array(&$this,'fix_emails') );
             add_action( 'wp_ajax_update_renewal_table', array(&$this,'update_renewal_table') );
             add_action( 'wp_ajax_update_applicant_table', array(&$this,'update_applicant_table') );
-            add_action( 'wp_ajax_parse_emails', array(&$this,'parse_emails') );
+            add_action( 'wp_ajax_parse_emails', array(&$this,'parse_duplicate_emails') );
             add_action( 'wp_ajax_move_collegeid', array(&$this,'move_collegeid') );
             add_action( 'wp_ajax_add_renewal_to_attachment_table', array(&$this,'add_renewal_to_attachment_table') );
             add_action( 'wp_ajax_send_renewal_emails', array(&$this,'send_renewal_emails') );
@@ -217,6 +217,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
         function parse_emails(){
             global $wpdb;
             $sql = "SELECT * FROM temp_emails";
+
             $students = $wpdb->get_results($sql);
             add_filter('send_password_change_email',array(&$this,'return_false'));
             add_filter('send_email_change_email',array(&$this,'return_false'));
@@ -268,6 +269,66 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                 $applicant = $this->queries->get_applicant_id($user_id);
                 if(!$applicant){
                     $sql = 'INSERT INTO applicant SET applicant.ApplicationDateTime = "2017-04-16 21:32:33", applicant.UserId = "'.$user_id.'", applicant.Email = "'.$student->email.'", applicant.FirstName = "'.$student->FirstName.'", applicant.MiddleInitial = "", applicant.LastName = "'.$student->LastName.'", applicant.Last4SSN = "0000", applicant.DateOfBirth = "'.$student->DOB.'", applicant.Address1 = "Unknown", applicant.Address2 = "", applicant.City = "Unknown", applicant.StateId = "OH", applicant.CountyId = "24", applicant.ZipCode = "00000", applicant.CellPhone = "unknown", applicant.AlternativePhone = "", applicant.EthnicityId = "24", applicant.StudentId = "'.$student->StudentId.'";';
+                    $wpdb->query($sql);
+                    $applicant_id = $wpdb->insert_id;
+                    $sql = 'SELECT * FROM applicantcollege WHERE applicantcollege.ApplicantId = "'.$applicant_id.'";';
+                    $test = $wpdb->get_results($sql);
+                    if(count($test) == 0){
+                        $sql = 'INSERT INTO applicantcollege SET applicantcollege.ApplicantId = "'.$applicant_id.'", applicantcollege.CollegeId = "343";';
+                        $wpdb->query($sql);
+                    }
+                }
+            }
+        }
+
+
+        function parse_duplicate_emails(){
+            global $wpdb;
+            $sql = "SELECT * FROM temp_emails WHERE `id` IN (54,55,62,63,64,76,77,128,211,242,243,303,304,352,353,365,366,513,514,544,545,748);";
+
+            $students = $wpdb->get_results($sql);
+            add_filter('send_password_change_email',array(&$this,'return_false'));
+            add_filter('send_email_change_email',array(&$this,'return_false'));
+            //return ts_data($students,0);
+            foreach($students AS $student){
+                $user = get_user_by('ID',$student->user_id);
+                if($user){
+                    //$user_id = $user->ID;
+                    //$sql = 'UPDATE temp_emails SET user_id = '.$user->ID.', permissions = "'.implode(',',$user->roles).'" WHERE id = "'.$student->id.'";';
+                    /*if($wpdb->get_results($sql)){
+                        print $user->display_name .' <br>';
+                    }*/
+                    //if($student->email != $user->user_email){
+                      //  wp_update_user(array('ID' => $user->ID,'user_email' => $student->email, 'role' => 'awardee'));
+                    //} else {
+                        wp_update_user(array('ID' => $user->ID, 'role' => 'awardee'));
+
+                    //}
+                } else { //there is still not a user! Create One.
+                    $pwd = $this->random_str();
+                    $args = array(
+                        'first_name' => $student->FirstName,
+                        'last_name' => $student->LastName,
+                        'user_login' => sanitize_title_with_dashes(strtolower($student->FirstName . '_' . $student->LastName)),
+                        'user_email' => $student->email, //doublecheck that no one is actually going to get emailed.
+                        'role' => 'awardee',
+                        'user_pass' => $pwd,
+                    );
+                    $user_id = wp_insert_user($args);
+                    if(is_wp_error($user_id)){
+                        ts_data($args);
+                        ts_data($user_id);
+                        continue;
+                    }
+                    $sql = 'UPDATE temp_emails SET user_id = '.$user_id.', TempPwd = "'.$pwd.'" WHERE id = "'.$student->id.'";';
+                    if($wpdb->query($sql)){
+                        print $user->display_name .' <br>';
+                    }
+                }
+                //attach to an application. if there is no application, create one.
+                $applicant = $this->queries->get_applicant_id($user_id);
+                if(!$applicant){
+                    $sql = 'INSERT INTO applicant SET applicant.ApplicationDateTime = "2017-04-16 21:32:33", applicant.UserId = "'.$user_id.'", applicant.Email = "'.$student->email.'", applicant.FirstName = "'.$student->FirstName.'", applicant.MiddleInitial = "", applicant.LastName = "'.$student->LastName.'", applicant.Last4SSN = "0000", applicant.DateOfBirth = "'.$student->DOB.'", applicant.Address1 = "Unknown", applicant.Address2 = "", applicant.City = "Unknown", applicant.StateId = "OH", applicant.CountyId = "24", applicant.ZipCode = "00000", applicant.CellPhone = "unknown", applicant.AlternativePhone = "", applicant.EthnicityId = "24", applicant.StudentId = "'.$student->StudentId.'", applicant.CollegeId = "343";';
                     $wpdb->query($sql);
                     $applicant_id = $wpdb->insert_id;
                     $sql = 'SELECT * FROM applicantcollege WHERE applicantcollege.ApplicantId = "'.$applicant_id.'";';
@@ -337,7 +398,8 @@ beth@cincinnatischolarshipfoundation.org<br/>
 <a href = "http://cincinnatischolarshipfoundation.org">www.cincinnatischolarshipfoundation.org</a>
 </p>
 ';
-            $sql = "SELECT `email`,`FirstName`,`LastName`,`TempPwd` FROM temp_emails WHERE `id` NOT IN (54,55,62,63,64,76,77,128,129,211,212,242,243,303,304,352,353,365,366,513,514,544,545);";
+            //$sql = "SELECT `email`,`FirstName`,`LastName`,`TempPwd` FROM temp_emails WHERE `id` NOT IN (54,55,62,63,64,76,77,128,129,211,212,242,243,303,304,352,353,365,366,513,514,544,545);";
+            $sql = "SELECT `email`,`FirstName`,`LastName`,`TempPwd` FROM temp_emails WHERE `id` IN (54,55,62,63,64,76,77,128,211,242,243,303,304,352,353,365,366,513,514,544,545,748);";
             $results = $wpdb->get_results($sql);
             foreach ($results AS $r){
                 $to = $r->FirstName.' '.$r->LastName.' <'.$r->email.'>';
