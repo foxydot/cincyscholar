@@ -8,12 +8,13 @@ class MSDLAB_Display{
     private $variable;
     private $export_header;
     private $export_csv;
+    private $skipcsv;
 
     public function __construct() {
         if(class_exists('MSDLAB_Queries')){
             $this->queries = new MSDLAB_Queries();
         }
-
+        $this->skipcsv = array('Activities','HardshipNote','CoopStudyAbroadNote');
     }
 
     /**
@@ -69,7 +70,9 @@ class MSDLAB_Display{
         $exh = array();
         foreach($fields AS $key => $value){
             $ret[] = '<th>'.$value.'</th>';
-            $exh[] = $this->csv_safe($value);
+            if(!in_array($value,$this->skipcsv)) {
+                $exh[] = $this->csv_safe($value);
+            }
         }
 
         $this->export_header = implode(",",$exh);
@@ -156,6 +159,7 @@ class MSDLAB_Display{
                         break;
                     case 'Activities':
                     case 'HardshipNote':
+                    case 'CoopStudyAbroadNote':
                         $printval = strip_tags($user->{$value});
                         break;
                     default:
@@ -163,7 +167,9 @@ class MSDLAB_Display{
                         break;
                 }
                 $row[] = '<td class="'.$value.'"><div>'.$printval.'</div></td>';
-                $erow[] = $this->csv_safe($printval);
+                if(!in_array($value,$this->skipcsv)) {
+                    $erow[] = $this->csv_safe($printval);
+                }
             }
             $class = $i%2==0?'even':'odd';
             $ret[] = '<tr class="'.$class.'">'.implode("\n\r", $row).'</tr>';

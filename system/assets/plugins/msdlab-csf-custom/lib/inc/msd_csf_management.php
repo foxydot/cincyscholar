@@ -271,20 +271,6 @@ if (!class_exists('MSDLab_CSF_Management')) {
                 $result = $this->queries->get_renewal_report_set($fields);
                 $submitted = array();
                 foreach ($result AS $k => $renewal) {
-                    if(!empty($_POST['employer_search_input'])){
-                        if(stripos($renewal->Employer,$_POST['employer_search_input'])===false &&
-                            stripos($renewal->GuardianEmployer1,$_POST['employer_search_input'])===false &&
-                            stripos($renewal->GuardianEmployer2,$_POST['employer_search_input'])===false){
-                            continue;
-                        }
-                    }
-
-                    if(isset($_POST['cps_employee_search_input'])){
-                        if($renewal->CPSPublicSchools != 1){
-                            continue;
-                        }
-                    }
-
                     $submitted[] = $renewal;
                 }
                 $info = '';
