@@ -522,7 +522,7 @@ class MSDLAB_Queries{
             return $this->get_all_renewals();
         }
         //ts_data($this->post_vars);
-        $usertable = $wpdb->prefix . 'users';
+        //$usertable = $wpdb->prefix . 'users';
         $data['tables']['renewal'] = array('*');
 
         if(empty($this->post_vars['application_date_search_input_start']) && empty($this->post_vars['application_date_search_input_end'])) {
@@ -571,11 +571,11 @@ class MSDLAB_Queries{
         }
 
 
-        $data['tables'][$usertable] = array('user_email');
-        $data['where'] .= ' AND ' . $usertable . '.ID  = renewal.UserId';
+        //$data['tables'][$usertable] = array('user_email');
+        //$data['where'] .= ' AND ' . $usertable . '.ID  = renewal.UserId';
         if(!empty($this->post_vars['email_search_input'])) {
             //add search for an email on application
-            $data['where'] .= ' AND ' . $usertable . '.user_email  LIKE \'%'.$this->post_vars['email_search_input'].'%\'';
+            $data['where'] .= ' AND renewal.UserEmail  LIKE \'%'.$this->post_vars['email_search_input'].'%\'';
         }
         //ts_data($data);
         $results = $this->get_result_set($data);

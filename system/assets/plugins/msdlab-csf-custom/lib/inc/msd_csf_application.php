@@ -655,6 +655,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     $data['order'] = 'RenewalDateTime DESC';
                     $results = $this->queries->get_result_set($data);
                     $result = $results[0];
+                    $user_id = $result->UserId;
                     $docs['tables']['Attachment'] = array('AttachmentId','AttachmentTypeId','FilePath');
                     $docs['where'] = 'RenewalId = '.$result->RenewalId;
                     $documents = $this->queries->get_result_set($docs);
@@ -662,9 +663,8 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     if(!$result){ //there is no renewal! oh no! get the application data and populate the form with that.
                         $data = array();
                         $data['tables']['Applicant'] = array('UserId','Email','ApplicationDateTime', 'FirstName', 'MiddleInitial', 'LastName', 'Last4SSN', 'Address1', 'Address2', 'City', 'StateId',
-                            'CountyId', 'ZipCode', 'CellPhone', 'AlternativePhone', 'DateOfBirth','MajorId','StudentId');
-                        $data['tables']['applicantcollege'] = array('CollegeId');
-                        $data['where'] = 'applicant.ApplicantId = ' . $applicant_id .' AND applicantcollege.ApplicantId = applicant.ApplicantId';
+                            'CountyId', 'ZipCode', 'CellPhone', 'AlternativePhone', 'DateOfBirth','MajorId','StudentId','CollegeId');
+                        $data['where'] = 'applicant.ApplicantId = ' . $applicant_id ;
                         $results = $this->queries->get_result_set($data);
                         $result = $results[0];
                     }
@@ -700,7 +700,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     $ret['renewal_RenewalDateTime'] = $this->form->field_hidden('renewal_RenewalDateTime', $renewal_datetime);
                     $ret['Renewal_ApplicantId'] = $this->form->field_hidden("Renewal_ApplicantId", $applicant_id);
                     $ret['Renewal_RenewalId'] = $this->form->field_hidden("Renewal_RenewalId", $renewal_id);
-                    $ret['Renewal_UserId'] = $this->form->field_hidden("Renewal_UserId", $result->UserId);
+                    $ret['Renewal_UserId'] = $this->form->field_hidden("Renewal_UserId", $user_id);
                     $ret['Renewal_CountyId'] = $this->form->field_hidden("Renewal_CountyId", $result->CountyId?$result->CountyId:null);
                     $ret['Renewal_Last4SSN'] = $this->form->field_hidden("Renewal_Last4SSN", $result->Last4SSN?$result->Last4SSN:null);
                     $ret['Renewal_DateOfBirth'] = $this->form->field_hidden("Renewal_DateOfBirth", $result->DateOfBirth?$result->DateOfBirth:null);
