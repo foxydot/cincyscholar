@@ -269,7 +269,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
             if($_POST) {
                 //ts_data($_POST);
                 $result = $this->queries->get_renewal_report_set($fields);
-                $submitted = $incomplete = array();
+                $submitted = array();
                 foreach ($result AS $k => $renewal) {
                     if(!empty($_POST['employer_search_input'])){
                         if(stripos($renewal->Employer,$_POST['employer_search_input'])===false &&
@@ -285,11 +285,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
                         }
                     }
 
-                    if ($renewal->status == 2) {
-                        $submitted[] = $renewal;
-                    } else {
-                        $incomplete[] = $renewal;
-                    }
+                    $submitted[] = $renewal;
                 }
                 $info = '';
                 $class = array('table','table-bordered');
@@ -297,7 +293,6 @@ if (!class_exists('MSDLab_CSF_Management')) {
                     $tabs = '
 <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#submitted" aria-controls="submitted" role="tab" data-toggle="tab">Submitted</a></li>
-    <li role="presentation"><a href="#incomplete" aria-controls="incomplete" role="tab" data-toggle="tab">incomplete</a></li>
   </ul>';
 
                     if(count($submitted)>0){
@@ -306,15 +301,6 @@ if (!class_exists('MSDLab_CSF_Management')) {
                         </div>';
                     } else {
                         $pane['submitted'] = '<div role="tabpanel" class="tab-pane active" id="submitted">
-                            <div class="notice bg-info text-info">No results</div>
-                        </div>';
-                    }
-                    if(count($incomplete)>0){
-                        $pane['incomplete'] = '<div role="tabpanel" class="tab-pane" id="incomplete">
-                            ' . implode("\n\r",$this->display->print_table('renewal_incomplete',$fields,$incomplete,$info,$class,false)) .'
-                        </div>';
-                    } else {
-                        $pane['incomplete'] = '<div role="tabpanel" class="tab-pane" id="incomplete">
                             <div class="notice bg-info text-info">No results</div>
                         </div>';
                     }
@@ -338,7 +324,6 @@ if (!class_exists('MSDLab_CSF_Management')) {
   <!-- Tab panes -->
   <div class="tab-content">';
             print $pane['submitted'];
-            print $pane['incomplete'];
 
             print '</div>';
         }
