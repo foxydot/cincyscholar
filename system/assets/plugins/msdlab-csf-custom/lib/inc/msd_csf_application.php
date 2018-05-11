@@ -119,6 +119,17 @@ if (!class_exists('MSDLab_CSF_Application')) {
             }
             if(is_user_logged_in()){
                 $ret = array();
+                if(current_user_can('view_csf_reports')){
+                    $applicant_id = $_GET['applicant_id'];
+                    $renewal_id = $_GET['renewal_id'];
+                    if($renewal_id){
+                        return implode("\n\r",$this->get_form('renewal'));
+                    } else {
+                        return implode("\n\r",$this->get_form('application'));
+                    }
+
+                }
+
                 if(current_user_can('view_renewal_process')){
                     //$ret[] = 'VIEW RENEWAL PROCESS';
                 }
@@ -182,6 +193,11 @@ if (!class_exists('MSDLab_CSF_Application')) {
             $jquery = $ret = array();
             $ret['form_header'] = $this->form->form_header($form_id,array($form_id));
             $form_nonce = $form_id;
+
+            if(current_user_can('view_csf_reports')) {
+                $applicant_id = $_GET['applicant_id'];
+                $renewal_id = $_GET['renewal_id'];
+            }
             switch($form_id) {
                 case 'application':
                     $form_page_number = isset($_POST['form_page_number']) ? $_POST['form_page_number'] : 1;
@@ -190,7 +206,6 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     }
                     if(current_user_can('review_application')){
                         $form_page_number = isset($_POST['form_page_number']) ? $_POST['form_page_number'] : 6;
-                        $applicant_id = $_GET['applicant_id'];
                     }
                     $step = isset($_POST['form_page_next']) ? $_POST['form_page_next'] : 1;
                     $set['where'] = $applicant_id > 0 ? array('applicant' => 'applicant.ApplicantId = ' . $applicant_id) : array('applicant' => 'applicant.UserId = ' . $user_id);
@@ -321,9 +336,9 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             break;
                         case 2: //academic
                             //sets up the query
-                            $data['tables']['Applicant'] = array('MajorId', 'EducationAttainmentId', 'HighSchoolGraduationDate', 'HighSchoolId', 'HighSchoolGraduationDate', 'HighSchoolGPA', 'PlayedHighSchoolSports', 'FirstGenerationStudent','Activities','OtherSchool');
-                            $data['tables']['ApplicantCollege'] = array('CollegeId');
-                            $data['where'] .= ' AND applicantcollege.ApplicantId = ' . $applicant_id;
+                            $data['tables']['Applicant'] = array('MajorId', 'EducationAttainmentId', 'HighSchoolGraduationDate', 'HighSchoolId', 'HighSchoolGraduationDate', 'HighSchoolGPA', 'PlayedHighSchoolSports', 'FirstGenerationStudent','Activities','CollegeId','OtherSchool');
+                            //$data['tables']['ApplicantCollege'] = array('CollegeId');
+                            //$data['where'] .= ' AND applicantcollege.ApplicantId = ' . $applicant_id;
                             $results = $this->queries->get_result_set($data);
                             $result = $results[0];
                             //the fields
@@ -350,8 +365,8 @@ if (!class_exists('MSDLab_CSF_Application')) {
                         });";
                             $ret['form_page_number'] = $this->form->field_utility('form_page_number', 2);
                             $ret['hdrCollegeInfo'] = $this->form->section_header('hdrCollegeInfo', 'Academic Information');
-                            $ret['ApplicantCollege_ApplicantId'] = $this->form->field_hidden("ApplicantCollege_ApplicantId", $applicant_id);
-                            $ret['ApplicantCollege_CollegeId'] = $this->form->field_select('ApplicantCollege_CollegeId', $result->CollegeId ? $result->CollegeId : null, 'College Applied To or Attending', null, $this->college_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
+                            //$ret['ApplicantCollege_ApplicantId'] = $this->form->field_hidden("ApplicantCollege_ApplicantId", $applicant_id);
+                            $ret['Applicant_CollegeId'] = $this->form->field_select('Applicant_CollegeId', $result->CollegeId ? $result->CollegeId : null, 'College Applied To or Attending', null, $this->college_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
                             $ret['Applicant_MajorId'] = $this->form->field_select('Applicant_MajorId', $result->MajorId ? $result->MajorId : 5122, 'Intended Major (If Uncertain, select Undecided)', null, $this->major_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
 
                             $ret['OtherWrapOpen'] = '<div class="otherwrap">';
@@ -655,6 +670,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     $data['order'] = 'RenewalDateTime DESC';
                     $results = $this->queries->get_result_set($data);
                     $result = $results[0];
+                    $user_id = $result->UserId;
                     $docs['tables']['Attachment'] = array('AttachmentId','AttachmentTypeId','FilePath');
                     $docs['where'] = 'RenewalId = '.$result->RenewalId;
                     $documents = $this->queries->get_result_set($docs);
@@ -662,9 +678,8 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     if(!$result){ //there is no renewal! oh no! get the application data and populate the form with that.
                         $data = array();
                         $data['tables']['Applicant'] = array('UserId','Email','ApplicationDateTime', 'FirstName', 'MiddleInitial', 'LastName', 'Last4SSN', 'Address1', 'Address2', 'City', 'StateId',
-                            'CountyId', 'ZipCode', 'CellPhone', 'AlternativePhone', 'DateOfBirth','MajorId','StudentId');
-                        $data['tables']['applicantcollege'] = array('CollegeId');
-                        $data['where'] = 'applicant.ApplicantId = ' . $applicant_id .' AND applicantcollege.ApplicantId = applicant.ApplicantId';
+                            'CountyId', 'ZipCode', 'CellPhone', 'AlternativePhone', 'DateOfBirth','MajorId','StudentId','CollegeId');
+                        $data['where'] = 'applicant.ApplicantId = ' . $applicant_id ;
                         $results = $this->queries->get_result_set($data);
                         $result = $results[0];
                     }
@@ -700,7 +715,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     $ret['renewal_RenewalDateTime'] = $this->form->field_hidden('renewal_RenewalDateTime', $renewal_datetime);
                     $ret['Renewal_ApplicantId'] = $this->form->field_hidden("Renewal_ApplicantId", $applicant_id);
                     $ret['Renewal_RenewalId'] = $this->form->field_hidden("Renewal_RenewalId", $renewal_id);
-                    $ret['Renewal_UserId'] = $this->form->field_hidden("Renewal_UserId", $result->UserId);
+                    $ret['Renewal_UserId'] = $this->form->field_hidden("Renewal_UserId", $user_id);
                     $ret['Renewal_CountyId'] = $this->form->field_hidden("Renewal_CountyId", $result->CountyId?$result->CountyId:null);
                     $ret['Renewal_Last4SSN'] = $this->form->field_hidden("Renewal_Last4SSN", $result->Last4SSN?$result->Last4SSN:null);
                     $ret['Renewal_DateOfBirth'] = $this->form->field_hidden("Renewal_DateOfBirth", $result->DateOfBirth?$result->DateOfBirth:null);
@@ -752,8 +767,8 @@ if (!class_exists('MSDLab_CSF_Application')) {
             $personal['tables']['Applicant'] = array('*');
             $personal['where'] = 'applicant.ApplicantId = ' . $applicant_id;
 
-            $college['tables']['ApplicantCollege'] = array('CollegeId');
-            $college['where'] .= 'applicantcollege.ApplicantId = ' . $applicant_id;
+            //$college['tables']['ApplicantCollege'] = array('CollegeId');
+            //$college['where'] .= 'applicantcollege.ApplicantId = ' . $applicant_id;
 
             $independence['tables']['ApplicantIndependenceQuery'] = array('ApplicantId', 'AdvancedDegree', 'Children', 'Married', 'TwentyFour', 'Veteran', 'Orphan', 'Emancipated', 'Homeless');
             $independence['where'] .= 'applicantindependencequery.ApplicantId = ' . $applicant_id;
@@ -810,7 +825,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
             $ret['hdrCollegeInfo'] = $this->form->section_header('hdrCollegeInfo', 'Academic Information');
 
             $ret[] = '<div class="row">';
-            $ret['ApplicantCollege_CollegeId'] = $this->form->field_result('ApplicantCollege_CollegeId', $results['college']->CollegeId ? $this->queries->get_college_by_id($results['college']->CollegeId) : '', 'College Applied To or Attending',  array('required', 'col-md-6', 'col-sm-12'));
+            $ret['ApplicantCollege_CollegeId'] = $this->form->field_result('ApplicantCollege_CollegeId', $results['personal']->CollegeId ? $this->queries->get_college_by_id($results['personal']->CollegeId) : '', 'College Applied To or Attending',  array('required', 'col-md-6', 'col-sm-12'));
             if($results['college']->CollegeId == 343){
                 $ret['Applicant_OtherSchool'] = $this->form->field_result('Applicant_OtherSchool', $results['personal']->OtherSchool?$results['personal']->OtherSchool:'','Name of Unlisted Institution',array('col-sm-12','required')); //how are we handling "other" in the new DB?
             }

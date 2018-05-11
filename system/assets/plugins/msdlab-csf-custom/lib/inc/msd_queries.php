@@ -358,13 +358,14 @@ class MSDLAB_Queries{
         $data['where'] .= ' AND ' . $usertable . '.ID  = applicant.UserId';
         if(!empty($this->post_vars['email_search_input'])) {
             //add search for an email on application
-            $data['where'] .= ' AND ' . $usertable . '.user_email  LIKE \'%'.$this->post_vars['email_search_input'].'%\'';
+            $data['where'] .= ' AND (applicant.Email LIKE \'%'.$this->post_vars['email_search_input'].'%\' OR ' . $usertable . '.user_email  LIKE \'%'.$this->post_vars['email_search_input'].'%\')';
         }/*
         $data['tables']['applicantcollege'] = array('CollegeId');
         $data['where'] .= ' AND (applicantcollege.ApplicantId = applicant.ApplicantId)';
+        */
         if(!empty($this->post_vars['college_search_input'])){
-            $data['where'] .= ' AND applicantcollege.CollegeId = '.$this->post_vars['college_search_input'];
-        }*/
+            $data['where'] .= ' AND applicant.CollegeId = '.$this->post_vars['college_search_input'];
+        }
         //ts_data($data);
         $results = $this->get_result_set($data);
         //error_log($wpdb->last_query);
@@ -374,7 +375,7 @@ class MSDLAB_Queries{
 
             $college = $agreements = $financial = $docs = array();
 
-            //add college
+            /*//add college
             $college['tables']['applicantcollege'] = array('CollegeId');
             $college['where'] .= ' AND (applicantcollege.ApplicantId = applicant.ApplicantId)';
             $college_results = $this->get_result_set($college);
@@ -382,7 +383,7 @@ class MSDLAB_Queries{
                 foreach($ar as $y => $z){
                     $results[$k]->$y = $z;
                 }
-            }
+            }*/
 
             //add agreements
             $agreements['tables']['agreements'] = array('ApplicantHaveRead','ApplicantDueDate','ApplicantDocsReq','ApplicantReporting','GuardianHaveRead','GuardianDueDate','GuardianDocsReq','GuardianReporting');
@@ -437,8 +438,8 @@ class MSDLAB_Queries{
          $data['where'] = 'applicant.ApplicationDateTime > 20180101000000'; //replace with dates from settings
          $data['tables'][$usertable] = array('user_email');
          $data['where'] .= ' AND ' . $usertable . '.ID  = applicant.UserId';
-         $data['tables']['applicantcollege'] = array('CollegeId');
-         $data['where'] .= ' AND applicantcollege.ApplicantId = applicant.ApplicantId';
+         //$data['tables']['applicantcollege'] = array('CollegeId');
+         //$data['where'] .= ' AND applicantcollege.ApplicantId = applicant.ApplicantId';
          $results = $this->get_result_set($data);
 
          foreach ($results AS $k => $r){
@@ -522,7 +523,7 @@ class MSDLAB_Queries{
             return $this->get_all_renewals();
         }
         //ts_data($this->post_vars);
-        $usertable = $wpdb->prefix . 'users';
+        //$usertable = $wpdb->prefix . 'users';
         $data['tables']['renewal'] = array('*');
 
         if(empty($this->post_vars['application_date_search_input_start']) && empty($this->post_vars['application_date_search_input_end'])) {
@@ -571,11 +572,11 @@ class MSDLAB_Queries{
         }
 
 
-        $data['tables'][$usertable] = array('user_email');
-        $data['where'] .= ' AND ' . $usertable . '.ID  = renewal.UserId';
+        //$data['tables'][$usertable] = array('user_email');
+        //$data['where'] .= ' AND ' . $usertable . '.ID  = renewal.UserId';
         if(!empty($this->post_vars['email_search_input'])) {
             //add search for an email on application
-            $data['where'] .= ' AND ' . $usertable . '.user_email  LIKE \'%'.$this->post_vars['email_search_input'].'%\'';
+            $data['where'] .= ' AND renewal.UserEmail  LIKE \'%'.$this->post_vars['email_search_input'].'%\'';
         }
         //ts_data($data);
         $results = $this->get_result_set($data);
