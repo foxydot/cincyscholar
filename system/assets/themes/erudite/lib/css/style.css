@@ -1686,20 +1686,17 @@ p.entry-meta {
       background: #3f829c;
       color: #FCFCFC;
       border: 2px solid #3f829c; }
-  .sectioned-page-wrapper .section.first-child {
-    padding-top: 27em; }
-    .sectioned-page-wrapper .section.first-child.overlay {
-      padding-top: 0; }
-    .sectioned-page-wrapper .section.first-child .overlay {
-      padding-top: 14em;
-      height: 500px;
-      text-align: center; }
-      .sectioned-page-wrapper .section.first-child .overlay .section-title h3 {
-        font-size: 4em;
-        font-weight: 500; }
-      .sectioned-page-wrapper .section.first-child .overlay p {
-        max-width: 700px;
-        margin: 0 auto 1em; }
+  .sectioned-page-wrapper .section.section-banner.overlay {
+    padding-top: 0; }
+  .sectioned-page-wrapper .section.section-banner .overlay {
+    padding-top: 14em;
+    text-align: center; }
+    .sectioned-page-wrapper .section.section-banner .overlay .section-title h3 {
+      font-size: 4em;
+      font-weight: 500; }
+    .sectioned-page-wrapper .section.section-banner .overlay p {
+      max-width: 700px;
+      margin: 0 auto 1em; }
 
 @media only screen and (min-width: 768px) {
   .sectioned-page-wrapper .section i.fa.fa-plus {
