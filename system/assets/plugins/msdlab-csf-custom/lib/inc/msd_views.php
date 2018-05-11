@@ -214,6 +214,7 @@ class MSDLAB_Display{
         } else {
             return '<tr>'.$ret.'</tr>';
         }
+        return;
     }
 
     /**

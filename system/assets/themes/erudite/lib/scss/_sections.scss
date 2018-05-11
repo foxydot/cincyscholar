@@ -154,13 +154,15 @@
   }
   //specific sections
   .section.first-child{
-    padding-top: 27em;
+    //padding-top: 27em;
+  }
+  .section.section-banner{
     &.overlay{
       padding-top: 0;
     }
     .overlay{
       padding-top: 14em;
-      height: 500px;
+      //height: 500px;
       text-align: center;
       .section-title h3{
         font-size: 4em;
