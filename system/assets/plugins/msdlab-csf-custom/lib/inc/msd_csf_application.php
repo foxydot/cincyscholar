@@ -119,6 +119,17 @@ if (!class_exists('MSDLab_CSF_Application')) {
             }
             if(is_user_logged_in()){
                 $ret = array();
+                if(current_user_can('view_csf_reports')){
+                    $applicant_id = $_GET['applicant_id'];
+                    $renewal_id = $_GET['renewal_id'];
+                    if($renewal_id){
+                        return implode("\n\r",$this->get_form('renewal'));
+                    } else {
+                        return implode("\n\r",$this->get_form('application'));
+                    }
+
+                }
+
                 if(current_user_can('view_renewal_process')){
                     //$ret[] = 'VIEW RENEWAL PROCESS';
                 }
@@ -182,6 +193,11 @@ if (!class_exists('MSDLab_CSF_Application')) {
             $jquery = $ret = array();
             $ret['form_header'] = $this->form->form_header($form_id,array($form_id));
             $form_nonce = $form_id;
+
+            if(current_user_can('view_csf_reports')) {
+                $applicant_id = $_GET['applicant_id'];
+                $renewal_id = $_GET['renewal_id'];
+            }
             switch($form_id) {
                 case 'application':
                     $form_page_number = isset($_POST['form_page_number']) ? $_POST['form_page_number'] : 1;
@@ -190,7 +206,6 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     }
                     if(current_user_can('review_application')){
                         $form_page_number = isset($_POST['form_page_number']) ? $_POST['form_page_number'] : 6;
-                        $applicant_id = $_GET['applicant_id'];
                     }
                     $step = isset($_POST['form_page_next']) ? $_POST['form_page_next'] : 1;
                     $set['where'] = $applicant_id > 0 ? array('applicant' => 'applicant.ApplicantId = ' . $applicant_id) : array('applicant' => 'applicant.UserId = ' . $user_id);

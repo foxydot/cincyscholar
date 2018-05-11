@@ -106,14 +106,17 @@ class MSDLAB_Display{
         $ret = array();
         $ecsv = array();
         $i = 0;
+        $portal_page = get_option('csf_settings_student_welcome_page');
         foreach($result as $k => $user){
             $row = array();
             $erow = array();
             foreach ($fields as $key => $value) {
                 switch ($value){
                     case 'ApplicantId':
-                        $portal_page = get_option('csf_settings_student_welcome_page');
-                        $printval = '<a href="'.get_permalink($portal_page).'?applicant_id='.$user->{$value}.'" target="_blank">'.$user->{$value}.'</a>';
+                        $printval = '<a href="'.get_permalink($portal_page).'?applicant_id='.$user->{$value}.'&renewal_id='.$user->RenewalId.'" target="_blank">'.$user->{$value}.'</a>';
+                        break;
+                    case 'RenewalId':
+                        $printval = '<a href="'.get_permalink($portal_page).'?applicant_id='.$user->ApplicantId.'&renewal_id='.$user->{$value}.'" target="_blank">'.$user->{$value}.'</a>';
                         break;
                     case 'CountyId':
                         $printval = $this->queries->get_county_by_id($user->{$value});
