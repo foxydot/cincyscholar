@@ -284,7 +284,8 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
 
         function parse_duplicate_emails(){
             global $wpdb;
-            $sql = "SELECT * FROM temp_emails WHERE `id` IN (54,55,62,63,64,76,77,128,211,242,243,303,304,352,353,365,366,513,514,544,545,748);";
+            //$sql = "SELECT * FROM temp_emails WHERE `id` IN (54,55,62,63,64,76,77,128,211,242,243,303,304,352,353,365,366,513,514,544,545,748);";
+            $sql = "SELECT * FROM temp_emails WHERE `id` IN (242,243);";
 
             $students = $wpdb->get_results($sql);
             add_filter('send_password_change_email',array(&$this,'return_false'));
@@ -400,7 +401,7 @@ beth@cincinnatischolarshipfoundation.org<br/>
 ';
             //$sql = "SELECT `email`,`FirstName`,`LastName`,`TempPwd` FROM temp_emails WHERE `id` NOT IN (54,55,62,63,64,76,77,128,129,211,212,242,243,303,304,352,353,365,366,513,514,544,545);";
             //$sql = "SELECT `email`,`FirstName`,`LastName`,`TempPwd` FROM temp_emails WHERE `id` IN (54,55,62,63,64,76,77,128,211,242,243,303,304,352,353,365,366,513,514,544,545,748);";
-            $sql = "SELECT `email`,`FirstName`,`LastName`,`TempPwd` FROM temp_emails WHERE `id` IN (402);";
+            $sql = "SELECT `email`,`FirstName`,`LastName`,`TempPwd` FROM temp_emails WHERE `id` IN (242,243);";
             $results = $wpdb->get_results($sql);
             foreach ($results AS $r){
                 $to = $r->FirstName.' '.$r->LastName.' <'.$r->email.'>';
