@@ -28,6 +28,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_move_collegeid', array(&$this,'move_collegeid') );
             add_action( 'wp_ajax_add_renewal_to_attachment_table', array(&$this,'add_renewal_to_attachment_table') );
             add_action( 'wp_ajax_send_renewal_emails', array(&$this,'send_renewal_emails') );
+            add_action( 'wp_ajax_fix_up_renewal_attachments', array(&$this,'fix_up_renewal_attachments') );
 
 
             add_filter('send_password_change_email',array(&$this,'return_false'));
@@ -419,6 +420,19 @@ beth@cincinnatischolarshipfoundation.org<br/>
             }
         }
 
+        function fix_up_renewal_attachments(){
+            global $wpdb;
+            $sql = "SELECT b.LastName, b.RenewalId AS RenewalId2, a.* FROM attachment AS a,renewal AS b WHERE a.ApplicantId = b.ApplicantId AND (a.RenewalId = 0 OR a.RenewalId IS NULL) AND b.ApplicantId IN (SELECT c.ApplicantId FROM renewal AS c);";
+            $students = $wpdb->get_results($sql);
+            foreach ($students AS $student){
+                $update_sql = 'UPDATE attachment SET RenewalId = '.$student->RenewalId2.' WHERE ApplicantId = '.$student->ApplicantId.' AND FilePath = "'.$student->FilePath.'";';
+                //print $update_sql;
+                if($wpdb->query($update_sql)){
+                    print $student->LastName .' updated<br>';
+                }
+            }
+        }
+
         //utility
         function settings_page()
         {
@@ -565,6 +579,15 @@ beth@cincinnatischolarshipfoundation.org<br/>
                             console.log(response);
                         });
                     });
+                    $('.fix_up_renewal_attachments').click(function(){
+                        var data = {
+                            action: 'fix_up_renewal_attachments',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
             </script>
             <div class="wrap">
@@ -597,6 +620,8 @@ beth@cincinnatischolarshipfoundation.org<br/>
                     <dd><button class="add_renewal_to_attachment_table">Go</button></dd>
                     <dt>Send renewal emails:</dt>
                     <dd><button class="send_renewal_emails">Go</button></dd>
+                    <dt>Fix up renewal attachments:</dt>
+                    <dd><button class="fix_up_renewal_attachments">Go</button></dd>
                 </dl>
                 <div class="response1"></div>
             </div>
