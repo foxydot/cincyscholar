@@ -191,8 +191,17 @@ class MSDLAB_Queries{
 
         //check for renewal id
         $renewal_id = false;
-        if(isset($attdat['RenewalId'])) {
-            $renewal_id = $attdat['RenewalId'];
+        if(array_key_exists('RenewalId',$attdat)) {
+            //error_log('array key exists');
+            if($attdat['RenewalId'] == ''){
+                //this is a new renewal
+
+                //error_log('new renewal');
+                $renewal_id = $this->get_renewal_id_by_applicant($applicant_id);
+                //error_log('renewal id: '.$renewal_id);
+            } else {
+                $renewal_id = $attdat['RenewalId'];
+            }
             unset($attdat['RenewalId']);
         }
 
@@ -242,6 +251,13 @@ class MSDLAB_Queries{
         return true;
     }
 
+    function get_renewal_id_by_applicant($applicant_id){
+        global $wpdb;
+        $sql = 'SELECT RenewalId FROM renewal WHERE ApplicantId = "'.$applicant_id.'" AND RenewalDateTime > "'.date('Ymdhis',strtotime('-5 minutes')).'";';
+        $results = $wpdb->get_results($sql);
+        return $results[0]->RenewalId;
+    }
+
     function get_attachment_type_ids(){
         global $wpdb;
         $sql = 'SELECT * FROM attachmenttype;';
@@ -252,6 +268,10 @@ class MSDLAB_Queries{
         }
         return $attachment_type_ids;
     }
+
+    /*
+     * Report Queries
+     */
 
     function get_select_array_from_db($table,$id_field,$field,$orderby = false){
         global $wpdb;
@@ -265,10 +285,6 @@ class MSDLAB_Queries{
         }
         return $array;
     }
-
-    /*
-     * Report Queries
-     */
 
     /**
      * Create the full result set
@@ -431,6 +447,10 @@ class MSDLAB_Queries{
         return $results;
     }
 
+    /*
+    *  Resource Queries
+    */
+
      public function get_all_applications(){
          global $wpdb;
          $usertable = $wpdb->prefix . 'users';
@@ -490,10 +510,6 @@ class MSDLAB_Queries{
          }
          return $results;
      }
-
-    /*
-    *  Resource Queries
-    */
 
     function is_indy($applicant_id){
         $indy['where'] = 'applicant.ApplicantId = ' . $applicant_id;;
