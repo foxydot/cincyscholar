@@ -28,9 +28,16 @@
 
 @media only screen and (min-width: 768px) {
   .sectioned-page-wrapper {
-    padding-top: 80px; } }
+    padding-top: 120px; } }
 
 @media only screen and (min-width: 1024px) {
+  .sectioned-page-wrapper .section.section-features {
+    background-position: center 60%; }
+    .sectioned-page-wrapper .section.section-features .section-body .container .row {
+      display: flex;
+      align-items: center; }
+    .sectioned-page-wrapper .section.section-features .section-content p {
+      margin: 0; }
   .sectioned-page-wrapper .section.section-banner a:not(.button), .sectioned-page-wrapper .section.section-banner a:not(.button):visited, .sectioned-page-wrapper .section.section-banner a:not(.button):active {
     color: #2A2B30;
     text-decoration: underline; }

@@ -21,7 +21,7 @@
   .section{
     background-repeat: no-repeat;
     background-size: cover;
-    padding: 8em 0;
+    padding: 2em 0;
     position: relative;
     .section-title{
       margin-bottom: 4em;
@@ -65,7 +65,7 @@
     .overlay{
       background: linear-gradient(to bottom, rgba(255,255,255,0.8) 0%,rgba(255,255,255,0.5) 100%);
       background-attachment: fixed;
-      padding: 8em 0;
+      padding: 2em 0;
     }
   }
   .section.bkg-dkgrey{

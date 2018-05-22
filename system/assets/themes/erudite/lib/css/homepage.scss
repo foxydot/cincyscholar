@@ -14,12 +14,24 @@
 
 @media only screen and (min-width: 768px) {
   .sectioned-page-wrapper{
-    padding-top: 80px;
+    padding-top: 120px;
   }
 }
 
 @media only screen and (min-width: 1024px) {
   .sectioned-page-wrapper{
+    .section.section-features{
+      background-position: center 60%;
+      .section-body .container .row{
+        display: flex;
+        align-items: center;
+      }
+      .section-content{
+        p{
+          margin: 0;
+        }
+      }
+    }
     .section.section-banner{
       a:not(.button), a:not(.button):visited, a:not(.button):active{
         color: $dkgrey;
