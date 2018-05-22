@@ -18,6 +18,16 @@
 /* Neutrals */
 /* Default Colors */
 /* Social Colors */
+.sectioned-page-wrapper .section.section-features .section-content p {
+  margin: 0; }
+
+.sectioned-page-wrapper .section.section-gala-sponsorship img.alignnone {
+  max-width: 100px;
+  margin: 2em; }
+
+.sectioned-page-wrapper .section.section-gala-sponsorship .section-footer-area {
+  margin: 0; }
+
 .sectioned-page-wrapper .section.section-quote {
   text-align: center; }
   .sectioned-page-wrapper .section.section-quote .section-body {
@@ -31,16 +41,14 @@
     padding-top: 120px; } }
 
 @media only screen and (min-width: 1024px) {
+  .sectioned-page-wrapper .section.section-banner a:not(.button), .sectioned-page-wrapper .section.section-banner a:not(.button):visited, .sectioned-page-wrapper .section.section-banner a:not(.button):active {
+    color: #2A2B30;
+    text-decoration: underline; }
   .sectioned-page-wrapper .section.section-features {
     background-position: center 60%; }
     .sectioned-page-wrapper .section.section-features .section-body .container .row {
       display: flex;
       align-items: center; }
-    .sectioned-page-wrapper .section.section-features .section-content p {
-      margin: 0; }
-  .sectioned-page-wrapper .section.section-banner a:not(.button), .sectioned-page-wrapper .section.section-banner a:not(.button):visited, .sectioned-page-wrapper .section.section-banner a:not(.button):active {
-    color: #2A2B30;
-    text-decoration: underline; }
   .sectioned-page-wrapper .section.section-learn-more .section-body .row {
     display: flex; }
     .sectioned-page-wrapper .section.section-learn-more .section-body .row .section-content {

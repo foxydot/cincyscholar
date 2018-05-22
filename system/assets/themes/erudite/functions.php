@@ -26,6 +26,7 @@ function genesis_msdlab_child_localization_setup(){
 }
 
 // Add the helper functions.
+include_once( get_stylesheet_directory() . '/lib/inc/widgets.php' );
 include_once( get_stylesheet_directory() . '/lib/inc/helper-functions.php' );
 include_once( get_stylesheet_directory() . '/lib/inc/msd-functions.php' ); //should this go to plugin?
 include_once( get_stylesheet_directory() . '/lib/inc/header-login.php' );

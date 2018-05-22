@@ -1432,6 +1432,17 @@ p.entry-meta {
     clear: both;
     display: block;
     text-align: center; }
+  .footer-widgets .msd-connected .wrap.row {
+    display: flex;
+    align-items: center; }
+  .footer-widgets .connected-form .gform_wrapper form .gform_body .gform_fields.top_label .gfield {
+    margin: 0 !important; }
+    .footer-widgets .connected-form .gform_wrapper form .gform_body .gform_fields.top_label .gfield .gfield_label {
+      display: none; }
+    .footer-widgets .connected-form .gform_wrapper form .gform_body .gform_fields.top_label .gfield .ginput_container input, .footer-widgets .connected-form .gform_wrapper form .gform_body .gform_fields.top_label .gfield .ginput_container textarea {
+      margin-bottom: 0 !important; }
+  .footer-widgets .connected-form .gform_wrapper form .gform_footer {
+    margin: 0 !important; }
   .footer-widgets .connected-social .social-media {
     margin: 0.25vw 0;
     float: none;

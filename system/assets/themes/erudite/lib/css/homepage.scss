@@ -1,6 +1,22 @@
 @import "bootstrap-overrides.scss";
 @import "mixins.scss";
 .sectioned-page-wrapper {
+  .section.section-features{
+    .section-content{
+      p{
+        margin: 0;
+      }
+    }
+  }
+  .section.section-gala-sponsorship{
+    img.alignnone{
+      max-width: 100px;
+      margin: 2em;
+    }
+    .section-footer-area{
+      margin: 0;
+    }
+  }
   .section.section-quote {
     text-align: center;
     .section-body{
@@ -20,22 +36,17 @@
 
 @media only screen and (min-width: 1024px) {
   .sectioned-page-wrapper{
+    .section.section-banner{
+      a:not(.button), a:not(.button):visited, a:not(.button):active{
+        color: $dkgrey;
+        text-decoration: underline;
+      }
+    }
     .section.section-features{
       background-position: center 60%;
       .section-body .container .row{
         display: flex;
         align-items: center;
-      }
-      .section-content{
-        p{
-          margin: 0;
-        }
-      }
-    }
-    .section.section-banner{
-      a:not(.button), a:not(.button):visited, a:not(.button):active{
-        color: $dkgrey;
-        text-decoration: underline;
       }
     }
     .section.section-learn-more{
