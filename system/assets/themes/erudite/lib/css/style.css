@@ -1433,7 +1433,6 @@ p.entry-meta {
     display: block;
     text-align: center; }
   .footer-widgets .msd-connected .wrap.row {
-    display: flex;
     align-items: center; }
   .footer-widgets .connected-form .gform_wrapper form .gform_body .gform_fields.top_label .gfield {
     margin: 0 !important; }
