@@ -596,6 +596,7 @@ class MSDLAB_Queries{
         }
         //ts_data($data);
         $results = $this->get_result_set($data);
+        error_log($wpdb->last_query);
         return $results;
     }
 
