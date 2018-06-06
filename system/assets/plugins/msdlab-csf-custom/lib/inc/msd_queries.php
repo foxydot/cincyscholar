@@ -592,11 +592,11 @@ class MSDLAB_Queries{
         //$data['where'] .= ' AND ' . $usertable . '.ID  = renewal.UserId';
         if(!empty($this->post_vars['email_search_input'])) {
             //add search for an email on application
-            $data['where'] .= ' AND renewal.UserEmail  LIKE \'%'.$this->post_vars['email_search_input'].'%\'';
+            $data['where'] .= ' AND renewal.Email  LIKE \'%'.$this->post_vars['email_search_input'].'%\'';
         }
         //ts_data($data);
         $results = $this->get_result_set($data);
-        error_log($wpdb->last_query);
+        //error_log($wpdb->last_query);
         return $results;
     }
 
