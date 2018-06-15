@@ -363,8 +363,13 @@ if (!class_exists('MSDLab_CSF_Management')) {
                     'nononce' => 'College could not be saved.',
                     'success' => 'College saved!'
                 );
+                if($_POST['college_Publish_input'] == 0){
+                    $notifications['success'] = 'College deleted';
+                }
                 if ($msg = $this->queries->set_data('csf_college', array('college' => 'CollegeId = ' . $college_id), $notifications)) {
                     print '<div class="updated notice notice-success is-dismissible">' . $msg . '</div>';
+                    $college_id = null;
+                    unset($_POST);
                 }
             }
             if(!is_null($college_id)){
@@ -390,8 +395,13 @@ if (!class_exists('MSDLab_CSF_Management')) {
                     'nononce' => 'Contact could not be saved.',
                     'success' => 'Contact saved!'
                 );
+                if($_POST['collegecontact_Publish_input'] == 0){
+                    $notifications['success'] = 'Contact deleted';
+                }
                 if ($msg = $this->queries->set_data('csf_contact', array('collegecontact' => 'CollegeContactId = ' . $contact_id), $notifications)) {
                     print '<div class="updated notice notice-success is-dismissible">' . $msg . '</div>';
+                    $contact_id = null;
+                    unset($_POST);
                 }
             }
             if(!is_null($contact_id)){
@@ -400,6 +410,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
             } else {
                 $title = 'New Contact';
             }
+
             print '<div class="wrap">';
             print '<h1 class="wp-heading-inline">'.$title.' Settings</h1> <a href="admin.php?page=csf-college" class="page-title-action">Return To List</a>         
             <hr class="wp-header-end">';

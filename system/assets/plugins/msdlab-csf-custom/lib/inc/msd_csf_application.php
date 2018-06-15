@@ -1045,10 +1045,10 @@ if (!class_exists('MSDLab_CSF_Application')) {
             $this->ethnicity_array = $this->queries->get_select_array_from_db('Ethnicity', 'EthnicityId', 'Ethnicity');
             $this->states_array = $this->queries->get_select_array_from_db('State', 'StateId', 'State');
             $this->counties_array = $this->queries->get_select_array_from_db('County', 'CountyId', 'County');
-            $this->college_array = $this->queries->get_select_array_from_db('College', 'CollegeId', 'Name','Name');
-            $this->major_array = $this->queries->get_select_array_from_db('Major', 'MajorId', 'MajorName','MajorName');
+            $this->college_array = $this->queries->get_select_array_from_db('College', 'CollegeId', 'Name','Name',1);
+            $this->major_array = $this->queries->get_select_array_from_db('Major', 'MajorId', 'MajorName','MajorName',1);
             $this->educationalattainment_array = $this->queries->get_select_array_from_db('EducationalAttainment', 'EducationalAttainmentId', 'EducationalAttainment');
-            $this->highschool_array = $this->queries->get_select_array_from_db('HighSchool', 'HighSchoolId', 'SchoolName','SchoolName');
+            $this->highschool_array = $this->queries->get_select_array_from_db('HighSchool', 'HighSchoolId', 'SchoolName','SchoolName',1);
             for ($yr = date("Y")-18; $yr <= date("Y")+2; $yr++) {
                 $this->gradyr_array[$yr.'-01-01'] = $yr;
             }

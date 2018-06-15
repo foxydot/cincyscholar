@@ -88,10 +88,10 @@ class MSDLab_ReportControls{
         //select populate
         $states = $this->queries->get_select_array_from_db('state', 'StateId', 'State','State');
         $counties = $this->queries->get_select_array_from_db('county', 'CountyId', 'County','County');
-        $colleges = $this->queries->get_select_array_from_db('college', 'CollegeId', 'Name','Name');
-        $highschools = $this->queries->get_select_array_from_db('highschool', 'HighSchoolId', 'SchoolName','SchoolName');
+        $colleges = $this->queries->get_select_array_from_db('college', 'CollegeId', 'Name','Name',1);
+        $highschools = $this->queries->get_select_array_from_db('highschool', 'HighSchoolId', 'SchoolName','SchoolName',1);
         $highschooltypes = $this->queries->get_select_array_from_db('highschooltype', 'HighSchoolTypeId', 'Description','HighSchoolTypeId');
-        $majors = $this->queries->get_select_array_from_db('major', 'MajorId', 'MajorName','MajorName');
+        $majors = $this->queries->get_select_array_from_db('major', 'MajorId', 'MajorName','MajorName',1);
         $ethnicity = $this->queries->get_select_array_from_db('ethnicity', 'EthnicityID', 'Ethnicity','EthnicityID');
         $athletics = array('0'=>'Non-athlete','1'=>'Athlete');
         $independence = array('0'=>'Dependent','1'=>'Independant');
