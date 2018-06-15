@@ -133,7 +133,7 @@ class MSDLAB_SettingControls{
                 $institution_term_type_options = $this->queries->get_select_array_from_db('institutiontermtype','InstitutionTermTypeId','InstitutionTermType');
                 $college_id = isset($data->CollegeId)?$data->CollegeId:$this->queries->get_next_id('college','CollegeId');
                 $ret['hdr'] = $this->form_header($form_id);
-                $ret['college_id'] = $this->settings_hidden('college_CollegeId',$college_id,'College ID',null,null);
+                $ret['college_id'] = $this->settings_hidden('college_CollegeId',$data->CollegeId,'College ID',null,null);
                 $ret['name'] = $this->settings_textfield('College Name','college_Name',array('large','setting-field'),$data->Name);
                 //TODO: Add state code OR array for figuring out in/out state
                 $ret['indirect_cost'] = $this->settings_textfield('Indirect Cost','college_IndirectCost',array('large','setting-field'),$data->IndirectCost);
