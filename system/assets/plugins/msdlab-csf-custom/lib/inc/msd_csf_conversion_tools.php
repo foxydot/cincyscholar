@@ -29,6 +29,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_add_renewal_to_attachment_table', array(&$this,'add_renewal_to_attachment_table') );
             add_action( 'wp_ajax_send_renewal_emails', array(&$this,'send_renewal_emails') );
             add_action( 'wp_ajax_fix_up_renewal_attachments', array(&$this,'fix_up_renewal_attachments') );
+            add_action( 'wp_ajax_update_unpublishable_tables', array(&$this,'update_unpublishable_tables') );
 
 
             add_filter('send_password_change_email',array(&$this,'return_false'));
@@ -433,6 +434,21 @@ beth@cincinnatischolarshipfoundation.org<br/>
             }
         }
 
+        function update_unpublishable_tables(){
+            global $wpdb;
+            $tables = array('college','collegecontact','highschool','major');
+            foreach ($tables AS $t) {
+                $sql = "ALTER TABLE $t ADD `Publish` tinyint(1) unsigned zerofill NOT NULL;";
+                if ($wpdb->query($sql)) {
+                    print $t." table updated!";
+                }
+                $sql = "UPDATE $t SET `Publish` = 1 WHERE `Publish` != 1";
+                if ($wpdb->query($sql)) {
+                    print $t." data updated!";
+                }
+            }
+        }
+
         //utility
         function settings_page()
         {
@@ -588,6 +604,15 @@ beth@cincinnatischolarshipfoundation.org<br/>
                             console.log(response);
                         });
                     });
+                    $('.update_unpublishable_tables').click(function(){
+                        var data = {
+                            action: 'update_unpublishable_tables',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
             </script>
             <div class="wrap">
@@ -622,6 +647,8 @@ beth@cincinnatischolarshipfoundation.org<br/>
                     <dd><button class="send_renewal_emails">Go</button></dd>
                     <dt>Fix up renewal attachments:</dt>
                     <dd><button class="fix_up_renewal_attachments">Go</button></dd>
+                    <dt>Update unpublishable tables:</dt>
+                    <dd><button class="update_unpublishable_tables">Go</button></dd>
                 </dl>
                 <div class="response1"></div>
             </div>

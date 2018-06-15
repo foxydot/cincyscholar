@@ -27,6 +27,37 @@
     display: block;
     text-align: center;
   }
+  .msd-connected{
+    .wrap.row{
+      //display: flex;
+      align-items: center;
+    }
+  }
+  .connected-form{
+    .gform_wrapper{
+      form{
+        .gform_heading{}
+        .gform_body{
+          .gform_fields.top_label{
+            .gfield{
+              margin: 0 !important;
+              .gfield_label{
+                display: none;
+              }
+              .ginput_container{
+                input, textarea{
+                  margin-bottom: 0 !important;
+                }
+              }
+            }
+          }
+        }
+        .gform_footer{
+          margin: 0 !important;
+        }
+      }
+    }
+  }
   .connected-social{
     .social-media{
       margin: 0.25vw 0;

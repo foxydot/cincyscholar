@@ -54,6 +54,7 @@ class MSDLAB_Queries{
 
      public function get_all_colleges($options = array()){
          $data['tables']['college'] = array('*');
+         $data['where'] = 'college.Publish = 1';
          $data['order'] = 'name ASC';
          $results = $this->get_result_set($data);
          return $results;
@@ -109,7 +110,7 @@ class MSDLAB_Queries{
 
      public function get_all_contacts($college_id){
          $data['tables']['collegecontact'] = array('*');
-         $data['where'] = 'collegecontact.CollegeId = '.$college_id;
+         $data['where'] = 'collegecontact.CollegeId = '.$college_id.' AND collegecontact.Publish = 1';
          $results = $this->get_result_set($data);
          return $results;
      }
@@ -273,12 +274,16 @@ class MSDLAB_Queries{
      * Report Queries
      */
 
-    function get_select_array_from_db($table,$id_field,$field,$orderby = false){
+    function get_select_array_from_db($table,$id_field,$field,$orderby = false,$publishflag = 0){
         global $wpdb;
+        $where = '';
         if(!$orderby){
             $orderby = $id_field;
         }
-        $sql = 'SELECT `'.$id_field.'`,`'.$field.'` FROM `'.strtolower($table).'` ORDER BY `'.$orderby.'` ASC;';
+        if($publishflag){
+            $where = ' WHERE '.strtolower($table).'.Publish = 1 ';
+        }
+        $sql = 'SELECT `'.$id_field.'`,`'.$field.'` FROM `'.strtolower($table).'` '.$where.'ORDER BY `'.$orderby.'` ASC;';
         $result = $wpdb->get_results( $sql, ARRAY_A );
         foreach ($result AS $k=>$v){
             $array[$v[$id_field]] = $v[$field];
@@ -592,10 +597,11 @@ class MSDLAB_Queries{
         //$data['where'] .= ' AND ' . $usertable . '.ID  = renewal.UserId';
         if(!empty($this->post_vars['email_search_input'])) {
             //add search for an email on application
-            $data['where'] .= ' AND renewal.UserEmail  LIKE \'%'.$this->post_vars['email_search_input'].'%\'';
+            $data['where'] .= ' AND renewal.Email  LIKE \'%'.$this->post_vars['email_search_input'].'%\'';
         }
         //ts_data($data);
         $results = $this->get_result_set($data);
+        //error_log($wpdb->last_query);
         return $results;
     }
 

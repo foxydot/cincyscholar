@@ -1432,6 +1432,16 @@ p.entry-meta {
     clear: both;
     display: block;
     text-align: center; }
+  .footer-widgets .msd-connected .wrap.row {
+    align-items: center; }
+  .footer-widgets .connected-form .gform_wrapper form .gform_body .gform_fields.top_label .gfield {
+    margin: 0 !important; }
+    .footer-widgets .connected-form .gform_wrapper form .gform_body .gform_fields.top_label .gfield .gfield_label {
+      display: none; }
+    .footer-widgets .connected-form .gform_wrapper form .gform_body .gform_fields.top_label .gfield .ginput_container input, .footer-widgets .connected-form .gform_wrapper form .gform_body .gform_fields.top_label .gfield .ginput_container textarea {
+      margin-bottom: 0 !important; }
+  .footer-widgets .connected-form .gform_wrapper form .gform_footer {
+    margin: 0 !important; }
   .footer-widgets .connected-social .social-media {
     margin: 0.25vw 0;
     float: none;
@@ -1595,7 +1605,7 @@ p.entry-meta {
   .sectioned-page-wrapper .section {
     background-repeat: no-repeat;
     background-size: cover;
-    padding: 8em 0;
+    padding: 2em 0;
     position: relative; }
     .sectioned-page-wrapper .section .section-title {
       margin-bottom: 4em; }
@@ -1627,7 +1637,7 @@ p.entry-meta {
     .sectioned-page-wrapper .section.overlay .overlay {
       background: linear-gradient(to bottom, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.5) 100%);
       background-attachment: fixed;
-      padding: 8em 0; }
+      padding: 2em 0; }
   .sectioned-page-wrapper .section.bkg-dkgrey {
     background-color: #2A2B30; }
   .sectioned-page-wrapper .section.bkg-ltgrey {
