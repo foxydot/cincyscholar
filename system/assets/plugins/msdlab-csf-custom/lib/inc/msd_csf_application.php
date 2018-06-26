@@ -666,7 +666,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             }
                         } else {
                             print $response->get_error_message();
-                            wp_mail('catherine@madsciencedept.com','Renewal form error for user '.$_POST['Renewal_UserId_input'].'.',$response->get_error_message());
+                            wp_mail('catherine@madsciencedept.com','Renewal form error for user '.$_POST['Renewal_UserId_input'].'.',$response->get_error_message()."\n\n".$_POST);
                         }
                     }
                     //sets up the query
