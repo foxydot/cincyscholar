@@ -335,6 +335,9 @@ class MSDLAB_FormControls{
         $ret = array();
         $ret['del'] = "$('.file-delete').click(function(e){
                 e.preventDefault();
+                
+	    var c = confirm(\"Are you sure? This action can not be reversed!\");
+        if (c != true) { return false; }
                 var my_upload_wrapper = $(this).parents('.upload-wrapper');
                 var ajaxurl = '". admin_url( 'admin-ajax.php' ) ."';
                 var myfn = $(this).attr('value');

@@ -648,19 +648,25 @@ if (!class_exists('MSDLab_CSF_Application')) {
                         if(isset($_POST['Renewal_RenewalId_input'])) {
                             $set['where']['renewal'] = 'renewal.RenewalId = ' . $_POST['Renewal_RenewalId_input'];
                         }
-                        print $this->queries->set_data($form_id, $set['where']);
-                        $renewal_user = get_user_by('ID',$_POST['Renewal_UserId_input']);
+                        $response = $this->queries->set_data($form_id, $set['where']);
+                        if(!is_wp_error($response)){
+                            print $response;
+                            $renewal_user = get_user_by('ID',$_POST['Renewal_UserId_input']);
 
-                        if($_POST['Renewal_Email_input'] != $renewal_user->user_email){
-                            //error_log('update email');
-                            wp_update_user(array('ID' => $_POST['Renewal_UserId_input'],'user_email' => $_POST['Renewal_Email_input']));
-                        }
+                            if($_POST['Renewal_Email_input'] != $renewal_user->user_email){
+                                //error_log('update email');
+                                wp_update_user(array('ID' => $_POST['Renewal_UserId_input'],'user_email' => $_POST['Renewal_Email_input']));
+                            }
 
-                        if (!current_user_can('view_renewal_process') && !current_user_can('csf')) {
-                            wp_update_user(array('ID' => $user_id, 'role' => 'renewal'));
-                        }
-                        if(isset($_POST['SendEmails'])){
-                            $this->send_form_emails($_POST['SendEmails']);
+                            if (!current_user_can('view_renewal_process') && !current_user_can('csf')) {
+                                wp_update_user(array('ID' => $user_id, 'role' => 'renewal'));
+                            }
+                            if(isset($_POST['SendEmails']) && $renewal_user){
+                                $this->send_form_emails($_POST['SendEmails']);
+                            }
+                        } else {
+                            print $response->get_error_message();
+                            wp_mail('catherine@madsciencedept.com','Renewal form error for user '.$_POST['Renewal_UserId_input'].'.',$response->get_error_message()."\n\n".$_POST);
                         }
                     }
                     //sets up the query
@@ -753,7 +759,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                 default:
                     break;
             }
-            error_log('form_nonce:'.$form_nonce);
+            //error_log('form_nonce:'.$form_nonce);
             $ret['nonce'] = wp_nonce_field( $form_nonce );
             $ret['form_close'] = $this->form->form_close();
             return $ret;

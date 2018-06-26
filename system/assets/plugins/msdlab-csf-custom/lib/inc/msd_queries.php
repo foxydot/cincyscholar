@@ -31,7 +31,7 @@ class MSDLAB_Queries{
          }
          $nonce = $_POST['_wpnonce'];
          if(!wp_verify_nonce( $nonce, $form_id )) {
-             return '<div class="message error">Invalid entry</div>';
+             return new WP_Error( 'nononce', __( '<div class="message error">Invalid entry</div>', "erudite" ) );
          }
          foreach ($this->post_vars AS $k => $v){
              if(stripos($k,'_input')){
@@ -39,7 +39,7 @@ class MSDLAB_Queries{
                  $orig = get_option($option);
                  if($v !== $orig) {
                      if (!update_option($option, $v)) {
-                         return '<div class="message error">Error updating ' . $option .'</div>';
+                         return new WP_Error( 'update', __( '<div class="message error">Error updating ' . $option .'</div>', "erudite" ) );
                      }
                  }
              }
@@ -141,9 +141,10 @@ class MSDLAB_Queries{
              ),$notifications
          );
          $nonce = $_POST['_wpnonce'];
-         error_log('form_id:'.$form_id);
+         //error_log('form_id:'.$form_id);
          if(wp_verify_nonce( $nonce, $form_id ) === false) {
-             return $notifications['nononce'];
+             return new WP_Error( 'nononce', $notifications['nononce'] );
+
          }
          foreach ($this->post_vars AS $k => $v){
              if(stripos($k,'_input')){
@@ -162,7 +163,7 @@ class MSDLAB_Queries{
                  if($this->handle_attachments($data[$table])){
                      continue;
                  } else {
-                     return '<div class="error">Error updating '.$table.'</div>';
+                     return new WP_Error( 'attachments', '<div class="error">Error updating '.$table.'</div>' );
                  }
              }
              $select_sql = 'SELECT * FROM '.$table.' WHERE '.$where[$table].';';
@@ -175,7 +176,7 @@ class MSDLAB_Queries{
 //error_log('update_sql: '.$sql);
              $result = $wpdb->get_results($sql);
              if(is_wp_error($result)){
-                 return '<div class="message error">Error updating '.$table.'</div>';
+                 return new WP_Error( 'update', '<div class="error">Error updating '.$table.'</div>' );
              }
         }
          return '<div class="message success">'.$notifications['success'].'</div>';
