@@ -30,6 +30,8 @@ if (!class_exists('MSDLab_User_Levels_Management')) {
             //Actions
             //add_action('admin_menu', array(&$this,'settings_page'));
             //add_action('admin_enqueue_scripts', array(&$this,'add_admin_styles_and_scripts'));
+            add_action('profile_update',array(&$this,'msdlab_ninc_cron_send_on_user_save'), 10, 2);
+
 
             //Filters
             add_filter('login_redirect', array(&$this,'welcome_user'), 10, 3);
@@ -87,6 +89,66 @@ if (!class_exists('MSDLab_User_Levels_Management')) {
             }
         }
 
+        function msdlab_on_user_save($user_id, $old_user_data){
+            global $wpdb;
+            $new_role = $_POST['role'];
+            $old_role = $old_user_data->roles[0];
+            if($new_role == $old_role){
+                return;
+            }
+            if(($old_role == 'subscriber' && $new_role == 'awardee') || ($old_role == 'applicant' && $new_role == 'awardee')){ //user is can renew
+                $user = get_user_by('ID',$user_id); //get the user data for the replacements
+                //check for an application by this userid
+                $sql = "SELECT * FROM applicant WHERE applicant.UserId = ".$user_id;
+                if($row = $wpdb->get_row($sql)){return;}//return if found
+                //check for an application by email
+                $sql = "SELECT * FROM applicant WHERE applicant.Email = ".$user->user_email;
+                if($row = $wpdb->get_row($sql)){
+                    //change userid and return
+                    $sql = "UPDATE applicant SET applicant.UserId = ".$user_id." WHERE applicant.Email = ".$user->user_email;
+                    if($wpdb->query($sql)){
+                        return;
+                    }
+                }
+
+                //create application and return
+
+                //email user that they can now renew
+
+                $subject = stripcslashes(get_option('msdlab_ninc_cron_email_first_dues_subject'));
+                $bccs = stripcslashes(get_option('msdlab_ninc_cron_email_first_dues_bcc'));
+                $from_email = stripcslashes(get_option('msdlab_ninc_cron_email_first_dues_from'));
+                if($from_email == ''){
+                    $from_email = 'NINC Website <website@ninc.com>';
+                }
+                $email_contents = stripcslashes(get_option('msdlab_ninc_cron_email_first_dues_content'));
+                //do replacements
+                $replacement = array(
+                    $user->data->user_login,
+                    $user->data->display_name,
+                    $user->data->meta['legal_name'][0],
+                    $user->data->user_email,
+                    $user->data->meta['date_application'][0],
+                    $user->data->meta['date_last_renewed'][0],
+                    $user->data->ezpay_amt_paid,
+                    (425+16) - $user->data->ezpay_amt_paid,
+                );
+                //and send email
+                $to = $user->data->display_name.' <'.$user->data->user_email.'>';
+                $message = preg_replace($ninc_crons_placeholders,$replacement,$email_contents);
+                $headers[] = 'From: '.$from_email;
+                $headers[] = 'Content-Type: text/html; charset=UTF-8';
+                foreach($bccs AS $bcc){
+                    $headers[] = 'Bcc: '.$bcc;
+                }
+                $headers[] = 'Bcc: ninctest@msdlab.com';
+                //send the email
+                /*if(wp_mail($to, $subject, $message, $headers)){
+                    $last_emailed = get_user_meta($user->ID,'date_last_emailed_first_dues',true);
+                    update_user_meta($user->ID,'date_last_emailed_first_dues',time(),$last_emailed);
+                }*/
+            }
+        }
 
     } //End Class
 } //End if class exists statement
@@ -211,5 +273,6 @@ if(!class_exists('MSDLab_Capabilites')){
                 return $allcaps;
             }
         }
+
     }
 }
