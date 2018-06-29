@@ -547,7 +547,7 @@ class MSDLAB_Queries{
         //ts_data($this->post_vars);
         //$usertable = $wpdb->prefix . 'users';
         $data['tables']['renewal'] = array('*');
-        ts_data($this->post_vars);
+        //ts_data($this->post_vars);
         if(empty($this->post_vars['renewal_date_search_input_start']) && empty($this->post_vars['renewal_date_search_input_end'])) {
             $data['where'] = 'renewal.RenewalDateTime > '.date('Ymdhis',strtotime(get_option('csf_settings_start_date'))); //replace with dates from settings
         } else {
