@@ -30,7 +30,7 @@ if (!class_exists('MSDLab_User_Levels_Management')) {
             //Actions
             //add_action('admin_menu', array(&$this,'settings_page'));
             //add_action('admin_enqueue_scripts', array(&$this,'add_admin_styles_and_scripts'));
-            add_action('profile_update',array(&$this,'msdlab_ninc_cron_send_on_user_save'), 10, 2);
+            add_action('profile_update',array(&$this,'msdlab_on_user_save'), 10, 2);
 
 
             //Filters
@@ -110,43 +110,11 @@ if (!class_exists('MSDLab_User_Levels_Management')) {
                         return;
                     }
                 }
-
                 //create application and return
-
-                //email user that they can now renew
-
-                $subject = stripcslashes(get_option('msdlab_ninc_cron_email_first_dues_subject'));
-                $bccs = stripcslashes(get_option('msdlab_ninc_cron_email_first_dues_bcc'));
-                $from_email = stripcslashes(get_option('msdlab_ninc_cron_email_first_dues_from'));
-                if($from_email == ''){
-                    $from_email = 'NINC Website <website@ninc.com>';
+                $sql = 'INSERT INTO applicant SET applicant.ApplicationDateTime = "'.date("Y-m-d h:i:s").'", applicant.UserId = "'.$user_id.'", applicant.Email = "'.$user->user_email.'", applicant.FirstName = "'.$user->first_name.'", applicant.MiddleInitial = "", applicant.LastName = "'.$user->last_name.'", applicant.Last4SSN = "0000", applicant.DateOfBirth = "'.date("Y-m-d h:i:s").'", applicant.Address1 = "Unknown", applicant.Address2 = "", applicant.City = "Unknown", applicant.StateId = "OH", applicant.CountyId = "24", applicant.ZipCode = "00000", applicant.CellPhone = "unknown", applicant.AlternativePhone = "", applicant.EthnicityId = "24", applicant.StudentId = "00000000";';
+                if($wpdb->query($sql)){
+                    return;
                 }
-                $email_contents = stripcslashes(get_option('msdlab_ninc_cron_email_first_dues_content'));
-                //do replacements
-                $replacement = array(
-                    $user->data->user_login,
-                    $user->data->display_name,
-                    $user->data->meta['legal_name'][0],
-                    $user->data->user_email,
-                    $user->data->meta['date_application'][0],
-                    $user->data->meta['date_last_renewed'][0],
-                    $user->data->ezpay_amt_paid,
-                    (425+16) - $user->data->ezpay_amt_paid,
-                );
-                //and send email
-                $to = $user->data->display_name.' <'.$user->data->user_email.'>';
-                $message = preg_replace($ninc_crons_placeholders,$replacement,$email_contents);
-                $headers[] = 'From: '.$from_email;
-                $headers[] = 'Content-Type: text/html; charset=UTF-8';
-                foreach($bccs AS $bcc){
-                    $headers[] = 'Bcc: '.$bcc;
-                }
-                $headers[] = 'Bcc: ninctest@msdlab.com';
-                //send the email
-                /*if(wp_mail($to, $subject, $message, $headers)){
-                    $last_emailed = get_user_meta($user->ID,'date_last_emailed_first_dues',true);
-                    update_user_meta($user->ID,'date_last_emailed_first_dues',time(),$last_emailed);
-                }*/
             }
         }
 
