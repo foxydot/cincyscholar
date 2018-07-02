@@ -30,6 +30,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_send_renewal_emails', array(&$this,'send_renewal_emails') );
             add_action( 'wp_ajax_fix_up_renewal_attachments', array(&$this,'fix_up_renewal_attachments') );
             add_action( 'wp_ajax_update_unpublishable_tables', array(&$this,'update_unpublishable_tables') );
+            add_action( 'wp_ajax_add_need_table', array(&$this,'add_need_table') );
 
 
             add_filter('send_password_change_email',array(&$this,'return_false'));
@@ -449,6 +450,39 @@ beth@cincinnatischolarshipfoundation.org<br/>
             }
         }
 
+        function add_need_table(){
+            global $wpdb;
+            $sql = "CREATE TABLE `student_need` (
+  `need_id` int(11) NOT NULL AUTO_INCREMENT,
+  `ApplicantId` int(11) NOT NULL,
+  `RenewalId` int(11) DEFAULT NULL,
+  `UserId` bigint(20) unsigned NOT NULL,
+  `CalculationDateTime` datetime(3) NOT NULL,
+  `DirectCost` bigint(20) unsigned NOT NULL,
+  `IndirectCost` bigint(20) unsigned NOT NULL,
+  `FamilyContribution` bigint(20) unsigned NOT NULL,
+  `Pell` bigint(20) unsigned NOT NULL,
+  `SEOG` bigint(20) unsigned NOT NULL,
+  `OIG` bigint(20) unsigned NOT NULL,
+  `OSCG` bigint(20) unsigned NOT NULL,
+  `Stafford` bigint(20) unsigned NOT NULL,
+  `ExternalScholarshipId1` bigint(20) unsigned NOT NULL,
+  `ExternalScholarshipId2` bigint(20) unsigned NOT NULL,
+  `ExternalScholarshipId3` bigint(20) unsigned NOT NULL,
+  `ExternalScholarshipId4` bigint(20) unsigned NOT NULL,
+  `ExternalScholarshipId5` bigint(20) unsigned NOT NULL,
+  `ExternalScholarshipId6` bigint(20) unsigned NOT NULL,
+  `DirectNeed` bigint(20) unsigned NOT NULL,
+  `IndirectNeed` bigint(20) unsigned NOT NULL,
+  `Notes` text,
+  `NeedLocked` tinyint(1) unsigned zerofill NOT NULL,
+  PRIMARY KEY (`need_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+            if ($wpdb->query($sql)) {
+                print "table created!";
+            }
+        }
+
         //utility
         function settings_page()
         {
@@ -613,6 +647,15 @@ beth@cincinnatischolarshipfoundation.org<br/>
                             console.log(response);
                         });
                     });
+                    $('.add_need_table').click(function(){
+                        var data = {
+                            action: 'add_need_table',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
             </script>
             <div class="wrap">
@@ -649,6 +692,8 @@ beth@cincinnatischolarshipfoundation.org<br/>
                     <dd><button class="fix_up_renewal_attachments">Go</button></dd>
                     <dt>Update unpublishable tables:</dt>
                     <dd><button class="update_unpublishable_tables">Go</button></dd>
+                    <dt>Add need table:</dt>
+                    <dd><button class="add_need_table">Go</button></dd>
                 </dl>
                 <div class="response1"></div>
             </div>

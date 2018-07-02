@@ -1,5 +1,6 @@
 <?php
 $fields = array(
+    'UserId',
     'ApplicantId',
     'FirstName',
     'MiddleInitial',
@@ -28,12 +29,10 @@ $fields = array(
     'IsIndependent',
     'PlayedHighSchoolSports',
     'Employer',
-    'HardshipNote',
     'ApplicationDateTime',
     'InformationSharingAllowed',
     'IsComplete',
     'EthnicityId',
-    'Activities',
     'ApplicantHaveRead',
     'ApplicantDueDate',
     'ApplicantDocsReq',
@@ -56,17 +55,44 @@ $fields = array(
     'AmountOwedOnHome',
     'InformationSharingAllowedByGuardian',
     'Documents',
+    'Notes',
 );
-$tabs = '';
-$pane = array();
+$fields2 = array(
+    'UserId',
+    'RenewalId',
+    'ApplicantId',
+    'FirstName',
+    'MiddleInitial',
+    'LastName',
+    'Address1',
+    'Address2',
+    'City',
+    'StateId',
+    'ZipCode',
+    'CountyId',
+    'CellPhone',
+    'AlternativePhone',
+    'Email',
+    'Last4SSN',
+    'DateOfBirth',
+    'CurrentCumulativeGPA',
+    'RenewalDateTime',
+    'AnticipatedGraduationDate',
+    'YearsWithCSF',
+    'CollegeId',
+    'MajorId',
+    'TermsAcknowledged',
+    'RenewalLocked',
+    'Notes'
+);
+$tabs = $pane = array();
 if($_POST) {
-    //ts_data($_POST);
     $result = $this->queries->get_report_set($fields);
     $submitted = $incomplete = array();
     foreach ($result AS $k => $applicant) {
 
         if(!empty($this->post_vars['college_search_input'])){
-            if($applicant->CollegeID != $_POST['college_search_input']){
+            if($applicant->CollegeId != $_POST['college_search_input']){
                 continue;
             }
         }
@@ -91,13 +117,43 @@ if($_POST) {
             $incomplete[] = $applicant;
         }
     }
+    $result = $this->queries->get_renewal_report_set($fields2);
+    $renewals = array();
+    foreach ($result AS $k => $renewal) {
+        //ts_data($renewal);
+
+        if(!empty($this->post_vars['college_search_input'])){
+            if($renewal->CollegeId != $_POST['college_search_input']){
+                continue;
+            }
+        }
+
+        if(!empty($_POST['employer_search_input'])){
+            if(stripos($renewal->Employer,$_POST['employer_search_input'])===false &&
+                stripos($renewal->GuardianEmployer1,$_POST['employer_search_input'])===false &&
+                stripos($renewal->GuardianEmployer2,$_POST['employer_search_input'])===false){
+                continue;
+            }
+        }
+
+        if(isset($_POST['cps_employee_search_input'])){
+            if($renewal->CPSPublicSchools != 1){
+                continue;
+            }
+        }
+
+        $renewals[] = $renewal;
+    }
+
+
     $info = '';
     $class = array('table','table-bordered','sortable');
     if($result){
         $tabs = '
 <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#submitted" aria-controls="submitted" role="tab" data-toggle="tab">Submitted</a></li>
-    <li role="presentation"><a href="#incomplete" aria-controls="incomplete" role="tab" data-toggle="tab">incomplete</a></li>
+    <li role="presentation" class="active"><a href="#submitted" aria-controls="submitted" role="tab" data-toggle="tab">Submitted Applications</a></li>
+    <li role="presentation"><a href="#incomplete" aria-controls="incomplete" role="tab" data-toggle="tab">Incomplete Applications</a></li>
+    <li role="presentation"><a href="#renewal" aria-controls="renewal" role="tab" data-toggle="tab">Submitted Renewals</a></li>
   </ul>';
 
         if(count($submitted)>0){
@@ -118,6 +174,15 @@ if($_POST) {
                             <div class="notice bg-info text-info">No results</div>
                         </div>';
         }
+        if(count($renewal)>0){
+            $pane['renewal'] = '<div role="tabpanel" class="tab-pane" id="renewal">
+                            ' . implode("\n\r",$this->report->print_table('renewal',$fields2,$renewals,$info,$class,false)) .'
+                        </div>';
+        } else {
+            $pane['renewal'] = '<div role="tabpanel" class="tab-pane" id="renewal">
+                            <div class="notice bg-info text-info">No results</div>
+                        </div>';
+        }
     } else {
         $tabs = '<div class="notice bg-info text-info">No results</div>';
     }
@@ -130,14 +195,15 @@ if(!$_POST) {
             $(".search-button input").val("SEARCH");
         });';
 }
-$this->search->print_form('application');
-
-print $tabs;
-print '
+$this->search->print_form('consolidated');
+if($_POST) {
+    print $tabs;
+    print '
 
   <!-- Tab panes -->
   <div class="tab-content">';
-print $pane['submitted'];
-print $pane['incomplete'];
-
-print '</div>';
+    print $pane['submitted'];
+    print $pane['incomplete'];
+    print $pane['renewal'];
+    print '</div>';
+}

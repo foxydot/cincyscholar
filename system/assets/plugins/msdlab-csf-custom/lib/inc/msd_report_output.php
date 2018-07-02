@@ -1,5 +1,5 @@
 <?php
-class MSDLAB_Display{
+class MSDLAB_Report_Output{
 
     /**
      * A reference to an instance of this class.
@@ -15,6 +15,7 @@ class MSDLAB_Display{
             $this->queries = new MSDLAB_Queries();
         }
         $this->skipcsv = array('Activities','HardshipNote','CoopStudyAbroadNote');
+        add_action('admin_enqueue_scripts', array(&$this,'add_admin_styles_and_scripts'));
     }
 
     /**
@@ -23,11 +24,24 @@ class MSDLAB_Display{
     public static function get_instance() {
 
         if( null == self::$instance ) {
-            self::$instance = new MSDLAB_Display();
+            self::$instance = new MSDLAB_Report_Output();
         }
 
         return self::$instance;
 
+    }
+
+    function add_admin_styles_and_scripts(){
+        global $current_screen;
+        $allowedpages = array(
+            'csf-management_page_csf-report',
+            'csf-management_page_csf-renewals',
+            'csf-management_page_csf-need',
+            'csf-management_page_csf-students',
+        );
+        if(in_array($current_screen->id,$allowedpages)){
+            wp_enqueue_script('sorttable',plugin_dir_url(__DIR__).'/../js/sorttable.js');
+        }
     }
 
     /**

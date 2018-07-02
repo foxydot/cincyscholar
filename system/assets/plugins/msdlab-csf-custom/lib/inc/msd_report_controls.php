@@ -102,7 +102,7 @@ class MSDLab_ReportControls{
             case 'renewal':
                 $ret['search_by_name'] = $this->search_box('Name:','','name_search');
                 $ret['search_by_email'] = $this->search_box('Email:','','email_search');
-                $ret['renewal_date_search'] = $this->date_search('Renewal Date Between:','','renewal_date_search');
+                $ret['renewal_date_search'] = $this->date_search('Renewal Date Between:','','date_search');
                 $ret['search_by_city'] = $this->search_box('City:','','city_search');
                 $ret['state_search'] = $this->select_search('State: ','state_search', $states);
                 $ret['county_search'] = $this->select_search('County: ','county_search', $counties);
@@ -111,11 +111,12 @@ class MSDLab_ReportControls{
                 $ret['gpa_search'] = $this->number_range_search('GPA Between:','','gpa_range_search',array('query-filter'),0.00,5.00,0.1);
                 $ret['major_search'] = $this->select_search('Major: ','major_search', $majors);
                 break;
+            case 'consolidated':
             case 'application':
             default:
                 $ret['search_by_name'] = $this->search_box('Name:','','name_search');
                 $ret['search_by_email'] = $this->search_box('Email:','','email_search');
-                $ret['application_date_search'] = $this->date_search('Application Date Between:','','application_date_search');
+                $ret['application_date_search'] = $this->date_search('Application Date Between:','','date_search');
                 $ret['search_by_city'] = $this->search_box('City:','','city_search');
                 $ret['state_search'] = $this->select_search('State: ','state_search', $states);
                 $ret['county_search'] = $this->select_search('County: ','county_search', $counties);

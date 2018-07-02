@@ -35,11 +35,11 @@ class MSDLabClientCustom
         /*
          * Pull in some stuff from other files
          */
-        require_once(plugin_dir_path(__FILE__) . 'lib/inc/msd_csf_management.php');
-        require_once(plugin_dir_path(__FILE__) . 'lib/inc/msd_user_levels_management.php');
-        require_once(plugin_dir_path(__FILE__) . 'lib/inc/sidebar_content_support.php');
-        require_once(plugin_dir_path(__FILE__) . 'lib/inc/gravity-forms.php');
-        require_once(plugin_dir_path(__FILE__) . 'lib/inc/force-password-change.php');
+        require_once(plugin_dir_path(__FILE__) . 'lib/inc/msd_csf_management.php'); // main program management hook
+        require_once(plugin_dir_path(__FILE__) . 'lib/inc/msd_user_levels_management.php'); //handles the user levels and some of the switching
+        require_once(plugin_dir_path(__FILE__) . 'lib/inc/sidebar_content_support.php'); //
+        require_once(plugin_dir_path(__FILE__) . 'lib/inc/gravity-forms.php'); //some custom hooks for the donate and centennial bit
+        require_once(plugin_dir_path(__FILE__) . 'lib/inc/force-password-change.php'); //this was specific for the transfered renewal students. likely not needed for future use
 
 
         //add_action('widgets_init', @array($this,'widgets_init'));
@@ -53,7 +53,7 @@ class MSDLabClientCustom
             $this->csfmanage = new MSDLab_CSF_Management();
         }
 
-        require_once(plugin_dir_path(__FILE__) . 'lib/inc/msd_csf_conversion_tools.php');
+        require_once(plugin_dir_path(__FILE__) . 'lib/inc/msd_csf_conversion_tools.php'); //this is specifically for handling migration and changes to the DB in production
         if(class_exists('MSDLab_CSF_Conversion_Tools')){
             $this->csfconvert = new MSDLab_CSF_Conversion_Tools();
         }

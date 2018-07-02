@@ -310,16 +310,16 @@ class MSDLAB_Queries{
         $data['tables']['applicant'] = array('*');
 
 
-        if(empty($this->post_vars['application_date_search_input_start']) && empty($this->post_vars['application_date_search_input_end'])) {
+        if(empty($this->post_vars['date_search_input_start']) && empty($this->post_vars['date_search_input_end'])) {
             $data['where'] = 'applicant.ApplicationDateTime > '.date('Ymdhis',strtotime(get_option('csf_settings_start_date'))); //replace with dates from settings
         } else {
-            if(!empty($this->post_vars['application_date_search_input_start'])){
-                $where[] = 'applicant.ApplicationDateTime > '.date('Ymdhis',strtotime($this->post_vars['application_date_search_input_start']));
+            if(!empty($this->post_vars['date_search_input_start'])){
+                $where[] = 'applicant.ApplicationDateTime > '.date('Ymdhis',strtotime($this->post_vars['date_search_input_start']));
             } else {
                 $where[] = 'applicant.ApplicationDateTime > '.date('Ymdhis',strtotime(get_option('csf_settings_start_date'))); //replace with dates from settings
             }
-            if(!empty($this->post_vars['application_date_search_input_start'])){
-                $where[] = 'applicant.ApplicationDateTime < '.date('Ymdhis',strtotime($this->post_vars['application_date_search_input_end']));
+            if(!empty($this->post_vars['date_search_input_start'])){
+                $where[] = 'applicant.ApplicationDateTime < '.date('Ymdhis',strtotime($this->post_vars['date_search_input_end']));
             }
             $data['where'] = implode(' AND ',$where);
         }
@@ -548,16 +548,16 @@ class MSDLAB_Queries{
         //$usertable = $wpdb->prefix . 'users';
         $data['tables']['renewal'] = array('*');
         //ts_data($this->post_vars);
-        if(empty($this->post_vars['renewal_date_search_input_start']) && empty($this->post_vars['renewal_date_search_input_end'])) {
+        if(empty($this->post_vars['date_search_input_start']) && empty($this->post_vars['date_search_input_end'])) {
             $data['where'] = 'renewal.RenewalDateTime > '.date('Ymdhis',strtotime(get_option('csf_settings_start_date'))); //replace with dates from settings
         } else {
-            if(!empty($this->post_vars['renewal_date_search_input_start'])){
-                $where[] = 'renewal.RenewalDateTime > '.date('Ymdhis',strtotime($this->post_vars['renewal_date_search_input_start']));
+            if(!empty($this->post_vars['date_search_input_start'])){
+                $where[] = 'renewal.RenewalDateTime > '.date('Ymdhis',strtotime($this->post_vars['date_search_input_start']));
             } else {
                 $where[] = 'renewal.RenewalDateTime > '.date('Ymdhis',strtotime(get_option('csf_settings_start_date'))); //replace with dates from settings
             }
-            if(!empty($this->post_vars['renewal_date_search_input_start'])){
-                $where[] = 'renewal.RenewalDateTime < '.date('Ymdhis',strtotime($this->post_vars['renewal_date_search_input_end']));
+            if(!empty($this->post_vars['date_search_input_start'])){
+                $where[] = 'renewal.RenewalDateTime < '.date('Ymdhis',strtotime($this->post_vars['date_search_input_end']));
             }
             $data['where'] = implode(' AND ',$where);
         }
@@ -606,6 +606,8 @@ class MSDLAB_Queries{
         return $results;
     }
 
+
+
     function get_user_application_status(){
         global $current_user,$applicant_id,$wpdb;
         if(!$applicant_id){$applicant_id = $this->get_applicant_id($current_user->ID);}
@@ -638,6 +640,41 @@ class MSDLAB_Queries{
             return false;
             return $hdr . '<ul><li>' . implode('</li>' . "\n" . '<li>', $progress) . '</li></ul>';
         }
+    }
+
+
+    function get_student_data($applicant_id){
+        $personal['tables']['Applicant'] = array('*');
+        $personal['where'] = 'applicant.ApplicantId = ' . $applicant_id;
+
+        $independence['tables']['ApplicantIndependenceQuery'] = array('ApplicantId', 'AdvancedDegree', 'Children', 'Married', 'TwentyFour', 'Veteran', 'Orphan', 'Emancipated', 'Homeless');
+        $independence['where'] .= 'applicantindependencequery.ApplicantId = ' . $applicant_id;
+
+        if($this->is_indy($applicant_id)) {
+            $financial['tables']['ApplicantFinancial'] = array('ApplicantEmployer', 'ApplicantIncome', 'SpouseEmployer', 'SpouseIncome', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
+            $financial['where'] .= 'applicantfinancial.ApplicantId = ' . $applicant_id;
+        } else {
+            $financial['tables']['Guardian'] = array('CPSPublicSchools','GuardianFullName1', 'GuardianEmployer1', 'GuardianFullName2', 'GuardianEmployer2', 'Homeowner', 'HomeValue', 'AmountOwedOnHome','InformationSharingAllowedByGuardian');
+            $financial['where'] .= 'guardian.ApplicantId = ' . $applicant_id;
+        }
+        $agreements['tables']['Agreements'] = array('ApplicantHaveRead','ApplicantDueDate','ApplicantDocsReq','ApplicantReporting','GuardianHaveRead','GuardianDueDate','GuardianDocsReq','GuardianReporting');
+        $agreements['where'] .= 'agreements.ApplicantId = ' . $applicant_id;
+
+        $docs['tables']['Attachment'] = array('AttachmentId','AttachmentTypeId','FilePath');
+        $docs['where'] = 'attachment.ApplicantID = '.$applicant_id;
+
+        $renewal['tables']['renewal'] = array('*');
+        $renewal['where'] = 'renewal.ApplicantID = '.$applicant_id;
+
+        $need['tables']['student_need'] = array('*');
+        $need['where'] = 'student_need.ApplicantID = '.$applicant_id;
+
+        $queries = array('personal','college','independence','financial','agreements','docs','renewal');
+        foreach($queries AS $query){
+            $result_array = $this->get_result_set(${$query});
+            $results[$query] = $result_array[0];
+        }
+        return $results;
     }
 
     function get_application_process_steps(){
