@@ -11,7 +11,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
             global $current_screen;
             //TODO: Add a user management panel
             //TODO: Add a scholarship management panel
-            $required_files = array('msd_csf_application','msd_setting_controls','msd_report_controls','msd_export','msd_queries','msd_views');
+            $required_files = array('msd_csf_application','msd_setting_controls','msd_report_controls','msd_queries','msd_report_output');
             foreach($required_files AS $rq){
                 if(file_exists(plugin_dir_path(__FILE__).'/'.$rq . '.php')){
                     require_once(plugin_dir_path(__FILE__).'/'.$rq . '.php');
@@ -32,8 +32,11 @@ if (!class_exists('MSDLab_CSF_Management')) {
             if(class_exists('MSDLAB_Queries')){
                 $this->queries = new MSDLAB_Queries();
             }
-            if(class_exists('MSDLAB_Display')){
-                $this->display = new MSDLAB_Display();
+            if(class_exists('MSDLAB_Report_Output')){
+                $this->report = new MSDLAB_Report_Output();
+            }
+            if(class_exists('MSDLAB_FormControls')){
+                $this->form = new MSDLAB_FormControls();
             }
 
             //register stylesheet
@@ -61,6 +64,8 @@ if (!class_exists('MSDLab_CSF_Management')) {
             add_menu_page(__('CSF Management and Reports'),__('CSF Management'), 'manage_csf', 'csf-manage', array(&$this,'management_page_content'),'dashicons-chart-area');
             add_submenu_page('csf-manage',__('Application Reports'),__('Application Reports'),'manage_csf','csf-report', array(&$this,'report_page_content'));
             add_submenu_page('csf-manage',__('Renewal Reports'),__('Renewal Reports'),'manage_csf','csf-renewals', array(&$this,'renewal_report_page_content'));
+            add_submenu_page('csf-manage',__('All Students'),__('Search All Students'),'manage_csf','csf-students', array(&$this,'consolidated_search_page_content'));
+            add_submenu_page(null,__('View Student'),__('View Student'),'manage_csf','student-edit', array(&$this,'single_student_record_page_content'));
             add_submenu_page('csf-manage',__('General Settings'),__('General Settings'),'manage_csf','csf-settings', array(&$this,'setting_page_content'));
             add_submenu_page('csf-manage',__('College Settings'),__('College Settings'),'manage_csf','csf-college', array(&$this,'college_page_content'));
             add_submenu_page(null,__('Edit College'),__('Edit College'),'manage_csf','college-edit', array(&$this,'college_edit_page_content'));
@@ -91,332 +96,32 @@ if (!class_exists('MSDLab_CSF_Management')) {
         }
 
         function report_page_content(){
-            $fields = array(
-                'ApplicantId',
-                'FirstName',
-                'MiddleInitial',
-                'LastName',
-                'Address1',
-                'Address2',
-                'City',
-                'StateId',
-                'ZipCode',
-                'CountyId',
-                'CellPhone',
-                'AlternativePhone',
-                'Email',
-                'user_email',
-                'Last4SSN',
-                'DateOfBirth',
-                'SexId',
-                'FirstGenerationStudent',
-                'EducationAttainmentId',
-                'HighSchoolId',
-                'HighSchoolGraduationDate',
-                'HighSchoolGPA',
-                'CollegeId',
-                'MajorId',
-                'OtherSchool',
-                'IsIndependent',
-                'PlayedHighSchoolSports',
-                'Employer',
-                'HardshipNote',
-                'ApplicationDateTime',
-                'InformationSharingAllowed',
-                'IsComplete',
-                'EthnicityId',
-                'Activities',
-                'ApplicantHaveRead',
-                'ApplicantDueDate',
-                'ApplicantDocsReq',
-                'ApplicantReporting',
-                'CPSPublicSchools',
-                'GuardianHaveRead',
-                'GuardianDueDate',
-                'GuardianDocsReq',
-                'GuardianReporting',
-                'GuardianFullName1',
-                'GuardianEmployer1',
-                'GuardianFullName2',
-                'GuardianEmployer2',
-                'ApplicantEmployer',
-                'ApplicantIncome',
-                'SpouseEmployer',
-                'SpouseIncome',
-                'Homeowner',
-                'HomeValue',
-                'AmountOwedOnHome',
-                'InformationSharingAllowedByGuardian',
-                'Documents',
-            );
-            $tabs = '';
-            $pane = array();
-            if($_POST) {
-                //ts_data($_POST);
-                $result = $this->queries->get_report_set($fields);
-                $submitted = $incomplete = array();
-                foreach ($result AS $k => $applicant) {
-
-                    if(!empty($this->post_vars['college_search_input'])){
-                        if($applicant->CollegeID != $_POST['college_search_input']){
-                            continue;
-                        }
-                    }
-
-                    if(!empty($_POST['employer_search_input'])){
-                        if(stripos($applicant->Employer,$_POST['employer_search_input'])===false &&
-                            stripos($applicant->GuardianEmployer1,$_POST['employer_search_input'])===false &&
-                            stripos($applicant->GuardianEmployer2,$_POST['employer_search_input'])===false){
-                            continue;
-                        }
-                    }
-
-                    if(isset($_POST['cps_employee_search_input'])){
-                        if($applicant->CPSPublicSchools != 1){
-                            continue;
-                        }
-                    }
-
-                    if ($applicant->status == 2) {
-                        $submitted[] = $applicant;
-                    } else {
-                        $incomplete[] = $applicant;
-                    }
-                }
-                $info = '';
-                $class = array('table','table-bordered');
-                if($result){
-                    $tabs = '
-<ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#submitted" aria-controls="submitted" role="tab" data-toggle="tab">Submitted</a></li>
-    <li role="presentation"><a href="#incomplete" aria-controls="incomplete" role="tab" data-toggle="tab">incomplete</a></li>
-  </ul>';
-
-                    if(count($submitted)>0){
-                        $pane['submitted'] = '<div role="tabpanel" class="tab-pane active" id="submitted">
-                            ' . implode("\n\r",$this->display->print_table('application_submitted',$fields,$submitted,$info,$class,false)) .'
-                        </div>';
-                    } else {
-                        $pane['submitted'] = '<div role="tabpanel" class="tab-pane active" id="submitted">
-                            <div class="notice bg-info text-info">No results</div>
-                        </div>';
-                    }
-                    if(count($incomplete)>0){
-                        $pane['incomplete'] = '<div role="tabpanel" class="tab-pane" id="incomplete">
-                            ' . implode("\n\r",$this->display->print_table('application_incomplete',$fields,$incomplete,$info,$class,false)) .'
-                        </div>';
-                    } else {
-                        $pane['incomplete'] = '<div role="tabpanel" class="tab-pane" id="incomplete">
-                            <div class="notice bg-info text-info">No results</div>
-                        </div>';
-                    }
-                } else {
-                    $tabs = '<div class="notice bg-info text-info">No results</div>';
-                }
-            }
-            print '<h2>Scholarship Application Reports</h2>';
-            if(!$_POST) {
-                $this->search->javascript['search-btn'] = '
-        $(".search-button input").val("Load All Applications");
-        $(".query-filter input, .query-filter select").change(function(){
-            $(".search-button input").val("SEARCH");
-        });';
-            }
-            $this->search->print_form('application');
-
-            print $tabs;
-            print '
-
-  <!-- Tab panes -->
-  <div class="tab-content">';
-            print $pane['submitted'];
-            print $pane['incomplete'];
-
-            print '</div>';
+            include_once(plugin_dir_path(__FILE__).'/admin-part/report_page_content.php');
         }
 
         function renewal_report_page_content(){
-            $fields = array(
-                'RenewalId',
-                'ApplicantId',
-                'FirstName',
-                'MiddleInitial',
-                'LastName',
-                'Address1',
-                'Address2',
-                'City',
-                'StateId',
-                'ZipCode',
-                'CountyId',
-                'CellPhone',
-                'AlternativePhone',
-                'Email',
-                'Last4SSN',
-                'DateOfBirth',
-                'CurrentCumulativeGPA',
-                'CoopStudyAbroadNote',
-                'RenewalDateTime',
-                'AnticipatedGraduationDate',
-                'YearsWithCSF',
-                'CollegeId',
-                'MajorId',
-                'TermsAcknowledged',
-                'RenewalLocked',
-                'Notes'
-            );
-            $tabs = '';
-            $pane = array();
-            if($_POST) {
-                //ts_data($_POST);
-                $result = $this->queries->get_renewal_report_set($fields);
-                $submitted = array();
-                foreach ($result AS $k => $renewal) {
-                    $submitted[] = $renewal;
-                }
-                $info = '';
-                $class = array('table','table-bordered');
-                if($result){
-                    $tabs = '
-<ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#submitted" aria-controls="submitted" role="tab" data-toggle="tab">Submitted</a></li>
-  </ul>';
-
-                    if(count($submitted)>0){
-                        $pane['submitted'] = '<div role="tabpanel" class="tab-pane active" id="submitted">
-                            ' . implode("\n\r",$this->display->print_table('renewal_submitted',$fields,$submitted,$info,$class,false)) .'
-                        </div>';
-                    } else {
-                        $pane['submitted'] = '<div role="tabpanel" class="tab-pane active" id="submitted">
-                            <div class="notice bg-info text-info">No results</div>
-                        </div>';
-                    }
-                } else {
-                    $tabs = '<div class="notice bg-info text-info">No results</div>';
-                }
-            }
-            print '<h2>Scholarship Renewal Reports</h2>';
-            if(!$_POST) {
-                $this->search->javascript['search-btn'] = '
-        $(".search-button input").val("Load All Renewals");
-        $(".query-filter input, .query-filter select").change(function(){
-            $(".search-button input").val("SEARCH");
-        });';
-            }
-            $this->search->print_form('renewal');
-
-            print $tabs;
-            print '
-
-  <!-- Tab panes -->
-  <div class="tab-content">';
-            print $pane['submitted'];
-
-            print '</div>';
+            include_once(plugin_dir_path(__FILE__).'/admin-part/renewal_report_page_content.php');
         }
+        function consolidated_search_page_content(){
+            include_once(plugin_dir_path(__FILE__).'/admin-part/consolidated_search_page_content.php');
+        }
+        function single_student_record_page_content(){
+            include_once(plugin_dir_path(__FILE__).'/admin-part/single_student_record_page_content.php');
+        }
+
         function college_page_content(){
-            //page content here
-            print '<div class="wrap report_table">';
-            print '<h1 class="wp-heading-inline">College Settings</h1>';
-            //button: add college
-            print ' <a href="admin.php?page=college-edit" class="page-title-action">Add New College</a>
-           <a href="admin.php?page=contact-edit" class="page-title-action">Add New Contact</a>
-            <hr class="wp-header-end">';
-            //list colleges with edit button, view contacts button
-            //contacts in a slidedown box?
-            //$this->controls->print_settings();
-            $colleges = $this->queries->get_all_colleges();
-            if(count($colleges)>0) {
-                $alphas = range('A', 'Z');
-                foreach ($alphas AS $a){
-                    $links[] = '<a href="#colleges-'.$a.'">'.$a.'</a>';
-                }
-                $linkstrip = implode(' | ',$links);
-                foreach ($colleges AS $college){
-                    $contacts = $this->queries->get_all_contacts($college->CollegeId);
-                    $cell['college_name'] = '<span id="colleges-'.substr($college->Name,0,1).'">'.$college->Name.'</span><br /><a href="admin.php?page=college-edit&college_id='.$college->CollegeId.'" class="button">Edit College</a>';
-                    $con = array();
-                    foreach($contacts AS $contact){
-                        $c = array();
-                        $c['name'] = $contact->FirstName .' '.$contact->LastName;
-                        $c['dept'] = $contact->Department;
-                        $c['email'] = '<a href="mailto:'.antispambot($contact->Email).'">'.antispambot($contact->Email).'</a>';
-                        $c['phone'] = $contact->PhoneNumber;
-                        $c['edit'] = '<a href="admin.php?page=contact-edit&contact_id='.$contact->CollegeContactId.'" class="button">Edit '.$contact->FirstName .' '.$contact->LastName.'</a>';
-                        $con[] = implode('<br>',$c);
-                    }
-                    $cell['contacts'] = implode('<br><br>',$con);
-                    $row[] = implode('</td><td>',$cell);
-                }
-                $table = implode("</td></tr>\n<tr><td>",$row);
-                print $linkstrip;
-                print '<table><tr><td>'.$table.'</td></tr></table>';
-            }
-            print '</div>';
+            include_once(plugin_dir_path(__FILE__).'/admin-part/college_page_content.php');
+
         }
 
         function college_edit_page_content(){
-            $college_id = $_GET['college_id'];
-            $college = null;
-            $title = 'New College';
-            if($_POST) {
-                $notifications = array(
-                    'nononce' => 'College could not be saved.',
-                    'success' => 'College saved!'
-                );
-                if($_POST['college_Publish_input'] == 0){
-                    $notifications['success'] = 'College deleted';
-                }
-                if ($msg = $this->queries->set_data('csf_college', array('college' => 'CollegeId = ' . $college_id), $notifications)) {
-                    print '<div class="updated notice notice-success is-dismissible">' . $msg . '</div>';
-                    $college_id = null;
-                    unset($_POST);
-                }
-            }
-            if(!is_null($college_id)){
-                $college = $this->queries->get_college($college_id);
-                $title = $college->Name;
-            } else {
-                $title = 'New College';
-            }
-            print '<div class="wrap">';
-            print '<h1 class="wp-heading-inline">'.$title.' Settings</h1>  <a href="admin.php?page=csf-college" class="page-title-action">Return To List</a>          
-            <hr class="wp-header-end">';
-            $form = $this->controls->get_form(array('form_id' => 'csf_college','data' => $college));
-            print $form;
-            print '</div>';
+            include_once(plugin_dir_path(__FILE__).'/admin-part/college_edit_page_content.php');
+
         }
 
         function contact_edit_page_content(){
-            $contact_id = $_GET['contact_id'];
-            $contact = null;
-            $title = 'New Contact';
-            if($_POST) {
-                $notifications = array(
-                    'nononce' => 'Contact could not be saved.',
-                    'success' => 'Contact saved!'
-                );
-                if($_POST['collegecontact_Publish_input'] == 0){
-                    $notifications['success'] = 'Contact deleted';
-                }
-                if ($msg = $this->queries->set_data('csf_contact', array('collegecontact' => 'CollegeContactId = ' . $contact_id), $notifications)) {
-                    print '<div class="updated notice notice-success is-dismissible">' . $msg . '</div>';
-                    $contact_id = null;
-                    unset($_POST);
-                }
-            }
-            if(!is_null($contact_id)){
-                $contact = $this->queries->get_contact($contact_id);
-                $title = $contact->FirstName .' '. $contact->LastName;
-            } else {
-                $title = 'New Contact';
-            }
+            include_once(plugin_dir_path(__FILE__).'/admin-part/contact_edit_page_content.php');
 
-            print '<div class="wrap">';
-            print '<h1 class="wp-heading-inline">'.$title.' Settings</h1> <a href="admin.php?page=csf-college" class="page-title-action">Return To List</a>         
-            <hr class="wp-header-end">';
-            $form = $this->controls->get_form(array('form_id' => 'csf_contact','data' => $contact));
-            print $form;
-            print '</div>';
         }
 
         //ultilities

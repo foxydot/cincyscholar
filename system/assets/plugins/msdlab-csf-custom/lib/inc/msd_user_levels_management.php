@@ -30,6 +30,8 @@ if (!class_exists('MSDLab_User_Levels_Management')) {
             //Actions
             //add_action('admin_menu', array(&$this,'settings_page'));
             //add_action('admin_enqueue_scripts', array(&$this,'add_admin_styles_and_scripts'));
+            add_action('profile_update',array(&$this,'msdlab_on_user_save'), 10, 2);
+
 
             //Filters
             add_filter('login_redirect', array(&$this,'welcome_user'), 10, 3);
@@ -87,6 +89,34 @@ if (!class_exists('MSDLab_User_Levels_Management')) {
             }
         }
 
+        function msdlab_on_user_save($user_id, $old_user_data){
+            global $wpdb;
+            $new_role = $_POST['role'];
+            $old_role = $old_user_data->roles[0];
+            if($new_role == $old_role){
+                return;
+            }
+            if(($old_role == 'subscriber' && $new_role == 'awardee') || ($old_role == 'applicant' && $new_role == 'awardee')){ //user is can renew
+                $user = get_user_by('ID',$user_id); //get the user data for the replacements
+                //check for an application by this userid
+                $sql = "SELECT * FROM applicant WHERE applicant.UserId = ".$user_id;
+                if($row = $wpdb->get_row($sql)){return;}//return if found
+                //check for an application by email
+                $sql = "SELECT * FROM applicant WHERE applicant.Email = ".$user->user_email;
+                if($row = $wpdb->get_row($sql)){
+                    //change userid and return
+                    $sql = "UPDATE applicant SET applicant.UserId = ".$user_id." WHERE applicant.Email = ".$user->user_email;
+                    if($wpdb->query($sql)){
+                        return;
+                    }
+                }
+                //create application and return
+                $sql = 'INSERT INTO applicant SET applicant.ApplicationDateTime = "'.date("Y-m-d h:i:s").'", applicant.UserId = "'.$user_id.'", applicant.Email = "'.$user->user_email.'", applicant.FirstName = "'.$user->first_name.'", applicant.MiddleInitial = "", applicant.LastName = "'.$user->last_name.'", applicant.Last4SSN = "0000", applicant.DateOfBirth = "'.date("Y-m-d h:i:s").'", applicant.Address1 = "Unknown", applicant.Address2 = "", applicant.City = "Unknown", applicant.StateId = "OH", applicant.CountyId = "24", applicant.ZipCode = "00000", applicant.CellPhone = "unknown", applicant.AlternativePhone = "", applicant.EthnicityId = "24", applicant.StudentId = "00000000";';
+                if($wpdb->query($sql)){
+                    return;
+                }
+            }
+        }
 
     } //End Class
 } //End if class exists statement
@@ -211,5 +241,6 @@ if(!class_exists('MSDLab_Capabilites')){
                 return $allcaps;
             }
         }
+
     }
 }

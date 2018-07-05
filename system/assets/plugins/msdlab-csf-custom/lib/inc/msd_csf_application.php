@@ -21,7 +21,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
             global $current_screen;
             //TODO: Add a user management panel
             //TODO: Add a scholarship management panel
-            $required_files = array('msd_form_controls');
+            $required_files = array('msd_form_controls','msd_queries',);
             foreach($required_files AS $rq){
                 if(file_exists(plugin_dir_path(__FILE__).'/'.$rq . '.php')){
                     require_once(plugin_dir_path(__FILE__).'/'.$rq . '.php');
@@ -34,9 +34,6 @@ if (!class_exists('MSDLab_CSF_Application')) {
             }
             if(class_exists('MSDLAB_Queries')){
                 $this->queries = new MSDLAB_Queries();
-            }
-            if(class_exists('MSDLAB_Display')){
-                $this->display = new MSDLAB_Display();
             }
 
             //register stylesheet
@@ -123,11 +120,12 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     $applicant_id = $_GET['applicant_id'];
                     $renewal_id = $_GET['renewal_id'];
                     if($renewal_id){
-                        return implode("\n\r",$this->get_form('renewal'));
+                        $ret[1] = implode("\n\r",$this->get_form('renewal'));
                     } else {
-                        return implode("\n\r",$this->get_form('application'));
+                        $ret[1] = implode("\n\r",$this->get_form('application'));
                     }
-
+                    sort($ret);
+                    return implode("\n\r",$ret);
                 }
 
                 if(current_user_can('view_renewal_process')){
@@ -153,7 +151,6 @@ if (!class_exists('MSDLab_CSF_Application')) {
                 if(current_user_can('submit_renewal')){
                     $ret[2] = implode("\n\r",$this->get_form('renewal'));
                 }
-                //add admin ability to see based on GET var.
                 sort($ret);
                 return implode("\n\r",$ret);
             } else {
