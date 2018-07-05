@@ -31,6 +31,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_fix_up_renewal_attachments', array(&$this,'fix_up_renewal_attachments') );
             add_action( 'wp_ajax_update_unpublishable_tables', array(&$this,'update_unpublishable_tables') );
             add_action( 'wp_ajax_add_need_table', array(&$this,'add_need_table') );
+            add_action( 'wp_ajax_add_payment_table', array(&$this,'add_payment_table') );
 
 
             add_filter('send_password_change_email',array(&$this,'return_false'));
@@ -452,7 +453,7 @@ beth@cincinnatischolarshipfoundation.org<br/>
 
         function add_need_table(){
             global $wpdb;
-            $sql = "CREATE TABLE `student_need` (
+            $sql = "CREATE TABLE `studentneed` (
   `need_id` int(11) NOT NULL AUTO_INCREMENT,
   `ApplicantId` int(11) NOT NULL,
   `RenewalId` int(11) DEFAULT NULL,
@@ -466,17 +467,48 @@ beth@cincinnatischolarshipfoundation.org<br/>
   `OIG` bigint(20) unsigned NOT NULL,
   `OSCG` bigint(20) unsigned NOT NULL,
   `Stafford` bigint(20) unsigned NOT NULL,
-  `ExternalScholarshipId1` bigint(20) unsigned NOT NULL,
-  `ExternalScholarshipId2` bigint(20) unsigned NOT NULL,
-  `ExternalScholarshipId3` bigint(20) unsigned NOT NULL,
-  `ExternalScholarshipId4` bigint(20) unsigned NOT NULL,
-  `ExternalScholarshipId5` bigint(20) unsigned NOT NULL,
-  `ExternalScholarshipId6` bigint(20) unsigned NOT NULL,
+  `ExternalScholarship1` varchar(255) NULL,
+  `ExternalScholarship2` varchar(255) NULL,
+  `ExternalScholarship3` varchar(255) NULL,
+  `ExternalScholarship4` varchar(255) NULL,
+  `ExternalScholarship5` varchar(255) NULL,
+  `ExternalScholarship6` varchar(255) NULL,
+  `ExternalScholarshipAmt1` bigint(20) unsigned NOT NULL,
+  `ExternalScholarshipAmt2` bigint(20) unsigned NOT NULL,
+  `ExternalScholarshipAmt3` bigint(20) unsigned NOT NULL,
+  `ExternalScholarshipAmt4` bigint(20) unsigned NOT NULL,
+  `ExternalScholarshipAmt5` bigint(20) unsigned NOT NULL,
+  `ExternalScholarshipAmt6` bigint(20) unsigned NOT NULL,
   `DirectNeed` bigint(20) unsigned NOT NULL,
   `IndirectNeed` bigint(20) unsigned NOT NULL,
   `Notes` text,
   `NeedLocked` tinyint(1) unsigned zerofill NOT NULL,
   PRIMARY KEY (`need_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+            if ($wpdb->query($sql)) {
+                print "table created!";
+            }
+        }
+
+
+        function add_payment_table(){
+            global $wpdb;
+            $sql = "CREATE TABLE `payment` (
+  `payment_id` int(11) NOT NULL AUTO_INCREMENT,
+  `payment_key` varchar(120) NULL,
+  `UserId` bigint(20) unsigned NOT NULL,
+  `ApplicantId` bigint(20) unsigned NOT NULL,
+  `PaymentAmt` bigint(20) unsigned NOT NULL,
+  `PaymentDateTime` datetime(3) NOT NULL,
+  `CheckNumber` varchar(120) NULL,
+  `CollegeId` int(11) NOT NULL,
+  `RefundRequested` bigint(20) unsigned NOT NULL,
+  `RefundReceived` bigint(20) unsigned NOT NULL,
+  `RefundAmt` bigint(20) unsigned NOT NULL,
+  `RefundNumber` varchar(120) NULL,
+  `Notes` text,
+  `PaymentLocked` tinyint(1) unsigned zerofill NOT NULL,
+  PRIMARY KEY (`payment_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
             if ($wpdb->query($sql)) {
                 print "table created!";
@@ -656,13 +688,21 @@ beth@cincinnatischolarshipfoundation.org<br/>
                             console.log(response);
                         });
                     });
+                    $('.add_payment_table').click(function(){
+                        var data = {
+                            action: 'add_payment_table',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
             </script>
             <div class="wrap">
                 <h2>Data Conversion Tools</h2>
                 <dl>
-                    <?php
-                    /*
+
                     <dt>Create Student Users:</dt>
                    <dd><button class="create_student_users">Go</button></dd>
                     <dt>Create Donor Users:</dt>
@@ -675,7 +715,7 @@ beth@cincinnatischolarshipfoundation.org<br/>
                     <dd><button class="reduce_majors">Go</button></dd>
                     <dt>Fix Emails:</dt>
                     <dd><button class="fix_emails">Go</button></dd>
-                    */ ?>
+
                     <dt>Update Renewal Table:</dt>
                     <dd><button class="update_renewal_table">Go</button></dd>
                     <dt>Update Applicant Table:</dt>
@@ -694,6 +734,8 @@ beth@cincinnatischolarshipfoundation.org<br/>
                     <dd><button class="update_unpublishable_tables">Go</button></dd>
                     <dt>Add need table:</dt>
                     <dd><button class="add_need_table">Go</button></dd>
+                    <dt>Add payment table:</dt>
+                    <dd><button class="add_payment_table">Go</button></dd>
                 </dl>
                 <div class="response1"></div>
             </div>

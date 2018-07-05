@@ -35,6 +35,9 @@ if (!class_exists('MSDLab_CSF_Management')) {
             if(class_exists('MSDLAB_Report_Output')){
                 $this->report = new MSDLAB_Report_Output();
             }
+            if(class_exists('MSDLAB_FormControls')){
+                $this->form = new MSDLAB_FormControls();
+            }
 
             //register stylesheet
             //Actions

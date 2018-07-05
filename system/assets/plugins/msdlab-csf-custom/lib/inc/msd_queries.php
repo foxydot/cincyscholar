@@ -152,8 +152,14 @@ class MSDLAB_Queries{
                 if(count($karray)<3){continue;}
                 $table = strtolower($karray[0]);
                 $field = $karray[1];
+                $key = $karray[2];
                 $tables[] = $table;
-                $data[$table][] = $table.'.'.$field.' = "'.trim($v).'"';
+                if($key == '_input'){
+                    unset($key);
+                    $data[$table][] = $table.'.'.$field.' = "'.trim($v).'"';
+                } else {
+                    $data[$table][$key][] = $table.'.'.$field.' = "'.trim($v).'"';
+                }
              }
          }
          $tables = array_flip(array_unique($tables));
@@ -166,17 +172,33 @@ class MSDLAB_Queries{
                      return new WP_Error( 'attachments', '<div class="error">Error updating '.$table.'</div>' );
                  }
              }
-             $select_sql = 'SELECT * FROM '.$table.' WHERE '.$where[$table].';';
-//error_log('check_sql: '.$select_sql);
-             if($r = $wpdb->get_row($select_sql)){
-                 $sql = 'UPDATE '.$table.' SET '.implode(', ',$data[$table]).' WHERE '.$where[$table].';';
+             if($table == 'payment') { //handling payments with keys
+                 foreach ($v as $key => $datum){
+                     $select_sql = 'SELECT * FROM ' . $table . ' WHERE ' . $table . '_key = ' . $key . ' AND ' . $where[$table] . ';';
+    //error_log('check_sql: '.$select_sql);
+                     if ($r = $wpdb->get_row($select_sql)) {
+                         $sql = 'UPDATE ' . $table . ' SET ' . implode(', ', $data[$table][$key]) . ' WHERE payment_key = ' . $key . ' AND ' . $where[$table] . ';';
+                     } else {
+                         $sql = 'INSERT INTO ' . $table . ' SET ' . implode(', ', $data[$table][$key]) . ';';
+                     }
+                     $result = $wpdb->get_results($sql);
+                     if (is_wp_error($result)) {
+                         return new WP_Error('update', '<div class="error">Error updating ' . $table . '</div>');
+                     }
+                 }
              } else {
-                 $sql = 'INSERT INTO '.$table.' SET '.implode(', ',$data[$table]).';';
-             }
+                 $select_sql = 'SELECT * FROM ' . $table . ' WHERE ' . $where[$table] . ';';
+//error_log('check_sql: '.$select_sql);
+                 if ($r = $wpdb->get_row($select_sql)) {
+                     $sql = 'UPDATE ' . $table . ' SET ' . implode(', ', $data[$table]) . ' WHERE ' . $where[$table] . ';';
+                 } else {
+                     $sql = 'INSERT INTO ' . $table . ' SET ' . implode(', ', $data[$table]) . ';';
+                 }
 //error_log('update_sql: '.$sql);
-             $result = $wpdb->get_results($sql);
-             if(is_wp_error($result)){
-                 return new WP_Error( 'update', '<div class="error">Error updating '.$table.'</div>' );
+                 $result = $wpdb->get_results($sql);
+                 if (is_wp_error($result)) {
+                     return new WP_Error('update', '<div class="error">Error updating ' . $table . '</div>');
+                 }
              }
         }
          return '<div class="message success">'.$notifications['success'].'</div>';
@@ -647,29 +669,29 @@ class MSDLAB_Queries{
         $personal['tables']['Applicant'] = array('*');
         $personal['where'] = 'applicant.ApplicantId = ' . $applicant_id;
 
-        $independence['tables']['ApplicantIndependenceQuery'] = array('ApplicantId', 'AdvancedDegree', 'Children', 'Married', 'TwentyFour', 'Veteran', 'Orphan', 'Emancipated', 'Homeless');
+        $independence['tables']['ApplicantIndependenceQuery'] = array('*');
         $independence['where'] .= 'applicantindependencequery.ApplicantId = ' . $applicant_id;
 
         if($this->is_indy($applicant_id)) {
-            $financial['tables']['ApplicantFinancial'] = array('ApplicantEmployer', 'ApplicantIncome', 'SpouseEmployer', 'SpouseIncome', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
+            $financial['tables']['ApplicantFinancial'] = array('*');
             $financial['where'] .= 'applicantfinancial.ApplicantId = ' . $applicant_id;
         } else {
-            $financial['tables']['Guardian'] = array('CPSPublicSchools','GuardianFullName1', 'GuardianEmployer1', 'GuardianFullName2', 'GuardianEmployer2', 'Homeowner', 'HomeValue', 'AmountOwedOnHome','InformationSharingAllowedByGuardian');
+            $financial['tables']['Guardian'] = array('*');
             $financial['where'] .= 'guardian.ApplicantId = ' . $applicant_id;
         }
-        $agreements['tables']['Agreements'] = array('ApplicantHaveRead','ApplicantDueDate','ApplicantDocsReq','ApplicantReporting','GuardianHaveRead','GuardianDueDate','GuardianDocsReq','GuardianReporting');
+        $agreements['tables']['Agreements'] = array('*');
         $agreements['where'] .= 'agreements.ApplicantId = ' . $applicant_id;
 
-        $docs['tables']['Attachment'] = array('AttachmentId','AttachmentTypeId','FilePath');
+        $docs['tables']['Attachment'] = array('*');
         $docs['where'] = 'attachment.ApplicantID = '.$applicant_id;
 
         $renewal['tables']['renewal'] = array('*');
-        $renewal['where'] = 'renewal.ApplicantID = '.$applicant_id;
+        $renewal['where'] = 'renewal.ApplicantId = '.$applicant_id;
 
         $need['tables']['student_need'] = array('*');
-        $need['where'] = 'student_need.ApplicantID = '.$applicant_id;
+        $need['where'] = 'student_need.ApplicantId = '.$applicant_id;
 
-        $queries = array('personal','college','independence','financial','agreements','docs','renewal');
+        $queries = array('personal','independence','financial','agreements','docs','renewal','need');
         foreach($queries AS $query){
             $result_array = $this->get_result_set(${$query});
             $results[$query] = $result_array[0];
@@ -752,6 +774,27 @@ class MSDLAB_Queries{
         return $result[0]->SchoolName;
     }
 
+    function get_highschool_type_by_highschool_id($id){
+        global $wpdb;
+        $sql = "SELECT SchoolTypeId FROM highschool WHERE HighSchoolId = '".$id."';";
+        $result = $wpdb->get_results( $sql );
+        return $result[0]->SchoolTypeId;
+    }
+
+    function get_scholarship_by_id($id){
+        global $wpdb;
+        $sql = "SELECT Name FROM scholarship WHERE ScholarshipId = '".$id."';";
+        $result = $wpdb->get_results( $sql );
+        return $result[0]->Name;
+    }
+
+    function get_fund_by_scholarshipid($id){
+        global $wpdb;
+        $sql = "SELECT Name FROM fund WHERE FundId = (SELECT FundId FROM scholarship WHERE ScholarshipId = '".$id."');";
+        $result = $wpdb->get_results( $sql );
+        return $result[0]->Name;
+    }
+
     function get_status_by_id($id){
         global $wpdb;
         $sql = "SELECT StepName FROM processsteps WHERE StepId = '".$id."';";
@@ -771,6 +814,14 @@ class MSDLAB_Queries{
         } else {
             return false;
         }
+    }
+
+    function get_college_financials($college_id,$field){
+        global $wpdb;
+        $sql = 'SELECT '.$field.' FROM college WHERE CollegeId = '.$college_id;
+        $results = $wpdb->get_results($sql);
+        $dec = explode('.',$results[0]->{$field});
+        return $dec[0];
     }
 
     function get_next_id($table,$id_field){
