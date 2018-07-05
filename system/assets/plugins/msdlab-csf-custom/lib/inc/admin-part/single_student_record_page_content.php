@@ -38,6 +38,30 @@ if($student = $this->queries->get_student_data($applicant_id)) {
             $pane['financial'] = '<div role="tabpanel" class="tab-pane" id="financial">
                     '.$this->report->need_form($student).'
                 </div>';
+            $jquery[] = "
+            $('#calculateneed_button').click(function(e){
+                e.preventDefault();
+                var direct;
+                var indirect;
+                var income;
+                income = $('#studentneed_FamilyContribution_input').val() + 
+                $('#studentneed_Pell_input').val() + 
+                $('#studentneed_SEOG_input').val() + 
+                $('#studentneed_OIG_input').val() + 
+                $('#studentneed_OSCG_input').val() + 
+                $('#studentneed_OSCG_input').val() + 
+                $('#studentneed_ExternalScholarshipAmt1_input').val() + 
+                $('#studentneed_ExternalScholarshipAmt2_input').val() + 
+                $('#studentneed_ExternalScholarshipAmt3_input').val() + 
+                $('#studentneed_ExternalScholarshipAmt4_input').val() + 
+                $('#studentneed_ExternalScholarshipAmt5_input').val() + 
+                $('#studentneed_ExternalScholarshipAmt6_input').val();
+                direct = $('#studentneed_DirectCost_input').val() - income;
+                indirect = $('#studentneed_IndirectCost_input').val() - income;
+                $('#studentneed_DirectNeed_input').val(direct);
+                $('#studentneed_IndirectNeed_input').val(indirect);
+            });
+            ";
             $pane['payments'] = '<div role="tabpanel" class="tab-pane" id="payments">
                     '.$this->report->payment_form($student).'
                 </div>';
