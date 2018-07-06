@@ -16,6 +16,8 @@ if($student = $this->queries->get_student_data($applicant_id)) {
     if(is_wp_error($student)){
         ts_data($student); //display errors
     } else {
+        //ts_data($student); //display errors
+
         $tabs = $pane = array();
         if($student){
             $form_id = 'single-student';
@@ -74,7 +76,15 @@ if($student = $this->queries->get_student_data($applicant_id)) {
 
             $ret['title'] = '<h2>Edit '.$student['personal']->FirstName.' '.$student['personal']->LastName.' (User '.$student['personal']->UserId.')</h2>';
             $ret['form_header'] = $this->form->form_header($form_id,array($form_id));
+            $ret['Applicant_UserId'] = $this->form->field_hidden("UserId", $user_id);
+            $ret['ApplicantId'] = $this->form->field_utility("ApplicantId", $applicant_id);
 
+            $renewal = isset($student['renewal']->RenewalId)?true:false;
+            if($renewal) {
+                $ret['RenewalInfo'] = $this->form->field_textinfo("RenewalInfo", 'RENEWAL', '', null, null, array('notice', 'renewal'));
+            } else{
+                $ret['OriginalInfo'] = $this->form->field_textinfo("OriginalInfo", 'FIRST TIME APPLICATION', '', null, null, array('notice', 'original'));
+            }
             $ret['tabs'] =  $tabs;
             $ret[] = '
 

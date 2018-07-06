@@ -119,13 +119,44 @@ input, select, textarea {
     }
   }
 
-.toplevel_page_csf-report, .csf-management_page_csf-report, .csf-management_page_csf-renewals{
+.toplevel_page_csf-report, .csf-management_page_csf-report, .csf-management_page_csf-renewals, .csf-management_page_csf-students, .admin_page_student-edit{
   td>div{
     height: 6em;
   }
   td.HardshipNote>div,td.Activities>div{
     width: 50em;
     overflow-y: scroll;
+  }
+}
+
+.admin_page_student-edit {
+  .notice{
+    width: 100%;
+    padding: 1em;
+    margin: 1em;
+    &.renewal{
+      background: rgba(gold,0.5);
+      border: 1px solid gold;
+    }
+    &.original{
+      background: rgba(blue,0.5);
+      border: 1px solid blue;
+    }
+  }
+  input, select, textarea {
+    &:not([type = "radio"]),:not([type = "checkbox"]) {
+    background-color: #FCFCFC;
+    border: 1px solid #CCC;
+    color: #333;
+    font-size: 18px;
+    font-size: 1.8rem;
+    font-weight: 400;
+    padding: 16px;
+    width: 100%;
+  }
+  }
+  hr{
+    clear:both;
   }
 }
 

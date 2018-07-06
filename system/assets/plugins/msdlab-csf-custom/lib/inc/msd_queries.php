@@ -688,10 +688,17 @@ class MSDLAB_Queries{
         $renewal['tables']['renewal'] = array('*');
         $renewal['where'] = 'renewal.ApplicantId = '.$applicant_id;
 
-        $need['tables']['student_need'] = array('*');
-        $need['where'] = 'student_need.ApplicantId = '.$applicant_id;
+        $need['tables']['studentneed'] = array('*');
+        $need['where'] = 'studentneed.ApplicantId = '.$applicant_id;
 
-        $queries = array('personal','independence','financial','agreements','docs','renewal','need');
+        $payment['tables']['payment'] = array('*');
+        $payment['where'] = 'payment.ApplicantId = '.$applicant_id;
+
+        $scholarship['tables']['scholarship'] = array('*');
+        $scholarship['tables']['applicantscholarship'] = array('*');
+        $scholarship['where'] = 'applicantscholarship.ApplicantId = '.$applicant_id.' AND scholarship.ScholarshipId = applicantscholarship.ScholarshipId';
+
+        $queries = array('personal','independence','financial','agreements','docs','renewal','need','payment','scholarship');
         foreach($queries AS $query){
             $result_array = $this->get_result_set(${$query});
             $results[$query] = $result_array[0];

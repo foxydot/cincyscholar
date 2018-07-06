@@ -95,12 +95,36 @@ form#csf_report_search_form, form#csf_college {
   form#csf_report_search_form hr.break, form#csf_college hr.break {
     clear: both; }
 
-.toplevel_page_csf-report td > div, .csf-management_page_csf-report td > div, .csf-management_page_csf-renewals td > div {
+.toplevel_page_csf-report td > div, .csf-management_page_csf-report td > div, .csf-management_page_csf-renewals td > div, .csf-management_page_csf-students td > div, .admin_page_student-edit td > div {
   height: 6em; }
 
-.toplevel_page_csf-report td.HardshipNote > div, .toplevel_page_csf-report td.Activities > div, .csf-management_page_csf-report td.HardshipNote > div, .csf-management_page_csf-report td.Activities > div, .csf-management_page_csf-renewals td.HardshipNote > div, .csf-management_page_csf-renewals td.Activities > div {
+.toplevel_page_csf-report td.HardshipNote > div, .toplevel_page_csf-report td.Activities > div, .csf-management_page_csf-report td.HardshipNote > div, .csf-management_page_csf-report td.Activities > div, .csf-management_page_csf-renewals td.HardshipNote > div, .csf-management_page_csf-renewals td.Activities > div, .csf-management_page_csf-students td.HardshipNote > div, .csf-management_page_csf-students td.Activities > div, .admin_page_student-edit td.HardshipNote > div, .admin_page_student-edit td.Activities > div {
   width: 50em;
   overflow-y: scroll; }
+
+.admin_page_student-edit .notice {
+  width: 100%;
+  padding: 1em;
+  margin: 1em; }
+  .admin_page_student-edit .notice.renewal {
+    background: rgba(255, 215, 0, 0.5);
+    border: 1px solid gold; }
+  .admin_page_student-edit .notice.original {
+    background: rgba(0, 0, 255, 0.5);
+    border: 1px solid blue; }
+
+.admin_page_student-edit input:not([type="radio"]), .admin_page_student-edit input :not([type="checkbox"]), .admin_page_student-edit select:not([type="radio"]), .admin_page_student-edit select :not([type="checkbox"]), .admin_page_student-edit textarea:not([type="radio"]), .admin_page_student-edit textarea :not([type="checkbox"]) {
+  background-color: #FCFCFC;
+  border: 1px solid #CCC;
+  color: #333;
+  font-size: 18px;
+  font-size: 1.8rem;
+  font-weight: 400;
+  padding: 16px;
+  width: 100%; }
+
+.admin_page_student-edit hr {
+  clear: both; }
 
 .upload-wrapper {
   margin-bottom: 1em; }
