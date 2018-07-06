@@ -16,7 +16,7 @@ if($_POST) {
     if($_POST['college_Publish_input'] == 0){
         $notifications['success'] = 'College deleted';
     }
-    if ($msg = $this->queries->set_data('csf_college', array('college' => 'CollegeId = ' . $college_id), $notifications)) {
+    if ($msg = $this->queries->set_data('csf_college', array('college' => 'CollegeId = ' . $_POST['college_CollegeId_input']), $notifications)) {
         print '<div class="updated notice notice-success is-dismissible">' . $msg . '</div>';
         $college_id = null;
         unset($_POST);
@@ -26,6 +26,9 @@ if(!is_null($college_id)){
     $college = $this->queries->get_college($college_id);
     $title = $college->Name;
 } else {
+    $college_id = $this->queries->get_next_id('college','CollegeId');
+    $college = new stdClass;
+    $college->CollegeId = $college_id;
     $title = 'New College';
 }
 print '<div class="wrap">';

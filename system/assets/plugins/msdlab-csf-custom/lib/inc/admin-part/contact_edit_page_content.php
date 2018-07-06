@@ -26,6 +26,9 @@ if(!is_null($contact_id)){
     $contact = $this->queries->get_contact($contact_id);
     $title = $contact->FirstName .' '. $contact->LastName;
 } else {
+    $contact_id = $this->queries->get_next_id('collegecontact','CollegeContactId');
+    $contact = new stdClass;
+    $contact->CollegeContactId = $contact_id;
     $title = 'New Contact';
 }
 

@@ -154,7 +154,7 @@ class MSDLAB_Queries{
                 $field = $karray[1];
                 $key = $karray[2];
                 $tables[] = $table;
-                if($key == '_input'){
+                if($key == 'input'){
                     unset($key);
                     $data[$table][] = $table.'.'.$field.' = "'.trim($v).'"';
                 } else {
@@ -194,7 +194,7 @@ class MSDLAB_Queries{
                  } else {
                      $sql = 'INSERT INTO ' . $table . ' SET ' . implode(', ', $data[$table]) . ';';
                  }
-//error_log('update_sql: '.$sql);
+error_log('update_sql: '.$sql);
                  $result = $wpdb->get_results($sql);
                  if (is_wp_error($result)) {
                      return new WP_Error('update', '<div class="error">Error updating ' . $table . '</div>');
