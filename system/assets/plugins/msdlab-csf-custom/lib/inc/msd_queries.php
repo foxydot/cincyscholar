@@ -173,14 +173,15 @@ class MSDLAB_Queries{
                  }
              }
              if($table == 'payment') { //handling payments with keys
-                 foreach ($v as $key => $datum){
-                     $select_sql = 'SELECT * FROM ' . $table . ' WHERE ' . $table . '_key = ' . $key . ' AND ' . $where[$table] . ';';
-    //error_log('check_sql: '.$select_sql);
+                 foreach ($data[$table] as $key => $datum){
+                     $select_sql = 'SELECT paymentid FROM ' . $table . ' WHERE ' . $table . '_key = ' . $key . ' AND ' . $where[$table] . ';';
+                     error_log('check_sql: '.$select_sql);
                      if ($r = $wpdb->get_row($select_sql)) {
-                         $sql = 'UPDATE ' . $table . ' SET ' . implode(', ', $data[$table][$key]) . ' WHERE payment_key = ' . $key . ' AND ' . $where[$table] . ';';
+                         $sql = 'UPDATE ' . $table . ' SET ' . implode(', ', $data[$table][$key]) . ' WHERE paymentid = ' . $r->paymentid . ';';
                      } else {
                          $sql = 'INSERT INTO ' . $table . ' SET ' . implode(', ', $data[$table][$key]) . ';';
                      }
+                     error_log('update_sql: '.$sql);
                      $result = $wpdb->get_results($sql);
                      if (is_wp_error($result)) {
                          return new WP_Error('update', '<div class="error">Error updating ' . $table . '</div>');
@@ -188,13 +189,13 @@ class MSDLAB_Queries{
                  }
              } else {
                  $select_sql = 'SELECT * FROM ' . $table . ' WHERE ' . $where[$table] . ';';
-//error_log('check_sql: '.$select_sql);
+                 //error_log('check_sql: '.$select_sql);
                  if ($r = $wpdb->get_row($select_sql)) {
                      $sql = 'UPDATE ' . $table . ' SET ' . implode(', ', $data[$table]) . ' WHERE ' . $where[$table] . ';';
                  } else {
                      $sql = 'INSERT INTO ' . $table . ' SET ' . implode(', ', $data[$table]) . ';';
                  }
-error_log('update_sql: '.$sql);
+                 //error_log('update_sql: '.$sql);
                  $result = $wpdb->get_results($sql);
                  if (is_wp_error($result)) {
                      return new WP_Error('update', '<div class="error">Error updating ' . $table . '</div>');
@@ -701,7 +702,19 @@ error_log('update_sql: '.$sql);
         $queries = array('personal','independence','financial','agreements','docs','renewal','need','payment','scholarship');
         foreach($queries AS $query){
             $result_array = $this->get_result_set(${$query});
-            $results[$query] = $result_array[0];
+            switch($query){
+                case 'payment':
+                    foreach($result_array AS $ra){
+                        $results[$query][$ra->paymentkey] = $ra;
+                    }
+                    break;
+                case 'docs':
+                    $results[$query] = $result_array;
+                    break;
+                default:
+                    $results[$query] = $result_array[0];
+                    break;
+            }
         }
         return $results;
     }
