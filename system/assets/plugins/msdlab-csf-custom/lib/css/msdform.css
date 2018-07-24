@@ -117,10 +117,9 @@ form#csf_report_search_form, form#csf_college {
   background-color: #FCFCFC;
   border: 1px solid #CCC;
   color: #333;
-  font-size: 18px;
-  font-size: 1.8rem;
+  font-size: 1em;
   font-weight: 400;
-  padding: 16px;
+  padding: 0.5em;
   width: 100%; }
 
 .admin_page_student-edit hr {

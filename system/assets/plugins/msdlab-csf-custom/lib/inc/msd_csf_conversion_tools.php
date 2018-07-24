@@ -454,7 +454,7 @@ beth@cincinnatischolarshipfoundation.org<br/>
         function add_need_table(){
             global $wpdb;
             $sql = "CREATE TABLE `studentneed` (
-  `need_id` int(11) NOT NULL AUTO_INCREMENT,
+  `needid` int(11) NOT NULL AUTO_INCREMENT,
   `ApplicantId` int(11) NOT NULL,
   `RenewalId` int(11) DEFAULT NULL,
   `UserId` bigint(20) unsigned NOT NULL,
@@ -494,8 +494,8 @@ beth@cincinnatischolarshipfoundation.org<br/>
         function add_payment_table(){
             global $wpdb;
             $sql = "CREATE TABLE `payment` (
-  `payment_id` int(11) NOT NULL AUTO_INCREMENT,
-  `payment_key` varchar(120) NULL,
+  `paymentid` int(11) NOT NULL AUTO_INCREMENT,
+  `paymentkey` varchar(120) NULL,
   `UserId` bigint(20) unsigned NOT NULL,
   `ApplicantId` bigint(20) unsigned NOT NULL,
   `PaymentAmt` bigint(20) unsigned NOT NULL,

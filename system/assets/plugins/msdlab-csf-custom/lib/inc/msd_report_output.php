@@ -300,73 +300,88 @@ class MSDLAB_Report_Output{
     function student_form($student_data){
         $renewal = isset($student_data['renewal']->RenewalId)?true:false;
         $this->set_form_select_options();
+
+        $ret['ApplicantScholarship_ApplicantId'] = $this->form->field_hidden("ApplicantScholarship_ApplicantId", $student_data['personal']->ApplicantId);
+
+        $ret['studentneed_ApplicantId'] = $this->form->field_hidden("studentneed_ApplicantId", $student_data['personal']->ApplicantId);
+        $ret['studentneed_UserId'] = $this->form->field_hidden("studentneed_UserId", $student_data['personal']->UserId);
+
+        $ret['Applicant_ApplicantId'] = $this->form->field_hidden("Applicant_ApplicantId", $student_data['personal']->ApplicantId);
+        $ret['Applicant_UserId'] = $this->form->field_hidden("Applicant_UserId", $student_data['personal']->UserId);
         if($renewal){
+            $ret['studentneed_RenewalId'] = $this->form->field_hidden("studentneed_RenewalId", $student_data['renewal']->RenewalId);
             $ret['Renewal_ApplicantId'] = $this->form->field_hidden("Renewal_ApplicantId", $student_data['renewal']->ApplicantId);
             $ret['Renewal_RenewalId'] = $this->form->field_hidden("Renewal_RenewalId", $student_data['renewal']->RenewalId);
             $ret['Renewal_UserId'] = $this->form->field_hidden("Renewal_UserId", $student_data['renewal']->UserId);
-            $ret['renewal_FirstName'] = $this->form->field_textfield('renewal_FirstName', $student_data['renewal']->FirstName ? $student_data['renewal']->FirstName : null, 'First Name', null, array('minlength' => '2', 'required' => 'required'), array('required', 'col-md-5', 'col-sm-12'));
+            $ret['renewal_FirstName'] = $this->form->field_textfield('renewal_FirstName', $student_data['renewal']->FirstName ? $student_data['renewal']->FirstName : null, 'First Name', null, array('minlength' => '2', 'required' => 'required'), array('required', 'col-md-3', 'col-sm-12'));
             $ret['renewal_MiddleInitial'] = $this->form->field_textfield('renewal_MiddleInitial', $student_data['renewal']->MiddleInitial ? $student_data['renewal']->MiddleInitial : null, 'Middle Initial', null, array(), array('col-md-2', 'col-sm-12'));
-            $ret['renewal_LastName'] = $this->form->field_textfield('renewal_LastName', $student_data['renewal']->LastName ? $student_data['renewal']->LastName : null, 'Last Name', null, array('minlength' => '2', 'required' => 'required'), array('required', 'col-md-5', 'col-sm-12'));
+            $ret['renewal_LastName'] = $this->form->field_textfield('renewal_LastName', $student_data['renewal']->LastName ? $student_data['renewal']->LastName : null, 'Last Name', null, array('minlength' => '2', 'required' => 'required'), array('required', 'col-md-4', 'col-sm-12'));
+            $ret['renewal_StudentId'] = $this->form->field_textfield('renewal_StudentId', $student_data['renewal']->StudentId ? $student_data['renewal']->StudentId : null, 'Student ID', null, array(), array('col-md-3', 'col-sm-12'));
 
-            $ret['renewal_Address1'] = $this->form->field_textfield('renewal_Address1', $student_data['renewal']->Address1 ? $student_data['renewal']->Address1 : null, 'Address', '123 Any Street', array('type' => 'text', 'minlength' => '2', 'required' => 'required'), array('required', 'col-md-12'));
-            $ret['renewal_Address2'] = $this->form->field_textfield('renewal_Address2', $student_data['renewal']->Address2 ? $student_data['renewal']->Address2 : null, '', 'Apartment or Box number', array('type' => 'text'), array('col-md-12'));
-            $ret['renewal_City'] = $this->form->field_textfield('renewal_City', $student_data['renewal']->City ? $student_data['renewal']->City : null, 'City', null, array('type' => 'text', 'required' => 'required'), array('required', 'col-md-5', 'col-sm-12'));
-            $ret['renewal_StateId'] = $this->form->field_select('renewal_StateId', $student_data['renewal']->StateId ? $student_data['renewal']->StateId : 'OH', 'State', array('option' => 'Select', 'value' => 'OH'), $this->states_array, array('required' => 'required'), array('required', 'col-md-2', 'col-sm-12'));
-            $ret['renewal_CountyId'] = $this->form->field_select('renewal_CountyId', $student_data['renewal']->CountyId ? $student_data['renewal']->CountyId : null, 'County', array('option' => 'Select', 'value' => '24'), $this->counties_array, null, array('col-md-3', 'col-sm-12'));
-            $ret['renewal_ZipCode'] = $this->form->field_textfield('renewal_ZipCode', $student_data['renewal']->ZipCode ? $student_data['renewal']->ZipCode : null, 'ZIP Code', '00000', array('type' => 'number', 'minlength' => 5, 'maxlength' => 10, 'required' => 'required'), array('required', 'col-md-2', 'col-sm-12'));
+            $ret['renewal_Address1'] = $this->form->field_textfield('renewal_Address1', $student_data['renewal']->Address1 ? $student_data['renewal']->Address1 : null, 'Address', '123 Any Street', array('type' => 'text', 'minlength' => '2', 'required' => 'required'), array('required', 'col-md-3', 'col-sm-12'));
+            $ret['renewal_Address2'] = $this->form->field_textfield('renewal_Address2', $student_data['renewal']->Address2 ? $student_data['renewal']->Address2 : null, 'Address Line 2', 'Apartment or Box number', array('type' => 'text'), array('col-md-3', 'col-sm-12'));
+            $ret['renewal_City'] = $this->form->field_textfield('renewal_City', $student_data['renewal']->City ? $student_data['renewal']->City : null, 'City', null, array('type' => 'text', 'required' => 'required'), array('required', 'col-md-3', 'col-sm-12'));
+            $ret['renewal_StateId'] = $this->form->field_select('renewal_StateId', $student_data['renewal']->StateId ? $student_data['renewal']->StateId : 'OH', 'State', array('option' => 'Select', 'value' => 'OH'), $this->states_array, array('required' => 'required'), array('required', 'col-md-1', 'col-sm-12'));
+            $ret['renewal_ZipCode'] = $this->form->field_textfield('renewal_ZipCode', $student_data['renewal']->ZipCode ? $student_data['renewal']->ZipCode : null, 'ZIP Code', '00000', array('type' => 'number', 'minlength' => 5, 'maxlength' => 10, 'required' => 'required'), array('required', 'col-md-1', 'col-sm-12'));
+            $ret['renewal_CountyId'] = $this->form->field_select('renewal_CountyId', $student_data['renewal']->CountyId ? $student_data['renewal']->CountyId : null, 'County', array('option' => 'Select', 'value' => '24'), $this->counties_array, null, array('col-md-1', 'col-sm-12'));
             $ret[] = '<hr />';
 
-            $ret['renewal_Email'] = $this->form->field_textfield("renewal_Email", $student_data['renewal']->Email ? $student_data['renewal']->Email : '','Email','Email',array('email'),array('required', 'col-sm-12'));
+            $ret['renewal_Email'] = $this->form->field_textfield("renewal_Email", $student_data['renewal']->Email ? $student_data['renewal']->Email : '','Email','Email',array('email'),array('required', 'col-md-3','col-sm-12'));
 
-            $ret['renewal_CellPhone'] = $this->form->field_textfield('renewal_CellPhone', $student_data['renewal']->CellPhone ? $student_data['renewal']->CellPhone : null, 'Mobile Phone Number', '(000)000-0000', array('required' => 'required', 'type' => 'tel'), array('required', 'col-md-6', 'col-sm-12'));
-            $ret['renewal_AlternativePhone'] = $this->form->field_textfield('renewal_AlternativePhone', $student_data['renewal']->AlternativePhone ? $student_data['renewal']->AlternativePhone : null, 'Alternative Phone Number', '(000)000-0000', array('type' => 'tel'), array('col-md-6', 'col-sm-12'));
+            $ret['renewal_CellPhone'] = $this->form->field_textfield('renewal_CellPhone', $student_data['renewal']->CellPhone ? $student_data['renewal']->CellPhone : null, 'Mobile Phone Number', '(000)000-0000', array('required' => 'required', 'type' => 'tel'), array('required', 'col-md-3', 'col-sm-12'));
+            $ret['renewal_AlternativePhone'] = $this->form->field_textfield('renewal_AlternativePhone', $student_data['renewal']->AlternativePhone ? $student_data['renewal']->AlternativePhone : null, 'Alternative Phone Number', '(000)000-0000', array('type' => 'tel'), array('col-md-3', 'col-sm-12'));
 
         } else {
 
-            $ret['Applicant_FirstName'] = $this->form->field_textfield('Applicant_FirstName', $student_data['personal']->FirstName ? $student_data['personal']->FirstName : null, 'First Name', null, array('minlength' => '2', 'required' => 'required'), array('required', 'col-md-5', 'col-sm-12'));
+            $ret['Applicant_FirstName'] = $this->form->field_textfield('Applicant_FirstName', $student_data['personal']->FirstName ? $student_data['personal']->FirstName : null, 'First Name', null, array('minlength' => '2', 'required' => 'required'), array('required', 'col-md-3', 'col-sm-12'));
             $ret['Applicant_MiddleInitial'] = $this->form->field_textfield('Applicant_MiddleInitial', $student_data['personal']->MiddleInitial ? $student_data['personal']->MiddleInitial : null, 'Middle Initial', null, array(), array('col-md-2', 'col-sm-12'));
-            $ret['Applicant_LastName'] = $this->form->field_textfield('Applicant_LastName', $student_data['personal']->LastName ? $student_data['personal']->LastName : null, 'Last Name', null, array('minlength' => '2', 'required' => 'required'), array('required', 'col-md-5', 'col-sm-12'));
+            $ret['Applicant_LastName'] = $this->form->field_textfield('Applicant_LastName', $student_data['personal']->LastName ? $student_data['personal']->LastName : null, 'Last Name', null, array('minlength' => '2', 'required' => 'required'), array('required', 'col-md-4', 'col-sm-12'));
+            $ret['Applicant_StudentId'] = $this->form->field_textfield('Applicant_StudentId', $student_data['personal']->StudentId ? $student_data['personal']->StudentId : null, 'Student ID', null, array(), array('col-md-3', 'col-sm-12'));
 
-            $ret['Applicant_Address1'] = $this->form->field_textfield('Applicant_Address1', $student_data['personal']->Address1 ? $student_data['personal']->Address1 : null, 'Address', '123 Any Street', array('type' => 'text', 'minlength' => '2', 'required' => 'required'), array('required', 'col-md-12'));
-            $ret['Applicant_Address2'] = $this->form->field_textfield('Applicant_Address2', $student_data['personal']->Address2 ? $student_data['personal']->Address2 : null, '', 'Apartment or Box number', array('type' => 'text'), array('col-md-12'));
-            $ret['Applicant_City'] = $this->form->field_textfield('Applicant_City', $student_data['personal']->City ? $student_data['personal']->City : null, 'City', null, array('type' => 'text', 'required' => 'required'), array('required', 'col-md-5', 'col-sm-12'));
-            $ret['Applicant_StateId'] = $this->form->field_select('Applicant_StateId', $student_data['personal']->StateId ? $student_data['personal']->StateId : 'OH', 'State', array('option' => 'Select', 'value' => 'OH'), $this->states_array, array('required' => 'required'), array('required', 'col-md-2', 'col-sm-12'));
-            $ret['Applicant_CountyId'] = $this->form->field_select('Applicant_CountyId', $student_data['personal']->CountyId ? $student_data['personal']->CountyId : null, 'County', array('option' => 'Select', 'value' => '24'), $this->counties_array, null, array('col-md-3', 'col-sm-12'));
-            $ret['Applicant_ZipCode'] = $this->form->field_textfield('Applicant_ZipCode', $student_data['personal']->ZipCode ? $student_data['personal']->ZipCode : null, 'ZIP Code', '00000', array('type' => 'number', 'minlength' => 5, 'maxlength' => 10, 'required' => 'required'), array('required', 'col-md-2', 'col-sm-12'));
+            $ret['Applicant_Address1'] = $this->form->field_textfield('Applicant_Address1', $student_data['personal']->Address1 ? $student_data['personal']->Address1 : null, 'Address', '123 Any Street', array('type' => 'text', 'minlength' => '2', 'required' => 'required'), array('required', 'col-md-3', 'col-sm-12'));
+            $ret['Applicant_Address2'] = $this->form->field_textfield('Applicant_Address2', $student_data['personal']->Address2 ? $student_data['personal']->Address2 : null, 'Address Line 2', 'Apartment or Box number', array('type' => 'text'), array('col-md-3', 'col-sm-12'));
+            $ret['Applicant_City'] = $this->form->field_textfield('Applicant_City', $student_data['personal']->City ? $student_data['personal']->City : null, 'City', null, array('type' => 'text', 'required' => 'required'), array('required', 'col-md-3', 'col-sm-12'));
+            $ret['Applicant_StateId'] = $this->form->field_select('Applicant_StateId', $student_data['personal']->StateId ? $student_data['personal']->StateId : 'OH', 'State', array('option' => 'Select', 'value' => 'OH'), $this->states_array, array('required' => 'required'), array('required', 'col-md-1', 'col-sm-12'));
+            $ret['Applicant_ZipCode'] = $this->form->field_textfield('Applicant_ZipCode', $student_data['personal']->ZipCode ? $student_data['personal']->ZipCode : null, 'ZIP Code', '00000', array('type' => 'number', 'minlength' => 5, 'maxlength' => 10, 'required' => 'required'), array('required', 'col-md-1', 'col-sm-12'));
+            $ret['Applicant_CountyId'] = $this->form->field_select('Applicant_CountyId', $student_data['personal']->CountyId ? $student_data['personal']->CountyId : null, 'County', array('option' => 'Select', 'value' => '24'), $this->counties_array, null, array('col-md-1', 'col-sm-12'));
             $ret[] = '<hr />';
 
-            $ret['Applicant_Email'] = $this->form->field_textfield("Applicant_Email", $student_data['personal']->Email ? $student_data['personal']->Email : '','Email','Email',array('email'),array('required', 'col-sm-12'));
+            $ret['Applicant_Email'] = $this->form->field_textfield("Applicant_Email", $student_data['personal']->Email ? $student_data['personal']->Email : '','Email','Email',array('email'),array('required', 'col-md-3', 'col-sm-12'));
 
-            $ret['Applicant_CellPhone'] = $this->form->field_textfield('Applicant_CellPhone', $student_data['personal']->CellPhone ? $student_data['personal']->CellPhone : null, 'Mobile Phone Number', '(000)000-0000', array('required' => 'required', 'type' => 'tel'), array('required', 'col-md-6', 'col-sm-12'));
-            $ret['Applicant_AlternativePhone'] = $this->form->field_textfield('Applicant_AlternativePhone', $student_data['personal']->AlternativePhone ? $student_data['personal']->AlternativePhone : null, 'Alternative Phone Number', '(000)000-0000', array('type' => 'tel'), array('col-md-6', 'col-sm-12'));
+            $ret['Applicant_CellPhone'] = $this->form->field_textfield('Applicant_CellPhone', $student_data['personal']->CellPhone ? $student_data['personal']->CellPhone : null, 'Mobile Phone Number', '(000)000-0000', array('required' => 'required', 'type' => 'tel'), array('required', 'col-md-3', 'col-sm-12'));
+            $ret['Applicant_AlternativePhone'] = $this->form->field_textfield('Applicant_AlternativePhone', $student_data['personal']->AlternativePhone ? $student_data['personal']->AlternativePhone : null, 'Alternative Phone Number', '(000)000-0000', array('type' => 'tel'), array('col-md-3', 'col-sm-12'));
 
         }
-        $ret['Applicant_Last4SSN'] = $this->form->field_textfield('Applicant_Last4SSN', $student_data['personal']->Last4SSN ? $student_data['personal']->Last4SSN : null, 'Last 4 numbers of your SS#', '0000', array('type' => 'number', 'maxlength' => 4, 'minlength' => 4, 'required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
-        $ret['Applicant_DateOfBirth'] = $this->form->field_date('Applicant_DateOfBirth', $student_data['personal']->DateOfBirth ? $student_data['personal']->DateOfBirth : null, 'Date of Birth', array('required' => 'required', 'type' => 'date', 'date' => 'date'), array('datepicker', 'required', 'col-md-6', 'col-sm-12'));
+        $ret['Applicant_Last4SSN'] = $this->form->field_textfield('Applicant_Last4SSN', $student_data['personal']->Last4SSN ? $student_data['personal']->Last4SSN : null, 'Last 4 numbers of your SS#', '0000', array('type' => 'number', 'maxlength' => 4, 'minlength' => 4, 'required' => 'required'), array('required', 'col-md-3', 'col-sm-12'));
+        $ret['Applicant_DateOfBirth'] = $this->form->field_date('Applicant_DateOfBirth', $student_data['personal']->DateOfBirth ? $student_data['personal']->DateOfBirth : null, 'Date of Birth', array('required' => 'required', 'type' => 'date', 'date' => 'date'), array('datepicker', 'required', 'col-md-4', 'col-sm-12'));
 
-        $ret['Applicant_EthnicityId'] = $this->form->field_select('Applicant_EthnicityId', $student_data['personal']->EthnicityId ? $student_data['personal']->EthnicityId : null, 'Ethnicity', array('option' => 'Select', 'value' => '24'), $this->ethnicity_array, null, array('col-md-6', 'col-sm-12'));
-        $ret['Applicant_SexId'] = $this->form->field_radio('Applicant_SexId', $student_data['personal']->SexId ? $student_data['personal']->SexId : null, 'Gender', $this->sex_array, null, array('col-md-6', 'col-sm-12'));
+        $ret['Applicant_EthnicityId'] = $this->form->field_select('Applicant_EthnicityId', $student_data['personal']->EthnicityId ? $student_data['personal']->EthnicityId : null, 'Ethnicity', array('option' => 'Select', 'value' => '24'), $this->ethnicity_array, null, array('col-md-4', 'col-sm-12'));
+        $ret['Applicant_SexId'] = $this->form->field_radio('Applicant_SexId', $student_data['personal']->SexId ? $student_data['personal']->SexId : null, 'Gender', $this->sex_array, null, array('col-md-4', 'col-sm-12'));
         $ret[] = '<hr />';
         if($renewal){
-            $ret['Renewal_CollegeId'] = $this->form->field_select('Renewal_CollegeId', $student_data['renewal']->CollegeId ? $student_data['renewal']->CollegeId : null, 'College Applied To or Attending', null, $this->college_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
-            $ret['Renewal_OtherSchool'] = $this->form->field_textfield('Renewal_OtherSchool', $student_data['renewal']->OtherSchool ? $student_data['renewal']->OtherSchool : '', 'Name of Unlisted Institution', null, array('text' => true), array('col-sm-12', 'required')); //how are we handling "other" in the new DB?
-            $ret['Renewal_MajorId'] = $this->form->field_select('Renewal_MajorId', $student_data['renewal']->MajorId ? $student_data['renewal']->MajorId : 5122, 'Intended Major (If Uncertain, select Undecided)', null, $this->major_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
+            $ret['Renewal_CollegeId'] = $this->form->field_select('Renewal_CollegeId', $student_data['renewal']->CollegeId ? $student_data['renewal']->CollegeId : null, 'College Applied To or Attending', null, $this->college_array, array('required' => 'required'), array('required', 'col-md-3', 'col-sm-12'));
+            $ret['Renewal_OtherSchool'] = $this->form->field_textfield('Renewal_OtherSchool', $student_data['renewal']->OtherSchool ? $student_data['renewal']->OtherSchool : '', 'Name of Unlisted Institution', null, array('text' => true), array('col-md-3','col-sm-12', 'required')); //how are we handling "other" in the new DB?
+            $ret['Renewal_MajorId'] = $this->form->field_select('Renewal_MajorId', $student_data['renewal']->MajorId ? $student_data['renewal']->MajorId : 5122, 'Intended Major (If Uncertain, select Undecided)', null, $this->major_array, array('required' => 'required'), array('required', 'col-md-3', 'col-sm-12'));
         }else {
-            $ret['Applicant_CollegeId'] = $this->form->field_select('Applicant_CollegeId', $student_data['personal']->CollegeId ? $student_data['personal']->CollegeId : null, 'College Applied To or Attending', null, $this->college_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
-            $ret['Applicant_OtherSchool'] = $this->form->field_textfield('Applicant_OtherSchool', $student_data['personal']->OtherSchool ? $student_data['personal']->OtherSchool : '', 'Name of Unlisted Institution', null, array('text' => true), array('col-sm-12', 'required')); //how are we handling "other" in the new DB?
-            $ret['Applicant_MajorId'] = $this->form->field_select('Applicant_MajorId', $student_data['personal']->MajorId ? $student_data['personal']->MajorId : 5122, 'Intended Major (If Uncertain, select Undecided)', null, $this->major_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
+            $ret['Applicant_CollegeId'] = $this->form->field_select('Applicant_CollegeId', $student_data['personal']->CollegeId ? $student_data['personal']->CollegeId : null, 'College Applied To or Attending', null, $this->college_array, array('required' => 'required'), array('required', 'col-md-3', 'col-sm-12'));
+            $ret['Applicant_OtherSchool'] = $this->form->field_textfield('Applicant_OtherSchool', $student_data['personal']->OtherSchool ? $student_data['personal']->OtherSchool : '', 'Name of Unlisted Institution', null, array('text' => true), array('col-md-3','col-sm-12', 'required')); //how are we handling "other" in the new DB?
+            $ret['Applicant_MajorId'] = $this->form->field_select('Applicant_MajorId', $student_data['personal']->MajorId ? $student_data['personal']->MajorId : 5122, 'Intended Major', null, $this->major_array, array('required' => 'required'), array('required', 'col-md-3', 'col-sm-12'));
         }
-        $ret['Applicant_EducationAttainmentId'] = $this->form->field_select("Applicant_EducationAttainmentId", $student_data['personal']->EducationAttainmentId ? $student_data['personal']->EducationAttainmentId : null, "Year in School Fall Semester, 2018", array('option' => 'Select', 'value' => '5'), $this->educationalattainment_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
-        $ret['Applicant_FirstGenerationStudent'] = $this->form->field_boolean('Applicant_FirstGenerationStudent', $student_data['personal']->FirstGenerationStudent ? $student_data['personal']->FirstGenerationStudent : 0, 'Are you the first person in your family to attend college?', null, array('col-md-6', 'col-sm-12'));
-        $ret['Applicant_HighSchoolGraduationDate'] = $this->form->field_select('Applicant_HighSchoolGraduationDate', $student_data['personal']->HighSchoolGraduationDate ? $student_data['personal']->HighSchoolGraduationDate : date("Y").'-01-01', "Year of High School Graduation", array('value' => date("Y").'-01-01','option' => date("Y")), $this->gradyr_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
+        $ret['Applicant_EducationAttainmentId'] = $this->form->field_select("Applicant_EducationAttainmentId", $student_data['personal']->EducationAttainmentId ? $student_data['personal']->EducationAttainmentId : null, "Year in School Fall Semester, 2018", array('option' => 'Select', 'value' => '5'), $this->educationalattainment_array, array('required' => 'required'), array('required', 'col-md-3', 'col-sm-12'));
+
+        $ret[] = '<hr />';
+        $ret['Applicant_FirstGenerationStudent'] = $this->form->field_boolean('Applicant_FirstGenerationStudent', $student_data['personal']->FirstGenerationStudent ? $student_data['personal']->FirstGenerationStudent : 0, 'First generation student', null, array('col-md-3', 'col-sm-12'));
+        $ret['Applicant_HighSchoolGraduationDate'] = $this->form->field_select('Applicant_HighSchoolGraduationDate', $student_data['personal']->HighSchoolGraduationDate ? $student_data['personal']->HighSchoolGraduationDate : date("Y").'-01-01', "Year of High School Graduation", array('value' => date("Y").'-01-01','option' => date("Y")), $this->gradyr_array, array('required' => 'required'), array('required', 'col-md-3', 'col-sm-12'));
+        $ret['Applicant_IsIndependent'] = $this->form->field_boolean('Applicant_IsIndependent', $student_data['personal']->IsIndependent ? $student_data['personal']->IsIndependent : 0, 'Independent?',null,array('col-md-3', 'col-sm-12'));
+        $ret['Applicant_Employer'] = $this->form->field_textfield('Applicant_Employer', $student_data['personal']->Employer ? $student_data['personal']->Employer : null, "Applicant Employer",null,null, array('col-md-3', 'col-sm-12'));
 
 
 
         $ret[] = '<hr />';
-        $ret['ApplicantScholarship_ScholarshipId'] = $this->form->field_select('ApplicantScholarship_ScholarshipId', $student_data['scholarship']->ScholarshipId ? $student_data['scholarship']->ScholarshipId:0, 'Scholarship', null, $this->scholarship_array, array(''), array('col-md-6', 'col-sm-12'));
-        $ret['ApplicantScholarship_DateAwarded'] = $this->form->field_date("ApplicantScholarship_DateAwarded", (strtotime($student_data['scholarship']->DateAwarded) > 0) ? $student_data['scholarship']->DateAwarded : '','Date Awarded',array(),array('datepicker','col-md-6', 'col-sm-12'));
-        $ret['ApplicantScholarship_AmountAwarded'] = $this->form->field_textfield('ApplicantScholarship_AmountAwarded', $student_data['scholarship']->AmountAwarded ? $student_data['scholarship']->AmountAwarded : null, 'Amount Awarded', '', array(), array('col-md-6', 'col-sm-12'));
-        $ret['ApplicantScholarship_AmountActuallyAwarded'] = $this->form->field_textfield('ApplicantScholarship_AmountActuallyAwarded', $student_data['scholarship']->AmountActuallyAwarded ? $student_data['scholarship']->AmountActuallyAwarded : null, 'Amount Actually Awarded', '', array(), array('col-md-6', 'col-sm-12'));
+        $ret['ApplicantScholarship_ScholarshipId'] = $this->form->field_select('ApplicantScholarship_ScholarshipId', $student_data['scholarship']->ScholarshipId ? $student_data['scholarship']->ScholarshipId : null , 'Scholarship', null, $this->scholarship_array, array(), array('col-md-3', 'col-sm-12'));
+        $ret['ApplicantScholarship_DateAwarded'] = $this->form->field_date("ApplicantScholarship_DateAwarded", (strtotime($student_data['scholarship']->DateAwarded) > 0) ? $student_data['scholarship']->DateAwarded : '','Date Awarded',array(),array('datepicker','col-md-3', 'col-sm-12'));
+        $ret['ApplicantScholarship_AmountAwarded'] = $this->form->field_textfield('ApplicantScholarship_AmountAwarded', $student_data['scholarship']->AmountAwarded ? $student_data['scholarship']->AmountAwarded : null, 'Amount Awarded', '', array(), array('col-md-3', 'col-sm-12'));
+        $ret['ApplicantScholarship_AmountActuallyAwarded'] = $this->form->field_textfield('ApplicantScholarship_AmountActuallyAwarded', $student_data['scholarship']->AmountActuallyAwarded ? $student_data['scholarship']->AmountActuallyAwarded : null, 'Amount Actually Awarded', '', array(), array('col-md-3', 'col-sm-12'));
 
 
 
@@ -378,24 +393,31 @@ class MSDLAB_Report_Output{
         $renewal = isset($student_data['renewal']->RenewalId)?true:false;
 
         $this->set_form_select_options();
-        $ret['Applicant_ApplicationDateTime'] = $this->form->field_date("Applicant_ApplicationDateTime", (strtotime($student_data['personal']->ApplicationDateTime) > 0) ? $student_data['personal']->ApplicationDateTime : '','Application Date');
+        $ret['Applicant_ApplicationDateTime'] = $this->form->field_date("Applicant_ApplicationDateTime", (strtotime($student_data['personal']->ApplicationDateTime) > 0) ? $student_data['personal']->ApplicationDateTime : '','Application Date',array(),array('datepicker','col-md-2', 'col-sm-12'));
         if($renewal){
-            $ret['Renewal_RenewalDateTime'] = $this->form->field_date("Renewal_RenewalDateTime", (strtotime($student_data['renewal']->RenewalDateTime) > 0) ? $student_data['renewal']->RenewalDateTime : '','Renewal Date');
+            $ret['Renewal_RenewalDateTime'] = $this->form->field_date("Renewal_RenewalDateTime", (strtotime($student_data['renewal']->RenewalDateTime) > 0) ? $student_data['renewal']->RenewalDateTime : '','Renewal Date',array(),array('datepicker','col-md-2', 'col-sm-12'));
         }
-        $ret['Applicant_IsComplete'] = $this->form->field_boolean('Applicant_IsComplete',1,'Complete');
+        $ret['Applicant_IsComplete'] = $this->form->field_boolean('Applicant_IsComplete',1,'Complete',array(),array('col-md-2', 'col-sm-12'));
 
-        $ret['Applicant_ResumeOK'] = $this->form->field_boolean('Applicant_ResumeOK',1,'Resume OK');
-        $ret['Applicant_TranscriptOK'] = $this->form->field_boolean('Applicant_TranscriptOK',1,'Transcript OK');
-        $ret['Applicant_FinancialAidOK'] = $this->form->field_boolean('Applicant_FinancialAidOK',1,'Financial Aid OK');
-        $ret['Applicant_FAFSAOK'] = $this->form->field_boolean('Applicant_FAFSAOK',1,'FAFSA OK');
-        $ret['Applicant_Activities'] = $this->form->field_textarea('Applicant_Activities',$student_data['personal']->Activities ? $student_data['personal']->Activities : '',"Please list any activities participated in, with years active.",null,array('col-md-12'));
+        $ret['Applicant_ResumeOK'] = $this->form->field_boolean('Applicant_ResumeOK',1,'Resume OK',array(),array('col-md-2', 'col-sm-12'));
+        $ret['Applicant_TranscriptOK'] = $this->form->field_boolean('Applicant_TranscriptOK',1,'Transcript OK',array(),array('col-md-2', 'col-sm-12'));
+        $ret['Applicant_FinancialAidOK'] = $this->form->field_boolean('Applicant_FinancialAidOK',1,'Financial Aid OK',array(),array('col-md-2', 'col-sm-12'));
+        $ret['Applicant_FAFSAOK'] = $this->form->field_boolean('Applicant_FAFSAOK',1,'FAFSA OK',array(),array('col-md-2', 'col-sm-12'));
+        $ret[] = '<hr />';
+        $ret[] = '<div class="col-md-6">';
+
         $ret['Applicant_PlayedHighSchoolSports'] = $this->form->field_boolean('Applicant_PlayedHighSchoolSports', $student_data['personal']->PlayedHighSchoolSports ? $student_data['personal']->PlayedHighSchoolSports : 0, 'Did you participate in sports while attending High School?');
 
-        $ret[] = '<br />';
-        $ret['Applicant_HighSchoolId'] = $this->form->field_select('Applicant_HighSchoolId', $student_data['personal']->HighSchoolId ? $student_data['personal']->HighSchoolId : 136, "High School Attended", $student_data['personal']->HighSchoolId ? $student_data['personal']->HighSchoolId : null, $this->highschool_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
-        $ret['HighSchoolType'] = $this->form->field_select('HighSchoolType', $this->queries->get_highschool_type_by_highschool_id($student_data['personal']->HighSchoolId) , "High School Type", null, $this->highschool_type_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
-        $ret['Applicant_HighSchoolGPA'] = $this->form->field_textfield('Applicant_HighSchoolGPA', $student_data['personal']->HighSchoolGPA ? $student_data['personal']->HighSchoolGPA : null, 'High School GPA', '0.00', array('required' => 'required', 'type' => 'number', 'minlength' => 1), array('required', 'col-md-6', 'col-sm-12'));
+        $ret['Applicant_Activities'] = $this->form->field_textarea('Applicant_Activities',$student_data['personal']->Activities ? $student_data['personal']->Activities : '',"Please list any activities participated in, with years active.",null,array('col-md-12'));
 
+        $ret[] = '</div>';
+
+        $ret[] = '<div class="col-md-6">';
+        $ret['Applicant_HighSchoolId'] = $this->form->field_select('Applicant_HighSchoolId', $student_data['personal']->HighSchoolId ? $student_data['personal']->HighSchoolId : 136, "High School Attended", $student_data['personal']->HighSchoolId ? $student_data['personal']->HighSchoolId : null, $this->highschool_array, array('required' => 'required'), array('required', 'col-md-4', 'col-sm-12'));
+        $ret['HighSchoolType'] = $this->form->field_select('HighSchoolType', $this->queries->get_highschool_type_by_highschool_id($student_data['personal']->HighSchoolId) , "High School Type", null, $this->highschool_type_array, array('required' => 'required'), array('required', 'col-md-4', 'col-sm-12'));
+        $ret['Applicant_HighSchoolGPA'] = $this->form->field_textfield('Applicant_HighSchoolGPA', $student_data['personal']->HighSchoolGPA ? $student_data['personal']->HighSchoolGPA : null, 'High School GPA', '0.00', array('required' => 'required', 'type' => 'number', 'minlength' => 1), array('required', 'col-md-4', 'col-sm-12'));
+
+        $ret[] = '</div>';
         return implode("\n",$ret);
 
     }
@@ -434,12 +456,12 @@ class MSDLAB_Report_Output{
         $ret['college_financials_grid'] = '<div class="col-md-12">
     <table class="table-grid">
     <tr><th colspan="2">'.$this->queries->get_college_by_id($college_id).'</th></tr>
-    <tr><td>Indirect Cost</td><td>'.$this->queries->get_college_financials($college_id,'IndirectCost').'</td></tr>
-    <tr><td>Book Fees</td><td>'.$this->queries->get_college_financials($college_id,'BookFee').'</td></tr>
-    <tr><td>Off Campus R&B</td><td>'.$this->queries->get_college_financials($college_id,'RoomBoardOffCampus').'</td></tr>
-    <tr><td>On Campus R&B</td><td>'.$this->queries->get_college_financials($college_id,'RoomBoardOnCampus').'</td></tr>
-    <tr><td>In-state Tuition</td><td>'.$this->queries->get_college_financials($college_id,'InStateTuition').'</td></tr>
-    <tr><td>Out-of-state Tuition</td><td>'.$this->queries->get_college_financials($college_id,'OutStateTuition').'</td></tr>
+    <tr><td>Indirect Cost</td><td>$'.$this->queries->get_college_financials($college_id,'IndirectCost').'</td></tr>
+    <tr><td>Book Fees</td><td>$'.$this->queries->get_college_financials($college_id,'BookFee').'</td></tr>
+    <tr><td>Off Campus R&B</td><td>$'.$this->queries->get_college_financials($college_id,'RoomBoardOffCampus').'</td></tr>
+    <tr><td>On Campus R&B</td><td>$'.$this->queries->get_college_financials($college_id,'RoomBoardOnCampus').'</td></tr>
+    <tr><td>In-state Tuition</td><td>$'.$this->queries->get_college_financials($college_id,'InStateTuition').'</td></tr>
+    <tr><td>Out-of-state Tuition</td><td>$'.$this->queries->get_college_financials($college_id,'OutStateTuition').'</td></tr>
 </table>
 </div>';
 
@@ -455,29 +477,34 @@ class MSDLAB_Report_Output{
         } else {
             $college_id = $student_data['personal']->CollegeId;
         }
-        $payment_keys = array('1','1 Adj','2','2 Adj','3','4','5');
+        $scholarship_id = $student_data['scholarship']->ScholarshipId;
+        $payment_keys = array('1','1-Adj','2','2-Adj','3','4','5');
         $ret[] = '<div class="col-md-5">';
-        $ret['infoCurrentCollege'] = $this->form->field_textinfo('infoCurrentCollege',$this->queries->get_college_by_id($college_id),'Current School');
-        $ret['ApplicantScholarship_ScholarshipId'] = $this->form->field_select('ApplicantScholarship_ScholarshipId', $student_data['scholarship']->ScholarshipId ? $student_data['scholarship']->ScholarshipId:0, 'Scholarship', null, $this->scholarship_array, array(''), array('col-sm-12'));
+        //$ret['infoCurrentCollege'] = $this->form->field_textinfo('infoCurrentCollege',$this->queries->get_college_by_id($college_id),'Current School');
+        $ret['infoScholarshipId'] = $this->form->field_textinfo('infoScholarshipId',$this->queries->get_scholarship_by_id($scholarship_id),'Scholarship');
         $ret['infoFund'] = $this->form->field_textinfo('infoFund',$this->queries->get_fund_by_scholarshipid($student_data['scholarship']->ScholarshipId),'Fund');
         $ret[] = '</div>';
         $ret[] = '<div class="col-md-7">';
-        $ret['note'] = "Things apparently not in database, please advise";
+        $ret['note'] = "<h2 style='color:red'>Things apparently not in database, please advise</h2>";
         $ret[] = '</div>';
         $ret[] = '<div class="col-md-12"><table>';
         $ret[] = '<tr><th>Payment #</th><th>Amount</th><th>Date</th><th>Check #</th><th>School</th><th>Notes</th><th>Refund Req.</th><th>Refund Rec.</th><th>Refund Amt.</th><th>Refund #</th></tr>';
         foreach($payment_keys AS $payment_key){
             $ret[] = '<tr>';
-            $ret[] = '<td>'.$payment_key.'</td>';
-            $ret['payment_PaymentAmt_'.$payment_key] = '<td>'.$this->form->field_textfield('payment_PaymentAmt_'.$payment_key,$student_data['payment']->payment_PaymentAmt_{$payment_key}).'</td>';
-            $ret['payment_PaymentDateTime_'.$payment_key] = '<td>'.$this->form->field_date('payment_PaymentDateTime_'.$payment_key,$student_data['payment']->payment_PaymentDateTime_{$payment_key},'').'</td>';
-            $ret['payment_CheckNumber_'.$payment_key] = '<td>'.$this->form->field_textfield('payment_CheckNumber_'.$payment_key,$student_data['payment']->payment_CheckNumber_{$payment_key}).'</td>';
-            $ret['payment_CollegeId_'.$payment_key] = '<td>'.$this->form->field_select('payment_CollegeId_'.$payment_key,$student_data['payment']->payment_CollegeId_{$payment_key},'',null,$this->college_array).'</td>';
-            $ret['payment_Notes_'.$payment_key] = '<td>'.$this->form->field_textarea_simple('payment_Notes_'.$payment_key,$student_data['payment']->payment_Notes_{$payment_key}).'</td>';
-            $ret['payment_RefundRequested_'.$payment_key] = '<td>'.$this->form->field_textfield('payment_RefundRequested_'.$payment_key,$student_data['payment']->payment_RefundRequested_{$payment_key}).'</td>';
-            $ret['payment_RefundReceived_'.$payment_key] = '<td>'.$this->form->field_textfield('payment_RefundReceived_'.$payment_key,$student_data['payment']->payment_RefundReceived_{$payment_key}).'</td>';
-            $ret['payment_RefundAmt_'.$payment_key] = '<td>'.$this->form->field_textfield('payment_RefundAmt_'.$payment_key,$student_data['payment']->payment_RefundAmt_{$payment_key}).'</td>';
-            $ret['payment_RefundNumber_'.$payment_key] = '<td>'.$this->form->field_textfield('payment_RefundNumber_'.$payment_key,$student_data['payment']->payment_RefundNumber_{$payment_key}).'</td>';
+            $ret[] = '<th>'.$payment_key.'</th>';
+            $ret['payment_ApplicantId_'.$payment_key] = $this->form->field_hidden("payment_ApplicantId_".$payment_key, $student_data['personal']->ApplicantId);
+            $ret['payment_UserId_'.$payment_key] = $this->form->field_hidden("payment_UserId_".$payment_key, $student_data['personal']->UserId);
+            $ret['payment_paymentkey_'.$payment_key] = $this->form->field_hidden("payment_paymentkey_".$payment_key, $payment_key);
+
+            $ret['payment_PaymentAmt_'.$payment_key] = '<td>'.$this->form->field_textfield('payment_PaymentAmt_'.$payment_key,$student_data['payment'][$payment_key]->PaymentAmt).'</td>';
+            $ret['payment_PaymentDateTime_'.$payment_key] = '<td>'.$this->form->field_date('payment_PaymentDateTime_'.$payment_key,$student_data['payment'][$payment_key]->PaymentDateTime,'').'</td>';
+            $ret['payment_CheckNumber_'.$payment_key] = '<td>'.$this->form->field_textfield('payment_CheckNumber_'.$payment_key,$student_data['payment'][$payment_key]->CheckNumber).'</td>';
+            $ret['payment_CollegeId_'.$payment_key] = '<td>'.$this->form->field_select('payment_CollegeId_'.$payment_key,$student_data['payment'][$payment_key]->CollegeId?$student_data['payment'][$payment_key]->CollegeId:$college_id,'',null,$this->college_array).'</td>';
+            $ret['payment_Notes_'.$payment_key] = '<td>'.$this->form->field_textarea_simple('payment_Notes_'.$payment_key,$student_data['payment'][$payment_key]->Notes).'</td>';
+            $ret['payment_RefundRequested_'.$payment_key] = '<td>'.$this->form->field_textfield('payment_RefundRequested_'.$payment_key,$student_data['payment'][$payment_key]->RefundRequested).'</td>';
+            $ret['payment_RefundReceived_'.$payment_key] = '<td>'.$this->form->field_textfield('payment_RefundReceived_'.$payment_key,$student_data['payment'][$payment_key]->RefundReceived).'</td>';
+            $ret['payment_RefundAmt_'.$payment_key] = '<td>'.$this->form->field_textfield('payment_RefundAmt_'.$payment_key,$student_data['payment'][$payment_key]->RefundAmt).'</td>';
+            $ret['payment_RefundNumber_'.$payment_key] = '<td>'.$this->form->field_textfield('payment_RefundNumber_'.$payment_key,$student_data['payment'][$payment_key]->RefundNumber).'</td>';
             $ret[] = '</tr>';
         }
         $ret[] = '</table></div>';
@@ -485,7 +512,7 @@ class MSDLAB_Report_Output{
     }
 
     function guardian_form($student_data){
-        $ret[] = '<div class="col-md-6">';
+        $ret['Guardian_ApplicantId'] = $this->form->field_hidden("Guardian_ApplicantId", $student_data['personal']->ApplicantId);
         $ret['Guardian_GuardianFullName1'] = $this->form->field_textfield('Guardian_GuardianFullName1', $student_data['financial']->GuardianFullName1 ? $student_data['financial']->GuardianFullName1 : null, "First Guardian Full Name",null,array('minlength' => '2', 'required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
         $ret['Guardian_GuardianFullName2'] = $this->form->field_textfield('Guardian_GuardianFullName2', $student_data['financial']->GuardianFullName2 ? $student_data['financial']->GuardianFullName2 : null, "Second Guardian Full Name",null,null, array('col-md-6', 'col-sm-12'));
         $ret['Guardian_GuardianEmployer1'] = $this->form->field_textfield('Guardian_GuardianEmployer1', $student_data['financial']->GuardianEmployer1 ? $student_data['financial']->GuardianEmployer1 : null, "Place of Employment",null,array('minlength' => '2', 'required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
@@ -493,17 +520,12 @@ class MSDLAB_Report_Output{
         $ret['Guardian_Homeowner'] = $this->form->field_boolean('Guardian_Homeowner', $student_data['financial']->Homeowner ? $student_data['financial']->Homeowner : 0, "Do the applicant's parents own their home?",null, array('required', 'col-md-12'));
         $ret['Guardian_AmountOwedOnHome'] = $this->form->field_textfield('Guardian_AmountOwedOnHome', $student_data['financial']->AmountOwedOnHome ? $student_data['financial']->AmountOwedOnHome : null, "Amount Owed",'50,000', array('type' => 'number'), array('col-md-6', 'col-sm-12'));
         $ret['Guardian_HomeValue'] = $this->form->field_textfield('Guardian_HomeValue', $student_data['financial']->HomeValue ? $student_data['financial']->HomeValue : null, "Current Value",'100,000', array('type' => 'number'), array('col-md-6', 'col-sm-12'));
-        $ret[] = '</div>';
-        $ret[] = '<div class="col-md-6">';
-        $ret['Applicant_FirstGenerationStudent'] = $this->form->field_boolean('Applicant_FirstGenerationStudent', $student_data['personal']->FirstGenerationStudent ? $student_data['personal']->FirstGenerationStudent : 0, 'Are you the first person in your family to attend college?', null, array('col-md-6', 'col-sm-12'));
-        $ret['Applicant_IsIndependent'] = $this->form->field_boolean('Applicant_IsIndependent', $student_data['personal']->IsIndependent ? $student_data['personal']->IsIndependent : 0, 'Independent?');
-        $ret['Applicant_Employer'] = $this->form->field_textfield('Applicant_Employer', $student_data['personal']->Employer ? $student_data['personal']->Employer : null, "Applicant Employer",null,null, array('col-md-6', 'col-sm-12'));
-        $ret[] = '</div>';
 
         return implode("\n",$ret);
     }
 
     function other_form($student_data){
+        $ret['Agreements_ApplicantId'] = $this->form->field_hidden("Agreements_ApplicantId", $student_data['personal']->ApplicantId);
         $ret['SRATableHdr'] = '<div class="col-md-6">';
 
         $ret[] = '<table class="table">
@@ -548,8 +570,8 @@ class MSDLAB_Report_Output{
         $ret['SRATableFtr'] = '</table>';
         $ret[] = '</div>';
         $ret[] = '<div class="col-md-6">';
-        $ret['Applicant_HardshipNote'] = $this->form->field_textarea('Applicant_HardshipNote', $student_data['personal']->HardshipNote ? $student_data['personal']->HardshipNote : null, "HArdship Statement.",null,array('col-md-12'));
-
+        $ret['Applicant_HardshipNote'] = $this->form->field_textarea('Applicant_HardshipNote', $student_data['personal']->HardshipNote ? $student_data['personal']->HardshipNote : null, "Hardship Statement",null,array('col-md-12'));
+        $ret['Files'] = $this->form->attachment_display('Files',$student_data['docs']);
         $ret[] = '</div>';
 
         return implode("\n",$ret);

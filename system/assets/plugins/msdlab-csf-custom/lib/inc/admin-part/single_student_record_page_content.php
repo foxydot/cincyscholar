@@ -2,7 +2,25 @@
 $tabs = '';
 $pane = array();
 if($_POST) {
-    $user_id = $_POST['user_id'];
+    //ts_data($_POST);
+    $user_id = $_POST['Applicant_UserId_input'];
+    $notifications = array(
+        'nononce' => 'Student info could not be saved.',
+        'success' => 'Student info saved!'
+    );
+    $where = array(
+        'applicant' => 'UserId = ' . $_POST['Applicant_UserId_input'],
+        'renewal' => 'UserId = ' . $_POST['Renewal_UserId_input'],
+        'guardian' => 'ApplicantId = ' . $_POST['Guardian_ApplicantId_input'],
+        'agreements' => 'ApplicantId = ' . $_POST['Agreements_ApplicantId_input'],
+        'applicantscholarship' => 'ApplicantId = ' . $_POST['ApplicantScholarship_ApplicantId_input'],
+        'studentneed' => 'UserId = ' . $_POST['Applicant_UserId_input'],
+        'payment' => 'UserId = ' . $_POST['Applicant_UserId_input'],
+    );
+    if ($msg = $this->queries->set_data('single_student', $where, $notifications)) {
+        print '<div class="updated notice notice-success is-dismissible">' . $msg . '</div>';
+        unset($_POST);
+    }
 } elseif($_GET){
     $user_id = $_GET['user_id'];
 } else {
@@ -16,18 +34,17 @@ if($student = $this->queries->get_student_data($applicant_id)) {
     if(is_wp_error($student)){
         ts_data($student); //display errors
     } else {
-        //ts_data($student); //display errors
 
+        //ts_data($student); //display errors
         $tabs = $pane = array();
         if($student){
-            $form_id = 'single-student';
+            $form_id = 'single_student';
             $tabs = '
 <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#student" aria-controls="student" role="tab" data-toggle="tab">Student</a></li>
     <li role="presentation"><a href="#application" aria-controls="application" role="tab" data-toggle="tab">Application</a></li>
-    <li role="presentation"><a href="#financial" aria-controls="financial" role="tab" data-toggle="tab">Financial</a></li>
-    <li role="presentation"><a href="#payments" aria-controls="payments" role="tab" data-toggle="tab">Payments</a></li>
     <li role="presentation"><a href="#guardian" aria-controls="guardian" role="tab" data-toggle="tab">Parents/Family</a></li>
+    <li role="presentation"><a href="#financial" aria-controls="financial" role="tab" data-toggle="tab">Financial</a></li>
     <li role="presentation"><a href="#other" aria-controls="other" role="tab" data-toggle="tab">Other</a></li>
   </ul>';
 
@@ -37,8 +54,12 @@ if($student = $this->queries->get_student_data($applicant_id)) {
             $pane['application'] = '<div role="tabpanel" class="tab-pane" id="application">
                     '.$this->report->application_form($student).'
                 </div>';
+            $pane['guardian'] = '<div role="tabpanel" class="tab-pane" id="guardian">
+                    '.$this->report->guardian_form($student).'
+                </div>';
             $pane['financial'] = '<div role="tabpanel" class="tab-pane" id="financial">
                     '.$this->report->need_form($student).'
+                    '.$this->report->payment_form($student).'
                 </div>';
             $jquery[] = "
             $('#calculateneed_button').click(function(e){
@@ -64,12 +85,6 @@ if($student = $this->queries->get_student_data($applicant_id)) {
                 $('#studentneed_IndirectNeed_input').val(indirect);
             });
             ";
-            $pane['payments'] = '<div role="tabpanel" class="tab-pane" id="payments">
-                    '.$this->report->payment_form($student).'
-                </div>';
-            $pane['guardian'] = '<div role="tabpanel" class="tab-pane" id="guardian">
-                    '.$this->report->guardian_form($student).'
-                </div>';
             $pane['other'] = '<div role="tabpanel" class="tab-pane" id="other">
                     '.$this->report->other_form($student).'
                 </div>';
