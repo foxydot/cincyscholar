@@ -32,6 +32,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_update_unpublishable_tables', array(&$this,'update_unpublishable_tables') );
             add_action( 'wp_ajax_add_need_table', array(&$this,'add_need_table') );
             add_action( 'wp_ajax_add_payment_table', array(&$this,'add_payment_table') );
+            add_action( 'wp_ajax_remove_unneccesary_tables', array(&$this,'remove_unneccesary_tables') );
 
 
             add_filter('send_password_change_email',array(&$this,'return_false'));
@@ -515,6 +516,17 @@ beth@cincinnatischolarshipfoundation.org<br/>
             }
         }
 
+        function remove_unneccesary_tables(){
+            global $wpdb;
+            $tables = array('scholarshiprenewal','renewalmajor','externalscholarship','reminder','scholarshiprequirement','scholarshipscholarshiprequirement','temp_majors');
+            foreach($tables AS $table){
+                $sql = "DROP TABLE $table;";
+                if ($wpdb->query($sql)) {
+                    print $table . ' dropped.' . "\n";
+                }
+            }
+        }
+
         //utility
         function settings_page()
         {
@@ -697,6 +709,15 @@ beth@cincinnatischolarshipfoundation.org<br/>
                             console.log(response);
                         });
                     });
+                    $('.remove_unneccesary_tables').click(function(){
+                        var data = {
+                            action: 'remove_unneccesary_tables',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
             </script>
             <div class="wrap">
@@ -736,6 +757,8 @@ beth@cincinnatischolarshipfoundation.org<br/>
                     <dd><button class="add_need_table">Go</button></dd>
                     <dt>Add payment table:</dt>
                     <dd><button class="add_payment_table">Go</button></dd>
+                    <dt>Remove unneccessary tables:</dt>
+                    <dd><button class="remove_unneccesary_tables">Go</button></dd>
                 </dl>
                 <div class="response1"></div>
             </div>
