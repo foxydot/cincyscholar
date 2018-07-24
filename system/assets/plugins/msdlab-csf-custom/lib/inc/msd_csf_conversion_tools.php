@@ -483,7 +483,7 @@ beth@cincinnatischolarshipfoundation.org<br/>
   `IndirectNeed` bigint(20) unsigned NOT NULL,
   `Notes` text,
   `NeedLocked` tinyint(1) unsigned zerofill NOT NULL,
-  PRIMARY KEY (`need_id`)
+  PRIMARY KEY (`needid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
             if ($wpdb->query($sql)) {
                 print "table created!";
@@ -508,7 +508,7 @@ beth@cincinnatischolarshipfoundation.org<br/>
   `RefundNumber` varchar(120) NULL,
   `Notes` text,
   `PaymentLocked` tinyint(1) unsigned zerofill NOT NULL,
-  PRIMARY KEY (`payment_id`)
+  PRIMARY KEY (`paymentid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
             if ($wpdb->query($sql)) {
                 print "table created!";
