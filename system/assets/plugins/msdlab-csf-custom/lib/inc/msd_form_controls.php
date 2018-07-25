@@ -129,10 +129,10 @@ class MSDLAB_FormControls{
 
     public function field_textinfo($id, $value, $title = "", $placeholder = null, $validation = null, $class = array('medium')){
         if(is_null($value)){
-            $value = 'no value';
+            $value = 'n/a';
         }
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_info">'.$title.'</label>');
-        $form_field = apply_filters('msdlab_csf_'.$id.'_field','<span id="'.$id.'_info" name="'.$id.'_info">'.$value.'</span>');
+        $form_field = apply_filters('msdlab_csf_'.$id.'_field','<span id="'.$id.'_info" name="'.$id.'_info" class="info">'.$value.'</span>');
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);

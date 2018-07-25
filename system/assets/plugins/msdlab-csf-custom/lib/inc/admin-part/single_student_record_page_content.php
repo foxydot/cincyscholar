@@ -42,23 +42,15 @@ if($student = $this->queries->get_student_data($applicant_id)) {
             $tabs = '
 <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#student" aria-controls="student" role="tab" data-toggle="tab">Student</a></li>
+    <li role="presentation"><a href="#disbursement" aria-controls="disbursement" role="tab" data-toggle="tab">Disbursement</a></li>
     <li role="presentation"><a href="#application" aria-controls="application" role="tab" data-toggle="tab">Application</a></li>
-    <li role="presentation"><a href="#guardian" aria-controls="guardian" role="tab" data-toggle="tab">Parents/Family</a></li>
-    <li role="presentation"><a href="#financial" aria-controls="financial" role="tab" data-toggle="tab">Financial</a></li>
-    <li role="presentation"><a href="#other" aria-controls="other" role="tab" data-toggle="tab">Other</a></li>
+    <li role="presentation"><a href="#signatures" aria-controls="signatures" role="tab" data-toggle="tab">Signatures</a></li>
   </ul>';
 
             $pane['student'] = '<div role="tabpanel" class="tab-pane active" id="student">
                     '.$this->report->student_form($student).'
                 </div>';
-            $pane['application'] = '<div role="tabpanel" class="tab-pane" id="application">
-                    '.$this->report->application_form($student).'
-                </div>';
-            $pane['guardian'] = '<div role="tabpanel" class="tab-pane" id="guardian">
-                    '.$this->report->guardian_form($student).'
-                </div>';
-            $pane['financial'] = '<div role="tabpanel" class="tab-pane" id="financial">
-                    '.$this->report->need_form($student).'
+            $pane['disbursement'] = '<div role="tabpanel" class="tab-pane" id="disbursement">
                     '.$this->report->payment_form($student).'
                 </div>';
             $jquery[] = "
@@ -85,7 +77,13 @@ if($student = $this->queries->get_student_data($applicant_id)) {
                 $('#studentneed_IndirectNeed_input').val(indirect);
             });
             ";
-            $pane['other'] = '<div role="tabpanel" class="tab-pane" id="other">
+            $pane['application'] = '<div role="tabpanel" class="tab-pane" id="application">
+                    '.$this->report->application_form($student).'
+                    '.$this->report->need_form($student).'
+
+                </div>';
+
+            $pane['signatures'] = '<div role="tabpanel" class="tab-pane" id="signatures">
                     '.$this->report->other_form($student).'
                 </div>';
 
@@ -96,9 +94,9 @@ if($student = $this->queries->get_student_data($applicant_id)) {
 
             $renewal = isset($student['renewal']->RenewalId)?true:false;
             if($renewal) {
-                $ret['RenewalInfo'] = $this->form->field_textinfo("RenewalInfo", 'RENEWAL', '', null, null, array('notice', 'renewal'));
+                $ret['RenewalInfo'] = $this->form->field_textinfo("RenewalInfo", '', 'RENEWAL', null, null, array('notice', 'renewal'));
             } else{
-                $ret['OriginalInfo'] = $this->form->field_textinfo("OriginalInfo", 'FIRST TIME APPLICATION', '', null, null, array('notice', 'original'));
+                $ret['OriginalInfo'] = $this->form->field_textinfo("OriginalInfo", '', 'FIRST TIME APPLICATION', null, null, array('notice', 'original'));
             }
             $ret['tabs'] =  $tabs;
             $ret[] = '
