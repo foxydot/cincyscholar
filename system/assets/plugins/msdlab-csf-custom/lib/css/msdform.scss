@@ -130,6 +130,30 @@ input, select, textarea {
 }
 
 .admin_page_student-edit {
+  input, select, textarea {
+    &:not([type = "radio"]),:not([type = "checkbox"]) {
+    background-color: #FCFCFC;
+    border: 1px solid #CCC;
+    color: #333;
+    font-size: 1em;
+    font-weight: 400;
+    padding: 0.5em;
+    width: 100%;
+  }
+  }
+  span.info{
+    display: block;
+    background-color: rgba(cornflowerblue,0.3);
+    border: 1px solid cornflowerblue;
+    color: #333;
+    font-size: 1em;
+    font-weight: 400;
+    padding: 0.5em;
+    width: 100%;
+  }
+  hr{
+    clear:both;
+  }
   .notice{
     width: 100%;
     padding: 1em;
@@ -142,20 +166,15 @@ input, select, textarea {
       background: rgba(blue,0.5);
       border: 1px solid blue;
     }
+    span.info{
+      display: inline;
+      border: 0;
+      background: none;
+    }
   }
-  input, select, textarea {
-    &:not([type = "radio"]),:not([type = "checkbox"]) {
-    background-color: #FCFCFC;
-    border: 1px solid #CCC;
-    color: #333;
-    font-size: 1em;
-    font-weight: 400;
-    padding: 0.5em;
-    width: 100%;
-  }
-  }
-  hr{
-    clear:both;
+  td.key{
+    vertical-align: baseline;
+    max-height: 2em;
   }
 }
 

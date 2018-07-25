@@ -102,6 +102,28 @@ form#csf_report_search_form, form#csf_college {
   width: 50em;
   overflow-y: scroll; }
 
+.admin_page_student-edit input:not([type="radio"]), .admin_page_student-edit input :not([type="checkbox"]), .admin_page_student-edit select:not([type="radio"]), .admin_page_student-edit select :not([type="checkbox"]), .admin_page_student-edit textarea:not([type="radio"]), .admin_page_student-edit textarea :not([type="checkbox"]) {
+  background-color: #FCFCFC;
+  border: 1px solid #CCC;
+  color: #333;
+  font-size: 1em;
+  font-weight: 400;
+  padding: 0.5em;
+  width: 100%; }
+
+.admin_page_student-edit span.info {
+  display: block;
+  background-color: rgba(100, 149, 237, 0.3);
+  border: 1px solid cornflowerblue;
+  color: #333;
+  font-size: 1em;
+  font-weight: 400;
+  padding: 0.5em;
+  width: 100%; }
+
+.admin_page_student-edit hr {
+  clear: both; }
+
 .admin_page_student-edit .notice {
   width: 100%;
   padding: 1em;
@@ -112,18 +134,14 @@ form#csf_report_search_form, form#csf_college {
   .admin_page_student-edit .notice.original {
     background: rgba(0, 0, 255, 0.5);
     border: 1px solid blue; }
+  .admin_page_student-edit .notice span.info {
+    display: inline;
+    border: 0;
+    background: none; }
 
-.admin_page_student-edit input:not([type="radio"]), .admin_page_student-edit input :not([type="checkbox"]), .admin_page_student-edit select:not([type="radio"]), .admin_page_student-edit select :not([type="checkbox"]), .admin_page_student-edit textarea:not([type="radio"]), .admin_page_student-edit textarea :not([type="checkbox"]) {
-  background-color: #FCFCFC;
-  border: 1px solid #CCC;
-  color: #333;
-  font-size: 1em;
-  font-weight: 400;
-  padding: 0.5em;
-  width: 100%; }
-
-.admin_page_student-edit hr {
-  clear: both; }
+.admin_page_student-edit td.key {
+  vertical-align: baseline;
+  max-height: 2em; }
 
 .upload-wrapper {
   margin-bottom: 1em; }
