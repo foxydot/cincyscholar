@@ -34,6 +34,9 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_add_payment_table', array(&$this,'add_payment_table') );
             add_action( 'wp_ajax_remove_unneccesary_tables', array(&$this,'remove_unneccesary_tables') );
             add_action( 'wp_ajax_add_employer_table', array(&$this,'add_employer_table') );
+            add_action( 'wp_ajax_update_applicant_table_again', array(&$this,'update_applicant_table_again') );
+            add_action( 'wp_ajax_update_guardian_table', array(&$this,'update_guardian_table') );
+            add_action( 'wp_ajax_update_applicantscholarship_table', array(&$this,'update_applicantscholarship_table') );
 
 
             add_filter('send_password_change_email',array(&$this,'return_false'));
@@ -566,6 +569,42 @@ beth@cincinnatischolarshipfoundation.org<br/>
             }
         }
 
+
+        function update_applicant_table_again(){
+            global $wpdb;
+            $sql = "ALTER TABLE applicant
+  ADD `AppliedBefore` tinyint(1) unsigned zerofill NOT NULL;";
+            if($wpdb->query($sql)) {
+                print "applicant table updated again!";
+            }
+        }
+        function update_guardian_table(){
+            global $wpdb;
+            $sql = "ALTER TABLE guardian
+  ADD `Guardian1EmployerId` int(11) NOT NULL,
+  ADD `Guardian1Alive` tinyint(1) unsigned zerofill NOT NULL,
+  ADD `Guardian2EmployerId` int(11) NOT NULL,
+  ADD `Guardian2Alive` tinyint(1) unsigned zerofill NOT NULL;";
+            if($wpdb->query($sql)) {
+                print "guardian table updated!";
+            }
+        }
+        function update_applicantscholarship_table(){
+            global $wpdb;
+            $sql = "ALTER TABLE applicantscholarship
+  ADD `Renew` tinyint(1) unsigned zerofill NOT NULL,
+  ADD `ThankYou` tinyint(1) unsigned zerofill NOT NULL,
+  ADD `Signed` tinyint(1) unsigned zerofill NOT NULL,
+  ADD `GPA1` decimal(4,3) NOT NULL,
+  ADD `GPA2` decimal(4,3) NOT NULL,
+  ADD `GPA3` decimal(4,3) NOT NULL,
+  ADD `GPAC` decimal(4,3) NOT NULL,
+  ADD `Notes` text;";
+            if($wpdb->query($sql)) {
+                print "applicantscholarship table updated!";
+            }
+        }
+
         //utility
         function settings_page()
         {
@@ -766,6 +805,33 @@ beth@cincinnatischolarshipfoundation.org<br/>
                             console.log(response);
                         });
                     });
+                    $('.update_applicant_table_again').click(function(){
+                        var data = {
+                            action: 'update_applicant_table_again',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
+                    $('.update_guardian_table').click(function(){
+                        var data = {
+                            action: 'update_guardian_table',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
+                    $('.update_applicantscholarship_table').click(function(){
+                        var data = {
+                            action: 'update_applicantscholarship_table',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
             </script>
             <div class="wrap">
@@ -809,6 +875,12 @@ beth@cincinnatischolarshipfoundation.org<br/>
                     <dd><button class="remove_unneccesary_tables">Go</button></dd>
                     <dt>Add employer table:</dt>
                     <dd><button class="add_employer_table">Go</button></dd>
+                    <dt>Update Applicant Table Again:</dt>
+                    <dd><button class="update_applicant_table_again">Go</button></dd>
+                    <dt>Update Guardian Table:</dt>
+                    <dd><button class="update_guardian_table">Go</button></dd>
+                    <dt>Update ApplicantScholarship Table:</dt>
+                    <dd><button class="update_applicantscholarship_table">Go</button></dd>
                 </dl>
                 <div class="response1"></div>
             </div>
