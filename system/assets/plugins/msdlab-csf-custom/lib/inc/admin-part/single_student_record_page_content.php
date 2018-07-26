@@ -35,7 +35,7 @@ if($student = $this->queries->get_student_data($applicant_id)) {
         ts_data($student); //display errors
     } else {
 
-        //ts_data($student); //display errors
+        ts_data($student); //display errors
         $tabs = $pane = array();
         if($student){
             $form_id = 'single_student';
@@ -59,24 +59,46 @@ if($student = $this->queries->get_student_data($applicant_id)) {
                 var direct;
                 var indirect;
                 var income;
-                income = $('#studentneed_FamilyContribution_input').val() + 
-                $('#studentneed_Pell_input').val() + 
-                $('#studentneed_SEOG_input').val() + 
-                $('#studentneed_OIG_input').val() + 
-                $('#studentneed_OSCG_input').val() + 
-                $('#studentneed_OSCG_input').val() + 
-                $('#studentneed_ExternalScholarshipAmt1_input').val() + 
-                $('#studentneed_ExternalScholarshipAmt2_input').val() + 
-                $('#studentneed_ExternalScholarshipAmt3_input').val() + 
-                $('#studentneed_ExternalScholarshipAmt4_input').val() + 
-                $('#studentneed_ExternalScholarshipAmt5_input').val() + 
-                $('#studentneed_ExternalScholarshipAmt6_input').val();
+                values = [$('#studentneed_FamilyContribution_input').val(),
+                $('#studentneed_Pell_input').val(),
+                $('#studentneed_SEOG_input').val(), 
+                $('#studentneed_OIG_input').val(), 
+                $('#studentneed_OSCG_input').val(), 
+                $('#studentneed_OSCG_input').val(), 
+                $('#studentneed_ExternalScholarshipAmt1_input').val(),
+                $('#studentneed_ExternalScholarshipAmt2_input').val(), 
+                $('#studentneed_ExternalScholarshipAmt3_input').val(), 
+                $('#studentneed_ExternalScholarshipAmt4_input').val(), 
+                $('#studentneed_ExternalScholarshipAmt5_input').val(), 
+                $('#studentneed_ExternalScholarshipAmt6_input').val()];
+                vLen = values.length;
+                income = 0;
+                for(i = 0; i < vLen; i++){
+                    if(parseFloat(values[i]) > 0){
+                    income = income + parseFloat(values[i]);
+                    }
+                }
                 direct = $('#studentneed_DirectCost_input').val() - income;
                 indirect = $('#studentneed_IndirectCost_input').val() - income;
                 $('#studentneed_DirectNeed_input').val(direct);
                 $('#studentneed_IndirectNeed_input').val(indirect);
             });
             ";
+            /*$jquery[] = '$("#' . $form_id . '").validate({
+                    
+		errorPlacement: function(error, element) {
+			// Append error within linked label
+			$( element )
+				.closest( "form" )
+					.find( "label[for=\'" + element.attr( "id" ) + "\']" )
+						.append( error );
+		},
+		errorElement: "span",
+		onfocusout: function(element) {
+            // "eager" validation
+            this.element(element);  
+        }
+});';*/
             $pane['application'] = '<div role="tabpanel" class="tab-pane" id="application">
                     '.$this->report->application_form($student).'
                     '.$this->report->need_form($student).'

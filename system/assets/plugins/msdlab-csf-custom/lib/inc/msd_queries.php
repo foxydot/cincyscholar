@@ -174,14 +174,14 @@ class MSDLAB_Queries{
              }
              if($table == 'payment') { //handling payments with keys
                  foreach ($data[$table] as $key => $datum){
-                     $select_sql = 'SELECT paymentid FROM ' . $table . ' WHERE ' . $table . '_key = ' . $key . ' AND ' . $where[$table] . ';';
-                     error_log('check_sql: '.$select_sql);
+                     $select_sql = 'SELECT paymentid FROM ' . $table . ' WHERE ' . $table . 'key = "' . $key . '" AND ' . $where[$table] . ';';
+                     //error_log('check_sql: '.$select_sql);
                      if ($r = $wpdb->get_row($select_sql)) {
                          $sql = 'UPDATE ' . $table . ' SET ' . implode(', ', $data[$table][$key]) . ' WHERE paymentid = ' . $r->paymentid . ';';
                      } else {
                          $sql = 'INSERT INTO ' . $table . ' SET ' . implode(', ', $data[$table][$key]) . ';';
                      }
-                     error_log('update_sql: '.$sql);
+                     //error_log('update_sql: '.$sql);
                      $result = $wpdb->get_results($sql);
                      if (is_wp_error($result)) {
                          return new WP_Error('update', '<div class="error">Error updating ' . $table . '</div>');
@@ -189,13 +189,13 @@ class MSDLAB_Queries{
                  }
              } else {
                  $select_sql = 'SELECT * FROM ' . $table . ' WHERE ' . $where[$table] . ';';
-                 //error_log('check_sql: '.$select_sql);
+                 error_log('check_sql: '.$select_sql);
                  if ($r = $wpdb->get_row($select_sql)) {
                      $sql = 'UPDATE ' . $table . ' SET ' . implode(', ', $data[$table]) . ' WHERE ' . $where[$table] . ';';
                  } else {
                      $sql = 'INSERT INTO ' . $table . ' SET ' . implode(', ', $data[$table]) . ';';
                  }
-                 //error_log('update_sql: '.$sql);
+                 error_log('update_sql: '.$sql);
                  $result = $wpdb->get_results($sql);
                  if (is_wp_error($result)) {
                      return new WP_Error('update', '<div class="error">Error updating ' . $table . '</div>');

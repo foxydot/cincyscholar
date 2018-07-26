@@ -37,6 +37,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_update_applicant_table_again', array(&$this,'update_applicant_table_again') );
             add_action( 'wp_ajax_update_guardian_table', array(&$this,'update_guardian_table') );
             add_action( 'wp_ajax_update_applicantscholarship_table', array(&$this,'update_applicantscholarship_table') );
+            add_action( 'wp_ajax_modify_amount_columns', array(&$this,'modify_amount_columns') );
 
 
             add_filter('send_password_change_email',array(&$this,'return_false'));
@@ -605,6 +606,41 @@ beth@cincinnatischolarshipfoundation.org<br/>
             }
         }
 
+        function modify_amount_columns(){
+            global $wpdb;
+            $sql = array();
+            $sql['applicantscholarship'] = "ALTER TABLE applicantscholarship
+ MODIFY COLUMN AmountAwarded decimal(15,2) NOT NULL,
+ MODIFY COLUMN AmountActuallyAwarded decimal(15,2) DEFAULT NULL;";
+            $sql['payment'] = "ALTER TABLE payment
+ MODIFY COLUMN PaymentAmt decimal(15,2) DEFAULT NULL,
+ MODIFY COLUMN RefundAmt decimal(15,2) DEFAULT NULL,
+ MODIFY COLUMN RefundRequested datetime(3) DEFAULT NULL,
+ MODIFY COLUMN RefundReceived datetime(3) DEFAULT NULL;";
+            $sql['studentneed'] = "ALTER TABLE studentneed
+ MODIFY COLUMN DirectCost decimal(15,2) NOT NULL,
+ MODIFY COLUMN IndirectCost decimal(15,2) NOT NULL,
+ MODIFY COLUMN FamilyContribution decimal(15,2) DEFAULT NULL,
+ MODIFY COLUMN Pell decimal(15,2) DEFAULT NULL,
+ MODIFY COLUMN SEOG decimal(15,2) DEFAULT NULL,
+ MODIFY COLUMN OIG decimal(15,2) DEFAULT NULL,
+ MODIFY COLUMN OSCG decimal(15,2) DEFAULT NULL,
+ MODIFY COLUMN Stafford decimal(15,2) DEFAULT NULL,
+ MODIFY COLUMN ExternalScholarshipAmt1 decimal(15,2) DEFAULT NULL,
+ MODIFY COLUMN ExternalScholarshipAmt2 decimal(15,2) DEFAULT NULL,
+ MODIFY COLUMN ExternalScholarshipAmt3 decimal(15,2) DEFAULT NULL,
+ MODIFY COLUMN ExternalScholarshipAmt4 decimal(15,2) DEFAULT NULL,
+ MODIFY COLUMN ExternalScholarshipAmt5 decimal(15,2) DEFAULT NULL,
+ MODIFY COLUMN ExternalScholarshipAmt6 decimal(15,2) DEFAULT NULL,
+ MODIFY COLUMN DirectNeed decimal(15,2) NOT NULL,
+ MODIFY COLUMN IndirectNeed decimal(15,2) NOT NULL;";
+            foreach($sql AS $k=>$s){
+                if($wpdb->query($s)) {
+                    print $k." table updated!<br>";
+                }
+            }
+        }
+
         //utility
         function settings_page()
         {
@@ -832,6 +868,15 @@ beth@cincinnatischolarshipfoundation.org<br/>
                             console.log(response);
                         });
                     });
+                    $('.modify_amount_columns').click(function(){
+                        var data = {
+                            action: 'modify_amount_columns',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
             </script>
             <div class="wrap">
@@ -881,6 +926,8 @@ beth@cincinnatischolarshipfoundation.org<br/>
                     <dd><button class="update_guardian_table">Go</button></dd>
                     <dt>Update ApplicantScholarship Table:</dt>
                     <dd><button class="update_applicantscholarship_table">Go</button></dd>
+                    <dt>Modify Amount Columns:</dt>
+                    <dd><button class="modify_amount_columns">Go</button></dd>
                 </dl>
                 <div class="response1"></div>
             </div>
