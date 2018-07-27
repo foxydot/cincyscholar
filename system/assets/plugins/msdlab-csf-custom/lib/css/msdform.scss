@@ -137,8 +137,10 @@ input, select, textarea {
     color: #333;
     font-size: 1em;
     font-weight: 400;
-    padding: 0.5em;
+    padding: 0.25em;
     width: 100%;
+    margin: 0 0 2px !important;
+      min-height: 2.2em;
   }
   }
   span.info{
@@ -148,11 +150,34 @@ input, select, textarea {
     color: #333;
     font-size: 1em;
     font-weight: 400;
-    padding: 0.5em;
+    padding: 0.25em;
     width: 100%;
+    margin: 0;
+    min-height: 2.2em;
   }
+  .textarea-label{
+    padding-top: -4em;
+    margin-bottom: -4em;
+  }
+  .currency {
+    span.symbol{
+      display: block;
+      input, span.info {
+        display: inline-block;
+        width: 95%;
+      }
+      &:before {
+        content: '$ ';
+        width: 4%;
+        display: inline-block;
+      }
+    }
+  }
+
   hr{
     clear:both;
+    border: 0;
+    margin: 0;
   }
   .notice{
     width: 100%;
@@ -172,9 +197,12 @@ input, select, textarea {
       background: none;
     }
   }
-  td.key{
+  td{
     vertical-align: baseline;
     max-height: 2em;
+    label{
+      display: inline;
+    }
   }
 }
 

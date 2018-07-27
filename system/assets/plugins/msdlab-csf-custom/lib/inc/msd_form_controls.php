@@ -132,7 +132,7 @@ class MSDLAB_FormControls{
             $value = 'n/a';
         }
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_info">'.$title.'</label>');
-        $form_field = apply_filters('msdlab_csf_'.$id.'_field','<span id="'.$id.'_info" name="'.$id.'_info" class="info">'.$value.'</span>');
+        $form_field = apply_filters('msdlab_csf_'.$id.'_field','<span class="symbol"><span id="'.$id.'_info" name="'.$id.'_info" class="info">'.$value.'</span></span>');
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
@@ -145,7 +145,7 @@ class MSDLAB_FormControls{
         $type = isset($validation['type'])?$validation['type']:'text';
         if($placeholder == null){$placeholder = $title;}
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$title.'</label>');
-        $form_field = apply_filters('msdlab_csf_'.$id.'_field','<input id="'.$id.'_input" name="'.$id.'_input" type="'.$type.'" value="'.$value.'" placeholder="'.$placeholder.'" '.$this->build_validation($validation).' />');
+        $form_field = apply_filters('msdlab_csf_'.$id.'_field','<span class="symbol"><input id="'.$id.'_input" name="'.$id.'_input" type="'.$type.'" value="'.$value.'" placeholder="'.$placeholder.'" '.$this->build_validation($validation).' /></span>');
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
@@ -155,7 +155,7 @@ class MSDLAB_FormControls{
         if(is_null($value)){
             $value = $_POST[$id.'_input'];
         }
-        $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$title.'</label>');
+        $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input" class="textarea-label">'.$title.'</label>');
         ob_start();
         wp_editor( stripcslashes($value), $id.'_input', array('media_buttons' => false,'teeny' => true,'textarea_rows' => 5) );
         $form_field = ob_get_clean();

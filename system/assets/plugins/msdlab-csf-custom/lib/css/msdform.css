@@ -108,8 +108,10 @@ form#csf_report_search_form, form#csf_college {
   color: #333;
   font-size: 1em;
   font-weight: 400;
-  padding: 0.5em;
-  width: 100%; }
+  padding: 0.25em;
+  width: 100%;
+  margin: 0 0 2px !important;
+  min-height: 2.2em; }
 
 .admin_page_student-edit span.info {
   display: block;
@@ -118,11 +120,29 @@ form#csf_report_search_form, form#csf_college {
   color: #333;
   font-size: 1em;
   font-weight: 400;
-  padding: 0.5em;
-  width: 100%; }
+  padding: 0.25em;
+  width: 100%;
+  margin: 0;
+  min-height: 2.2em; }
+
+.admin_page_student-edit .textarea-label {
+  padding-top: -4em;
+  margin-bottom: -4em; }
+
+.admin_page_student-edit .currency span.symbol {
+  display: block; }
+  .admin_page_student-edit .currency span.symbol input, .admin_page_student-edit .currency span.symbol span.info {
+    display: inline-block;
+    width: 95%; }
+  .admin_page_student-edit .currency span.symbol:before {
+    content: '$ ';
+    width: 4%;
+    display: inline-block; }
 
 .admin_page_student-edit hr {
-  clear: both; }
+  clear: both;
+  border: 0;
+  margin: 0; }
 
 .admin_page_student-edit .notice {
   width: 100%;
@@ -139,9 +159,11 @@ form#csf_report_search_form, form#csf_college {
     border: 0;
     background: none; }
 
-.admin_page_student-edit td.key {
+.admin_page_student-edit td {
   vertical-align: baseline;
   max-height: 2em; }
+  .admin_page_student-edit td label {
+    display: inline; }
 
 .upload-wrapper {
   margin-bottom: 1em; }

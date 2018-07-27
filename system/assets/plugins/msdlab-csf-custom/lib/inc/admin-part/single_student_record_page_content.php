@@ -35,7 +35,7 @@ if($student = $this->queries->get_student_data($applicant_id)) {
         ts_data($student); //display errors
     } else {
 
-        ts_data($student); //display errors
+        //ts_data($student); //display errors
         $tabs = $pane = array();
         if($student){
             $form_id = 'single_student';
@@ -82,6 +82,22 @@ if($student = $this->queries->get_student_data($applicant_id)) {
                 indirect = $('#studentneed_IndirectCost_input').val() - income;
                 $('#studentneed_DirectNeed_input').val(direct);
                 $('#studentneed_IndirectNeed_input').val(indirect);
+            });
+            ";
+            $jquery[] = "
+            $('.awardcalc input').change(function(){
+                var plusval = 0;
+                var minusval = 0;
+                var amountactuallyawarded = 0;
+                $('.awardcalc.plus input').each(function(){
+                    plusval = plusval + parseFloat($(this).val());
+                });
+                $('.awardcalc.minus input').each(function(){
+                    minusval = minusval + parseFloat($(this).val());
+                });
+                amountactuallyawarded = plusval - minusval;
+                $('#ApplicantScholarship_AmountActuallyAwarded_info').html(amountactuallyawarded);
+                $('#ApplicantScholarship_AmountActuallyAwarded_input').val(amountactuallyawarded);
             });
             ";
             /*$jquery[] = '$("#' . $form_id . '").validate({
