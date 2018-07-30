@@ -92,7 +92,6 @@ if($_POST) {
     //ts_data($result);
     $submitted = $incomplete = $awarded = array();
     foreach ($result AS $k => $applicant) {
-
         if(!empty($this->post_vars['college_search_input'])){
             if($applicant->CollegeId != $_POST['college_search_input']){
                 continue;
@@ -159,7 +158,6 @@ if($_POST) {
     <li role="presentation"><a href="#incomplete" aria-controls="incomplete" role="tab" data-toggle="tab">Incomplete Applications</a></li>
     <li role="presentation"><a href="#renewal" aria-controls="renewal" role="tab" data-toggle="tab">Submitted Renewals</a></li>
   </ul>';
-//TODO: testing. Need to add fields to DB.
         if(count($awarded)>0){
             $pane['awarded'] = '<div role="tabpanel" class="tab-pane active" id="awarded">
                             ' . implode("\n\r",$this->report->print_table('application_awarded',$fields,$awarded,$info,$class,false)) .'
@@ -215,8 +213,6 @@ if($_POST) {
 
   <!-- Tab panes -->
   <div class="tab-content">';
-    print $pane['submitted'];
-    print $pane['incomplete'];
-    print $pane['renewal'];
+    print implode("\n",$pane);
     print '</div>';
 }

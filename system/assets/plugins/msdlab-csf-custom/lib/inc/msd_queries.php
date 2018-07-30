@@ -412,7 +412,7 @@ class MSDLAB_Queries{
         }
         //ts_data($data);
         $results = $this->get_result_set($data);
-        //error_log($wpdb->last_query);
+        error_log($wpdb->last_query);
 
         foreach ($results AS $k => $r){
             $applicant_id = $r->ApplicantId;
