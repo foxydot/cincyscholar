@@ -324,7 +324,7 @@ class MSDLAB_Report_Output{
             $ret['Applicant_StudentId'] = $this->form->field_textfield('Applicant_StudentId', $student_data['personal']->StudentId ? $student_data['personal']->StudentId : null, 'Student ID', null, array(), array('col-md-3', 'col-sm-12'));
         }
 
-        $ret['Applicant_DateOfBirth'] = $this->form->field_date('Applicant_DateOfBirth', $student_data['personal']->DateOfBirth ? $student_data['personal']->DateOfBirth : null, 'Date of Birth', array('required' => 'required', 'type' => 'date', 'date' => 'date'), array('datepicker', 'required', 'col-md-2', 'col-sm-12'));
+        $ret['Applicant_DateOfBirth'] = $this->form->field_date('Applicant_DateOfBirth', $student_data['personal']->DateOfBirth ? date("Y-m-d", strtotime($student_data['personal']->DateOfBirth)) : null, 'Date of Birth', array('required' => 'required', 'type' => 'date', 'date' => 'date'), array('datepicker', 'required', 'col-md-2', 'col-sm-12'));
         $ret['Applicant_Last4SSN'] = $this->form->field_textfield('Applicant_Last4SSN', $student_data['personal']->Last4SSN ? $student_data['personal']->Last4SSN : null, 'SS# last 4', '0000', array('type' => 'number', 'maxlength' => 4, 'minlength' => 4, 'required' => 'required'), array('required', 'col-md-2', 'col-sm-12'));
         $ret['Applicant_EthnicityId'] = $this->form->field_select('Applicant_EthnicityId', $student_data['personal']->EthnicityId ? $student_data['personal']->EthnicityId : null, 'Ethnicity', array('option' => 'Select', 'value' => '24'), $this->ethnicity_array, null, array('col-md-4', 'col-sm-12'));
         $ret['Applicant_SexId'] = $this->form->field_radio('Applicant_SexId', $student_data['personal']->SexId ? $student_data['personal']->SexId : null, 'Gender', $this->sex_array, null, array('col-md-4', 'col-sm-12'));
@@ -374,7 +374,7 @@ class MSDLAB_Report_Output{
         $ret['ApplicantScholarship_AmountAwarded'] = $this->form->field_textfield('ApplicantScholarship_AmountAwarded', $student_data['scholarship']->AmountAwarded ? $student_data['scholarship']->AmountAwarded : null, 'Amount Awarded', '', array('type' => 'number'), array('col-md-3', 'col-sm-12','currency'));
         $ret['ApplicantScholarship_AmountActuallyAwarded'] = $this->form->field_textfield('ApplicantScholarship_AmountActuallyAwarded', $student_data['scholarship']->AmountActuallyAwarded ? $student_data['scholarship']->AmountActuallyAwarded : null, 'Amount Actually Awarded', '', array('type' => 'number'), array('col-md-3', 'col-sm-12','currency'));
 
-        $ret['ApplicantScholarship_DateAwarded'] = $this->form->field_date("ApplicantScholarship_DateAwarded", (strtotime($student_data['scholarship']->DateAwarded) > 0) ? $student_data['scholarship']->DateAwarded : '','Date Awarded',array(),array('datepicker','col-md-3', 'col-sm-12'));
+        $ret['ApplicantScholarship_DateAwarded'] = $this->form->field_date("ApplicantScholarship_DateAwarded", (strtotime($student_data['scholarship']->DateAwarded) > 0) ? date("Y-m-d", strtotime($student_data['scholarship']->DateAwarded)) : '','Date Awarded',array(),array('datepicker','col-md-3', 'col-sm-12'));
         $ret['ApplicantScholarship_Renew'] = $this->form->field_boolean('ApplicantScholarship_Renew',$student_data['scholarship']->Renew?$student_data['scholarship']->Renew:0,'Renew',array(),array('col-md-2', 'col-sm-12'));
         $ret['Applicant_EducationAttainmentId'] = $this->form->field_select("Applicant_EducationAttainmentId", $student_data['personal']->EducationAttainmentId ? $student_data['personal']->EducationAttainmentId : null, "Year in School", array('option' => 'Select', 'value' => '5'), $this->educationalattainment_array, array('required' => 'required'), array('required', 'col-md-3', 'col-sm-12'));
         $ret['ApplicantScholarship_ThankYou'] = $this->form->field_boolean('ApplicantScholarship_ThankYou',$student_data['scholarship']->ThankYou?$student_data['scholarship']->ThankYou:0,'Thank You',array(),array('col-md-2', 'col-sm-12'));
@@ -382,7 +382,7 @@ class MSDLAB_Report_Output{
         $ret[] = '<hr />';
         if($renewal) {
             $ret['Renewal_YearsWithCSF'] = $this->form->field_textfield('Renewal_YearsWithCSF', $student_data['renewal']->YearsWithCSF ? $student_data['renewal']->YearsWithCSF : null, 'Years With CSF', '0', array('type' => 'number', 'minlength' => 1), array('col-md-2', 'col-sm-12'));
-            $ret['Renewal_AnticipatedGraduationDate'] = $this->form->field_select('Renewal_AnticipatedGraduationDate', $student_data['renewal']->AnticipatedGraduationDate ? $student_data['renewal']->AnticipatedGraduationDate : date("Y") . '-01-01', "Anticipated Graduation Date", array('value' => date("Y") . '-01-01', 'option' => date("Y")), $this->col_gradyr_array, array('required' => 'required'), array('required', 'col-md-2', 'col-sm-12'));
+            $ret['Renewal_AnticipatedGraduationDate'] = $this->form->field_select('Renewal_AnticipatedGraduationDate', $student_data['renewal']->AnticipatedGraduationDate ? date("Y", strtotime($student_data['renewal']->AnticipatedGraduationDate)) : date("Y") . '-01-01', "Anticipated Graduation Date", array('value' => date("Y") . '-01-01', 'option' => date("Y")), $this->col_gradyr_array, array('required' => 'required'), array('required', 'col-md-2', 'col-sm-12'));
         }
         $ret['ApplicantScholarship_GPA1'] = $this->form->field_textfield('ApplicantScholarship_GPA1', $student_data['scholarship']->GPA1 ? $student_data['scholarship']->GPA1 : 0, 'GPA 1', '0.00', array('type' => 'number', 'min' => 0.00, 'max' => 5.00, 'step'=> 0.01, 'minlength' => 1), array('col-md-2', 'col-sm-12'));
         $ret['ApplicantScholarship_GPA2'] = $this->form->field_textfield('ApplicantScholarship_GPA2', $student_data['scholarship']->GPA2 ? $student_data['scholarship']->GPA2 : 0, 'GPA 2', '0.00', array('type' => 'number', 'min' => 0.00, 'max' => 5.00, 'step'=> 0.01, 'minlength' => 1), array('col-md-2', 'col-sm-12'));
@@ -402,9 +402,9 @@ class MSDLAB_Report_Output{
         $renewal = isset($student_data['renewal']->RenewalId)?true:false;
 
         $this->set_form_select_options();
-        $ret['Applicant_ApplicationDateTime'] = $this->form->field_date("Applicant_ApplicationDateTime", (strtotime($student_data['personal']->ApplicationDateTime) > 0) ? $student_data['personal']->ApplicationDateTime : '','Application Date',array(),array('datepicker','col-md-2', 'col-sm-12'));
+        $ret['Applicant_ApplicationDateTime'] = $this->form->field_date("Applicant_ApplicationDateTime", (strtotime($student_data['personal']->ApplicationDateTime) > 0) ? date("Y-m-d", strtotime($student_data['personal']->ApplicationDateTime)) : '','Application Date',array(),array('datepicker','col-md-2', 'col-sm-12'));
         if($renewal){
-            $ret['Renewal_RenewalDateTime'] = $this->form->field_date("Renewal_RenewalDateTime", (strtotime($student_data['renewal']->RenewalDateTime) > 0) ? $student_data['renewal']->RenewalDateTime : '','Renewal Date',array(),array('datepicker','col-md-2', 'col-sm-12'));
+            $ret['Renewal_RenewalDateTime'] = $this->form->field_date("Renewal_RenewalDateTime", (strtotime($student_data['renewal']->RenewalDateTime) > 0) ? date("Y-m-d", strtotime($student_data['renewal']->RenewalDateTime)): '','Renewal Date',array(),array('datepicker','col-md-2', 'col-sm-12'));
         }
         $ret['Applicant_IsComplete'] = $this->form->field_boolean('Applicant_IsComplete',1,'Complete',array(),array('col-md-1', 'col-sm-12'));
 
@@ -416,7 +416,7 @@ class MSDLAB_Report_Output{
         $ret[] = '<hr />';
         $ret['Applicant_HighSchoolId'] = $this->form->field_select('Applicant_HighSchoolId', $student_data['personal']->HighSchoolId ? $student_data['personal']->HighSchoolId : 136, "High School Attended", $student_data['personal']->HighSchoolId ? $student_data['personal']->HighSchoolId : null, $this->highschool_array, array('required' => 'required'), array('required', 'col-md-4', 'col-sm-12'));
         $ret['HighSchoolType'] = $this->form->field_textinfo('HighSchoolType', $this->queries->get_highschool_type_by_highschool_id($student_data['personal']->HighSchoolId) , "High School Type", null, null, array('required', 'col-md-2', 'col-sm-12'));
-        $ret['Applicant_HighSchoolGraduationDate'] = $this->form->field_select('Applicant_HighSchoolGraduationDate', $student_data['personal']->HighSchoolGraduationDate ? $student_data['personal']->HighSchoolGraduationDate : date("Y").'-01-01', "Year of High School Graduation", array('value' => date("Y").'-01-01','option' => date("Y")), $this->gradyr_array, array('required' => 'required'), array('required', 'col-md-3', 'col-sm-12'));
+        $ret['Applicant_HighSchoolGraduationDate'] = $this->form->field_select('Applicant_HighSchoolGraduationDate', $student_data['personal']->HighSchoolGraduationDate ? date("Y", strtotime($student_data['personal']->HighSchoolGraduationDate)) : date("Y").'-01-01', "Year of High School Graduation", array('value' => date("Y").'-01-01','option' => date("Y")), $this->gradyr_array, array('required' => 'required'), array('required', 'col-md-3', 'col-sm-12'));
         $ret['Applicant_HighSchoolGPA'] = $this->form->field_textfield('Applicant_HighSchoolGPA', $student_data['personal']->HighSchoolGPA ? $student_data['personal']->HighSchoolGPA : null, 'High School GPA', '0.00', array('required' => 'required', 'type' => 'number', 'min' => 0.00, 'max' => 5.00, 'step'=> 0.01, 'minlength' => 1), array('required', 'col-md-3', 'col-sm-12'));
 
         $ret['Applicant_PlayedHighSchoolSports'] = $this->form->field_boolean('Applicant_PlayedHighSchoolSports', $student_data['personal']->PlayedHighSchoolSports ? $student_data['personal']->PlayedHighSchoolSports : 0, 'Student Athlete',null,array('col-md-3', 'col-sm-12'));
@@ -536,12 +536,12 @@ class MSDLAB_Report_Output{
             $ret['payment_paymentkey_'.$paymentkey] = $this->form->field_hidden("payment_paymentkey_".$paymentkey, $paymentkey);
 
             $ret['payment_PaymentAmt_'.$paymentkey] = '<td>'.$this->form->field_textfield('payment_PaymentAmt_'.$paymentkey,$student_data['payment'][$paymentkey]->PaymentAmt,'','0.00',array('type' => 'number'),array('currency','awardcalc','plus')).'</td>';
-            $ret['payment_PaymentDateTime_'.$paymentkey] = '<td>'.$this->form->field_date('payment_PaymentDateTime_'.$paymentkey,$student_data['payment'][$paymentkey]->PaymentDateTime,'').'</td>';
+            $ret['payment_PaymentDateTime_'.$paymentkey] = '<td>'.$this->form->field_date('payment_PaymentDateTime_'.$paymentkey,date("Y-m-d", strtotime($student_data['payment'][$paymentkey]->PaymentDateTime)),'').'</td>';
             $ret['payment_CheckNumber_'.$paymentkey] = '<td>'.$this->form->field_textfield('payment_CheckNumber_'.$paymentkey,$student_data['payment'][$paymentkey]->CheckNumber).'</td>';
             $ret['payment_CollegeId_'.$paymentkey] = $this->form->field_hidden('payment_CollegeId_'.$paymentkey,$student_data['payment'][$paymentkey]->CollegeId?$student_data['payment'][$paymentkey]->CollegeId:$college_id);
             //$ret['payment_Notes_'.$paymentkey] = '<td>'.$this->form->field_textarea_simple('payment_Notes_'.$paymentkey,$student_data['payment'][$paymentkey]->Notes).'</td>';
             //$ret['payment_RefundRequested_'.$paymentkey] = '<td>$'.$this->form->field_textfield('payment_RefundRequested_'.$paymentkey,$student_data['payment'][$paymentkey]->RefundRequested).'</td>';
-            $ret['payment_RefundReceived_'.$paymentkey] = '<td>'.$this->form->field_date('payment_RefundReceived_'.$paymentkey,$student_data['payment'][$paymentkey]->RefundReceived,'').'</td>';
+            $ret['payment_RefundReceived_'.$paymentkey] = '<td>'.$this->form->field_date('payment_RefundReceived_'.$paymentkey,date("Y-m-d", strtotime($student_data['payment'][$paymentkey]->RefundReceived)),'').'</td>';
             $ret['payment_RefundAmt_'.$paymentkey] = '<td>'.$this->form->field_textfield('payment_RefundAmt_'.$paymentkey,$student_data['payment'][$paymentkey]->RefundAmt,'','0.00',array('type' => 'number'),array('currency','awardcalc','minus')).'</td>';
             $ret['payment_RefundNumber_'.$paymentkey] = '<td>'.$this->form->field_textfield('payment_RefundNumber_'.$paymentkey,$student_data['payment'][$paymentkey]->RefundNumber).'</td>';
             $ret[] = '</tr>';
