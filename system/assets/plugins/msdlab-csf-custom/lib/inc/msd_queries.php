@@ -332,7 +332,6 @@ class MSDLAB_Queries{
         $usertable = $wpdb->prefix . 'users';
         $data['tables']['applicant'] = array('*');
 
-
         if(empty($this->post_vars['date_search_input_start']) && empty($this->post_vars['date_search_input_end'])) {
             $data['where'] = 'applicant.ApplicationDateTime > '.date('Ymdhis',strtotime(get_option('csf_settings_start_date'))); //replace with dates from settings
         } else {
@@ -470,6 +469,16 @@ class MSDLAB_Queries{
                     if($sr->ProcessStepId > $results[$k]->Status) {
                         $results[$k]->status = $sr->ProcessStepId;
                     }
+                }
+            }
+
+            //add scholarship info
+            $scholarship['tables']['applicantscholarship'] = array('*');
+            $scholarship['where'] = 'ApplicantId = '.$applicant_id;
+            $scholarship_results = $this->get_result_set($scholarship);
+            foreach($scholarship_results AS $sr){
+                foreach($sr as $y => $z){
+                    $results[$k]->$y = $z;
                 }
             }
         }
