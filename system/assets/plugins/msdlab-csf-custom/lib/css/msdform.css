@@ -83,16 +83,20 @@ input.error, select.error, textarea.error {
     content: attr(data-off);
     left: 100%; }
 
-form#csf_report_search_form, form#csf_college {
+form.csf_report_search_form, form#csf_college {
   background: #dddddd;
   padding: 1em; }
-  form#csf_report_search_form .query-filter, form#csf_report_search_form .setting-field, form#csf_college .query-filter, form#csf_college .setting-field {
-    width: 49%;
-    float: left;
+  form.csf_report_search_form .collapse-button, form#csf_college .collapse-button {
+    float: right; }
+  form.csf_report_search_form .query-filter, form.csf_report_search_form .setting-field, form#csf_college .query-filter, form#csf_college .setting-field {
     height: 3.5em; }
-    form#csf_report_search_form .query-filter label, form#csf_report_search_form .setting-field label, form#csf_college .query-filter label, form#csf_college .setting-field label {
-      width: 33%; }
-  form#csf_report_search_form hr.break, form#csf_college hr.break {
+    form.csf_report_search_form .query-filter input[type=search], form.csf_report_search_form .query-filter input[type=text], form.csf_report_search_form .query-filter select, form.csf_report_search_form .setting-field input[type=search], form.csf_report_search_form .setting-field input[type=text], form.csf_report_search_form .setting-field select, form#csf_college .query-filter input[type=search], form#csf_college .query-filter input[type=text], form#csf_college .query-filter select, form#csf_college .setting-field input[type=search], form#csf_college .setting-field input[type=text], form#csf_college .setting-field select {
+      width: 75%; }
+    form.csf_report_search_form .query-filter input.num-range, form.csf_report_search_form .setting-field input.num-range, form#csf_college .query-filter input.num-range, form#csf_college .setting-field input.num-range {
+      max-width: 37%; }
+    form.csf_report_search_form .query-filter label, form.csf_report_search_form .setting-field label, form#csf_college .query-filter label, form#csf_college .setting-field label {
+      width: 25%; }
+  form.csf_report_search_form hr.break, form#csf_college hr.break {
     clear: both; }
 
 .toplevel_page_csf-report td > div, .csf-management_page_csf-report td > div, .csf-management_page_csf-renewals td > div, .csf-management_page_csf-students td > div, .admin_page_student-edit td > div {

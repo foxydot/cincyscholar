@@ -103,15 +103,22 @@ input, select, textarea {
   }
 }
 
-  form#csf_report_search_form,form#csf_college{
+  form.csf_report_search_form,form#csf_college{
     background: #dddddd;
     padding: 1em;
+    .collapse-button{
+      float: right;
+    }
     .query-filter,.setting-field{
-      width: 49%;
-      float: left;
       height: 3.5em;
+      input[type=search],input[type=text],select{
+        width: 75%;
+      }
+      input.num-range{
+        max-width: 37%;
+      }
       label{
-        width: 33%;
+        width: 25%;
       }
     }
     hr.break{

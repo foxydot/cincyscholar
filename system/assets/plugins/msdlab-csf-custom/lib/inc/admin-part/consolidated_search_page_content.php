@@ -87,6 +87,10 @@ $fields2 = array(
 );
 $tabs = $pane = array();
 if($_POST) {
+    $this->search->javascript['collapse-btn-init'] = '
+        $(".collapsable").css("display","none");
+        $(".collapse-button i").removeClass("fa-compress").addClass("fa-expand");
+        ';
     $results_exisit = false;
     $result = $this->queries->get_report_set($fields);
     //ts_data($result);
@@ -199,10 +203,15 @@ if($_POST) {
     }
 }
 print '<h2>Scholarship Application Reports</h2>';
+$this->search->javascript['collapse-btn'] = '
+        $(".collapse-button").click(function(){
+            $(this).find("i").toggleClass("fa-compress").toggleClass("fa-expand");
+            $(".collapsable").slideToggle("slow");
+        });';
 if(!$_POST) {
     $this->search->javascript['search-btn'] = '
-        $(".search-button input").val("Load All Applications");
-        $(".query-filter input, .query-filter select").change(function(){
+        $(".search-button input").val("Load All Students");
+        $(".query-filter input, .query-filter select").focus(function(){
             $(".search-button input").val("SEARCH");
         });';
 }
