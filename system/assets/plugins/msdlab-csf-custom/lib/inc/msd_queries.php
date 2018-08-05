@@ -354,6 +354,15 @@ class MSDLAB_Queries{
             }
             $data['where'] .= ' AND (applicant.FirstName LIKE \'%'. addslashes($this->post_vars['name_search_input']) .'%\' OR applicant.LastName LIKE \'%'. addslashes($this->post_vars['name_search_input']) .'%\''.$fullnamesearch.') ';
         }
+        $data['tables'][$usertable] = array('user_email');
+        $data['where'] .= ' AND ' . $usertable . '.ID  = applicant.UserId';
+        if(!empty($this->post_vars['email_search_input'])) {
+            //add search for an email on application
+            $data['where'] .= ' AND (applicant.Email LIKE \'%'.$this->post_vars['email_search_input'].'%\' OR ' . $usertable . '.user_email  LIKE \'%'.$this->post_vars['email_search_input'].'%\')';
+        }
+        if(!empty($this->post_vars['studentid_search_input'])){
+            $data['where'] .= ' AND applicant.StudentId LIKE \'%'.$this->post_vars['studentid_search_input'].'%\'';
+        }
         if(!empty($this->post_vars['city_search_input'])){
             $data['where'] .= ' AND applicant.City LIKE \'%'.$this->post_vars['city_search_input'].'%\'';
         }
@@ -365,6 +374,42 @@ class MSDLAB_Queries{
         }
         if(!empty($this->post_vars['zip_search_input'])){
             $data['where'] .= ' AND applicant.ZipCode IN ('.$this->post_vars['zip_search_input'].')';
+        }
+        if(!empty($this->post_vars['ethnicity_search_input'])){
+            $data['where'] .= ' AND applicant.EthnicityId = '.$this->post_vars['ethnicity_search_input'];
+        }
+        if(!empty($this->post_vars['gender_search_input'])){
+            $data['where'] .= ' AND applicant.SexId LIKE \'%'.$this->post_vars['gender_search_input'].'%\'';
+        }
+        if(is_numeric($this->post_vars['athlete_search_input'])){
+            $data['where'] .= ' AND applicant.PlayedHighSchoolSports = '.$this->post_vars['athlete_search_input'];
+        }
+        if(is_numeric($this->post_vars['independence_search_input'])){
+            $data['where'] .= ' AND applicant.IsIndependent = '.$this->post_vars['independence_search_input'];
+        }
+        if(!empty($this->post_vars['college_search_input'])){
+            $data['where'] .= ' AND applicant.CollegeId = '.$this->post_vars['college_search_input'];
+        }
+        if(!empty($this->post_vars['major_search_input'])){
+            $data['where'] .= ' AND applicant.MajorId = '.$this->post_vars['major_search_input'];
+        }
+        if(!empty($this->post_vars['educational_attainment_input'])){
+            $data['where'] .= ' AND applicant.EducationAttainmentId = '.$this->post_vars['educational_attainment_input'];
+        }
+        if(is_numeric($this->post_vars['complete_search_input'])){
+            $data['where'] .= ' AND applicant.IsComplete = '.$this->post_vars['complete_search_input'];
+        }
+        if(is_numeric($this->post_vars['transcript_search_input'])){
+            $data['where'] .= ' AND applicant.TranscriptOK = '.$this->post_vars['transcript_search_input'];
+        }
+        if(is_numeric($this->post_vars['resume_search_input'])){
+            $data['where'] .= ' AND applicant.ResumeOK = '.$this->post_vars['resume_search_input'];
+        }
+        if(is_numeric($this->post_vars['sar_search_input'])){
+            $data['where'] .= ' AND applicant.FinancialAidOK = '.$this->post_vars['sar_search_input'];
+        }
+        if(is_numeric($this->post_vars['firstgen_search_input'])){
+            $data['where'] .= ' AND applicant.FirstGenerationStudent = '.$this->post_vars['firstgen_search_input'];
         }
         if(!empty($this->post_vars['highschool_search_input'])){
             $data['where'] .= ' AND applicant.HighSchoolId = '.$this->post_vars['highschool_search_input'];
@@ -378,56 +423,121 @@ class MSDLAB_Queries{
             $highschools = implode(',',$hs);
             $data['where'] .= ' AND applicant.HighSchoolId IN ('.$highschools.')';
         }
-        if($this->post_vars['gpa_range_search_input_start']!=0 || $this->post_vars['gpa_range_search_input_end']!=5){
-            $data['where'] .= ' AND (applicant.HighSchoolGPA >= '.$this->post_vars['gpa_range_search_input_start'].' AND applicant.HighSchoolGPA <= '.$this->post_vars['gpa_range_search_input_end'].')';
+        if(isset($this->post_vars['gradyear_range_search_input_start']) || isset($this->post_vars['gradyear_range_search_input_end'])) {
+            if ($this->post_vars['gradyear_range_search_input_start'] != date('Y')-20 || $this->post_vars['gradyear_range_search_input_end'] != date('Y')) {
+                $data['where'] .= ' AND (YEAR(applicant.HighSchoolGraduationDate) >= ' . $this->post_vars['gradyear_range_search_input_start'] . ' AND YEAR(applicant.HighSchoolGraduationDate) <= ' . $this->post_vars['gradyear_range_search_input_end'] . ')';
+            }
         }
-        if($this->post_vars['gradyear_range_search_input_start']!=0 || $this->post_vars['gradyear_range_search_input_end']!=5){
-            $data['where'] .= ' AND (YEAR(applicant.HighSchoolGraduationDate) >= '.$this->post_vars['gradyear_range_search_input_start'].' AND YEAR(applicant.HighSchoolGraduationDate) <= '.$this->post_vars['gradyear_range_search_input_end'].')';
+        if(isset($this->post_vars['gpa_range_search_input_start']) || isset($this->post_vars['gpa_range_search_input_end'])){
+            if($this->post_vars['gpa_range_search_input_start']!=0 || $this->post_vars['gpa_range_search_input_end']!=5){
+                $data['where'] .= ' AND (applicant.HighSchoolGPA >= '.$this->post_vars['gpa_range_search_input_start'].' AND applicant.HighSchoolGPA <= '.$this->post_vars['gpa_range_search_input_end'].')';
+            }
         }
-        if(!empty($this->post_vars['major_search_input'])){
-            $data['where'] .= ' AND applicant.MajorId = '.$this->post_vars['major_search_input'];
+        if(isset($this->post_vars['hs_gpa_range_search_input_start']) || isset($this->post_vars['hs_gpa_range_search_input_end'])) {
+            if ($this->post_vars['hs_gpa_range_search_input_start'] != 0 || $this->post_vars['hs_gpa_range_search_input_end'] != 5) {
+                $data['where'] .= ' AND (applicant.HighSchoolGPA >= ' . $this->post_vars['hs_gpa_range_search_input_start'] . ' AND applicant.HighSchoolGPA <= ' . $this->post_vars['hs_gpa_range_search_input_end'] . ')';
+            }
         }
-        if(!empty($this->post_vars['ethnicity_search_input'])){
-            $data['where'] .= ' AND applicant.EthnicityId = '.$this->post_vars['ethnicity_search_input'];
+        //scholarship stuff search
+        if(
+            is_numeric($this->post_vars['scholarship_search_input']) ||
+            !empty($this->post_vars['award_date_search_input_start']) ||
+            !empty($this->post_vars['award_date_search_input_end']) ||
+            is_numeric($this->post_vars['thankyounote_search_input']) ||
+            is_numeric($this->post_vars['signed_search_input']) ||
+            is_numeric($this->post_vars['award_search_input']) ||
+            $this->post_vars['gpa1_range_search_input_start'] != 0 ||
+            $this->post_vars['gpa1_range_search_input_end'] != 5 ||
+            $this->post_vars['gpa2_range_search_input_start'] != 0 ||
+            $this->post_vars['gpa2_range_search_input_end'] != 5 ||
+            $this->post_vars['gpa3_range_search_input_start'] != 0 ||
+            $this->post_vars['gpa3_range_search_input_end'] != 5 ||
+            $this->post_vars['gpac_range_search_input_start'] != 0 ||
+            $this->post_vars['gpac_range_search_input_end'] != 5
+        ){
+            $data['tables']['applicantscholarship'] = array('AmountAwarded');
+            $data['where'] .= ' AND applicantscholarship.ApplicantId = applicant.ApplicantId';
+
+            if(!empty($this->post_vars['award_date_search_input_start']) || !empty($this->post_vars['award_date_search_input_end'])) {
+                if(!empty($this->post_vars['award_date_search_input_start'])){
+                    $where[] = 'applicantscholarship.DateAwarded > '.date('Ymdhis',strtotime($this->post_vars['award_date_search_input_start']));
+                } else {
+                    $where[] = 'applicantscholarship.DateAwarded > '.date('Ymdhis',strtotime(get_option('csf_settings_start_date'))); //replace with dates from settings
+                }
+                if(!empty($this->post_vars['award_date_search_input_start'])){
+                    $where[] = 'applicantscholarship.DateAwarded < '.date('Ymdhis',strtotime($this->post_vars['award_date_search_input_end']));
+                }
+                $data['where'] .= ' AND '.implode(' AND ',$where);
+            }
+            if(is_numeric($this->post_vars['thankyounote_search_input'])){
+                $data['where'] .= ' AND applicantscholarship.ThankYou = ' . $this->post_vars['thankyounote_search_input'];
+            }
+            if(is_numeric($this->post_vars['signed_search_input'])){
+                $data['where'] .= ' AND applicantscholarship.Signed = ' . $this->post_vars['signed_search_input'];
+            }
+            if ($this->post_vars['gpa1_range_search_input_start'] != 0 || $this->post_vars['gpa1_range_search_input_end'] != 5) {
+                $data['where'] .= ' AND (applicantscholarship.GPA1 >= ' . $this->post_vars['gpa1_range_search_input_start'] . ' AND applicantscholarship.GPA1 <= ' . $this->post_vars['gpa1_range_search_input_end'] . ')';
+            }
+            if ($this->post_vars['gpa2_range_search_input_start'] != 0 || $this->post_vars['gpa2_range_search_input_end'] != 5) {
+                $data['where'] .= ' AND (applicantscholarship.GPA2 >= ' . $this->post_vars['gpa2_range_search_input_start'] . ' AND applicantscholarship.GPA2 <= ' . $this->post_vars['gpa2_range_search_input_end'] . ')';
+            }
+            if ($this->post_vars['gpa3_range_search_input_start'] != 0 || $this->post_vars['gpa3_range_search_input_end'] != 5) {
+                $data['where'] .= ' AND (applicantscholarship.GPA3 >= ' . $this->post_vars['gpa3_range_search_input_start'] . ' AND applicantscholarship.GPA3 <= ' . $this->post_vars['gpa3_range_search_input_end'] . ')';
+            }
+            if ($this->post_vars['gpac_range_search_input_start'] != 0 || $this->post_vars['gpac_range_search_input_end'] != 5) {
+                $data['where'] .= ' AND (applicantscholarship.GPAC >= ' . $this->post_vars['gpac_range_search_input_start'] . ' AND applicantscholarship.GPAC <= ' . $this->post_vars['gpac_range_search_input_end'] . ')';
+            }
         }
-        if(is_numeric($this->post_vars['athlete_search_input'])){
-            $data['where'] .= ' AND applicant.PlayedHighSchoolSports = '.$this->post_vars['athlete_search_input'];
-        }
-        if(is_numeric($this->post_vars['independence_search_input'])){
-            $data['where'] .= ' AND applicant.IsIndependent = '.$this->post_vars['independence_search_input'];
+        //need stuff search
+        if(
+            $this->post_vars['direct_need_search_input_start'] != 0 ||
+            $this->post_vars['direct_need_search_input_end'] != 1000000 ||
+            $this->post_vars['indirect_need_search_input_start'] != 0 ||
+            $this->post_vars['indirect_need_search_input_end'] != 1000000
+        ){
+            $data['tables']['studentneed'] = array('DirectNeed','IndirectNeed');
+            $data['where'] .= ' AND studentneed.ApplicantId = applicant.ApplicantId';
+
+            if ($this->post_vars['direct_need_search_input_start'] != 0 || $this->post_vars['direct_need_search_input_end'] != 1000000) {
+                $data['where'] .= ' AND (studentneed.DirectNeed >= ' . $this->post_vars['direct_need_search_input_start'] . ' AND studentneed.DirectNeed <= ' . $this->post_vars['direct_need_search_input_end'] . ')';
+            }
+            if ($this->post_vars['indirect_need_search_input_start'] != 0 || $this->post_vars['indirect_need_search_input_end'] != 1000000) {
+                $data['where'] .= ' AND (studentneed.IndirectNeed >= ' . $this->post_vars['indirect_need_search_input_start'] . ' AND studentneed.IndirectNeed <= ' . $this->post_vars['indirect_need_search_input_end'] . ')';
+            }
         }
 
+        //payment stuff search
+        if(
+            !empty($this->post_vars['payment_date_search_input_start']) ||
+            !empty($this->post_vars['payment_date_search_input_end']) ||
+            !empty($this->post_vars['check_number_search_input_start']) ||
+            !empty($this->post_vars['check_number_search_input_end'])
+        ){
+            $data['tables']['payment'] = array('paymentid');
+            $data['where'] .= ' AND payment.ApplicantId = applicant.ApplicantId';
 
-        $data['tables'][$usertable] = array('user_email');
-        $data['where'] .= ' AND ' . $usertable . '.ID  = applicant.UserId';
-        if(!empty($this->post_vars['email_search_input'])) {
-            //add search for an email on application
-            $data['where'] .= ' AND (applicant.Email LIKE \'%'.$this->post_vars['email_search_input'].'%\' OR ' . $usertable . '.user_email  LIKE \'%'.$this->post_vars['email_search_input'].'%\')';
-        }/*
-        $data['tables']['applicantcollege'] = array('CollegeId');
-        $data['where'] .= ' AND (applicantcollege.ApplicantId = applicant.ApplicantId)';
-        */
-        if(!empty($this->post_vars['college_search_input'])){
-            $data['where'] .= ' AND applicant.CollegeId = '.$this->post_vars['college_search_input'];
+            if(!empty($this->post_vars['payment_date_search_input_start']) || !empty($this->post_vars['payment_date_search_input_end'])) {
+                if(!empty($this->post_vars['payment_date_search_input_start'])){
+                    $where[] = 'payment.PaymentDateTime > '.date('Ymdhis',strtotime($this->post_vars['payment_date_search_input_start']));
+                } else {
+                    $where[] = 'payment.PaymentDateTime > '.date('Ymdhis',strtotime(get_option('csf_settings_start_date'))); //replace with dates from settings
+                }
+                if(!empty($this->post_vars['award_date_search_input_start'])){
+                    $where[] = 'payment.PaymentDateTime < '.date('Ymdhis',strtotime($this->post_vars['payment_date_search_input_end']));
+                }
+                $data['where'] .= ' AND '.implode(' AND ',$where);
+            }
+            if (isset($this->post_vars['check_number_search_input_start']) || isset($this->post_vars['check_number_search_input_start'])) {
+                $data['where'] .= ' AND (payment.CheckNumber >= ' . $this->post_vars['check_number_search_input_start'] . ' AND payment.CheckNumber <= ' . $this->post_vars['check_number_search_input_start'] . ')';
+            }
         }
-        //ts_data($data);
         $results = $this->get_result_set($data);
-        error_log($wpdb->last_query);
+        //error_log('REPORT QUERY: ' . $wpdb->last_query);
 
         foreach ($results AS $k => $r){
             $applicant_id = $r->ApplicantId;
 
             $college = $agreements = $financial = $docs = array();
-
-            /*//add college
-            $college['tables']['applicantcollege'] = array('CollegeId');
-            $college['where'] .= ' AND (applicantcollege.ApplicantId = applicant.ApplicantId)';
-            $college_results = $this->get_result_set($college);
-            foreach($college_results AS $ar){
-                foreach($ar as $y => $z){
-                    $results[$k]->$y = $z;
-                }
-            }*/
 
             //add agreements
             $agreements['tables']['agreements'] = array('ApplicantHaveRead','ApplicantDueDate','ApplicantDocsReq','ApplicantReporting','GuardianHaveRead','GuardianDueDate','GuardianDocsReq','GuardianReporting');
@@ -480,6 +590,22 @@ class MSDLAB_Queries{
                 foreach($sr as $y => $z){
                     $results[$k]->$y = $z;
                 }
+            }
+
+            //add payments
+            $payment['tables']['payment'] = array('*');
+            $payment['where'] = 'ApplicantId = '.$applicant_id;
+            $payment_results = $this->get_result_set($payment);
+            foreach($payment_results AS $pr){
+                $results[$k]->payment[] = $pr;
+            }
+
+            //add need
+            $need['tables']['need'] = array('*');
+            $need['where'] = 'ApplicantId = '.$applicant_id;
+            $need_results = $this->get_result_set($need);
+            foreach($need_results AS $nr){
+                $results[$k]->need[] = $nr;
             }
         }
         return $results;
@@ -602,6 +728,10 @@ class MSDLAB_Queries{
             }
             $data['where'] .= ' AND (renewal.FirstName LIKE \'%'. $this->post_vars['name_search_input'] .'%\' OR renewal.LastName LIKE \'%'. $this->post_vars['name_search_input'] .'%\''.$fullnamesearch.') ';
         }
+        if(!empty($this->post_vars['email_search_input'])) {
+            //add search for an email on application
+            $data['where'] .= ' AND renewal.Email  LIKE \'%'.$this->post_vars['email_search_input'].'%\'';
+        }
         if(!empty($this->post_vars['city_search_input'])){
             $data['where'] .= ' AND renewal.City LIKE \'%'.$this->post_vars['city_search_input'].'%\'';
         }
@@ -615,8 +745,9 @@ class MSDLAB_Queries{
             $data['where'] .= ' AND renewal.ZipCode IN ('.$this->post_vars['zip_search_input'].')';
         }
 
-        if($this->post_vars['gpa_range_search_input_start']!=0 || $this->post_vars['gpa_range_search_input_end']!=5){
-            $data['where'] .= ' AND (renewal.CurrentCumulativeGPA >= '.$this->post_vars['gpa_range_search_input_start'].' AND renewal.CurrentCumulativeGPA <= '.$this->post_vars['gpa_range_search_input_end'].')';
+
+        if($this->post_vars['gpac_range_search_input_start']!=0 || $this->post_vars['gpac_range_search_input_end']!=5){
+            $data['where'] .= ' AND (renewal.CurrentCumulativeGPA >= '.$this->post_vars['gpac_range_search_input_start'].' AND renewal.CurrentCumulativeGPA <= '.$this->post_vars['gpac_range_search_input_end'].')';
         }
         if(!empty($this->post_vars['major_search_input'])){
             $data['where'] .= ' AND renewal.MajorId = '.$this->post_vars['major_search_input'];
@@ -626,15 +757,127 @@ class MSDLAB_Queries{
         }
 
 
-        //$data['tables'][$usertable] = array('user_email');
-        //$data['where'] .= ' AND ' . $usertable . '.ID  = renewal.UserId';
-        if(!empty($this->post_vars['email_search_input'])) {
-            //add search for an email on application
-            $data['where'] .= ' AND renewal.Email  LIKE \'%'.$this->post_vars['email_search_input'].'%\'';
+        if(!empty($this->post_vars['studentid_search_input'])){
+            $data['where'] .= ' AND renewal.StudentId LIKE \'%'.$this->post_vars['studentid_search_input'].'%\'';
         }
-        //ts_data($data);
+
+        if(!empty($this->post_vars['ethnicity_search_input']) ||
+            !empty($this->post_vars['gender_search_input']) ||
+            is_numeric($this->post_vars['athlete_search_input']) ||
+            is_numeric($this->post_vars['independence_search_input'])
+        ) {
+            $data['tables']['applicant'] = array('*');
+            $data['where'] .= ' AND renewal.ApplicantId = applicant.ApplicantId';
+            if (!empty($this->post_vars['ethnicity_search_input'])) {
+                $data['where'] .= ' AND applicant.EthnicityId = ' . $this->post_vars['ethnicity_search_input'];
+            }
+            if (!empty($this->post_vars['gender_search_input'])) {
+                $data['where'] .= ' AND applicant.SexId LIKE \'%' . $this->post_vars['gender_search_input'] . '%\'';
+            }
+            if (is_numeric($this->post_vars['athlete_search_input'])) {
+                $data['where'] .= ' AND applicant.PlayedHighSchoolSports = ' . $this->post_vars['athlete_search_input'];
+            }
+            if (is_numeric($this->post_vars['independence_search_input'])) {
+                $data['where'] .= ' AND applicant.IsIndependent = ' . $this->post_vars['independence_search_input'];
+            }
+        }
+
+        //scholarship stuff search
+        if(
+            is_numeric($this->post_vars['scholarship_search_input']) ||
+            !empty($this->post_vars['award_date_search_input_start']) ||
+            !empty($this->post_vars['award_date_search_input_end']) ||
+            is_numeric($this->post_vars['thankyounote_search_input']) ||
+            is_numeric($this->post_vars['signed_search_input']) ||
+            is_numeric($this->post_vars['award_search_input']) ||
+            $this->post_vars['gpa1_range_search_input_start'] != 0 ||
+            $this->post_vars['gpa1_range_search_input_end'] != 5 ||
+            $this->post_vars['gpa2_range_search_input_start'] != 0 ||
+            $this->post_vars['gpa2_range_search_input_end'] != 5 ||
+            $this->post_vars['gpa3_range_search_input_start'] != 0 ||
+            $this->post_vars['gpa3_range_search_input_end'] != 5 ||
+            $this->post_vars['gpac_range_search_input_start'] != 0 ||
+            $this->post_vars['gpac_range_search_input_end'] != 5
+        ){
+            $data['tables']['applicantscholarship'] = array('AmountAwarded');
+            $data['where'] .= ' AND applicantscholarship.ApplicantId = renewal.ApplicantId';
+
+            if(!empty($this->post_vars['award_date_search_input_start']) || !empty($this->post_vars['award_date_search_input_end'])) {
+                if(!empty($this->post_vars['award_date_search_input_start'])){
+                    $where[] = 'applicantscholarship.DateAwarded > '.date('Ymdhis',strtotime($this->post_vars['award_date_search_input_start']));
+                } else {
+                    $where[] = 'applicantscholarship.DateAwarded > '.date('Ymdhis',strtotime(get_option('csf_settings_start_date'))); //replace with dates from settings
+                }
+                if(!empty($this->post_vars['award_date_search_input_start'])){
+                    $where[] = 'applicantscholarship.DateAwarded < '.date('Ymdhis',strtotime($this->post_vars['award_date_search_input_end']));
+                }
+                $data['where'] .= ' AND '.implode(' AND ',$where);
+            }
+            if(is_numeric($this->post_vars['thankyounote_search_input'])){
+                $data['where'] .= ' AND applicantscholarship.ThankYou = ' . $this->post_vars['thankyounote_search_input'];
+            }
+            if(is_numeric($this->post_vars['signed_search_input'])){
+                $data['where'] .= ' AND applicantscholarship.Signed = ' . $this->post_vars['signed_search_input'];
+            }
+            if ($this->post_vars['gpa1_range_search_input_start'] != 0 || $this->post_vars['gpa1_range_search_input_end'] != 5) {
+                $data['where'] .= ' AND (applicantscholarship.GPA1 >= ' . $this->post_vars['gpa1_range_search_input_start'] . ' AND applicantscholarship.GPA1 <= ' . $this->post_vars['gpa1_range_search_input_end'] . ')';
+            }
+            if ($this->post_vars['gpa2_range_search_input_start'] != 0 || $this->post_vars['gpa2_range_search_input_end'] != 5) {
+                $data['where'] .= ' AND (applicantscholarship.GPA2 >= ' . $this->post_vars['gpa2_range_search_input_start'] . ' AND applicantscholarship.GPA2 <= ' . $this->post_vars['gpa2_range_search_input_end'] . ')';
+            }
+            if ($this->post_vars['gpa3_range_search_input_start'] != 0 || $this->post_vars['gpa3_range_search_input_end'] != 5) {
+                $data['where'] .= ' AND (applicantscholarship.GPA3 >= ' . $this->post_vars['gpa3_range_search_input_start'] . ' AND applicantscholarship.GPA3 <= ' . $this->post_vars['gpa3_range_search_input_end'] . ')';
+            }
+            if ($this->post_vars['gpac_range_search_input_start'] != 0 || $this->post_vars['gpac_range_search_input_end'] != 5) {
+                $data['where'] .= ' AND (applicantscholarship.GPAC >= ' . $this->post_vars['gpac_range_search_input_start'] . ' AND applicantscholarship.GPAC <= ' . $this->post_vars['gpac_range_search_input_end'] . ')';
+            }
+        }
+        //need stuff search
+        if(
+            $this->post_vars['direct_need_search_input_start'] != 0 ||
+            $this->post_vars['direct_need_search_input_end'] != 1000000 ||
+            $this->post_vars['indirect_need_search_input_start'] != 0 ||
+            $this->post_vars['indirect_need_search_input_end'] != 1000000
+        ){
+            $data['tables']['studentneed'] = array('DirectNeed','IndirectNeed');
+            $data['where'] .= ' AND studentneed.ApplicantId = renewal.ApplicantId';
+
+            if ($this->post_vars['direct_need_search_input_start'] != 0 || $this->post_vars['direct_need_search_input_end'] != 1000000) {
+                $data['where'] .= ' AND (studentneed.DirectNeed >= ' . $this->post_vars['direct_need_search_input_start'] . ' AND studentneed.DirectNeed <= ' . $this->post_vars['direct_need_search_input_end'] . ')';
+            }
+            if ($this->post_vars['indirect_need_search_input_start'] != 0 || $this->post_vars['indirect_need_search_input_end'] != 1000000) {
+                $data['where'] .= ' AND (studentneed.IndirectNeed >= ' . $this->post_vars['indirect_need_search_input_start'] . ' AND studentneed.IndirectNeed <= ' . $this->post_vars['indirect_need_search_input_end'] . ')';
+            }
+        }
+
+        //payment stuff search
+        if(
+            !empty($this->post_vars['payment_date_search_input_start']) ||
+            !empty($this->post_vars['payment_date_search_input_end']) ||
+            !empty($this->post_vars['check_number_search_input_start']) ||
+            !empty($this->post_vars['check_number_search_input_end'])
+        ){
+            $data['tables']['payment'] = array('paymentid');
+            $data['where'] .= ' AND payment.ApplicantId = renewal.ApplicantId';
+
+            if(!empty($this->post_vars['payment_date_search_input_start']) || !empty($this->post_vars['payment_date_search_input_end'])) {
+                if(!empty($this->post_vars['payment_date_search_input_start'])){
+                    $where[] = 'payment.PaymentDateTime > '.date('Ymdhis',strtotime($this->post_vars['payment_date_search_input_start']));
+                } else {
+                    $where[] = 'payment.PaymentDateTime > '.date('Ymdhis',strtotime(get_option('csf_settings_start_date'))); //replace with dates from settings
+                }
+                if(!empty($this->post_vars['award_date_search_input_start'])){
+                    $where[] = 'payment.PaymentDateTime < '.date('Ymdhis',strtotime($this->post_vars['payment_date_search_input_end']));
+                }
+                $data['where'] .= ' AND '.implode(' AND ',$where);
+            }
+            if (isset($this->post_vars['check_number_search_input_start']) || isset($this->post_vars['check_number_search_input_start'])) {
+                $data['where'] .= ' AND (payment.CheckNumber >= ' . $this->post_vars['check_number_search_input_start'] . ' AND payment.CheckNumber <= ' . $this->post_vars['check_number_search_input_start'] . ')';
+            }
+        }
+
         $results = $this->get_result_set($data);
-        //error_log($wpdb->last_query);
+        //error_log('RENEWAL REPORT QUERY: ' . $wpdb->last_query);
         return $results;
     }
 

@@ -138,7 +138,7 @@ class MSDLab_ReportControls{
                 $ret['major_search'] = $this->select_search('Major: ','major_search', $majors,array('query-filter','select-search','col-sm-6'));
                 $ret['scholarship_search'] = $this->select_search('Scholarship:','scholarship_search',$scholarship,array('query-filter','select-search','col-sm-6','col-md-4'));
                 $ret['fund_search'] = $this->select_search('Fund:','fund_search',$fund,array('query-filter','select-search','col-sm-6','col-md-3'));
-                $ret['award_date_search'] = $this->date_search('Award Date Between:','','award_date_search',array('query-filter','col-sm-6','col-md-5'));
+                $ret['award_date_search'] = $this->date_search('Award Date Between:','','award_date_search',array('query-filter','col-sm-6','col-md-5'),'00/00/0000','00/00/0000');
                 $ret['educational_attainment'] = $this->select_search('Year In School','educational_attainment',$educational_attainment,array('query-filter','col-sm-6','col-md-4'));
                 $ret['thankyounote_search'] = $this->select_search('Thank You','thankyounote_search',$bool_options,array('query-filter','col-sm-6','col-md-4'));
                 $ret['signed_search'] = $this->select_search('Papers Signed','signed_search',$bool_options,array('query-filter','col-sm-6','col-md-4'));
@@ -172,7 +172,7 @@ class MSDLab_ReportControls{
                 $ret['indirect_need_search'] = $this->number_range_search('Indirect Need Between:','','indirect_need_search',array('query-filter','col-sm-6'),0.00,1000000.00,1);
                 $ret[] = '</div>';
                 $ret[] = '<div class="row payment_info">';
-                $ret['payment_date_search'] = $this->date_search('Payment Date Between:','','payment_date_search',array('query-filter','date-search','col-sm-6'));
+                $ret['payment_date_search'] = $this->date_search('Payment Date Between:','','payment_date_search',array('query-filter','date-search','col-sm-6'),'00/00/0000','00/00/0000');
                 $ret['check_number_search'] = $this->number_range_search('Check Number Between:','','check_number_search',array('query-filter','col-sm-6'));
                 $ret[] = '</div>';
                 break;
