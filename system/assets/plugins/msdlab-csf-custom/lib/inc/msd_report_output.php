@@ -406,12 +406,12 @@ class MSDLAB_Report_Output{
         if($renewal){
             $ret['Renewal_RenewalDateTime'] = $this->form->field_date("Renewal_RenewalDateTime", (strtotime($student_data['renewal']->RenewalDateTime) > 0) ? date("Y-m-d", strtotime($student_data['renewal']->RenewalDateTime)): '','Renewal Date',array(),array('datepicker','col-md-2', 'col-sm-12'));
         }
-        $ret['Applicant_IsComplete'] = $this->form->field_boolean('Applicant_IsComplete',1,'Complete',array(),array('col-md-1', 'col-sm-12'));
+        $ret['Applicant_IsComplete'] = $this->form->field_boolean('Applicant_IsComplete',$student_data['personal']->IsComplete,'Complete',array(),array('col-md-1', 'col-sm-12'));
 
-        $ret['Applicant_ResumeOK'] = $this->form->field_boolean('Applicant_ResumeOK',1,'Resume',array(),array('col-md-1', 'col-sm-12'));
-        $ret['Applicant_TranscriptOK'] = $this->form->field_boolean('Applicant_TranscriptOK',1,'Transcript',array(),array('col-md-1', 'col-sm-12'));
-        $ret['Applicant_FinancialAidOK'] = $this->form->field_boolean('Applicant_FinancialAidOK',1,'Fin. Aid',array(),array('col-md-1', 'col-sm-12'));
-        $ret['Applicant_FAFSAOK'] = $this->form->field_boolean('Applicant_FAFSAOK',1,'FAFSA',array(),array('col-md-1', 'col-sm-12'));
+        $ret['Applicant_ResumeOK'] = $this->form->field_boolean('Applicant_ResumeOK',$student_data['personal']->ResumeOK,'Resume',array(),array('col-md-1', 'col-sm-12'));
+        $ret['Applicant_TranscriptOK'] = $this->form->field_boolean('Applicant_TranscriptOK',$student_data['personal']->TranscriptOK,'Transcript',array(),array('col-md-1', 'col-sm-12'));
+        $ret['Applicant_FinancialAidOK'] = $this->form->field_boolean('Applicant_FinancialAidOK',$student_data['personal']->FinancialAidOK,'Fin. Aid',array(),array('col-md-1', 'col-sm-12'));
+        $ret['Applicant_FAFSAOK'] = $this->form->field_boolean('Applicant_FAFSAOK',$student_data['personal']->FAFSAOK,'FAFSA',array(),array('col-md-1', 'col-sm-12'));
         $ret['infoAward'] = $this->form->field_textinfo('infoAward',$student_data['scholarship']->AmountAwarded>0 ?'YES':'NO','Award?','','',array('col-md-1', 'col-sm-12'));
         $ret[] = '<hr />';
         $ret['Applicant_HighSchoolId'] = $this->form->field_select('Applicant_HighSchoolId', $student_data['personal']->HighSchoolId ? $student_data['personal']->HighSchoolId : 136, "High School Attended", $student_data['personal']->HighSchoolId ? $student_data['personal']->HighSchoolId : null, $this->highschool_array, array('required' => 'required'), array('required', 'col-md-4', 'col-sm-12'));
