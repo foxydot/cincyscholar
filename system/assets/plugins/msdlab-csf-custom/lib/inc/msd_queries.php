@@ -332,16 +332,16 @@ class MSDLAB_Queries{
         $usertable = $wpdb->prefix . 'users';
         $data['tables']['applicant'] = array('*');
 
-        if(empty($this->post_vars['date_search_input_start']) && empty($this->post_vars['date_search_input_end'])) {
-            $data['where'] = 'applicant.ApplicationDateTime > '.date('Ymdhis',strtotime(get_option('csf_settings_start_date'))); //replace with dates from settings
+        if(empty($this->post_vars['application_date_search_input_start']) && empty($this->post_vars['application_date_search_input_end'])) {
+            $data['where'] = 'UNIX_TIMESTAMP(applicant.ApplicationDateTime) > '.strtotime(get_option('csf_settings_start_date')); //replace with dates from settings
         } else {
-            if(!empty($this->post_vars['date_search_input_start'])){
-                $where[] = 'applicant.ApplicationDateTime > '.date('Ymdhis',strtotime($this->post_vars['date_search_input_start']));
+            if(!empty($this->post_vars['application_date_search_input_start'])){
+                $where[] = 'UNIX_TIMESTAMP(applicant.ApplicationDateTime) > '.strtotime($this->post_vars['application_date_search_input_start']);
             } else {
-                $where[] = 'applicant.ApplicationDateTime > '.date('Ymdhis',strtotime(get_option('csf_settings_start_date'))); //replace with dates from settings
+                $where[] = 'UNIX_TIMESTAMP(applicant.ApplicationDateTime) > '.strtotime(get_option('csf_settings_start_date')); //replace with dates from settings
             }
-            if(!empty($this->post_vars['date_search_input_start'])){
-                $where[] = 'applicant.ApplicationDateTime < '.date('Ymdhis',strtotime($this->post_vars['date_search_input_end']));
+            if(!empty($this->post_vars['application_date_search_input_end'])){
+                $where[] = 'UNIX_TIMESTAMP(applicant.ApplicationDateTime) < '.strtotime($this->post_vars['application_date_search_input_end']);
             }
             $data['where'] = implode(' AND ',$where);
         }
@@ -460,12 +460,12 @@ class MSDLAB_Queries{
 
             if(!empty($this->post_vars['award_date_search_input_start']) || !empty($this->post_vars['award_date_search_input_end'])) {
                 if(!empty($this->post_vars['award_date_search_input_start'])){
-                    $where[] = 'applicantscholarship.DateAwarded > '.date('Ymdhis',strtotime($this->post_vars['award_date_search_input_start']));
+                    $where[] = 'UNIX_TIMESTAMP(applicantscholarship.DateAwarded) > '.strtotime($this->post_vars['award_date_search_input_start']);
                 } else {
-                    $where[] = 'applicantscholarship.DateAwarded > '.date('Ymdhis',strtotime(get_option('csf_settings_start_date'))); //replace with dates from settings
+                    $where[] = 'UNIX_TIMESTAMP(applicantscholarship.DateAwarded) > '.strtotime(get_option('csf_settings_start_date')); //replace with dates from settings
                 }
                 if(!empty($this->post_vars['award_date_search_input_start'])){
-                    $where[] = 'applicantscholarship.DateAwarded < '.date('Ymdhis',strtotime($this->post_vars['award_date_search_input_end']));
+                    $where[] = 'UNIX_TIMESTAMP(applicantscholarship.DateAwarded) < '.strtotime($this->post_vars['award_date_search_input_end']);
                 }
                 $data['where'] .= ' AND '.implode(' AND ',$where);
             }
@@ -518,12 +518,12 @@ class MSDLAB_Queries{
 
             if(!empty($this->post_vars['payment_date_search_input_start']) || !empty($this->post_vars['payment_date_search_input_end'])) {
                 if(!empty($this->post_vars['payment_date_search_input_start'])){
-                    $where[] = 'payment.PaymentDateTime > '.date('Ymdhis',strtotime($this->post_vars['payment_date_search_input_start']));
+                    $where[] = 'UNIX_TIMESTAMP(payment.PaymentDateTime) > '.strtotime($this->post_vars['payment_date_search_input_start']);
                 } else {
-                    $where[] = 'payment.PaymentDateTime > '.date('Ymdhis',strtotime(get_option('csf_settings_start_date'))); //replace with dates from settings
+                    $where[] = 'UNIX_TIMESTAMP(payment.PaymentDateTime) > '.strtotime(get_option('csf_settings_start_date')); //replace with dates from settings
                 }
                 if(!empty($this->post_vars['award_date_search_input_start'])){
-                    $where[] = 'payment.PaymentDateTime < '.date('Ymdhis',strtotime($this->post_vars['payment_date_search_input_end']));
+                    $where[] = 'UNIX_TIMESTAMP(payment.PaymentDateTime) < '.strtotime($this->post_vars['payment_date_search_input_end']);
                 }
                 $data['where'] .= ' AND '.implode(' AND ',$where);
             }
@@ -532,7 +532,7 @@ class MSDLAB_Queries{
             }
         }
         $results = $this->get_result_set($data);
-        //error_log('REPORT QUERY: ' . $wpdb->last_query);
+        error_log('REPORT QUERY: ' . $wpdb->last_query);
 
         foreach ($results AS $k => $r){
             $applicant_id = $r->ApplicantId;
@@ -601,7 +601,7 @@ class MSDLAB_Queries{
             }
 
             //add need
-            $need['tables']['need'] = array('*');
+            $need['tables']['studentneed'] = array('*');
             $need['where'] = 'ApplicantId = '.$applicant_id;
             $need_results = $this->get_result_set($need);
             foreach($need_results AS $nr){
@@ -706,16 +706,16 @@ class MSDLAB_Queries{
         //$usertable = $wpdb->prefix . 'users';
         $data['tables']['renewal'] = array('*');
         //ts_data($this->post_vars);
-        if(empty($this->post_vars['date_search_input_start']) && empty($this->post_vars['date_search_input_end'])) {
-            $data['where'] = 'renewal.RenewalDateTime > '.date('Ymdhis',strtotime(get_option('csf_settings_start_date'))); //replace with dates from settings
+        if(empty($this->post_vars['renewal_date_search_input_start']) && empty($this->post_vars['renewal_date_search_input_end'])) {
+            $data['where'] = 'UNIX_TIMESTAMP(renewal.RenewalDateTime) > '.strtotime(get_option('csf_settings_start_date')); //replace with dates from settings
         } else {
-            if(!empty($this->post_vars['date_search_input_start'])){
-                $where[] = 'renewal.RenewalDateTime > '.date('Ymdhis',strtotime($this->post_vars['date_search_input_start']));
+            if(!empty($this->post_vars['renewal_date_search_input_start'])){
+                $where[] = 'UNIX_TIMESTAMP(renewal.RenewalDateTime) > '.strtotime($this->post_vars['renewal_date_search_input_start']);
             } else {
-                $where[] = 'renewal.RenewalDateTime > '.date('Ymdhis',strtotime(get_option('csf_settings_start_date'))); //replace with dates from settings
+                $where[] = 'UNIX_TIMESTAMP(renewal.RenewalDateTime) > '.strtotime(get_option('csf_settings_start_date')); //replace with dates from settings
             }
-            if(!empty($this->post_vars['date_search_input_start'])){
-                $where[] = 'renewal.RenewalDateTime < '.date('Ymdhis',strtotime($this->post_vars['date_search_input_end']));
+            if(!empty($this->post_vars['renewal_date_search_input_end'])){
+                $where[] = 'UNIX_TIMESTAMP(renewal.RenewalDateTime) < '.strtotime($this->post_vars['renewal_date_search_input_end']);
             }
             $data['where'] = implode(' AND ',$where);
         }
@@ -804,12 +804,12 @@ class MSDLAB_Queries{
 
             if(!empty($this->post_vars['award_date_search_input_start']) || !empty($this->post_vars['award_date_search_input_end'])) {
                 if(!empty($this->post_vars['award_date_search_input_start'])){
-                    $where[] = 'applicantscholarship.DateAwarded > '.date('Ymdhis',strtotime($this->post_vars['award_date_search_input_start']));
+                    $where[] = 'UNIX_TIMESTAMP(applicantscholarship.DateAwarded) > '.strtotime($this->post_vars['award_date_search_input_start']);
                 } else {
-                    $where[] = 'applicantscholarship.DateAwarded > '.date('Ymdhis',strtotime(get_option('csf_settings_start_date'))); //replace with dates from settings
+                    $where[] = 'UNIX_TIMESTAMP(applicantscholarship.DateAwarded) > '.strtotime(get_option('csf_settings_start_date')); //replace with dates from settings
                 }
                 if(!empty($this->post_vars['award_date_search_input_start'])){
-                    $where[] = 'applicantscholarship.DateAwarded < '.date('Ymdhis',strtotime($this->post_vars['award_date_search_input_end']));
+                    $where[] = 'UNIX_TIMESTAMP(applicantscholarship.DateAwarded) < '.strtotime($this->post_vars['award_date_search_input_end']);
                 }
                 $data['where'] .= ' AND '.implode(' AND ',$where);
             }
@@ -862,12 +862,12 @@ class MSDLAB_Queries{
 
             if(!empty($this->post_vars['payment_date_search_input_start']) || !empty($this->post_vars['payment_date_search_input_end'])) {
                 if(!empty($this->post_vars['payment_date_search_input_start'])){
-                    $where[] = 'payment.PaymentDateTime > '.date('Ymdhis',strtotime($this->post_vars['payment_date_search_input_start']));
+                    $where[] = 'UNIX_TIMESTAMP(payment.PaymentDateTime) > '.strtotime($this->post_vars['payment_date_search_input_start']);
                 } else {
-                    $where[] = 'payment.PaymentDateTime > '.date('Ymdhis',strtotime(get_option('csf_settings_start_date'))); //replace with dates from settings
+                    $where[] = 'UNIX_TIMESTAMP(payment.PaymentDateTime) > '.strtotime(get_option('csf_settings_start_date')); //replace with dates from settings
                 }
                 if(!empty($this->post_vars['award_date_search_input_start'])){
-                    $where[] = 'payment.PaymentDateTime < '.date('Ymdhis',strtotime($this->post_vars['payment_date_search_input_end']));
+                    $where[] = 'UNIX_TIMESTAMP(payment.PaymentDateTime) < '.strtotime($this->post_vars['payment_date_search_input_end']);
                 }
                 $data['where'] .= ' AND '.implode(' AND ',$where);
             }
