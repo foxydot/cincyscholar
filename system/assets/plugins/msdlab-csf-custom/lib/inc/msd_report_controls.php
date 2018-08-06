@@ -103,6 +103,8 @@ class MSDLab_ReportControls{
 
         $ret['collapse_search'] = '<div class="collapse-button"><i class="fa fa-compress"><span class="screen-reader-text">Collapse</span></i></div>';
         $ret['search_all_button'] = $this->search_button('SEARCH','search_button_top');
+        $ret['reset_button_top'] = $this->reset_button();
+
         $ret['collapsable'] = '<div class="collapsable">';
 
         $ret['instructional_text'] = '<h4>Search By:</h4>';
@@ -149,8 +151,8 @@ class MSDLab_ReportControls{
 
                 $ret[] = '</div>';
                 $ret[] = '<div class="row application_info">';
-                $ret['application_date_search'] = $this->date_search('Application Date Between:','','application_date_search',array('query-filter','date-search','col-sm-6'));
-                $ret['renewal_date_search'] = $this->date_search('Renewal Date Between:','','renewal_date_search',array('query-filter','date-search','col-sm-6'));
+                $ret['application_date_search'] = $this->date_search('Application Date Between:','','application_date_search',array('query-filter','date-search','col-sm-6'),'00/00/0000','00/00/0000');
+                $ret['renewal_date_search'] = $this->date_search('Renewal Date Between:','','renewal_date_search',array('query-filter','date-search','col-sm-6'),'00/00/0000','00/00/0000');
                 $ret['complete_search'] = $this->select_search('Complete','complete_search',$bool_options,array('query-filter','col-sm-6','col-md-4'));
                 $ret['transcript_search'] = $this->select_search('Transcript','transcript_search',$bool_options,array('query-filter','col-sm-6','col-md-4'));
                 $ret['resume_search'] = $this->select_search('Resume','resume_search',$bool_options,array('query-filter','col-sm-6','col-md-4'));
