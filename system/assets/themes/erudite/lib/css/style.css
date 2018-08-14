@@ -1596,10 +1596,8 @@ p.entry-meta {
 .site-footer p {
   margin-bottom: 0; }
 
-.page-template-page-sectioned .site-container .site-inner {
-  display: none; }
-
 .sectioned-page-wrapper {
+  font-size: 1rem;
   position: relative;
   z-index: 10; }
   .sectioned-page-wrapper .section {
@@ -1798,6 +1796,13 @@ form .documents.grid {
       form .documents.grid .document.grid-item a i {
         font-size: 2em; }
 
+.sectioned-page-wrapper .section.section-gala-sponsorship img.alignnone {
+  max-width: 100px;
+  margin: 2em; }
+
+.sectioned-page-wrapper .section.section-gala-sponsorship .section-footer-area {
+  margin: 0; }
+
 @media only screen and (min-width: 768px) {
   .partition-tony-wojo .page-title-area {
     margin-top: 13em; }
@@ -1808,7 +1813,7 @@ form .documents.grid {
   /* Accessible Menu
   --------------------------------------------- */
   .site-inner {
-    margin-top: 9em; }
+    margin-top: 8em; }
   .menu .menu-item:focus {
     position: static; }
   .menu .menu-item > a:focus + ul.sub-menu,

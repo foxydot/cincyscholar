@@ -1,7 +1,6 @@
 .page-template-page-sectioned{
   .site-container{
     .site-inner{
-      display: none;
       .content-sidebar-wrap{
         main{
           article{
@@ -16,6 +15,7 @@
   }
 }
 .sectioned-page-wrapper{
+  font-size: 1rem;
   position: relative;
   z-index: 10;
   .section{
