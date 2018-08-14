@@ -102,6 +102,7 @@ if($_POST) {
                 continue;
             }
         }
+        //error_log('College Search Gate passed');
         if(!empty($_POST['employer_search_input'])){
             if(stripos($applicant->Employer,$_POST['employer_search_input'])===false &&
                 stripos($applicant->GuardianEmployer1,$_POST['employer_search_input'])===false &&
@@ -109,20 +110,26 @@ if($_POST) {
                 continue;
             }
         }
+        //error_log('Employer Search Gate passed');
         if(isset($_POST['cps_employee_search_input'])){
             if($applicant->CPSPublicSchools != 1){
                 continue;
             }
         }
+
+        //error_log('CPS Search Gate passed');
         if ($applicant->ScholarshipId > 0) {
+            //error_log('is awardee');
             $awarded[] = $applicant;
         } elseif ($applicant->status == 2) {
+            //error_log('is submitted');
             $submitted[] = $applicant;
         } else {
+            //error_log('is incomplete');
             $incomplete[] = $applicant;
         }
     }
-    if(count($submitted) > 0 || count($incomplete) > 0){$results_exisit = true;}
+    if(count($awarded) > 0 || count($submitted) > 0 || count($incomplete) > 0){$results_exisit = true;}
     $result = $this->queries->get_renewal_report_set($fields2);
     $renewals = array();
     foreach ($result AS $k => $renewal) {
@@ -147,11 +154,15 @@ if($_POST) {
                 continue;
             }
         }
-
-        $renewals[] = $renewal;
+        if ($renewal->ScholarshipId > 0) {
+            //error_log('is awardee');
+            $awarded[] = $applicant;
+        } else {
+            $renewals[] = $renewal;
+        }
     }
 
-    if(count($renewals) > 0){$results_exisit = true;}
+    if(count($awarded) > 0 || count($renewals) > 0){$results_exisit = true;}
 
     $info = '';
     $class = array('table','table-bordered','sortable');

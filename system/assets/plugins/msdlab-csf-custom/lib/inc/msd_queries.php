@@ -349,7 +349,7 @@ class MSDLAB_Queries{
         if(!empty($this->post_vars['name_search_input'])) {
             //add search for name on application
             $search_terms = explode(' ',addslashes($this->post_vars['name_search_input']));
-            if(count($search_terms>1)){
+            if(count($search_terms)>1){
                 $fullnamesearch = ' OR (applicant.FirstName LIKE \'%'. $search_terms[0] .'%\' AND applicant.LastName LIKE \'%'. $search_terms[1] .'%\')';
             }
             $data['where'] .= ' AND (applicant.FirstName LIKE \'%'. addslashes($this->post_vars['name_search_input']) .'%\' OR applicant.LastName LIKE \'%'. addslashes($this->post_vars['name_search_input']) .'%\''.$fullnamesearch.') ';
@@ -608,6 +608,7 @@ class MSDLAB_Queries{
                 $results[$k]->need[] = $nr;
             }
         }
+        error_log(json_encode($results));
         return $results;
     }
 
@@ -723,7 +724,7 @@ class MSDLAB_Queries{
         if(!empty($this->post_vars['name_search_input'])) {
             //add search for name on application
             $search_terms = explode(' ',$this->post_vars['name_search_input']);
-            if(count($search_terms>1)){
+            if(count($search_terms)>1){
                 $fullnamesearch = ' OR (renewal.FirstName LIKE \'%'. $search_terms[0] .'%\' AND renewal.LastName LIKE \'%'. $search_terms[1] .'%\')';
             }
             $data['where'] .= ' AND (renewal.FirstName LIKE \'%'. $this->post_vars['name_search_input'] .'%\' OR renewal.LastName LIKE \'%'. $this->post_vars['name_search_input'] .'%\''.$fullnamesearch.') ';
@@ -877,7 +878,7 @@ class MSDLAB_Queries{
         }
 
         $results = $this->get_result_set($data);
-        //error_log('RENEWAL REPORT QUERY: ' . $wpdb->last_query);
+        error_log('RENEWAL REPORT QUERY: ' . $wpdb->last_query);
         return $results;
     }
 

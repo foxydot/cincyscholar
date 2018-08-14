@@ -4,7 +4,7 @@ Template Name: Sectioned Page
 */
 if(function_exists('genesis')){
     //this is a genesis themed site\
-    add_action('genesis_before_footer',array('eruditeSections','sectioned_page_output'), 0);
+    add_action('genesis_after_content_sidebar_wrap',array('eruditeSections','sectioned_page_output'), 0);
     add_action('wp_print_footer_scripts',array('MSDSectionedPage','sectioned_page_footer_js'));
     genesis();
 } else {

@@ -18,6 +18,9 @@
 /* Neutrals */
 /* Default Colors */
 /* Social Colors */
+.content-sidebar-wrap {
+  display: none; }
+
 .sectioned-page-wrapper .section.section-features .section-content p {
   margin: 0; }
 
@@ -35,10 +38,6 @@
     color: #FFF;
     font-style: italic;
     font-size: 3em; }
-
-@media only screen and (min-width: 768px) {
-  .sectioned-page-wrapper {
-    padding-top: 120px; } }
 
 @media only screen and (min-width: 1024px) {
   .sectioned-page-wrapper .section.section-banner a:not(.button), .sectioned-page-wrapper .section.section-banner a:not(.button):visited, .sectioned-page-wrapper .section.section-banner a:not(.button):active {

@@ -120,6 +120,18 @@ form{
     }
   }
 }
+
+.sectioned-page-wrapper {
+  .section.section-gala-sponsorship{
+    img.alignnone{
+      max-width: 100px;
+      margin: 2em;
+    }
+    .section-footer-area{
+      margin: 0;
+    }
+  }
+}
 @media only screen and (min-width: 768px) {
   .partition-tony-wojo {
     .page-title-area {
