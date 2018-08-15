@@ -38,6 +38,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_update_guardian_table', array(&$this,'update_guardian_table') );
             add_action( 'wp_ajax_update_applicantscholarship_table', array(&$this,'update_applicantscholarship_table') );
             add_action( 'wp_ajax_modify_amount_columns', array(&$this,'modify_amount_columns') );
+            add_action( 'wp_ajax_repair_renewals_with_no_user_id', array(&$this,'repair_renewals_with_no_user_id') );
 
 
             add_filter('send_password_change_email',array(&$this,'return_false'));
@@ -641,6 +642,18 @@ beth@cincinnatischolarshipfoundation.org<br/>
             }
         }
 
+        function repair_renewals_with_no_user_id(){
+            global $wpdb;
+            $sql = 'SELECT a.UserId AS user_id, a.ApplicantId AS applicant_id, a.FirstName, a.LastName, r.UserId, r.ApplicantId, r.FirstName, r.LastName, r.RenewalId FROM applicant AS a, renewal AS r WHERE a.ApplicantId=r.ApplicantId AND r.UserId = 0;';
+            $results = $wpdb->get_results($sql);
+            foreach ($results AS $r){
+                $sql = 'UPDATE renewal SET UserId = '.$r->user_id.' WHERE ApplicantId = '.$r->applicant_id.';';
+                if($wpdb->query($sql)){
+                    print $r->FirstName .' '. $r->LastName.' updated. <br>';
+                }
+            }
+        }
+
         //utility
         function settings_page()
         {
@@ -877,6 +890,15 @@ beth@cincinnatischolarshipfoundation.org<br/>
                             console.log(response);
                         });
                     });
+                    $('.repair_renewals_with_no_user_id').click(function(){
+                        var data = {
+                            action: 'repair_renewals_with_no_user_id',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
             </script>
             <div class="wrap">
@@ -928,6 +950,8 @@ beth@cincinnatischolarshipfoundation.org<br/>
                     <dd><button class="update_applicantscholarship_table">Go</button></dd>
                     <dt>Modify Amount Columns:</dt>
                     <dd><button class="modify_amount_columns">Go</button></dd>
+                    <dt>repair_renewals_with_no_user_id:</dt>
+                    <dd><button class="repair_renewals_with_no_user_id">Go</button></dd>
                 </dl>
                 <div class="response1"></div>
             </div>
