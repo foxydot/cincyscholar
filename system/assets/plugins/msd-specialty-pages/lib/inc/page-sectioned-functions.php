@@ -22,8 +22,8 @@ class MSDSectionedPage{
         /**
          * Initializes the plugin by setting filters and administration functions.
          */
-   function __construct() {    
-        }
+   function __construct() {
+   }
         
     function add_metaboxes(){
         global $post,$sectioned_page_metabox,$wpalchemy_media_access;
@@ -273,4 +273,21 @@ class MSDSectionedPage{
                 wp_enqueue_style('sectioned-admin',WP_PLUGIN_URL.'/msd-specialty-pages/lib/css/sectioned.css');
             }
         }
+
+    function msdlab_add_scripts() {
+        global $is_IE;
+        if(!is_admin()){
+            $path_to_plugin = plugin_dir_url( plugin_dir_path( plugin_dir_path( __FILE__ )));
+            wp_deregister_script('greensock');
+            wp_enqueue_script('tweenlite',$path_to_plugin.'/lib/js/greensock/TweenLite.min.js');
+            wp_enqueue_script('tweenmax',$path_to_plugin.'/lib/js/greensock/TweenMax.min.js');
+            wp_enqueue_script('timelinelite',$path_to_plugin.'/lib/js/greensock/TimelineLite.min.js');
+            wp_enqueue_script('greensock-easepack',$path_to_plugin.'/lib/js/greensock/easing/EasePack.min.js');
+            wp_enqueue_script('greensock-css',$path_to_plugin.'/lib/js/greensock/plugins/CSSPlugin.min.js');
+            wp_enqueue_script('tweenmax-jquery',$path_to_plugin.'/lib/js/greensock/jquery.gsap.min.js',array('jquery','tweenmax'));
+
+            wp_enqueue_script('scroll-magic',$path_to_plugin.'/lib/js/jquery.scrollmagic.min.js',array('jquery','tweenmax'));
+            wp_enqueue_script('scroll-magic-debug',$path_to_plugin.'/lib/js/jquery.scrollmagic.debug.js',array('jquery','tweenmax','scroll-magic'));
+        }
+    }
 }

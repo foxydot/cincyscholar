@@ -116,7 +116,8 @@ if (!class_exists('MSDCustomPages')) {
             }
             if(class_exists('MSDSectionedPage')){
                 add_action('admin_print_footer_scripts',array('MSDSectionedPage','info_footer_hook') ,100);     
-                add_action('admin_enqueue_scripts',array('MSDSectionedPage','enqueue_admin')); 
+                add_action('admin_enqueue_scripts',array('MSDSectionedPage','enqueue_admin'));
+                add_action('wp_enqueue_scripts', array('MSDSectionedPage','msdlab_add_scripts'));
                 add_action( 'init', array( 'MSDSectionedPage', 'add_metaboxes' ) );
             }
         }
