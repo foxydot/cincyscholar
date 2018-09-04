@@ -77,6 +77,8 @@ if (!class_exists('MSDLab_CSF_Management')) {
             add_submenu_page(null,__('Edit Contact'),__('Edit Contact'),'manage_csf','contact-edit', array(&$this,'contact_edit_page_content'));
             add_submenu_page('csf-manage',__('HighSchool Settings'),__('HighSchool Settings'),'manage_csf','csf-highschool', array(&$this,'highschool_page_content'));
             add_submenu_page(null,__('Edit HighSchool'),__('Edit HighSchool'),'manage_csf','highschool-edit', array(&$this,'highschool_edit_page_content'));
+            add_submenu_page('csf-manage',__('Majors Settings'),__('Major Settings'),'manage_csf','csf-major', array(&$this,'major_page_content'));
+            add_submenu_page(null,__('Edit Major'),__('Edit Major'),'manage_csf','major-edit', array(&$this,'major_edit_page_content'));
             //match below
         }
 
@@ -93,6 +95,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
             print '<a href="admin.php?page=csf-settings" class="page-title-action">General Settings</a>';
             print '<a href="admin.php?page=csf-college" class="page-title-action">College and Contact Settings</a>';
             print '<a href="admin.php?page=csf-highschool" class="page-title-action">High School Settings</a>';
+            print '<a href="admin.php?page=csf-major" class="page-title-action">Major Settings</a>';
         }
 
         function setting_page_content(){
@@ -139,6 +142,15 @@ if (!class_exists('MSDLab_CSF_Management')) {
 
         function highschool_edit_page_content(){
             include_once(plugin_dir_path(__FILE__).'/admin-part/highschool_edit_page_content.php');
+
+        }
+
+        function major_page_content(){
+            include_once(plugin_dir_path(__FILE__).'/admin-part/major_page_content.php');
+
+        }
+        function major_edit_page_content(){
+            include_once(plugin_dir_path(__FILE__).'/admin-part/major_edit_page_content.php');
 
         }
 

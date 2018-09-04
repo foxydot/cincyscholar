@@ -72,6 +72,12 @@ class MSDLAB_Queries{
         $results = $this->get_result_set($data);
         return $results;
     }
+    public function get_all_majors($options = array()){
+        $data['tables']['major'] = array('*');
+        $data['order'] = 'MajorName ASC';
+        $results = $this->get_result_set($data);
+        return $results;
+    }
 
 
     /*
@@ -142,6 +148,12 @@ class MSDLAB_Queries{
     public function get_highschool($highschool_id){
         $data['tables']['highschool'] = array('*');
         $data['where'] = 'highschool.HighSchoolId = '.$highschool_id;
+        $results = $this->get_result_set($data);
+        return $results[0];
+    }
+    public function get_major($major_id){
+        $data['tables']['major'] = array('*');
+        $data['where'] = 'major.MajorId = '.$major_id;
         $results = $this->get_result_set($data);
         return $results[0];
     }

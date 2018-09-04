@@ -199,6 +199,19 @@ class MSDLAB_SettingControls{
                 $ret['javascript'] = $this->build_javascript($form_id);
                 $ret['ftr'] = $this->form_footer();
                 break;
+            case 'csf_major':
+                $programlength = array(0,1,2,3,4,5,6,7,8);
+                $major_id = isset($data->MajorId)?$data->MajorId:$this->queries->get_next_id('major','MajorId');
+                $ret['hdr'] = $this->form_header($form_id);
+                $ret['major_id'] = $this->settings_hidden('major_MajorId',$data->MajorId,'Major ID',null,null);
+                $ret['name'] = $this->settings_textfield('Major Name','major_MajorName',array('large','setting-field'),$data->MajorName);
+                $ret['programlength'] = $this->settings_select('major_ProgramLength',$data->ProgramLength?$data->ProgramLength:1,'Program Length',array('','Select'),$programlength,null, array('large','setting-field'));
+                $ret['submit'] = $this->settings_button();
+                $ret['delete'] = $this->delete_button('Delete','major_Publish');
+                $ret['nonce'] = wp_nonce_field( $form_id );
+                $ret['javascript'] = $this->build_javascript($form_id);
+                $ret['ftr'] = $this->form_footer();
+                break;
         }
         return implode("\n",$ret);
     }
