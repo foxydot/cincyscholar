@@ -3,7 +3,7 @@
 Plugin Name: MSD Specialty Pages
 Description: Framework to create specialty templated pages with custom backends. Currently supports two types of LayerCake design structures.
 Author: MSDLAB
-Version: 0.2.9
+Version: 0.2.10
 Author URI: http://msdlab.com
 */
 
@@ -61,7 +61,7 @@ if (!class_exists('MSDCustomPages')) {
         /**
          * @var string The plugin version
          */
-        var $version = '0.0.1';
+        var $version = '0.2.10';
         
         /**
          * @var string The options string name for this plugin

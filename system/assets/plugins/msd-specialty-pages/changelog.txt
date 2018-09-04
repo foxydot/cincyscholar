@@ -8,3 +8,4 @@
 0.0.8: Just issues with updates
 0.0.9: Allow for overrides of templates in themes
 0.2.1: Implement temporary fix for issue created by default values in column widths
+0.2.10: include scroll magic in plugin
