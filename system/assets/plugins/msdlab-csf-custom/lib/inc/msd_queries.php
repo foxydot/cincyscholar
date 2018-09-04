@@ -78,6 +78,18 @@ class MSDLAB_Queries{
         $results = $this->get_result_set($data);
         return $results;
     }
+    public function get_all_scholarships($options = array()){
+        $data['tables']['scholarship'] = array('*');
+        $data['order'] = 'Name ASC';
+        $results = $this->get_result_set($data);
+        return $results;
+    }
+    public function get_all_funds($options = array()){
+        $data['tables']['fund'] = array('*');
+        $data['order'] = 'Name ASC';
+        $results = $this->get_result_set($data);
+        return $results;
+    }
 
 
     /*
@@ -154,6 +166,12 @@ class MSDLAB_Queries{
     public function get_major($major_id){
         $data['tables']['major'] = array('*');
         $data['where'] = 'major.MajorId = '.$major_id;
+        $results = $this->get_result_set($data);
+        return $results[0];
+    }
+    public function get_scholarship($scholarship_id){
+        $data['tables']['scholarship'] = array('*');
+        $data['where'] = 'scholarship.ScholarshipId = '.$scholarship_id;
         $results = $this->get_result_set($data);
         return $results[0];
     }

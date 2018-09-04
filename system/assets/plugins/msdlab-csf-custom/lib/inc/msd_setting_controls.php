@@ -212,6 +212,19 @@ class MSDLAB_SettingControls{
                 $ret['javascript'] = $this->build_javascript($form_id);
                 $ret['ftr'] = $this->form_footer();
                 break;
+            case 'csf_scholarship':
+                $funds = $this->queries->get_select_array_from_db('fund','FundId','Name','Name');
+                $ret['hdr'] = $this->form_header($form_id);
+                $ret['scholarship_id'] = $this->settings_hidden('scholarship_ScholarshipId',$data->ScholarshipId,'Scholarship ID',null,null);
+                $ret['name'] = $this->settings_textfield('Scholarship Name','scholarship_Name',array('large','setting-field'),$data->Name);
+                $ret['fund'] = $this->settings_select('scholarship_FundId',$data->FundId?$data->FundId:1,'Fund',array('','Select'),$funds,null, array('large','setting-field'));
+                $ret['renewable'] = $this->settings_select('scholarship_Renewable',$data->Renewable,'Renewable',array('value' => 0,'option' => 'no'),array(0 => 'no',1 => 'yes'),null,array('large','setting-field'));
+                $ret['expiration'] = $this->settings_date('Expiration','scholarship_Expiration',array('datepicker'),$data->Expiration);
+                $ret['submit'] = $this->settings_button();
+                $ret['nonce'] = wp_nonce_field( $form_id );
+                $ret['javascript'] = $this->build_javascript($form_id);
+                $ret['ftr'] = $this->form_footer();
+                break;
         }
         return implode("\n",$ret);
     }
