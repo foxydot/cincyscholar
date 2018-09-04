@@ -25,14 +25,17 @@ if ( !function_exists('msdlab_has_shortcode') ) {
 /*
 * A useful troubleshooting function. Displays arrays in an easy to follow format in a textarea.
 */
-if ( ! function_exists( 'ts_data' ) ) :
-function ts_data($data){
-    $ret = '<textarea class="troubleshoot" cols="100" rows="20">';
-    $ret .= print_r($data,true);
-    $ret .= '</textarea>';
-    print $ret;
+if(!function_exists('ts_data')){
+    function ts_data($data){
+        $current_user = wp_get_current_user();
+        $ret = '<textarea class="troubleshoot" rows="20" cols="100">';
+        $ret .= print_r($data,true);
+        $ret .= '</textarea>';
+        if(is_admin() && $current_user->user_login == 'msd_lab'){
+            print $ret;
+        }
+    }
 }
-endif;
 /*
 * A useful troubleshooting function. Dumps variable info in an easy to follow format in a textarea.
 */
