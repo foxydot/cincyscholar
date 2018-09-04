@@ -2,7 +2,7 @@
 $tabs = '';
 $pane = array();
 if($_POST) {
-    //ts_data($_POST);
+    ts_data($_POST);
     $user_id = $_POST['Applicant_UserId_input'];
     $notifications = array(
         'nononce' => 'Student info could not be saved.',
