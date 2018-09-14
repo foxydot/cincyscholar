@@ -52,13 +52,44 @@ class MSDLAB_Queries{
      * Setting Queries
      */
 
-     public function get_all_colleges($options = array()){
-         $data['tables']['college'] = array('*');
-         $data['where'] = 'college.Publish = 1';
-         $data['order'] = 'name ASC';
-         $results = $this->get_result_set($data);
-         return $results;
-     }
+    public function get_all_colleges($options = array()){
+        $data['tables']['college'] = array('*');
+        $data['where'] = 'college.Publish = 1';
+        $data['order'] = 'name ASC';
+        $results = $this->get_result_set($data);
+        return $results;
+    }
+    public function get_all_highschools($options = array()){
+        $data['tables']['highschool'] = array('*');
+        $data['where'] = 'highschool.Publish = 1';
+        $data['order'] = 'SchoolName ASC';
+        $results = $this->get_result_set($data);
+        return $results;
+    }
+    public function get_all_highschooltypes($options = array()){
+        $data['tables']['highschooltype'] = array('*');
+        $data['order'] = 'Type ASC';
+        $results = $this->get_result_set($data);
+        return $results;
+    }
+    public function get_all_majors($options = array()){
+        $data['tables']['major'] = array('*');
+        $data['order'] = 'MajorName ASC';
+        $results = $this->get_result_set($data);
+        return $results;
+    }
+    public function get_all_scholarships($options = array()){
+        $data['tables']['scholarship'] = array('*');
+        $data['order'] = 'Name ASC';
+        $results = $this->get_result_set($data);
+        return $results;
+    }
+    public function get_all_funds($options = array()){
+        $data['tables']['fund'] = array('*');
+        $data['order'] = 'Name ASC';
+        $results = $this->get_result_set($data);
+        return $results;
+    }
 
 
     /*
@@ -101,12 +132,13 @@ class MSDLAB_Queries{
         }
     }
 
-     public function get_college($college_id){
-         $data['tables']['college'] = array('*');
-         $data['where'] = 'college.CollegeId = '.$college_id;
-         $results = $this->get_result_set($data);
-         return $results[0];
-     }
+    public function get_college($college_id){
+        $data['tables']['college'] = array('*');
+        $data['where'] = 'college.CollegeId = '.$college_id;
+        $results = $this->get_result_set($data);
+        return $results[0];
+    }
+
 
      public function get_all_contacts($college_id){
          $data['tables']['collegecontact'] = array('*');
@@ -125,6 +157,24 @@ class MSDLAB_Queries{
          return $results[0];
      }
 
+    public function get_highschool($highschool_id){
+        $data['tables']['highschool'] = array('*');
+        $data['where'] = 'highschool.HighSchoolId = '.$highschool_id;
+        $results = $this->get_result_set($data);
+        return $results[0];
+    }
+    public function get_major($major_id){
+        $data['tables']['major'] = array('*');
+        $data['where'] = 'major.MajorId = '.$major_id;
+        $results = $this->get_result_set($data);
+        return $results[0];
+    }
+    public function get_scholarship($scholarship_id){
+        $data['tables']['scholarship'] = array('*');
+        $data['where'] = 'scholarship.ScholarshipId = '.$scholarship_id;
+        $results = $this->get_result_set($data);
+        return $results[0];
+    }
 /*
  *  Form Queries
  */
@@ -141,7 +191,7 @@ class MSDLAB_Queries{
              ),$notifications
          );
          $nonce = $_POST['_wpnonce'];
-         //error_log('form_id:'.$form_id);
+         error_log('form_id:'.$form_id);
          if(wp_verify_nonce( $nonce, $form_id ) === false) {
              return new WP_Error( 'nononce', $notifications['nononce'] );
 

@@ -87,14 +87,14 @@ $fields2 = array(
 );
 $tabs = $pane = array();
 if($_POST) {
-    //ts_data($_POST);
+    ts_data($_POST);
     $this->search->javascript['collapse-btn-init'] = '
         $(".collapsable").css("display","none");
         $(".collapse-button i").removeClass("fa-compress").addClass("fa-expand");
         ';
     $results_exisit = false;
     $result = $this->queries->get_report_set($fields);
-    //ts_data($result);
+    ts_data($result);
     $submitted = $incomplete = $awarded = array();
     foreach ($result AS $k => $applicant) {
         if(!empty($this->post_vars['college_search_input'])){

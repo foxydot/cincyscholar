@@ -174,6 +174,57 @@ class MSDLAB_SettingControls{
                 $ret['javascript'] = $this->build_javascript($form_id);
                 $ret['ftr'] = $this->form_footer();
                 break;
+            case 'csf_highschool':
+                $states = $this->queries->get_select_array_from_db('state','StateId','State','State');
+                $counties = $this->queries->get_select_array_from_db('county','CountyId','County','StateId');
+                $highschooltypes = $this->queries->get_select_array_from_db('highschooltype','HighSchoolTypeId','Type');
+                $highschool_id = isset($data->HighSchoolId)?$data->HighSchoolId:$this->queries->get_next_id('highschool','HighSchoolId');
+                $ret['hdr'] = $this->form_header($form_id);
+                $ret['highschool_id'] = $this->settings_hidden('highschool_HighSchoolId',$data->HighSchoolId,'HighSchool ID',null,null);
+                $ret['name'] = $this->settings_textfield('HighSchool Name','highschool_SchoolName',array('large','setting-field'),$data->SchoolName);
+                $ret['hstype'] = $this->settings_select('highschool_SchoolTypeId',$data->SchoolTypeId?$data->SchoolTypeId:1,'School Type',array('','Select'),$highschooltypes,null, array('large','setting-field'));
+                $ret['firstname'] = $this->settings_textfield('Contact First Name','highschool_ContactFirstName',array('large','setting-field'),$data->ContactFirstName);
+                $ret['lastname'] = $this->settings_textfield('Contact Last Name','highschool_ContactLastName',array('large','setting-field'),$data->ContactLastName);
+                $ret['Address1'] = $this->settings_textfield('Address','highschool_Address1',array('large','setting-field'),$data->Address1);
+                $ret['Address2'] = $this->settings_textfield('Address','highschool_Address2',array('large','setting-field'),$data->Address2);
+                $ret['City'] = $this->settings_textfield('City','highschool_City',array('large','setting-field'),$data->City);
+                $ret['StateId'] = $this->settings_select('highschool_StateId',$data->StateId?$data->StateId:'OH','State',array('','Select'),$states,null, array('large','setting-field'));
+                $ret['CountyId'] = $this->settings_select('highschool_CountyId',$data->CountyId?$data->CountyId:'24','County',array('','Select'),$counties,null, array('large','setting-field'));
+                $ret['PhoneNumber'] = $this->settings_textfield('Phone Number','highschool_PhoneNumber',array('large','setting-field'),$data->PhoneNumber);
+                $ret['Email'] = $this->settings_textfield('Email','highschool_EmailAddress',array('large','setting-field'),$data->EmailAddress);
+
+                $ret['submit'] = $this->settings_button();
+                $ret['delete'] = $this->delete_button('Delete','highschool_Publish');
+                $ret['nonce'] = wp_nonce_field( $form_id );
+                $ret['javascript'] = $this->build_javascript($form_id);
+                $ret['ftr'] = $this->form_footer();
+                break;
+            case 'csf_major':
+                $programlength = array(0,1,2,3,4,5,6,7,8);
+                $major_id = isset($data->MajorId)?$data->MajorId:$this->queries->get_next_id('major','MajorId');
+                $ret['hdr'] = $this->form_header($form_id);
+                $ret['major_id'] = $this->settings_hidden('major_MajorId',$data->MajorId,'Major ID',null,null);
+                $ret['name'] = $this->settings_textfield('Major Name','major_MajorName',array('large','setting-field'),$data->MajorName);
+                $ret['programlength'] = $this->settings_select('major_ProgramLength',$data->ProgramLength?$data->ProgramLength:1,'Program Length',array('','Select'),$programlength,null, array('large','setting-field'));
+                $ret['submit'] = $this->settings_button();
+                $ret['delete'] = $this->delete_button('Delete','major_Publish');
+                $ret['nonce'] = wp_nonce_field( $form_id );
+                $ret['javascript'] = $this->build_javascript($form_id);
+                $ret['ftr'] = $this->form_footer();
+                break;
+            case 'csf_scholarship':
+                $funds = $this->queries->get_select_array_from_db('fund','FundId','Name','Name');
+                $ret['hdr'] = $this->form_header($form_id);
+                $ret['scholarship_id'] = $this->settings_hidden('scholarship_ScholarshipId',$data->ScholarshipId,'Scholarship ID',null,null);
+                $ret['name'] = $this->settings_textfield('Scholarship Name','scholarship_Name',array('large','setting-field'),$data->Name);
+                $ret['fund'] = $this->settings_select('scholarship_FundId',$data->FundId?$data->FundId:1,'Fund',array('','Select'),$funds,null, array('large','setting-field'));
+                $ret['renewable'] = $this->settings_select('scholarship_Renewable',$data->Renewable,'Renewable',array('value' => 0,'option' => 'no'),array(0 => 'no',1 => 'yes'),null,array('large','setting-field'));
+                $ret['expiration'] = $this->settings_date('Expiration','scholarship_Expiration',array('datepicker'),$data->Expiration);
+                $ret['submit'] = $this->settings_button();
+                $ret['nonce'] = wp_nonce_field( $form_id );
+                $ret['javascript'] = $this->build_javascript($form_id);
+                $ret['ftr'] = $this->form_footer();
+                break;
         }
         return implode("\n",$ret);
     }

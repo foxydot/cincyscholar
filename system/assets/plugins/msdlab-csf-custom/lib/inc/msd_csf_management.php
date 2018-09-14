@@ -67,14 +67,20 @@ if (!class_exists('MSDLab_CSF_Management')) {
 
         function settings_page(){
             add_menu_page(__('CSF Management and Reports'),__('CSF Management'), 'manage_csf', 'csf-manage', array(&$this,'management_page_content'),'dashicons-chart-area');
-            add_submenu_page('csf-manage',__('Application Reports'),__('Application Reports'),'manage_csf','csf-report', array(&$this,'report_page_content'));
-            add_submenu_page('csf-manage',__('Renewal Reports'),__('Renewal Reports'),'manage_csf','csf-renewals', array(&$this,'renewal_report_page_content'));
+            //add_submenu_page('csf-manage',__('Application Reports'),__('Application Reports'),'manage_csf','csf-report', array(&$this,'report_page_content'));
+            //add_submenu_page('csf-manage',__('Renewal Reports'),__('Renewal Reports'),'manage_csf','csf-renewals', array(&$this,'renewal_report_page_content'));
             add_submenu_page('csf-manage',__('All Students'),__('Search All Students'),'manage_csf','csf-students', array(&$this,'consolidated_search_page_content'));
             add_submenu_page(null,__('View Student'),__('View Student'),'manage_csf','student-edit', array(&$this,'single_student_record_page_content'));
             add_submenu_page('csf-manage',__('General Settings'),__('General Settings'),'manage_csf','csf-settings', array(&$this,'setting_page_content'));
             add_submenu_page('csf-manage',__('College Settings'),__('College Settings'),'manage_csf','csf-college', array(&$this,'college_page_content'));
             add_submenu_page(null,__('Edit College'),__('Edit College'),'manage_csf','college-edit', array(&$this,'college_edit_page_content'));
             add_submenu_page(null,__('Edit Contact'),__('Edit Contact'),'manage_csf','contact-edit', array(&$this,'contact_edit_page_content'));
+            add_submenu_page('csf-manage',__('HighSchool Settings'),__('HighSchool Settings'),'manage_csf','csf-highschool', array(&$this,'highschool_page_content'));
+            add_submenu_page(null,__('Edit HighSchool'),__('Edit HighSchool'),'manage_csf','highschool-edit', array(&$this,'highschool_edit_page_content'));
+            add_submenu_page('csf-manage',__('Majors Settings'),__('Major Settings'),'manage_csf','csf-major', array(&$this,'major_page_content'));
+            add_submenu_page(null,__('Edit Major'),__('Edit Major'),'manage_csf','major-edit', array(&$this,'major_edit_page_content'));
+            add_submenu_page('csf-manage',__('Scholarship Settings'),__('Scholarship Settings'),'manage_csf','csf-scholarship', array(&$this,'scholarship_page_content'));
+            add_submenu_page(null,__('Edit Scholarship'),__('Edit Scholarship'),'manage_csf','scholarship-edit', array(&$this,'scholarship_edit_page_content'));
             //match below
         }
 
@@ -84,12 +90,15 @@ if (!class_exists('MSDLab_CSF_Management')) {
             print '<h1 class="wp-heading-inline">'.get_bloginfo('name').' Admin Tools</h1>
             <hr class="wp-header-end">';
             print '<h3>Reporting</h3>';
-            print '<a href="admin.php?page=csf-report" class="page-title-action">Application Reports</a>';
-            print '<a href="admin.php?page=csf-renewals" class="page-title-action">Renewal Reports</a>';
+            //print '<a href="admin.php?page=csf-report" class="page-title-action">Application Reports</a>';
+            //print '<a href="admin.php?page=csf-renewals" class="page-title-action">Renewal Reports</a>';
             print '<a href="admin.php?page=csf-students" class="page-title-action">Search All Students</a>';
             print '<h3>Settings</h3>';
             print '<a href="admin.php?page=csf-settings" class="page-title-action">General Settings</a>';
             print '<a href="admin.php?page=csf-college" class="page-title-action">College and Contact Settings</a>';
+            print '<a href="admin.php?page=csf-highschool" class="page-title-action">High School Settings</a>';
+            print '<a href="admin.php?page=csf-major" class="page-title-action">Major Settings</a>';
+            print '<a href="admin.php?page=csf-scholarship" class="page-title-action">Scholarship Settings</a>';
         }
 
         function setting_page_content(){
@@ -127,6 +136,32 @@ if (!class_exists('MSDLab_CSF_Management')) {
 
         function contact_edit_page_content(){
             include_once(plugin_dir_path(__FILE__).'/admin-part/contact_edit_page_content.php');
+
+        }
+        function highschool_page_content(){
+            include_once(plugin_dir_path(__FILE__).'/admin-part/highschool_page_content.php');
+
+        }
+
+        function highschool_edit_page_content(){
+            include_once(plugin_dir_path(__FILE__).'/admin-part/highschool_edit_page_content.php');
+
+        }
+
+        function major_page_content(){
+            include_once(plugin_dir_path(__FILE__).'/admin-part/major_page_content.php');
+
+        }
+        function major_edit_page_content(){
+            include_once(plugin_dir_path(__FILE__).'/admin-part/major_edit_page_content.php');
+
+        }
+        function scholarship_page_content(){
+            include_once(plugin_dir_path(__FILE__).'/admin-part/scholarship_page_content.php');
+
+        }
+        function scholarship_edit_page_content(){
+            include_once(plugin_dir_path(__FILE__).'/admin-part/scholarship_edit_page_content.php');
 
         }
 
