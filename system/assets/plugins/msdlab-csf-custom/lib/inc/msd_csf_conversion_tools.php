@@ -39,6 +39,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_update_applicantscholarship_table', array(&$this,'update_applicantscholarship_table') );
             add_action( 'wp_ajax_modify_amount_columns', array(&$this,'modify_amount_columns') );
             add_action( 'wp_ajax_repair_renewals_with_no_user_id', array(&$this,'repair_renewals_with_no_user_id') );
+            add_action( 'wp_ajax_clean_text_fields', array(&$this,'clean_text_fields') );
 
 
             add_filter('send_password_change_email',array(&$this,'return_false'));
@@ -654,6 +655,28 @@ beth@cincinnatischolarshipfoundation.org<br/>
             }
         }
 
+        function clean_text_fields(){
+            global $wpdb;
+            $sql = 'SELECT a.ApplicantId, a.FirstName, a.LastName, a.HardshipNote, a.Activities FROM applicant a;';
+            $results = $wpdb->get_results($sql);
+            foreach ($results AS $r){
+                $hardship = $this->strip_ms_word_crud($r->HardshipNote);
+                $activities = $this->strip_ms_word_crud($r->Activities);
+                $data = array(
+                    'HardshipNote' => $hardship,
+                    'Activities' => $activities,
+                );
+                if($wpdb->update('applicant', $data, array('ApplicantId' => $r->ApplicantId), array('%s','%s'), array( '%d' ) )){
+                    print $r->ApplicantId.' updated. <br>';
+                }
+            }
+        }
+
+        function strip_ms_word_crud($str){
+            $clean = preg_replace("/<([a-z][a-z0-9]*)[^>]*?(\/?)>/i",'<$1$2>', strip_tags($str,'<p><br>'));
+            return $clean;
+        }
+
         //utility
         function settings_page()
         {
@@ -899,7 +922,17 @@ beth@cincinnatischolarshipfoundation.org<br/>
                             console.log(response);
                         });
                     });
+                    $('.clean_text_fields').click(function(){
+                        var data = {
+                            action: 'clean_text_fields',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
+
             </script>
             <div class="wrap">
                 <h2>Data Conversion Tools</h2>
@@ -952,11 +985,14 @@ beth@cincinnatischolarshipfoundation.org<br/>
                     <dd><button class="modify_amount_columns">Go</button></dd>
                     <dt>repair_renewals_with_no_user_id:</dt>
                     <dd><button class="repair_renewals_with_no_user_id">Go</button></dd>
+                    <dt>Clean up text fields:</dt>
+                    <dd><button class="clean_text_fields">Go</button></dd>
                 </dl>
                 <div class="response1"></div>
             </div>
             <?php
         }
+
 
         /**
          * Generate and return a random characters string

@@ -204,11 +204,14 @@ class MSDLAB_Queries{
                 $field = $karray[1];
                 $key = $karray[2];
                 $tables[] = $table;
+                 if(is_string($v)){
+                     $v = esc_sql(trim($v));
+                 }
                 if($key == 'input'){
                     unset($key);
-                    $data[$table][] = $table.'.'.$field.' = "'.trim($v).'"';
+                    $data[$table][] = $table.'.'.$field.' = "'.$v.'"';
                 } else {
-                    $data[$table][$key][] = $table.'.'.$field.' = "'.trim($v).'"';
+                    $data[$table][$key][] = $table.'.'.$field.' = "'.$v.'"';
                 }
              }
          }
