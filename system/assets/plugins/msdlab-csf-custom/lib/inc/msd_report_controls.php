@@ -144,10 +144,10 @@ class MSDLab_ReportControls{
                 $ret['educational_attainment'] = $this->select_search('Year In School','educational_attainment',$educational_attainment,array('query-filter','col-sm-6','col-md-4'));
                 $ret['thankyounote_search'] = $this->select_search('Thank You','thankyounote_search',$bool_options,array('query-filter','col-sm-6','col-md-4'));
                 $ret['signed_search'] = $this->select_search('Papers Signed','signed_search',$bool_options,array('query-filter','col-sm-6','col-md-4'));
-                $ret['gpa1_search'] = $this->number_range_search('GPA1:','','gpa1_range_search',array('query-filter','col-sm-6','col-md-3'),0.00,5.00,0.1);
-                $ret['gpa2_search'] = $this->number_range_search('GPA2:','','gpa2_range_search',array('query-filter','col-sm-6','col-md-3'),0.00,5.00,0.1);
-                $ret['gpa3_search'] = $this->number_range_search('GPA3:','','gpa3_range_search',array('query-filter','col-sm-6','col-md-3'),0.00,5.00,0.1);
-                $ret['gpac_search'] = $this->number_range_search('GPAC:','','gpac_range_search',array('query-filter','col-sm-6','col-md-3'),0.00,5.00,0.1);
+                $ret['gpa1_search'] = $this->number_range_search('GPA1:','','gpa1_range_search',array('query-filter','col-sm-6','col-md-3'),0.00,100.00,0.1);
+                $ret['gpa2_search'] = $this->number_range_search('GPA2:','','gpa2_range_search',array('query-filter','col-sm-6','col-md-3'),0.00,100.00,0.1);
+                $ret['gpa3_search'] = $this->number_range_search('GPA3:','','gpa3_range_search',array('query-filter','col-sm-6','col-md-3'),0.00,100.00,0.1);
+                $ret['gpac_search'] = $this->number_range_search('GPAC:','','gpac_range_search',array('query-filter','col-sm-6','col-md-3'),0.00,100.00,0.1);
 
                 $ret[] = '</div>';
                 $ret[] = '<div class="row application_info">';
@@ -162,7 +162,7 @@ class MSDLab_ReportControls{
                 $ret['highschool_search'] = $this->select_search('High School: ','highschool_search', $highschools,array('query-filter','select-search','col-sm-6','col-md-4'));
                 $ret['highschool_type_search'] = $this->select_search('High School Type: ','highschooltype_search', $highschooltypes,array('query-filter','select-search','col-sm-6','col-md-4'));
                 $ret['gradyear_search'] = $this->number_range_search('Graduation Between:','','gradyear_range_search',array('query-filter','col-sm-6','col-md-4'),date('Y')-20,date('Y'),1);
-                $ret['gpa_search'] = $this->number_range_search('HS GPA Between:','','hs_gpa_range_search',array('query-filter','col-sm-6','col-md-4'),0.00,5.00,0.1);
+                $ret['gpa_search'] = $this->number_range_search('HS GPA Between:','','hs_gpa_range_search',array('query-filter','col-sm-6','col-md-4'),0.00,100.00,0.1);
 
                 //TODO: replace with drop down search and parents alive for next year.
                 $ret['search_by_employer'] = $this->search_box('Employer:','','employer_search',array('query-filter','search-box','col-sm-6','col-md-4')); //this is handled AFTER the query

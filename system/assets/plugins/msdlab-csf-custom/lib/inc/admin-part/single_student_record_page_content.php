@@ -35,7 +35,7 @@ if($student = $this->queries->get_student_data($applicant_id)) {
         ts_data($student); //display errors
     } else {
 
-        //ts_data($student); //display errors
+        ts_data($student); //display errors
         $tabs = $pane = array();
         if($student){
             $form_id = 'single_student';
