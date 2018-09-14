@@ -206,9 +206,9 @@ class MSDLAB_Queries{
                 $tables[] = $table;
                 if($key == 'input'){
                     unset($key);
-                    $data[$table][] = $table.'.'.$field.' = "'.trim($v).'"';
+                    $data[$table][] = $table.'.'.$field.' = "'.esc_sql(trim($v)).'"';
                 } else {
-                    $data[$table][$key][] = $table.'.'.$field.' = "'.trim($v).'"';
+                    $data[$table][$key][] = $table.'.'.$field.' = "'.esc_sql(trim($v)).'"';
                 }
              }
          }
