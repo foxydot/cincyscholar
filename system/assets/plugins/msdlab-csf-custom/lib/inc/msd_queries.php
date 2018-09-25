@@ -482,12 +482,12 @@ class MSDLAB_Queries{
             }
         }
         if(isset($this->post_vars['gpa_range_search_input_start']) || isset($this->post_vars['gpa_range_search_input_end'])){
-            if($this->post_vars['gpa_range_search_input_start']!=0 || $this->post_vars['gpa_range_search_input_end']!=5){
+            if($this->post_vars['gpa_range_search_input_start']!=0 || $this->post_vars['gpa_range_search_input_end']!=100){
                 $data['where'] .= ' AND (applicant.HighSchoolGPA >= '.$this->post_vars['gpa_range_search_input_start'].' AND applicant.HighSchoolGPA <= '.$this->post_vars['gpa_range_search_input_end'].')';
             }
         }
         if(isset($this->post_vars['hs_gpa_range_search_input_start']) || isset($this->post_vars['hs_gpa_range_search_input_end'])) {
-            if ($this->post_vars['hs_gpa_range_search_input_start'] != 0 || $this->post_vars['hs_gpa_range_search_input_end'] != 5) {
+            if ($this->post_vars['hs_gpa_range_search_input_start'] != 0 || $this->post_vars['hs_gpa_range_search_input_end'] != 100) {
                 $data['where'] .= ' AND (applicant.HighSchoolGPA >= ' . $this->post_vars['hs_gpa_range_search_input_start'] . ' AND applicant.HighSchoolGPA <= ' . $this->post_vars['hs_gpa_range_search_input_end'] . ')';
             }
         }
@@ -528,16 +528,16 @@ class MSDLAB_Queries{
             if(is_numeric($this->post_vars['signed_search_input'])){
                 $data['where'] .= ' AND applicantscholarship.Signed = ' . $this->post_vars['signed_search_input'];
             }
-            if ($this->post_vars['gpa1_range_search_input_start'] != 0 || $this->post_vars['gpa1_range_search_input_end'] != 5) {
+            if ($this->post_vars['gpa1_range_search_input_start'] != 0 || $this->post_vars['gpa1_range_search_input_end'] != 100) {
                 $data['where'] .= ' AND (applicantscholarship.GPA1 >= ' . $this->post_vars['gpa1_range_search_input_start'] . ' AND applicantscholarship.GPA1 <= ' . $this->post_vars['gpa1_range_search_input_end'] . ')';
             }
-            if ($this->post_vars['gpa2_range_search_input_start'] != 0 || $this->post_vars['gpa2_range_search_input_end'] != 5) {
+            if ($this->post_vars['gpa2_range_search_input_start'] != 0 || $this->post_vars['gpa2_range_search_input_end'] != 100) {
                 $data['where'] .= ' AND (applicantscholarship.GPA2 >= ' . $this->post_vars['gpa2_range_search_input_start'] . ' AND applicantscholarship.GPA2 <= ' . $this->post_vars['gpa2_range_search_input_end'] . ')';
             }
-            if ($this->post_vars['gpa3_range_search_input_start'] != 0 || $this->post_vars['gpa3_range_search_input_end'] != 5) {
+            if ($this->post_vars['gpa3_range_search_input_start'] != 0 || $this->post_vars['gpa3_range_search_input_end'] != 100) {
                 $data['where'] .= ' AND (applicantscholarship.GPA3 >= ' . $this->post_vars['gpa3_range_search_input_start'] . ' AND applicantscholarship.GPA3 <= ' . $this->post_vars['gpa3_range_search_input_end'] . ')';
             }
-            if ($this->post_vars['gpac_range_search_input_start'] != 0 || $this->post_vars['gpac_range_search_input_end'] != 5) {
+            if ($this->post_vars['gpac_range_search_input_start'] != 0 || $this->post_vars['gpac_range_search_input_end'] != 100) {
                 $data['where'] .= ' AND (applicantscholarship.GPAC >= ' . $this->post_vars['gpac_range_search_input_start'] . ' AND applicantscholarship.GPAC <= ' . $this->post_vars['gpac_range_search_input_end'] . ')';
             }
         }
@@ -800,7 +800,7 @@ class MSDLAB_Queries{
         }
 
 
-        if($this->post_vars['gpac_range_search_input_start']!=0 || $this->post_vars['gpac_range_search_input_end']!=5){
+        if($this->post_vars['gpac_range_search_input_start']!=0 || $this->post_vars['gpac_range_search_input_end']!=100){
             $data['where'] .= ' AND (renewal.CurrentCumulativeGPA >= '.$this->post_vars['gpac_range_search_input_start'].' AND renewal.CurrentCumulativeGPA <= '.$this->post_vars['gpac_range_search_input_end'].')';
         }
         if(!empty($this->post_vars['major_search_input'])){
@@ -873,16 +873,16 @@ class MSDLAB_Queries{
             if(is_numeric($this->post_vars['signed_search_input'])){
                 $data['where'] .= ' AND applicantscholarship.Signed = ' . $this->post_vars['signed_search_input'];
             }
-            if ($this->post_vars['gpa1_range_search_input_start'] != 0 || $this->post_vars['gpa1_range_search_input_end'] != 5) {
+            if ($this->post_vars['gpa1_range_search_input_start'] != 0 || $this->post_vars['gpa1_range_search_input_end'] != 100) {
                 $data['where'] .= ' AND (applicantscholarship.GPA1 >= ' . $this->post_vars['gpa1_range_search_input_start'] . ' AND applicantscholarship.GPA1 <= ' . $this->post_vars['gpa1_range_search_input_end'] . ')';
             }
-            if ($this->post_vars['gpa2_range_search_input_start'] != 0 || $this->post_vars['gpa2_range_search_input_end'] != 5) {
+            if ($this->post_vars['gpa2_range_search_input_start'] != 0 || $this->post_vars['gpa2_range_search_input_end'] != 100) {
                 $data['where'] .= ' AND (applicantscholarship.GPA2 >= ' . $this->post_vars['gpa2_range_search_input_start'] . ' AND applicantscholarship.GPA2 <= ' . $this->post_vars['gpa2_range_search_input_end'] . ')';
             }
-            if ($this->post_vars['gpa3_range_search_input_start'] != 0 || $this->post_vars['gpa3_range_search_input_end'] != 5) {
+            if ($this->post_vars['gpa3_range_search_input_start'] != 0 || $this->post_vars['gpa3_range_search_input_end'] != 100) {
                 $data['where'] .= ' AND (applicantscholarship.GPA3 >= ' . $this->post_vars['gpa3_range_search_input_start'] . ' AND applicantscholarship.GPA3 <= ' . $this->post_vars['gpa3_range_search_input_end'] . ')';
             }
-            if ($this->post_vars['gpac_range_search_input_start'] != 0 || $this->post_vars['gpac_range_search_input_end'] != 5) {
+            if ($this->post_vars['gpac_range_search_input_start'] != 0 || $this->post_vars['gpac_range_search_input_end'] != 100) {
                 $data['where'] .= ' AND (applicantscholarship.GPAC >= ' . $this->post_vars['gpac_range_search_input_start'] . ' AND applicantscholarship.GPAC <= ' . $this->post_vars['gpac_range_search_input_end'] . ')';
             }
         }
