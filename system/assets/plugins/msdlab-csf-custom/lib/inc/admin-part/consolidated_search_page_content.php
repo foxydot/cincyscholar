@@ -87,7 +87,9 @@ $fields2 = array(
 );
 $tabs = $pane = array();
 if($_POST) {
-    ts_data($_POST);
+    //ts_data($_POST);
+    $application_start_date = get_option('csf_settings_start_date');
+    $application_end_date = get_option('csf_settings_end_date');
     $this->search->javascript['collapse-btn-init'] = '
         $(".collapsable").css("display","none");
         $(".collapse-button i").removeClass("fa-compress").addClass("fa-expand");
@@ -130,11 +132,11 @@ if($_POST) {
         }
     }
     if(count($awarded) > 0 || count($submitted) > 0 || count($incomplete) > 0){$results_exisit = true;}
+
     $result = $this->queries->get_renewal_report_set($fields2);
+    ts_data($result);
     $renewals = array();
     foreach ($result AS $k => $renewal) {
-        //ts_data($renewal);
-
         if(!empty($this->post_vars['college_search_input'])){
             if($renewal->CollegeId != $_POST['college_search_input']){
                 continue;
@@ -154,7 +156,7 @@ if($_POST) {
                 continue;
             }
         }
-        if ($renewal->ScholarshipId > 0) {
+        if ($renewal->ScholarshipId > 0  && strtotime($renewal->DateAwarded) > strtotime($application_start_date)) {
             //error_log('is awardee');
             $awarded[] = $applicant;
         } else {
@@ -176,6 +178,7 @@ if($_POST) {
   </ul>';
         if(count($awarded)>0){
             $pane['awarded'] = '<div role="tabpanel" class="tab-pane active" id="awarded">
+                            <div class="result-count">'.count($awarded).' Results Found</div>
                             ' . implode("\n\r",$this->report->print_table('application_awarded',$fields,$awarded,$info,$class,false)) .'
                         </div>';
         } else {
@@ -185,6 +188,7 @@ if($_POST) {
         }
         if(count($submitted)>0){
             $pane['submitted'] = '<div role="tabpanel" class="tab-pane" id="submitted">
+                            <div class="result-count">'.count($submitted).' Results Found</div>
                             ' . implode("\n\r",$this->report->print_table('application_submitted',$fields,$submitted,$info,$class,false)) .'
                         </div>';
         } else {
@@ -194,6 +198,7 @@ if($_POST) {
         }
         if(count($incomplete)>0){
             $pane['incomplete'] = '<div role="tabpanel" class="tab-pane" id="incomplete">
+                            <div class="result-count">'.count($incomplete).' Results Found</div>
                             ' . implode("\n\r",$this->report->print_table('application_incomplete',$fields,$incomplete,$info,$class,false)) .'
                         </div>';
         } else {
@@ -203,6 +208,7 @@ if($_POST) {
         }
         if(count($renewal)>0){
             $pane['renewal'] = '<div role="tabpanel" class="tab-pane" id="renewal">
+                            <div class="result-count">'.count($renewal).' Results Found</div>
                             ' . implode("\n\r",$this->report->print_table('renewal',$fields2,$renewals,$info,$class,false)) .'
                         </div>';
         } else {

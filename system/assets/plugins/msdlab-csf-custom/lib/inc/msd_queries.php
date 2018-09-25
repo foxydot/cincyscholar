@@ -242,13 +242,13 @@ class MSDLAB_Queries{
                  }
              } else {
                  $select_sql = 'SELECT * FROM ' . $table . ' WHERE ' . $where[$table] . ';';
-                 error_log('check_sql: '.$select_sql);
+                 //error_log('check_sql: '.$select_sql);
                  if ($r = $wpdb->get_row($select_sql)) {
                      $sql = 'UPDATE ' . $table . ' SET ' . implode(', ', $data[$table]) . ' WHERE ' . $where[$table] . ';';
                  } else {
                      $sql = 'INSERT INTO ' . $table . ' SET ' . implode(', ', $data[$table]) . ';';
                  }
-                 error_log('update_sql: '.$sql);
+                 //error_log('update_sql: '.$sql);
                  $result = $wpdb->get_results($sql);
                  if (is_wp_error($result)) {
                      return new WP_Error('update', '<div class="error">Error updating ' . $table . '</div>');
@@ -500,15 +500,15 @@ class MSDLAB_Queries{
             is_numeric($this->post_vars['signed_search_input']) ||
             is_numeric($this->post_vars['award_search_input']) ||
             $this->post_vars['gpa1_range_search_input_start'] != 0 ||
-            $this->post_vars['gpa1_range_search_input_end'] != 5 ||
+            $this->post_vars['gpa1_range_search_input_end'] != 100 ||
             $this->post_vars['gpa2_range_search_input_start'] != 0 ||
-            $this->post_vars['gpa2_range_search_input_end'] != 5 ||
+            $this->post_vars['gpa2_range_search_input_end'] != 100 ||
             $this->post_vars['gpa3_range_search_input_start'] != 0 ||
-            $this->post_vars['gpa3_range_search_input_end'] != 5 ||
+            $this->post_vars['gpa3_range_search_input_end'] != 100 ||
             $this->post_vars['gpac_range_search_input_start'] != 0 ||
-            $this->post_vars['gpac_range_search_input_end'] != 5
+            $this->post_vars['gpac_range_search_input_end'] != 100
         ){
-            $data['tables']['applicantscholarship'] = array('AmountAwarded');
+            $data['tables']['applicantscholarship'] = array('AmountAwarded','DateAwarded');
             $data['where'] .= ' AND applicantscholarship.ApplicantId = applicant.ApplicantId';
 
             if(!empty($this->post_vars['award_date_search_input_start']) || !empty($this->post_vars['award_date_search_input_end'])) {
@@ -661,7 +661,7 @@ class MSDLAB_Queries{
                 $results[$k]->need[] = $nr;
             }
         }
-        error_log(json_encode($results));
+        //error_log(json_encode($results));
         return $results;
     }
 
@@ -845,15 +845,15 @@ class MSDLAB_Queries{
             is_numeric($this->post_vars['signed_search_input']) ||
             is_numeric($this->post_vars['award_search_input']) ||
             $this->post_vars['gpa1_range_search_input_start'] != 0 ||
-            $this->post_vars['gpa1_range_search_input_end'] != 5 ||
+            $this->post_vars['gpa1_range_search_input_end'] != 100 ||
             $this->post_vars['gpa2_range_search_input_start'] != 0 ||
-            $this->post_vars['gpa2_range_search_input_end'] != 5 ||
+            $this->post_vars['gpa2_range_search_input_end'] != 100 ||
             $this->post_vars['gpa3_range_search_input_start'] != 0 ||
-            $this->post_vars['gpa3_range_search_input_end'] != 5 ||
+            $this->post_vars['gpa3_range_search_input_end'] != 100 ||
             $this->post_vars['gpac_range_search_input_start'] != 0 ||
-            $this->post_vars['gpac_range_search_input_end'] != 5
+            $this->post_vars['gpac_range_search_input_end'] != 100
         ){
-            $data['tables']['applicantscholarship'] = array('AmountAwarded');
+            $data['tables']['applicantscholarship'] = array('AmountAwarded','DateAwarded');
             $data['where'] .= ' AND applicantscholarship.ApplicantId = renewal.ApplicantId';
 
             if(!empty($this->post_vars['award_date_search_input_start']) || !empty($this->post_vars['award_date_search_input_end'])) {
