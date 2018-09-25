@@ -40,6 +40,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_modify_amount_columns', array(&$this,'modify_amount_columns') );
             add_action( 'wp_ajax_repair_renewals_with_no_user_id', array(&$this,'repair_renewals_with_no_user_id') );
             add_action( 'wp_ajax_clean_text_fields', array(&$this,'clean_text_fields') );
+            add_action( 'wp_ajax_add_other_school_to_renewals', array(&$this,'add_other_school_to_renewals') );
 
 
             add_filter('send_password_change_email',array(&$this,'return_false'));
@@ -677,6 +678,15 @@ beth@cincinnatischolarshipfoundation.org<br/>
             return $clean;
         }
 
+        function add_other_school_to_renewals(){
+            global $wpdb;
+            $sql = "ALTER TABLE renewal
+  ADD `OtherSchool` varchar(255) NULL;";
+            if($wpdb->query($sql)) {
+                print "renewal table updated!";
+            }
+        }
+
         //utility
         function settings_page()
         {
@@ -931,6 +941,15 @@ beth@cincinnatischolarshipfoundation.org<br/>
                             console.log(response);
                         });
                     });
+                    $('.add_other_school_to_renewals').click(function(){
+                        var data = {
+                            action: 'add_other_school_to_renewals',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
 
             </script>
@@ -987,6 +1006,8 @@ beth@cincinnatischolarshipfoundation.org<br/>
                     <dd><button class="repair_renewals_with_no_user_id">Go</button></dd>
                     <dt>Clean up text fields:</dt>
                     <dd><button class="clean_text_fields">Go</button></dd>
+                    <dt>add_other_school_to_renewals:</dt>
+                    <dd><button class="add_other_school_to_renewals">Go</button></dd>
                 </dl>
                 <div class="response1"></div>
             </div>

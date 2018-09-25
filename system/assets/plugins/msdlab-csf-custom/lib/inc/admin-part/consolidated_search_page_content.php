@@ -120,7 +120,7 @@ if($_POST) {
         }
 
         //error_log('CPS Search Gate passed');
-        if ($applicant->ScholarshipId > 0) {
+        if (($applicant->ScholarshipId > 0) && (strtotime($renewal->DateAwarded) > strtotime($application_start_date))) {
             //error_log('is awardee');
             $awarded[] = $applicant;
         } elseif ($applicant->status == 2) {
@@ -156,9 +156,9 @@ if($_POST) {
                 continue;
             }
         }
-        if ($renewal->ScholarshipId > 0  && strtotime($renewal->DateAwarded) > strtotime($application_start_date)) {
-            //error_log('is awardee');
-            $awarded[] = $applicant;
+        if (($renewal->ScholarshipId > 0 ) && (strtotime($renewal->DateAwarded) > strtotime($application_start_date))) {
+            error_log('is awardee');
+            $awarded[] = $renewal;
         } else {
             $renewals[] = $renewal;
         }
