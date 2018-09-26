@@ -220,7 +220,7 @@ if($_POST) {
         $tabs = '<div class="notice bg-info text-info">No results</div>';
     }
 }
-print '<h2>Scholarship Application Reports</h2>';
+print '<h2>Payment Manager</h2>';
 $this->search->javascript['collapse-btn'] = '
         $(".collapse-button").click(function(){
             $(this).find("i").toggleClass("fa-compress").toggleClass("fa-expand");

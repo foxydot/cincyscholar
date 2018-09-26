@@ -521,7 +521,10 @@ class MSDLAB_Queries{
                     $where[] = 'UNIX_TIMESTAMP(applicantscholarship.DateAwarded) < '.strtotime($this->post_vars['award_date_search_input_end']);
                 }
                 $data['where'] .= ' AND '.implode(' AND ',$where);
+            } else {
+                $data['where'] .= ' AND UNIX_TIMESTAMP(applicantscholarship.DateAwarded) > '.strtotime(get_option('csf_settings_start_date')); //replace with dates from settings
             }
+
             if(is_numeric($this->post_vars['thankyounote_search_input'])){
                 $data['where'] .= ' AND applicantscholarship.ThankYou = ' . $this->post_vars['thankyounote_search_input'];
             }
@@ -866,6 +869,8 @@ class MSDLAB_Queries{
                     $where[] = 'UNIX_TIMESTAMP(applicantscholarship.DateAwarded) < '.strtotime($this->post_vars['award_date_search_input_end']);
                 }
                 $data['where'] .= ' AND '.implode(' AND ',$where);
+            } else {
+                $data['where'] .= ' AND UNIX_TIMESTAMP(applicantscholarship.DateAwarded) > '.strtotime(get_option('csf_settings_start_date')); //replace with dates from settings
             }
             if(is_numeric($this->post_vars['thankyounote_search_input'])){
                 $data['where'] .= ' AND applicantscholarship.ThankYou = ' . $this->post_vars['thankyounote_search_input'];
