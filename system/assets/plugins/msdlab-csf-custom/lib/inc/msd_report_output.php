@@ -59,7 +59,7 @@ class MSDLAB_Report_Output{
         $this->educationalattainment_array = $this->queries->get_select_array_from_db('EducationalAttainment', 'EducationalAttainmentId', 'EducationalAttainment');
         $this->highschool_array = $this->queries->get_select_array_from_db('HighSchool', 'HighSchoolId', 'SchoolName','SchoolName',1);
         $this->highschool_type_array = $this->queries->get_select_array_from_db('HighSchoolType', 'HighSchoolTypeId', 'Description','HighSchoolTypeId');
-        $this->scholarship_array = $this->queries->get_select_array_from_db('scholarship', 'ScholarshipId', 'Name','Name');
+        $this->scholarship_array = $this->queries->get_select_array_from_db('scholarship', 'ScholarshipId', 'Name','Name',1);
         for ($yr = date("Y")-18; $yr <= date("Y")+2; $yr++) {
             $this->gradyr_array[$yr.'-01-01'] = $yr;
         }
@@ -165,7 +165,8 @@ class MSDLAB_Report_Output{
             foreach ($fields as $key => $value) {
                 switch ($value){
                     case 'UserId':
-                        $printval = '<a href="?page=student-edit&user_id='.$user->{$value}.'" class="button" target="_blank">View/Edit</a>';
+                        $printval = '<strong>'.$user->{$value}.'</strong><br />
+                        <a href="?page=student-edit&user_id='.$user->{$value}.'" class="button" target="_blank">View/Edit</a>';
                         break;
                     case 'ApplicantId':
                         $printval = '<a href="'.get_permalink($portal_page).'?applicant_id='.$user->{$value}.'&renewal_id='.$user->RenewalId.'" target="_blank">'.$user->{$value}.'</a>';

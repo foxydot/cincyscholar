@@ -74,12 +74,14 @@ class MSDLAB_Queries{
     }
     public function get_all_majors($options = array()){
         $data['tables']['major'] = array('*');
+        $data['where'] = 'major.Publish = 1';
         $data['order'] = 'MajorName ASC';
         $results = $this->get_result_set($data);
         return $results;
     }
     public function get_all_scholarships($options = array()){
         $data['tables']['scholarship'] = array('*');
+        $data['where'] = 'scholarship.Publish = 1';
         $data['order'] = 'Name ASC';
         $results = $this->get_result_set($data);
         return $results;

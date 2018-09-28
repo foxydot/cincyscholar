@@ -45,6 +45,7 @@ if($student = $this->queries->get_student_data($applicant_id)) {
     <li role="presentation"><a href="#disbursement" aria-controls="disbursement" role="tab" data-toggle="tab">Disbursement</a></li>
     <li role="presentation"><a href="#application" aria-controls="application" role="tab" data-toggle="tab">Application</a></li>
     <li role="presentation"><a href="#signatures" aria-controls="signatures" role="tab" data-toggle="tab">Signatures</a></li>
+    <li role="presentation"><a href="?page=student-recommend&user_id='.$user_id.'">Recommend</a></li>
   </ul>';
 
             $pane['student'] = '<div role="tabpanel" class="tab-pane active" id="student">

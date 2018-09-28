@@ -221,6 +221,7 @@ class MSDLAB_SettingControls{
                 $ret['renewable'] = $this->settings_select('scholarship_Renewable',$data->Renewable,'Renewable',array('value' => 0,'option' => 'no'),array(0 => 'no',1 => 'yes'),null,array('large','setting-field'));
                 $ret['expiration'] = $this->settings_date('Expiration','scholarship_Expiration',array('datepicker'),$data->Expiration);
                 $ret['submit'] = $this->settings_button();
+                $ret['delete'] = $this->delete_button('Delete','scholarship_Publish');
                 $ret['nonce'] = wp_nonce_field( $form_id );
                 $ret['javascript'] = $this->build_javascript($form_id);
                 $ret['ftr'] = $this->form_footer();

@@ -70,8 +70,8 @@ if (!class_exists('MSDLab_CSF_Management')) {
             //add_submenu_page('csf-manage',__('Application Reports'),__('Application Reports'),'manage_csf','csf-report', array(&$this,'report_page_content'));
             //add_submenu_page('csf-manage',__('Renewal Reports'),__('Renewal Reports'),'manage_csf','csf-renewals', array(&$this,'renewal_report_page_content'));
             add_submenu_page('csf-manage',__('All Students'),__('Search All Students'),'manage_csf','csf-students', array(&$this,'consolidated_search_page_content'));
-            add_submenu_page('csf-manage',__('Payment Management'),__('Payment Management'),'manage_csf','csf-payments', array(&$this,'payment_management_page_content'));
             add_submenu_page(null,__('View Student'),__('View Student'),'manage_csf','student-edit', array(&$this,'single_student_record_page_content'));
+            add_submenu_page(null,__('Recommend Student'),__('Recommend Student'),'manage_csf','student-recommend', array(&$this,'single_student_recommend_page_content'));
             add_submenu_page('csf-manage',__('General Settings'),__('General Settings'),'manage_csf','csf-settings', array(&$this,'setting_page_content'));
             add_submenu_page('csf-manage',__('College Settings'),__('College Settings'),'manage_csf','csf-college', array(&$this,'college_page_content'));
             add_submenu_page(null,__('Edit College'),__('Edit College'),'manage_csf','college-edit', array(&$this,'college_edit_page_content'));
@@ -94,8 +94,6 @@ if (!class_exists('MSDLab_CSF_Management')) {
             //print '<a href="admin.php?page=csf-report" class="page-title-action">Application Reports</a>';
             //print '<a href="admin.php?page=csf-renewals" class="page-title-action">Renewal Reports</a>';
             print '<a href="admin.php?page=csf-students" class="page-title-action">Search All Students</a>';
-            print '<h3>Tools</h3>';
-            print '<a href="admin.php?page=csf-payments" class="page-title-action">Payment Management</a>';
             print '<h3>Settings</h3>';
             print '<a href="admin.php?page=csf-settings" class="page-title-action">General Settings</a>';
             print '<a href="admin.php?page=csf-college" class="page-title-action">College and Contact Settings</a>';
@@ -126,19 +124,17 @@ if (!class_exists('MSDLab_CSF_Management')) {
         function single_student_record_page_content(){
             include_once(plugin_dir_path(__FILE__).'/admin-part/single_student_record_page_content.php');
         }
-        function payment_management_page_content(){
-            include_once(plugin_dir_path(__FILE__).'/admin-part/payment_management_page_content.php');
+        function single_student_recomend_page_content(){
+            include_once(plugin_dir_path(__FILE__).'/admin-part/single_student_recommend_page_content.php');
         }
         function college_page_content(){
             include_once(plugin_dir_path(__FILE__).'/admin-part/college_page_content.php');
 
         }
-
         function college_edit_page_content(){
             include_once(plugin_dir_path(__FILE__).'/admin-part/college_edit_page_content.php');
 
         }
-
         function contact_edit_page_content(){
             include_once(plugin_dir_path(__FILE__).'/admin-part/contact_edit_page_content.php');
 

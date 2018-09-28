@@ -41,6 +41,8 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_repair_renewals_with_no_user_id', array(&$this,'repair_renewals_with_no_user_id') );
             add_action( 'wp_ajax_clean_text_fields', array(&$this,'clean_text_fields') );
             add_action( 'wp_ajax_add_other_school_to_renewals', array(&$this,'add_other_school_to_renewals') );
+            add_action( 'wp_ajax_make_scholarships_deleteable', array(&$this,'make_scholarships_deleteable') );
+            add_action( 'wp_ajax_recommend', array(&$this,'recommend') );
 
 
             add_filter('send_password_change_email',array(&$this,'return_false'));
@@ -687,6 +689,37 @@ beth@cincinnatischolarshipfoundation.org<br/>
             }
         }
 
+        function make_scholarships_deleteable(){
+            global $wpdb;
+            $tables = array('scholarship');
+            foreach ($tables AS $t) {
+                $sql = "ALTER TABLE $t ADD `Publish` tinyint(1) unsigned zerofill NOT NULL;";
+                if ($wpdb->query($sql)) {
+                    print $t." table updated!";
+                }
+                $sql = "UPDATE $t SET `Publish` = 1 WHERE `Publish` != 1";
+                if ($wpdb->query($sql)) {
+                    print $t." data updated!";
+                }
+            }
+        }
+
+        function recommend(){
+            global $wpdb;
+            $sql = "CREATE TABLE `recommend` (
+  `RecommendationId` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `ApplicantId` int(11) NOT NULL,
+  `ScholarshipId` int(11) NOT NULL,
+  `RecommendationTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `Notes` text,
+  PRIMARY KEY (`RecommendationId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+            if ($wpdb->query($sql)) {
+                print "recommend table created!";
+            }
+        }
+
         //utility
         function settings_page()
         {
@@ -950,6 +983,24 @@ beth@cincinnatischolarshipfoundation.org<br/>
                             console.log(response);
                         });
                     });
+                    $('.make_scholarships_deleteable').click(function(){
+                        var data = {
+                            action: 'make_scholarships_deleteable',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
+                    $('.recommend').click(function(){
+                        var data = {
+                            action: 'recommend',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
 
             </script>
@@ -1008,6 +1059,10 @@ beth@cincinnatischolarshipfoundation.org<br/>
                     <dd><button class="clean_text_fields">Go</button></dd>
                     <dt>add_other_school_to_renewals:</dt>
                     <dd><button class="add_other_school_to_renewals">Go</button></dd>
+                    <dt>make_scholarships_deleteable:</dt>
+                    <dd><button class="make_scholarships_deleteable">Go</button></dd>
+                    <dt>recommend:</dt>
+                    <dd><button class="recommend">Go</button></dd>
                 </dl>
                 <div class="response1"></div>
             </div>
