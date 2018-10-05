@@ -8,15 +8,24 @@ if($_POST) {
         'nononce' => 'Student info could not be saved.',
         'success' => 'Student info saved!'
     );
-    $where = array(
-        'applicant' => 'UserId = ' . $_POST['Applicant_UserId_input'],
-        'renewal' => 'UserId = ' . $_POST['Renewal_UserId_input'],
-        'guardian' => 'ApplicantId = ' . $_POST['Guardian_ApplicantId_input'],
-        'agreements' => 'ApplicantId = ' . $_POST['Agreements_ApplicantId_input'],
-        'applicantscholarship' => 'ApplicantId = ' . $_POST['ApplicantScholarship_ApplicantId_input'],
-        'studentneed' => 'UserId = ' . $_POST['Applicant_UserId_input'],
-        'payment' => 'UserId = ' . $_POST['Applicant_UserId_input'],
-    );
+    $where = array();
+    $where['applicant'] = 'UserId = ' . $_POST['Applicant_UserId_input'];
+    if($_POST['Renewal_UserId_input']){
+        $where['renewal'] = 'UserId = ' . $_POST['Renewal_UserId_input'];
+    }
+    if($_POST['Guardian_ApplicantId_input']){
+        $where['guardian'] = 'ApplicantId = ' . $_POST['Guardian_ApplicantId_input'];
+    }
+    if($_POST['Agreements_ApplicantId_input']){
+        $where['agreements'] = 'ApplicantId = ' . $_POST['Agreements_ApplicantId_input'];
+    }
+    if(is_numeric($_POST['ApplicantScholarship_ApplicantId_input'])){
+        $where['applicantscholarship'] = 'ApplicantId = ' . $_POST['ApplicantScholarship_ApplicantId_input'];
+    }
+    if($_POST['Applicant_UserId_input']){
+        $where['studentneed'] = 'UserId = ' . $_POST['Applicant_UserId_input'];
+    }
+    $where['payment'] = 'UserId = ' . $_POST['Applicant_UserId_input'];
     if ($msg = $this->queries->set_data('single_student', $where, $notifications)) {
         print '<div class="updated notice notice-success is-dismissible">' . $msg . '</div>';
         unset($_POST);

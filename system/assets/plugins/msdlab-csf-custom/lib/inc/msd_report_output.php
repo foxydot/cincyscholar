@@ -367,6 +367,8 @@ class MSDLAB_Report_Output{
             $ret['Applicant_CollegeId'] = $this->form->field_select('Applicant_CollegeId', $student_data['personal']->CollegeId ? $student_data['personal']->CollegeId : null, 'College Applied To or Attending', null, $this->college_array, array('required' => 'required'), array('required', 'col-md-4', 'col-sm-12'));
             $ret['Applicant_OtherSchool'] = $this->form->field_textfield('Applicant_OtherSchool', $student_data['personal']->OtherSchool ? $student_data['personal']->OtherSchool : '', 'Name of Unlisted Institution', null, array('text' => true), array('col-md-4','col-sm-12')); //how are we handling "other" in the new DB?
             $ret['Applicant_MajorId'] = $this->form->field_select('Applicant_MajorId', $student_data['personal']->MajorId ? $student_data['personal']->MajorId : 5122, 'Intended Major', null, $this->major_array, array('required' => 'required'), array('required', 'col-md-4', 'col-sm-12'));
+
+            $ret[] = '<hr />';
         }
 
         $ret[] = '<hr />';
@@ -393,6 +395,7 @@ class MSDLAB_Report_Output{
             $ret['Applicant_Notes'] = $this->form->field_textinfo('Applicant_Notes',$student_data['personal']->Notes ? $student_data['personal']->Notes : '',"Application Notes (CSF only)",null,null,array('col-md-6'));
             $ret['Renewal_Notes'] = $this->form->field_textarea('Renewal_Notes',$student_data['renewal']->Notes ? $student_data['renewal']->Notes : '',"Renewal Notes (CSF only)",null,array('col-md-6'));
         } else {
+            $ret['Applicant_Recommendations'] = $this->form->field_checkbox_array('Applicant_Recommendations',$student_data['personal']->Recommendations,'Recommended Scholarships',$this->scholarship_array,array(), array('col-sm-12'));
             $ret['Applicant_Notes'] = $this->form->field_textarea('Applicant_Notes',$student_data['personal']->Notes ? $student_data['personal']->Notes : '',"Application Notes (CSF only)",null,array('col-md-12'));
         }
         return implode("\n",$ret);

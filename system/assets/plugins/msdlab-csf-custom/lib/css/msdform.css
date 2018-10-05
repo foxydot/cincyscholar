@@ -106,7 +106,7 @@ form.csf_report_search_form, form#csf_college {
   width: 50em;
   overflow-y: scroll; }
 
-.admin_page_student-edit input:not([type="radio"]), .admin_page_student-edit input :not([type="checkbox"]), .admin_page_student-edit select:not([type="radio"]), .admin_page_student-edit select :not([type="checkbox"]), .admin_page_student-edit textarea:not([type="radio"]), .admin_page_student-edit textarea :not([type="checkbox"]) {
+.admin_page_student-edit input:not([type="radio"]):not([type="checkbox"]), .admin_page_student-edit select, .admin_page_student-edit textarea {
   background-color: #FCFCFC;
   border: 1px solid #CCC;
   color: #333;
@@ -236,3 +236,12 @@ form.csf_report_search_form, form#csf_college {
 
 div.submit, div.delete {
   display: inline-block; }
+
+.checkbox-array-options-wrapper {
+  max-height: 12em;
+  overflow: scroll;
+  border: 1px solid #ccc;
+  padding: 0 1em; }
+  .checkbox-array-options-wrapper .inner-wrap {
+    column-count: 3;
+    column-gap: 2em; }

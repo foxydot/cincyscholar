@@ -29,6 +29,8 @@ if (count($scholarships) > 0) {
         $cell['scholarship_name'] = '<span id="scholarships-' . substr($scholarship->Name, 0, 1) . '"><stong>' . $scholarship->Name . '</stong></span><br />
 Fund: '. $funds[$scholarship->FundId] . '<br />';
         $cell['edit'] = '<a href="admin.php?page=scholarship-edit&scholarship_id=' . $scholarship->ScholarshipId . '" class="button">Edit Scholarship</a>';
+        $cell['recommends'] = '<a href="admin.php?page=scholarship-recommends&scholarship_id=' . $scholarship->ScholarshipId . '" class="button">View recommended students</a>';
+
         $row[] = implode('</td><td>', $cell);
     }
     $table = implode("</td></tr>\n<tr><td>", $row);

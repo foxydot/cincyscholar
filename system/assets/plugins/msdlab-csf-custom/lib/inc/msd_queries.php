@@ -206,6 +206,9 @@ class MSDLAB_Queries{
                 $field = $karray[1];
                 $key = $karray[2];
                 $tables[] = $table;
+                 if(is_array($v)){
+                     $v = serialize($v);
+                 }
                  if(is_string($v)){
                      $v = esc_sql(trim($v));
                  }
@@ -244,13 +247,13 @@ class MSDLAB_Queries{
                  }
              } else {
                  $select_sql = 'SELECT * FROM ' . $table . ' WHERE ' . $where[$table] . ';';
-                 //error_log('check_sql: '.$select_sql);
+                 error_log('check_sql: '.$select_sql);
                  if ($r = $wpdb->get_row($select_sql)) {
                      $sql = 'UPDATE ' . $table . ' SET ' . implode(', ', $data[$table]) . ' WHERE ' . $where[$table] . ';';
                  } else {
                      $sql = 'INSERT INTO ' . $table . ' SET ' . implode(', ', $data[$table]) . ';';
                  }
-                 //error_log('update_sql: '.$sql);
+                 error_log('update_sql: '.$sql);
                  $result = $wpdb->get_results($sql);
                  if (is_wp_error($result)) {
                      return new WP_Error('update', '<div class="error">Error updating ' . $table . '</div>');

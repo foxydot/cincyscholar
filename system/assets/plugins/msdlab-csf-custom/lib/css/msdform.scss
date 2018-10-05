@@ -137,8 +137,7 @@ input, select, textarea {
 }
 
 .admin_page_student-edit {
-  input, select, textarea {
-    &:not([type = "radio"]),:not([type = "checkbox"]) {
+  input:not([type = "radio"]):not([type = "checkbox"]), select, textarea {
     background-color: #FCFCFC;
     border: 1px solid #CCC;
     color: #333;
@@ -147,8 +146,7 @@ input, select, textarea {
     padding: 0.25em;
     width: 100%;
     margin: 0 0 2px !important;
-      min-height: 2.2em;
-  }
+    min-height: 2.2em;
   }
   span.info{
     display: block;
@@ -307,4 +305,14 @@ input, select, textarea {
 }
 div.submit,div.delete{
   display: inline-block;
+}
+.checkbox-array-options-wrapper{
+  max-height: 12em;
+  overflow: scroll;
+  border:1px solid #ccc;
+  padding: 0 1em;
+  .inner-wrap{
+    column-count: 3;
+    column-gap: 2em;
+  }
 }

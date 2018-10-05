@@ -230,17 +230,30 @@ class MSDLAB_FormControls{
         if(is_null($value)){
             $value = $_POST[$id.'_input'];
         }
+        $value = unserialize($value);
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$title.'</label>');
         //iterate through $options
         foreach ($options AS $k => $v){
-            $options_array[] = '<div class="'.$id.'_'.$k.'_wrapper checkbox-wrapper"><input id="'.$id.'_'.$k.'" name="'.$id.'" type="checkbox" value="'.$k.'"'.checked($value,$k,false).' /> '.$v.'</div>';
+            $options_array[] = '<div class="'.$id.'_'.$k.'_wrapper checkbox-wrapper"><input id="'.$id.'_'.$k.'" name="'.$id.'_input[]" type="checkbox" value="'.$k.'"'.$this->checked_in_array($value,$k,false).' /> '.$v.'</div>';
         }
-
-        $options_str = implode("\n\r",$options_array);
+        $options_str = '<div class="checkbox-array-options-wrapper"><div class="inner-wrap">'.implode("\n\r",$options_array).'</div></div>';
         $form_field = apply_filters('msdlab_csf_'.$id.'_field', $options_str );
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
+    }
+
+    public function checked_in_array($array,$current,$echo = true){
+        if(!is_array($array)){return false;}
+        if(in_array($current,$array)){
+            if($echo){
+                print "checked";
+            } else {
+                return "checked";
+            }
+        } else {
+            return false;
+        }
     }
 
     public function field_checkbox($id, $value = 0, $title = "", $validation = null, $class = array('checkbox','col-md-12')){
