@@ -227,14 +227,16 @@ class MSDLAB_FormControls{
     }
 
     public function field_checkbox_array($id, $value = null, $title = "", $options = array(), $validation = null, $class = array('checkbox')){
-        if(is_null($value)){
-            $value = $_POST[$id.'_input'];
+        $vals = array();
+        $id_array = explode('_',$id);
+        $col = $id_array[1];
+        foreach ($value AS $k => $v){
+            $vals[] = $v->{$col};
         }
-        $value = unserialize($value);
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$title.'</label>');
         //iterate through $options
         foreach ($options AS $k => $v){
-            $options_array[] = '<div class="'.$id.'_'.$k.'_wrapper checkbox-wrapper"><input id="'.$id.'_'.$k.'" name="'.$id.'_input[]" type="checkbox" value="'.$k.'"'.$this->checked_in_array($value,$k,false).' /> '.$v.'</div>';
+            $options_array[] = '<div class="'.$id.'_'.$k.'_wrapper checkbox-wrapper"><input id="'.$id.'_'.$k.'" name="'.$id.'_input[]" type="checkbox" value="'.$k.'"'.$this->checked_in_array($vals,$k,false).' /> '.$v.'</div>';
         }
         $options_str = '<div class="checkbox-array-options-wrapper"><div class="inner-wrap">'.implode("\n\r",$options_array).'</div></div>';
         $form_field = apply_filters('msdlab_csf_'.$id.'_field', $options_str );

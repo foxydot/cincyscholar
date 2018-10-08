@@ -82,6 +82,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
             add_submenu_page(null,__('Edit Major'),__('Edit Major'),'manage_csf','major-edit', array(&$this,'major_edit_page_content'));
             add_submenu_page('csf-manage',__('Scholarship Settings'),__('Scholarship Settings'),'manage_csf','csf-scholarship', array(&$this,'scholarship_page_content'));
             add_submenu_page(null,__('Edit Scholarship'),__('Edit Scholarship'),'manage_csf','scholarship-edit', array(&$this,'scholarship_edit_page_content'));
+            add_submenu_page(null,__('Scholarship Recommendations'),__('Scholarship Recommendations'),'manage_csf','scholarship-recommends', array(&$this,'scholarship_recommends_page_content'));
             //match below
         }
 
@@ -163,6 +164,10 @@ if (!class_exists('MSDLab_CSF_Management')) {
         }
         function scholarship_edit_page_content(){
             include_once(plugin_dir_path(__FILE__).'/admin-part/scholarship_edit_page_content.php');
+
+        }
+        function scholarship_recommends_page_content(){
+            include_once(plugin_dir_path(__FILE__).'/admin-part/scholarship_recommends_page_content.php');
 
         }
 

@@ -706,11 +706,17 @@ beth@cincinnatischolarshipfoundation.org<br/>
 
         function recommend(){
             global $wpdb;
-            $sql = "ALTER TABLE applicant
-  ADD `Recommendations` varchar(50) NOT NULL;";
-            //ADD CONSTRAINT `FK_Applicant_College` FOREIGN KEY (`CollegeId`) REFERENCES `college` (`CollegeId`)*/;";
-            if($wpdb->query($sql)) {
-                print "applicant table updated!";
+            $sql = "CREATE TABLE `recommend` (
+  `RecommendationId` int(11) NOT NULL AUTO_INCREMENT,
+  `UserId` int(11) NOT NULL,
+  `ApplicantId` int(11) NOT NULL,
+  `ScholarshipId` int(11) NOT NULL,
+  `RecommendationTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `Notes` text,
+  PRIMARY KEY (`RecommendationId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+            if ($wpdb->query($sql)) {
+                print "recommend table created!";
             }
         }
 

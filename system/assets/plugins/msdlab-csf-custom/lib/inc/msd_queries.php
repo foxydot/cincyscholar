@@ -206,17 +206,21 @@ class MSDLAB_Queries{
                 $field = $karray[1];
                 $key = $karray[2];
                 $tables[] = $table;
-                 if(is_array($v)){
-                     $v = serialize($v);
-                 }
+                 //if(is_array($v)){
+                     //$v = serialize($v);
+                 //}
                  if(is_string($v)){
                      $v = esc_sql(trim($v));
                  }
                 if($key == 'input'){
                     unset($key);
-                    $data[$table][] = $table.'.'.$field.' = "'.$v.'"';
+                    if(is_array($v)){
+                        $data[$table][$field] = $v;
+                    } else {
+                        $data[$table][$field] = $table . '.' . $field . ' = "' . $v . '"';
+                    }
                 } else {
-                    $data[$table][$key][] = $table.'.'.$field.' = "'.$v.'"';
+                    $data[$table][$key][$field] = $table.'.'.$field.' = "'.$v.'"';
                 }
              }
          }
@@ -231,7 +235,9 @@ class MSDLAB_Queries{
                  }
              }
              if($table == 'payment') { //handling payments with keys
-                 foreach ($data[$table] as $key => $datum){
+                 ts_data($data[$table]);
+
+                 foreach ($data[$table] as $key => $datum) {
                      $select_sql = 'SELECT paymentid FROM ' . $table . ' WHERE ' . $table . 'key = "' . $key . '" AND ' . $where[$table] . ';';
                      //error_log('check_sql: '.$select_sql);
                      if ($r = $wpdb->get_row($select_sql)) {
@@ -245,15 +251,33 @@ class MSDLAB_Queries{
                          return new WP_Error('update', '<div class="error">Error updating ' . $table . '</div>');
                      }
                  }
+             } elseif($table == 'recommend'){
+                 $scholarships = $data[$table]['ScholarshipId'];
+                 unset($data[$table]['ScholarshipId']);
+                 foreach($scholarships AS $scholarship){
+                     $select_sql = 'SELECT RecommendationId FROM ' . $table . ' WHERE ScholarshipId = '.$scholarship.' AND '.$data[$table]['UserId'].';';
+                    // error_log('check_sql: '.$select_sql);
+                     if ($r = $wpdb->get_row($select_sql)) {
+                         $sql = 'UPDATE ' . $table . ' SET ' . implode(', ', $data[$table]) . ',ScholarshipId = '.$scholarship.' WHERE RecommendationId = ' . $r->RecommendationId . ';';
+                        // error_log($sql);
+                     } else {
+                         $sql = 'INSERT INTO ' . $table . ' SET ' . implode(', ', $data[$table]) . ',ScholarshipId = '.$scholarship.';';
+                     }
+                     //error_log('update_sql: '.$sql);
+                     $result = $wpdb->get_results($sql);
+                     if (is_wp_error($result)) {
+                         return new WP_Error('update', '<div class="error">Error updating ' . $table . '</div>');
+                     }
+                 }
              } else {
                  $select_sql = 'SELECT * FROM ' . $table . ' WHERE ' . $where[$table] . ';';
-                 error_log('check_sql: '.$select_sql);
+                 //error_log('check_sql: '.$select_sql);
                  if ($r = $wpdb->get_row($select_sql)) {
                      $sql = 'UPDATE ' . $table . ' SET ' . implode(', ', $data[$table]) . ' WHERE ' . $where[$table] . ';';
                  } else {
                      $sql = 'INSERT INTO ' . $table . ' SET ' . implode(', ', $data[$table]) . ';';
                  }
-                 error_log('update_sql: '.$sql);
+                 //error_log('update_sql: '.$sql);
                  $result = $wpdb->get_results($sql);
                  if (is_wp_error($result)) {
                      return new WP_Error('update', '<div class="error">Error updating ' . $table . '</div>');
@@ -372,6 +396,92 @@ class MSDLAB_Queries{
         }
         return $array;
     }
+
+
+    /*
+     * Create a result set just for recommends to a scholarship.
+     *
+     */
+    public function get_recommended_students($fields,$scholarship_id){
+        global $wpdb;
+        $sql = 'SELECT * FROM applicant,recommend WHERE applicant.UserId = recommend.UserId AND recommend.ScholarshipId = ' . $scholarship_id .';';
+        $results = $wpdb->get_results($sql);
+        foreach ($results AS $k => $r){
+            $applicant_id = $r->ApplicantId;
+
+            $scholarship = $agreements = $financial = $docs = $status = $payment = $need = array();
+
+            //add agreements
+            $agreements['tables']['agreements'] = array('ApplicantHaveRead','ApplicantDueDate','ApplicantDocsReq','ApplicantReporting','GuardianHaveRead','GuardianDueDate','GuardianDocsReq','GuardianReporting');
+            $agreements['where'] .= ' agreements.ApplicantId = ' . $applicant_id;
+            $agreements_results = $this->get_result_set($agreements);
+            foreach($agreements_results AS $ar){
+                foreach($ar as $y => $z){
+                    $results[$k]->$y = $z;
+                }
+            }
+            //add financial
+            if($this->is_indy($applicant_id)){
+                $financial['tables']['applicantfinancial'] = array('ApplicantEmployer', 'ApplicantIncome', 'SpouseEmployer', 'SpouseIncome', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
+                $financial['where'] .= ' applicantfinancial.ApplicantId = ' . $applicant_id;
+            } else {
+                $financial['tables']['guardian'] = array('GuardianFullName1', 'GuardianEmployer1', 'GuardianFullName2', 'GuardianEmployer2', 'Homeowner', 'HomeValue', 'AmountOwedOnHome','InformationSharingAllowedByGuardian','CPSPublicSchools');
+                $financial['where'] .= ' guardian.ApplicantId = ' . $applicant_id;
+            }
+            $financial_results = $this->get_result_set($financial);
+            foreach($financial_results AS $fr){
+                foreach($fr as $y => $z){
+                    $results[$k]->$y = $z;
+                }
+            }
+            //add docs
+            $docs['tables']['attachment'] = array('AttachmentTypeId','FilePath');
+            $docs['where'] = 'ApplicantId = '.$applicant_id;
+            $documents = $this->get_result_set($docs);
+            foreach($documents AS $d){
+                $results[$k]->Documents .= '<a href="'.$d->FilePath.'">'.$this->get_attachment_type_by_id($d->AttachmentTypeId).'</a><br />';
+            }
+
+            //add status
+            $status['tables']['applicationprocess'] = array('ProcessStepId','ProcessStepBool');
+            $status['where'] = 'ApplicantId = '.$applicant_id;
+            $status_results = $this->get_result_set($status);
+            foreach($status_results AS $sr){
+                if($sr->ProcessStepBool == 1) {
+                    if($sr->ProcessStepId > $results[$k]->Status) {
+                        $results[$k]->status = $sr->ProcessStepId;
+                    }
+                }
+            }
+
+            //add scholarship info
+            $scholarship['tables']['applicantscholarship'] = array('*');
+            $scholarship['where'] = 'ApplicantId = '.$applicant_id;
+            $scholarship_results = $this->get_result_set($scholarship);
+            foreach($scholarship_results AS $sr){
+                foreach($sr as $y => $z){
+                    $results[$k]->$y = $z;
+                }
+            }
+            //add payments
+            $payment['tables']['payment'] = array('*');
+            $payment['where'] = 'ApplicantId = '.$applicant_id;
+            $payment_results = $this->get_result_set($payment);
+            foreach($payment_results AS $pr){
+                $results[$k]->payment[] = $pr;
+            }
+
+            //add need
+            $need['tables']['studentneed'] = array('*');
+            $need['where'] = 'ApplicantId = '.$applicant_id;
+            $need_results = $this->get_result_set($need);
+            foreach($need_results AS $nr){
+                $results[$k]->need[] = $nr;
+            }
+        }
+        return $results;
+    }
+
 
     /**
      * Create the full result set
@@ -986,6 +1096,9 @@ class MSDLAB_Queries{
         $personal['tables']['Applicant'] = array('*');
         $personal['where'] = 'applicant.ApplicantId = ' . $applicant_id;
 
+        $recommend['tables']['recommend'] = array('*');
+        $recommend['where'] = 'recommend.ApplicantId = ' . $applicant_id;
+
         $independence['tables']['ApplicantIndependenceQuery'] = array('*');
         $independence['where'] .= 'applicantindependencequery.ApplicantId = ' . $applicant_id;
 
@@ -1015,7 +1128,7 @@ class MSDLAB_Queries{
         $scholarship['tables']['applicantscholarship'] = array('*');
         $scholarship['where'] = 'applicantscholarship.ApplicantId = '.$applicant_id.' AND scholarship.ScholarshipId = applicantscholarship.ScholarshipId';
 
-        $queries = array('personal','independence','financial','agreements','docs','renewal','need','payment','scholarship');
+        $queries = array('personal','recommend','independence','financial','agreements','docs','renewal','need','payment','scholarship');
         foreach($queries AS $query){
             $result_array = $this->get_result_set(${$query});
             switch($query){
@@ -1024,6 +1137,7 @@ class MSDLAB_Queries{
                         $results[$query][$ra->paymentkey] = $ra;
                     }
                     break;
+                case 'recommend':
                 case 'docs':
                     $results[$query] = $result_array;
                     break;

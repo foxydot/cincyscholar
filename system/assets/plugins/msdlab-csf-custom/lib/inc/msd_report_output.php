@@ -395,7 +395,10 @@ class MSDLAB_Report_Output{
             $ret['Applicant_Notes'] = $this->form->field_textinfo('Applicant_Notes',$student_data['personal']->Notes ? $student_data['personal']->Notes : '',"Application Notes (CSF only)",null,null,array('col-md-6'));
             $ret['Renewal_Notes'] = $this->form->field_textarea('Renewal_Notes',$student_data['renewal']->Notes ? $student_data['renewal']->Notes : '',"Renewal Notes (CSF only)",null,array('col-md-6'));
         } else {
-            $ret['Applicant_Recommendations'] = $this->form->field_checkbox_array('Applicant_Recommendations',$student_data['personal']->Recommendations,'Recommended Scholarships',$this->scholarship_array,array(), array('col-sm-12'));
+            $ret['recommend_UserId'] = $this->form->field_hidden("recommend_UserId", $student_data['personal']->UserId);
+            $ret['recommend_ApplicantId'] = $this->form->field_hidden("recommend_ApplicantId", $student_data['personal']->ApplicantId);
+            $ret['recommend_RecommendationTime'] = $this->form->field_hidden("recommend_RecommendationTime", date("Y-m-d H:i:s"));
+            $ret['recommend_ScholarshipId'] = $this->form->field_checkbox_array('recommend_ScholarshipId',$student_data['recommend'],'Recommended Scholarships',$this->scholarship_array,array(), array('col-sm-12'));
             $ret['Applicant_Notes'] = $this->form->field_textarea('Applicant_Notes',$student_data['personal']->Notes ? $student_data['personal']->Notes : '',"Application Notes (CSF only)",null,array('col-md-12'));
         }
         return implode("\n",$ret);
