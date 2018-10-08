@@ -137,6 +137,7 @@ if(!class_exists('MSDLab_Capabilites')){
                     'manage_csf' => 1,
                     'view_application_process' => 1,
                     'view_csf_reports' => 1,
+                    'view_recommended_students' => 1,
                 );
             }
             if($role == 'csf'){
@@ -217,9 +218,12 @@ if(!class_exists('MSDLab_Capabilites')){
                     'manage_csf' => 1,
                     'view_application_process' => 1,
                     'view_csf_reports' => 1,
+                    'view_recommended_students' => 1,
                 );
             } elseif($role == 'scholarship'){
-                return array();
+                return array(
+                    'view_recommended_students' => 1,
+                );
             } elseif($role == 'donor'){
                 return array();
             } else {

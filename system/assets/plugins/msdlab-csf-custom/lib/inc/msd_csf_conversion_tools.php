@@ -43,6 +43,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_add_other_school_to_renewals', array(&$this,'add_other_school_to_renewals') );
             add_action( 'wp_ajax_make_scholarships_deleteable', array(&$this,'make_scholarships_deleteable') );
             add_action( 'wp_ajax_recommend', array(&$this,'recommend') );
+            add_action( 'wp_ajax_add_contacts_to_scholarships', array(&$this,'add_contacts_to_scholarships') );
 
 
             add_filter('send_password_change_email',array(&$this,'return_false'));
@@ -720,6 +721,17 @@ beth@cincinnatischolarshipfoundation.org<br/>
             }
         }
 
+        function add_contacts_to_scholarships(){
+            global $wpdb;
+            $tables = array('scholarship');
+            foreach ($tables AS $t) {
+                $sql = "ALTER TABLE $t ADD `Contacts` text;";
+                if ($wpdb->query($sql)) {
+                    print $t." table updated!";
+                }
+            }
+        }
+
         //utility
         function settings_page()
         {
@@ -1001,6 +1013,15 @@ beth@cincinnatischolarshipfoundation.org<br/>
                             console.log(response);
                         });
                     });
+                    $('.add_contacts_to_scholarships').click(function(){
+                        var data = {
+                            action: 'add_contacts_to_scholarships',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
 
             </script>
@@ -1063,6 +1084,8 @@ beth@cincinnatischolarshipfoundation.org<br/>
                     <dd><button class="make_scholarships_deleteable">Go</button></dd>
                     <dt>recommend:</dt>
                     <dd><button class="recommend">Go</button></dd>
+                    <dt>add_contacts_to_scholarships:</dt>
+                    <dd><button class="add_contacts_to_scholarships">Go</button></dd>
                 </dl>
                 <div class="response1"></div>
             </div>

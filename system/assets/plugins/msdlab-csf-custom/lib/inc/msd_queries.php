@@ -254,6 +254,15 @@ class MSDLAB_Queries{
              } elseif($table == 'recommend'){
                  $scholarships = $data[$table]['ScholarshipId'];
                  unset($data[$table]['ScholarshipId']);
+                 $select_sql = 'SELECT RecommendationId,ScholarshipId FROM ' . $table . ' WHERE ' .$data[$table]['UserId'].';';
+                 $test_ids = $wpdb->get_results($select_sql);
+                 foreach($test_ids AS $ids){
+                     if(!in_array($ids->ScholarshipId,$scholarships)){
+                         $delete_sql = 'DELETE FROM ' . $table . ' WHERE RecommendationId = ' . $ids->RecommendationId . ';';
+                         $delete_response = $wpdb->get_results($delete_sql);
+                     }
+                 }
+
                  foreach($scholarships AS $scholarship){
                      $select_sql = 'SELECT RecommendationId FROM ' . $table . ' WHERE ScholarshipId = '.$scholarship.' AND '.$data[$table]['UserId'].';';
                     // error_log('check_sql: '.$select_sql);

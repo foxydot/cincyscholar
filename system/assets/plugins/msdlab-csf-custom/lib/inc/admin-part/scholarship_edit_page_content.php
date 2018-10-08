@@ -18,7 +18,7 @@ if($_POST) {
     }
     if ($msg = $this->queries->set_data('csf_scholarship', array('scholarship' => 'ScholarshipId = ' . $_POST['scholarship_ScholarshipId_input']), $notifications)) {
         print '<div class="updated notice notice-success is-dismissible">' . $msg . '</div>';
-        $scholarship_id = null;
+        //$scholarship_id = null;
         unset($_POST);
     }
 }
