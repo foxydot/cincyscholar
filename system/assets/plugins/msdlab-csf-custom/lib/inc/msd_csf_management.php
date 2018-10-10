@@ -83,6 +83,9 @@ if (!class_exists('MSDLab_CSF_Management')) {
             add_submenu_page('csf-manage',__('Scholarship Settings'),__('Scholarship Settings'),'manage_csf','csf-scholarship', array(&$this,'scholarship_page_content'));
             add_submenu_page(null,__('Edit Scholarship'),__('Edit Scholarship'),'manage_csf','scholarship-edit', array(&$this,'scholarship_edit_page_content'));
             add_submenu_page(null,__('Scholarship Recommendations'),__('Scholarship Recommendations'),'manage_csf','scholarship-recommends', array(&$this,'scholarship_recommends_page_content'));
+            add_submenu_page('csf-manage',__('Donor Management'),__('Donor Management'),'manage_csf','csf-donors', array(&$this,'donor_page_content'));
+            add_submenu_page(null,__('Edit Donor'),__('Edit Donor'),'manage_csf','donor-edit', array(&$this,'donor_edit_page_content'));
+
             //match below
         }
 
@@ -101,6 +104,8 @@ if (!class_exists('MSDLab_CSF_Management')) {
             print '<a href="admin.php?page=csf-highschool" class="page-title-action">High School Settings</a>';
             print '<a href="admin.php?page=csf-major" class="page-title-action">Major Settings</a>';
             print '<a href="admin.php?page=csf-scholarship" class="page-title-action">Scholarship Settings</a>';
+            print '<h3>Users</h3>';
+            print '<a href="admin.php?page=csf-donors" class="page-title-action">Donor Management</a>';
         }
 
         function setting_page_content(){
@@ -168,6 +173,14 @@ if (!class_exists('MSDLab_CSF_Management')) {
         }
         function scholarship_recommends_page_content(){
             include_once(plugin_dir_path(__FILE__).'/admin-part/scholarship_recommends_page_content.php');
+
+        }
+        function donor_page_content(){
+            include_once(plugin_dir_path(__FILE__).'/admin-part/donor_page_content.php');
+
+        }
+        function donor_edit_page_content(){
+            include_once(plugin_dir_path(__FILE__).'/admin-part/donor_edit_page_content.php');
 
         }
 

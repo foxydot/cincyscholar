@@ -122,7 +122,7 @@ class MSDLAB_Queries{
         $sql[] = ';';
 
         //TODO: refactor all queries to ue proper JOIN
-        //error_log('select_sql:'.implode(' ',$sql));
+        error_log('select_sql:'.implode(' ',$sql));
         $result = $wpdb->get_results(implode(' ',$sql));
         return $result;
     }
@@ -132,6 +132,15 @@ class MSDLAB_Queries{
         if ( ! empty( $_POST ) ) { //add nonce
             $this->post_vars = $_POST;
         }
+    }
+
+    public function get_donor($donor_id){
+        $ret['user'] = get_user_by('ID',$donor_id);
+        $data['tables']['donoruserscholarship'] = array('*');
+        $data['tables']['scholarship'] = array('*');
+        $data['where'] = 'donoruserscholarship.UserId = '.$donor_id.' AND donoruserscholarship.ScholarshipId = scholarship.ScholarshipId';
+        $ret['donor'] = $this->get_result_set($data);
+        return $ret;
     }
 
     public function get_college($college_id){
@@ -265,10 +274,38 @@ class MSDLAB_Queries{
 
                  foreach($scholarships AS $scholarship){
                      $select_sql = 'SELECT RecommendationId FROM ' . $table . ' WHERE ScholarshipId = '.$scholarship.' AND '.$data[$table]['UserId'].';';
-                    // error_log('check_sql: '.$select_sql);
+                     // error_log('check_sql: '.$select_sql);
                      if ($r = $wpdb->get_row($select_sql)) {
                          $sql = 'UPDATE ' . $table . ' SET ' . implode(', ', $data[$table]) . ',ScholarshipId = '.$scholarship.' WHERE RecommendationId = ' . $r->RecommendationId . ';';
-                        // error_log($sql);
+                         // error_log($sql);
+                     } else {
+                         $sql = 'INSERT INTO ' . $table . ' SET ' . implode(', ', $data[$table]) . ',ScholarshipId = '.$scholarship.';';
+                     }
+                     //error_log('update_sql: '.$sql);
+                     $result = $wpdb->get_results($sql);
+                     if (is_wp_error($result)) {
+                         return new WP_Error('update', '<div class="error">Error updating ' . $table . '</div>');
+                     }
+                 }
+             } elseif($table == 'donoruserscholarship'){
+                 $scholarships = $data[$table]['ScholarshipId'];
+                 //ts_data($scholarships);
+                 unset($data[$table]['ScholarshipId']);
+                 $select_sql = 'SELECT DUSId,ScholarshipId FROM ' . $table . ' WHERE ' .$data[$table]['UserId'].';';
+                 $test_ids = $wpdb->get_results($select_sql);
+                 foreach($test_ids AS $ids){
+                     if(!in_array($ids->ScholarshipId,$scholarships)){
+                         $delete_sql = 'DELETE FROM ' . $table . ' WHERE DUSId = ' . $ids->DUSId . ';';
+                         $delete_response = $wpdb->get_results($delete_sql);
+                     }
+                 }
+
+                 foreach($scholarships AS $scholarship){
+                     $select_sql = 'SELECT DUSId FROM ' . $table . ' WHERE ScholarshipId = '.$scholarship.' AND '.$data[$table]['UserId'].';';
+                     // error_log('check_sql: '.$select_sql);
+                     if ($r = $wpdb->get_row($select_sql)) {
+                         $sql = 'UPDATE ' . $table . ' SET ' . implode(', ', $data[$table]) . ',ScholarshipId = '.$scholarship.' WHERE DUSId = ' . $r->DUSId . ';';
+                         // error_log($sql);
                      } else {
                          $sql = 'INSERT INTO ' . $table . ' SET ' . implode(', ', $data[$table]) . ',ScholarshipId = '.$scholarship.';';
                      }

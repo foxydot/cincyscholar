@@ -34,7 +34,7 @@ $fields = array(
 $tabs = $pane = array();
     $application_start_date = get_option('csf_settings_start_date');
     $application_end_date = get_option('csf_settings_end_date');
-
+    $scholarship = $this->queries->get_scholarship($_GET['scholarship_id']);
     $results_exisit = false;
     $result = $this->queries->get_recommended_students($fields,$_GET['scholarship_id']);
     ts_data($result);
@@ -74,25 +74,27 @@ $tabs = $pane = array();
     if($results_exisit){
         $tabs = '
 <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#awarded" aria-controls="awarded" role="tab" data-toggle="tab">Scholarship Awardees</a></li>
-    <li role="presentation"><a href="#submitted" aria-controls="submitted" role="tab" data-toggle="tab">Submitted Applications</a></li>
+    <li role="presentation"><a href="#awarded" aria-controls="awarded" role="tab" data-toggle="tab">Scholarship Awardees</a></li>
+    <li role="presentation" class="active"><a href="#submitted" aria-controls="submitted" role="tab" data-toggle="tab">Submitted Applications</a></li>
     <li role="presentation"><a href="#incomplete" aria-controls="incomplete" role="tab" data-toggle="tab">Incomplete Applications</a></li>
     <li role="presentation"><a href="#renewal" aria-controls="renewal" role="tab" data-toggle="tab">Submitted Renewals</a></li>
   </ul>';
         if(count($awarded)>0){
-            $pane['awarded'] = '<div role="tabpanel" class="tab-pane active" id="awarded">
+            $pane['awarded'] = '<div role="tabpanel" class="tab-pane" id="awarded">
                             <div class="result-count">'.count($awarded).' Results Found</div>
                             ' . implode("\n\r",$this->report->print_table('application_awarded',$fields,$awarded,$info,$class,false)) .'
+                            '. $this->report->print_export_email(sanitize_with_underscores($scholarship->Name).'-Recommendations',$scholarship,$scholarship->Contacts) .'
                         </div>';
         } else {
-            $pane['awarded'] = '<div role="tabpanel" class="tab-pane active" id="awarded">
+            $pane['awarded'] = '<div role="tabpanel" class="tab-pane" id="awarded">
                             <div class="notice bg-info text-info">No results</div>
                         </div>';
         }
         if(count($submitted)>0){
-            $pane['submitted'] = '<div role="tabpanel" class="tab-pane" id="submitted">
+            $pane['submitted'] = '<div role="tabpanel" class="tab-pane active" id="submitted">
                             <div class="result-count">'.count($submitted).' Results Found</div>
                             ' . implode("\n\r",$this->report->print_table('application_submitted',$fields,$submitted,$info,$class,false)) .'
+                            '. $this->report->print_export_email(sanitize_with_underscores($scholarship->Name).'-Recommendations',$scholarship,$scholarship->Contacts) .'
                         </div>';
         } else {
             $pane['submitted'] = '<div role="tabpanel" class="tab-pane" id="submitted">
@@ -103,6 +105,7 @@ $tabs = $pane = array();
             $pane['incomplete'] = '<div role="tabpanel" class="tab-pane" id="incomplete">
                             <div class="result-count">'.count($incomplete).' Results Found</div>
                             ' . implode("\n\r",$this->report->print_table('application_incomplete',$fields,$incomplete,$info,$class,false)) .'
+                            '. $this->report->print_export_email(sanitize_with_underscores($scholarship->Name).'-Recommendations',$scholarship,$scholarship->Contacts) .'
                         </div>';
         } else {
             $pane['incomplete'] = '<div role="tabpanel" class="tab-pane" id="incomplete">
@@ -113,6 +116,7 @@ $tabs = $pane = array();
             $pane['renewal'] = '<div role="tabpanel" class="tab-pane" id="renewal">
                             <div class="result-count">'.count($renewal).' Results Found</div>
                             ' . implode("\n\r",$this->report->print_table('renewal',$fields2,$renewals,$info,$class,false)) .'
+                            '. $this->report->print_export_email(sanitize_with_underscores($scholarship->Name).'-Recommendations',$scholarship,$scholarship->Contacts) .'
                         </div>';
         } else {
             $pane['renewal'] = '<div role="tabpanel" class="tab-pane" id="renewal">

@@ -44,6 +44,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_make_scholarships_deleteable', array(&$this,'make_scholarships_deleteable') );
             add_action( 'wp_ajax_recommend', array(&$this,'recommend') );
             add_action( 'wp_ajax_add_contacts_to_scholarships', array(&$this,'add_contacts_to_scholarships') );
+            add_action( 'wp_ajax_create_donoruserscholarship', array(&$this,'create_donoruserscholarship') );
 
 
             add_filter('send_password_change_email',array(&$this,'return_false'));
@@ -732,6 +733,21 @@ beth@cincinnatischolarshipfoundation.org<br/>
             }
         }
 
+
+        function create_donoruserscholarship(){
+            global $wpdb;
+            $sql = "CREATE TABLE `donoruserscholarship` (
+  `DUSId` int(11) NOT NULL AUTO_INCREMENT,
+  `UserId` int(11) NOT NULL,
+  `ScholarshipId` int(11) NOT NULL,
+  `Notes` text,
+  PRIMARY KEY (`DUSId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+            if ($wpdb->query($sql)) {
+                print "donoruserscholarship table created!";
+            }
+        }
+
         //utility
         function settings_page()
         {
@@ -1022,6 +1038,15 @@ beth@cincinnatischolarshipfoundation.org<br/>
                             console.log(response);
                         });
                     });
+                    $('.create_donoruserscholarship').click(function(){
+                        var data = {
+                            action: 'create_donoruserscholarship',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
 
             </script>
@@ -1086,6 +1111,8 @@ beth@cincinnatischolarshipfoundation.org<br/>
                     <dd><button class="recommend">Go</button></dd>
                     <dt>add_contacts_to_scholarships:</dt>
                     <dd><button class="add_contacts_to_scholarships">Go</button></dd>
+                    <dt>create_donoruserscholarship:</dt>
+                    <dd><button class="create_donoruserscholarship">Go</button></dd>
                 </dl>
                 <div class="response1"></div>
             </div>

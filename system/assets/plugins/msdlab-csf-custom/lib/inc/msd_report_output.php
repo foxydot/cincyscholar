@@ -33,6 +33,8 @@ class MSDLAB_Report_Output{
         }
         $this->skipcsv = array('Activities','HardshipNote','CoopStudyAbroadNote');
         add_action('admin_enqueue_scripts', array(&$this,'add_admin_styles_and_scripts'));
+        add_action( 'wp_ajax_send_export_email', array(&$this,'send_export_email') );
+
     }
 
     /**
@@ -296,6 +298,65 @@ class MSDLAB_Report_Output{
         $ret['form'] = '<a href="'.$temp_url.'" id="csv_export_'.$id.'" class="button csv-export export-'.$id.'">Export to CSV</a>';
         return implode("\n\r", $ret);
     }
+
+
+    public function print_export_email($id,$data,$emails){
+        $temp_filename = 'CSF Report '.$id.'_'.date("Y-m-d_H-i",time()).'.csv';
+        //create or locate upload dir for tempfiles
+        $upload_dir   = wp_upload_dir();
+        if ( ! empty( $upload_dir['basedir'] ) ) {
+            $temp_dirname = $upload_dir['basedir'].'/exports/temp';
+            $temp_url = $upload_dir['baseurl'].'/exports/temp/'.$temp_filename;
+            //TODO: add a cron to clean out this directory once a day.
+            if ( ! file_exists( $temp_dirname ) ) {
+                wp_mkdir_p( $temp_dirname );
+            }
+        }
+        //create an empty file and open for writing
+        $temp_file = fopen($temp_dirname.'/'.$temp_filename,'w+b');
+        //write to file
+        fwrite($temp_file,$this->export_header."\n".$this->export_csv);
+        fclose($temp_file);
+        $ret['form'] = '<button id="'.$id.'_email" class="button csv-email email-'.$id.'">Email CSV to Contacts</button>';
+        $ret['response_area'] = '<div class="response1"></div>';
+        $ret['jquery'] = '<script>
+        jQuery(document).ready(function($){    
+            $(\'#'.$id.'_email\').click(function(){
+                var data = {
+                    action: \'send_export_email\',
+                    data: '.json_encode($data).',
+                    subject: \'Recommendations for '.$data->Name.'\',
+                    file: \''.$temp_dirname.'/'.$temp_filename.'\',
+                    emails: \''.$emails.'\',
+                }
+                jQuery.post(ajaxurl, data, function(response) {
+                    $(\'.response1\').html(response).addClass(\'notice notice-success\');
+                });
+            });
+        });
+        </script>';
+        return implode("\n\r", $ret);
+    }
+
+    function send_export_email(){
+        $data = $_POST['data'];
+        if(!file_exists($_POST['file'])){
+           // error_log('file '.$_POST['file'].' does not exist');
+        } else {
+            $attachments = array($_POST['file']);
+        }
+        $emails = $_POST['emails'];
+        $subject = $_POST['subject'];
+        $headers[] = 'From: Elizabeth Collins <beth@cincinnatischolarshipfoundation.org>';
+        $headers[] = 'Content-Type: text/html; charset=UTF-8';
+        $headers[] = 'Bcc: beth@cincinnatischolarshipfoundation.org';
+        $to = $emails;
+        $message = 'Attached please find a list of students recommended for '.$data['Name'].'.';
+        if(wp_mail($to, $subject, $message, $headers, $attachments)){
+            print "Email Sent.";
+        }
+    }
+
 
     //student edit panels
     function student_form($student_data){
