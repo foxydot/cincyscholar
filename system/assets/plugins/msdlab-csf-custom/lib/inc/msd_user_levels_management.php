@@ -225,7 +225,9 @@ if(!class_exists('MSDLab_Capabilites')){
                     'view_recommended_students' => 1,
                 );
             } elseif($role == 'donor'){
-                return array();
+                return array(
+                    'view_recommended_students' => 1,
+                );
             } else {
                 $allcaps = array();
                 switch($role){

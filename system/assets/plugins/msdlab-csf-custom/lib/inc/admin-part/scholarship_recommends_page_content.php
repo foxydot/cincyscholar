@@ -30,13 +30,13 @@ $fields = array(
     'Documents',
     'Notes',
 );
-
-$tabs = $pane = array();
+    if(!$scholarship_id){$scholarship_id = $_GET['scholarship_id'];}
+    $tabs = $pane = array();
     $application_start_date = get_option('csf_settings_start_date');
     $application_end_date = get_option('csf_settings_end_date');
-    $scholarship = $this->queries->get_scholarship($_GET['scholarship_id']);
+    $scholarship = $this->queries->get_scholarship($scholarship_id);
     $results_exisit = false;
-    $result = $this->queries->get_recommended_students($fields,$_GET['scholarship_id']);
+    $result = $this->queries->get_recommended_students($fields,$scholarship_id);
     ts_data($result);
     $submitted = $incomplete = $awarded = array();
     foreach ($result AS $k => $applicant) {
@@ -127,7 +127,7 @@ $tabs = $pane = array();
         $tabs = '<div class="notice bg-info text-info">No results</div>';
     }
 
-print '<h2>Scholarship Recommendation Reports</h2>';
+print '<h2>'. $scholarship->Name .' Recommendations</h2>';
 
     print $tabs;
     print '

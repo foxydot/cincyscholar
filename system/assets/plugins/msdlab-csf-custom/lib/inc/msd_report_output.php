@@ -167,14 +167,24 @@ class MSDLAB_Report_Output{
             foreach ($fields as $key => $value) {
                 switch ($value){
                     case 'UserId':
-                        $printval = '<strong>'.$user->{$value}.'</strong><br />
-                        <a href="?page=student-edit&user_id='.$user->{$value}.'" class="button" target="_blank">View/Edit</a>';
+                        $printval = '<strong>'.$user->{$value}.'</strong><br />';
+                        if(current_user_can('manage_csf')) {
+                            $printval .= '<a href="?page=student-edit&user_id=' . $user->{$value} . '" class="button" target="_blank">View/Edit</a>';
+                        }
                         break;
                     case 'ApplicantId':
-                        $printval = '<a href="'.get_permalink($portal_page).'?applicant_id='.$user->{$value}.'&renewal_id='.$user->RenewalId.'" target="_blank">'.$user->{$value}.'</a>';
+                        if(current_user_can('manage_csf')) {
+                            $printval = '<a href="' . get_permalink($portal_page) . '?applicant_id=' . $user->{$value} . '&renewal_id=' . $user->RenewalId . '" target="_blank">' . $user->{$value} . '</a>';
+                        } else {
+                            $printval = $user->{$value};
+                        }
                         break;
                     case 'RenewalId':
-                        $printval = '<a href="'.get_permalink($portal_page).'?applicant_id='.$user->ApplicantId.'&renewal_id='.$user->{$value}.'" target="_blank">'.$user->{$value}.'</a>';
+                        if(current_user_can('manage_csf')) {
+                            $printval = '<a href="' . get_permalink($portal_page) . '?applicant_id=' . $user->ApplicantId . '&renewal_id=' . $user->{$value} . '" target="_blank">' . $user->{$value} . '</a>';
+                        } else {
+                            $printval = $user->{$value};
+                        }
                         break;
                     case 'CountyId':
                         $printval = $this->queries->get_county_by_id($user->{$value});

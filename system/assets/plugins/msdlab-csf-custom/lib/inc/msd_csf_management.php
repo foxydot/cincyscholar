@@ -11,7 +11,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
             global $current_screen;
             //TODO: Add a user management panel
             //TODO: Add a scholarship management panel
-            $required_files = array('msd_csf_application','msd_setting_controls','msd_report_controls','msd_queries','msd_report_output');
+            $required_files = array('msd_csf_application','msd_csf_donor','msd_setting_controls','msd_report_controls','msd_queries','msd_report_output');
             foreach($required_files AS $rq){
                 if(file_exists(plugin_dir_path(__FILE__).'/'.$rq . '.php')){
                     require_once(plugin_dir_path(__FILE__).'/'.$rq . '.php');
@@ -22,6 +22,9 @@ if (!class_exists('MSDLab_CSF_Management')) {
 
             if(class_exists('MSDLab_CSF_Application')){
                 $this->application = new MSDLab_CSF_Application();
+            }
+            if(class_exists('MSDLab_CSF_Donor')){
+                $this->donor = new MSDLab_CSF_Donor();
             }
             if(class_exists('MSDLAB_SettingControls')){
                 $this->controls = new MSDLAB_SettingControls();
