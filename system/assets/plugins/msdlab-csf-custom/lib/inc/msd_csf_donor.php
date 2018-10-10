@@ -93,9 +93,13 @@ if (!class_exists('MSDLab_CSF_Donor')) {
             global $wpdb;
             $sql = 'SELECT donoruserscholarship.ScholarshipId, scholarship.* FROM donoruserscholarship, scholarship WHERE donoruserscholarship.ScholarshipId = scholarship.ScholarshipId AND donoruserscholarship.UserId = '.$donor_id.';';
             $scholarships = $wpdb->get_results($sql);
-            foreach($scholarships AS $scholarship){
-                $scholarship_id = $scholarship->ScholarshipId;
-                include plugin_dir_path(__FILE__).'/admin-part/scholarship_recommends_page_content.php';
+            if(count($scholarships)>0) {
+                foreach ($scholarships AS $scholarship) {
+                    $scholarship_id = $scholarship->ScholarshipId;
+                    include plugin_dir_path(__FILE__) . '/admin-part/scholarship_recommends_page_content.php';
+                }
+            } else {
+                return 'You do not have access to view any scholarships. <a href="/contactus/">Contact Cincinnati Scholarship Foundation</a> to create access.';
             }
         }
 
