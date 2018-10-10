@@ -116,6 +116,10 @@ if (!class_exists('MSDLab_CSF_Application')) {
             }
             if(is_user_logged_in()){
                 $ret = array();
+                if(current_user_can('donor')){
+                    $donor_page = get_option('csf_settings_donor_welcome_page');
+                    $ret[1] = '<a href="'.get_permalink($donor_page).'" class="button">Proceed to Donor Portal</a>';
+                }
                 if(current_user_can('view_csf_reports')){
                     $applicant_id = $_GET['applicant_id'];
                     $renewal_id = $_GET['renewal_id'];
