@@ -157,7 +157,7 @@ if($_POST) {
             }
         }
         if (($renewal->ScholarshipId > 0 ) && (strtotime($renewal->DateAwarded) > strtotime($application_start_date))) {
-            error_log('is awardee');
+            //error_log('is awardee');
             $awarded[] = $renewal;
         } else {
             $renewals[] = $renewal;

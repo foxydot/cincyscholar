@@ -83,6 +83,25 @@ input.error, select.error, textarea.error {
     content: attr(data-off);
     left: 100%; }
 
+.reject .ui-toggle-btn {
+  width: 6.5em; }
+  .reject .ui-toggle-btn input:checked + .handle {
+    transform: translateX(330%); }
+  .reject .ui-toggle-btn .handle:before,
+  .reject .ui-toggle-btn .handle:after {
+    width: 6em;
+    padding: 0 1em; }
+  .reject .ui-toggle-btn .handle:before {
+    content: attr(data-on);
+    right: 100%;
+    background-color: #a00404;
+    border-radius: 1.5em 0  0 1.5em; }
+  .reject .ui-toggle-btn .handle:after {
+    content: attr(data-off);
+    left: 100%;
+    background-color: #00a523;
+    border-radius: 0 1.5em 1.5em 0; }
+
 form.csf_report_search_form, form#csf_college {
   background: #dddddd;
   padding: 1em; }
@@ -245,3 +264,11 @@ div.submit, div.delete {
   .checkbox-array-options-wrapper .inner-wrap {
     column-count: 3;
     column-gap: 2em; }
+
+
+  tr.reject{
+    background-color: rgb(255, 183, 183);
+  }
+  tr.even{
+    background-color: #efefef;
+  }

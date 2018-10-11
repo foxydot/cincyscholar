@@ -2,7 +2,7 @@
 $tabs = '';
 $pane = array();
 if($_POST) {
-    ts_data($_POST);
+    //ts_data($_POST);
     $user_id = $_POST['Applicant_UserId_input'];
     $notifications = array(
         'nononce' => 'Student info could not be saved.',
@@ -28,6 +28,10 @@ if($_POST) {
     $where['payment'] = 'UserId = ' . $_POST['Applicant_UserId_input'];
     if ($msg = $this->queries->set_data('single_student', $where, $notifications)) {
         print '<div class="updated notice notice-success is-dismissible">' . $msg . '</div>';
+        if($_POST['ApplicantScholarship_AwardId_input'] > 0 && $_POST['ApplicantScholarship_ScholarshipId_input'] == ''){
+            $deletewhere['applicantscholarship'] = 'AwardId = ' . $_POST['ApplicantScholarship_AwardId_input'];
+            $this->queries->delete_data('single_student', $deletewhere, $notifications);
+        }
         unset($_POST);
     }
 } elseif($_GET){
@@ -54,7 +58,6 @@ if($student = $this->queries->get_student_data($applicant_id)) {
     <li role="presentation"><a href="#disbursement" aria-controls="disbursement" role="tab" data-toggle="tab">Disbursement</a></li>
     <li role="presentation"><a href="#application" aria-controls="application" role="tab" data-toggle="tab">Application</a></li>
     <li role="presentation"><a href="#signatures" aria-controls="signatures" role="tab" data-toggle="tab">Signatures</a></li>
-    <li role="presentation"><a href="?page=student-recommend&user_id='.$user_id.'">Recommend</a></li>
   </ul>';
 
             $pane['student'] = '<div role="tabpanel" class="tab-pane active" id="student">
@@ -109,6 +112,15 @@ if($student = $this->queries->get_student_data($applicant_id)) {
                 $('#ApplicantScholarship_AmountActuallyAwarded_input').val(amountactuallyawarded);
             });
             ";
+            $jquery[] = "
+            $('#Applicant_Reject_input,#Renewal_Reject_input').change(function(){
+                if($(this).is(':checked')){
+                    $('#ApplicantScholarship_ScholarshipId_input').val('');
+                    $('#ApplicantScholarship_AmountAwarded_input').val(0);
+                    $('#ApplicantScholarship_DateAwarded_input').val(0);
+                }
+            });
+            ";
             /*$jquery[] = '$("#' . $form_id . '").validate({
                     
 		errorPlacement: function(error, element) {
@@ -152,6 +164,7 @@ if($student = $this->queries->get_student_data($applicant_id)) {
 <div class="tab-content">';
             $ret['panes'] = implode("\n\n",$pane);
             $ret[] = '</div>';
+            $ret['actions'] = $this->report->action_form($student);
             $ftr['button'] = $this->form->field_button('saveBtn', 'SAVE', array('submit', 'btn'), 'submit', false);
             $ret['form_footer'] = $this->form->form_footer('form_footer',implode("\n",$ftr),array('form-footer', 'col-md-12'));
             $ret['javascript'] = $this->form->build_jquery($form_id,$jquery);
@@ -165,7 +178,7 @@ if($student = $this->queries->get_student_data($applicant_id)) {
         }
     }
 } else {
-    error_log("f me");
+    //error_log("f me");
     print "Error. No records for this student. This should never happen.";
     die();
 }

@@ -1041,7 +1041,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
             $sql = 'UPDATE applicant SET applicant.Notes = '.implode("\n",$notes).', applicant.ApplicationDateTime = "'.$time.'" WHERE applicant.ApplicantId = '.$applicant_id.';';
             $result = $wpdb->get_results($sql);
             if(is_wp_error($result)){
-                error_log('Error updating submission date');
+                //error_log('Error updating submission date');
             }
         }
 

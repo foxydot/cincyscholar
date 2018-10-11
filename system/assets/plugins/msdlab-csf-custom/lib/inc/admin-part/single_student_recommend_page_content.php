@@ -63,7 +63,7 @@ if($student = $this->queries->get_student_data($applicant_id)) {
         }
     }
 } else {
-    error_log("f me");
+    //error_log("f me");
     print "Error. No records for this student. This should never happen.";
     die();
 }

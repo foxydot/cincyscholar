@@ -102,6 +102,35 @@ input, select, textarea {
     left: 100%;
   }
 }
+.reject{
+  .ui-toggle-btn {
+    width: 6.5em;
+
+    input:checked + .handle {
+      transform: translateX(330%);
+    }
+
+    .handle:before,
+    .handle:after {
+      width: 6em;
+      padding: 0 1em;
+    }
+
+    .handle:before {
+      content: attr(data-on);
+      right: 100%;
+      background-color: #a00404;
+      border-radius: 1.5em 0  0 1.5em;
+    }
+
+    .handle:after {
+      content: attr(data-off);
+      left: 100%;
+      background-color: #00a523;
+      border-radius: 0 1.5em 1.5em 0;
+    }
+  }
+}
 
   form.csf_report_search_form,form#csf_college{
     background: #dddddd;

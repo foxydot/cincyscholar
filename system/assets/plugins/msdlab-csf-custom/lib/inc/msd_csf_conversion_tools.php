@@ -13,9 +13,11 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
     class MSDLab_CSF_Conversion_Tools{
         //properties
         private $queries;
+        private $methods = array();
         //constructor
         function __construct(){
             add_action('admin_menu', array(&$this,'settings_page'));
+
             add_action( 'wp_ajax_create_student_users', array(&$this,'create_student_users') );
             add_action( 'wp_ajax_create_donor_users', array(&$this,'create_donor_users') );
             add_action( 'wp_ajax_copy_application_dates', array(&$this,'copy_application_dates') );
@@ -45,6 +47,8 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_recommend', array(&$this,'recommend') );
             add_action( 'wp_ajax_add_contacts_to_scholarships', array(&$this,'add_contacts_to_scholarships') );
             add_action( 'wp_ajax_create_donoruserscholarship', array(&$this,'create_donoruserscholarship') );
+            add_action( 'wp_ajax_add_reject_columns', array(&$this,'add_reject_columns') );
+            add_action( 'wp_ajax_add_award_id', array(&$this,'add_award_id') );
 
 
             add_filter('send_password_change_email',array(&$this,'return_false'));
@@ -748,6 +752,30 @@ beth@cincinnatischolarshipfoundation.org<br/>
             }
         }
 
+        function add_reject_columns(){
+            global $wpdb;
+            $sql = "ALTER TABLE renewal 
+  ADD `Reject` tinyint(1) unsigned zerofill NOT NULL;";
+            if($wpdb->query($sql)) {
+                print "renewal table updated!";
+            }
+            $sql = "ALTER TABLE applicant
+    ADD `Reject` tinyint(1) unsigned zerofill NOT NULL;";
+            if($wpdb->query($sql)) {
+                print "applicant table updated!";
+            }
+        }
+
+        function add_award_id(){
+            global $wpdb;
+            $sql = "ALTER TABLE applicantscholarship 
+  ADD `AwardId` int(11) NOT NULL AUTO_INCREMENT,
+  ADD KEY (`AwardId`);";
+            if($wpdb->query($sql)) {
+                print "AwardId column added!";
+            }
+        }
+
         //utility
         function settings_page()
         {
@@ -1047,6 +1075,24 @@ beth@cincinnatischolarshipfoundation.org<br/>
                             console.log(response);
                         });
                     });
+                    $('.add_reject_columns').click(function(){
+                        var data = {
+                            action: 'add_reject_columns',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
+                    $('.add_award_id').click(function(){
+                        var data = {
+                            action: 'add_award_id',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
 
             </script>
@@ -1113,6 +1159,10 @@ beth@cincinnatischolarshipfoundation.org<br/>
                     <dd><button class="add_contacts_to_scholarships">Go</button></dd>
                     <dt>create_donoruserscholarship:</dt>
                     <dd><button class="create_donoruserscholarship">Go</button></dd>
+                    <dt>add_reject_columns:</dt>
+                    <dd><button class="add_reject_columns">Go</button></dd>
+                    <dt>add_award_id:</dt>
+                    <dd><button class="add_award_id">Go</button></dd>
                 </dl>
                 <div class="response1"></div>
             </div>

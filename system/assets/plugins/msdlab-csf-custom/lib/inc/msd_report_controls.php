@@ -96,7 +96,7 @@ class MSDLab_ReportControls{
         $gender = $this->queries->get_select_array_from_db('sex', 'SexId', 'Sex','SexId');
         $athletics = array('0'=>'Non-athlete','1'=>'Athlete');
         $independence = array('0'=>'Dependent','1'=>'Independant');
-        $scholarship = $this->queries->get_select_array_from_db('scholarship', 'ScholarshipId', 'Name','ScholarshipId',1);
+        $scholarship = $this->queries->get_select_array_from_db('scholarship', 'ScholarshipId', 'Name','Name',1);
         $fund = $this->queries->get_select_array_from_db('fund', 'FundId', 'Name','FundId');
         $educational_attainment = $this->queries->get_select_array_from_db('educationalattainment', 'EducationalAttainmentId', 'EducationalAttainment','EducationalAttainmentId');
         $bool_options = array('0'=>'No','1'=>'Yes');

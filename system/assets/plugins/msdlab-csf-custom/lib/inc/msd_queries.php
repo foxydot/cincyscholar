@@ -122,7 +122,7 @@ class MSDLAB_Queries{
         $sql[] = ';';
 
         //TODO: refactor all queries to ue proper JOIN
-        error_log('select_sql:'.implode(' ',$sql));
+        //error_log('select_sql:'.implode(' ',$sql));
         $result = $wpdb->get_results(implode(' ',$sql));
         return $result;
     }
@@ -202,7 +202,7 @@ class MSDLAB_Queries{
              ),$notifications
          );
          $nonce = $_POST['_wpnonce'];
-         error_log('form_id:'.$form_id);
+         //error_log('form_id:'.$form_id);
          if(wp_verify_nonce( $nonce, $form_id ) === false) {
              return new WP_Error( 'nononce', $notifications['nononce'] );
 
@@ -402,6 +402,29 @@ class MSDLAB_Queries{
             }
         }
         return true;
+    }
+
+    function delete_data($form_id,$where,$notifications = array()){
+        global $wpdb;
+        if(empty($this->post_vars)){
+            return false;
+        }
+        $notifications = array_merge(
+            array(
+                'nononce' => 'Application could not be saved.',
+                'success' => 'Application saved!'
+            ),$notifications
+        );
+        $nonce = $_POST['_wpnonce'];
+        //error_log('form_id:'.$form_id);
+        if(wp_verify_nonce( $nonce, $form_id ) === false) {
+            return new WP_Error( 'nononce', $notifications['nononce'] );
+
+        }
+        foreach ($where AS $table => $clause){
+            $sql = "DELETE FROM $table WHERE $clause;";
+            $wpdb->query($sql);
+        }
     }
 
     function get_renewal_id_by_applicant($applicant_id){
@@ -671,6 +694,9 @@ class MSDLAB_Queries{
         ){
             $data['tables']['applicantscholarship'] = array('AmountAwarded','DateAwarded');
             $data['where'] .= ' AND applicantscholarship.ApplicantId = applicant.ApplicantId';
+            if(is_numeric($this->post_vars['scholarship_search_input'])){
+                $data['where'] .= ' AND applicantscholarship.ScholarshipId = '.$this->post_vars['scholarship_search_input'];
+            }
 
             if(!empty($this->post_vars['award_date_search_input_start']) || !empty($this->post_vars['award_date_search_input_end'])) {
                 if(!empty($this->post_vars['award_date_search_input_start'])){
@@ -749,7 +775,7 @@ class MSDLAB_Queries{
             }
         }
         $results = $this->get_result_set($data);
-        error_log('REPORT QUERY: ' . $wpdb->last_query);
+        //error_log('REPORT QUERY: ' . $wpdb->last_query);
 
         foreach ($results AS $k => $r){
             $applicant_id = $r->ApplicantId;
@@ -1097,7 +1123,7 @@ class MSDLAB_Queries{
         }
 
         $results = $this->get_result_set($data);
-        error_log('RENEWAL REPORT QUERY: ' . $wpdb->last_query);
+        //error_log('RENEWAL REPORT QUERY: ' . $wpdb->last_query);
         return $results;
     }
 
