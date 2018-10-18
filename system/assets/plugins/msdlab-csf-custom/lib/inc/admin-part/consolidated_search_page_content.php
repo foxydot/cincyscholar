@@ -1,89 +1,102 @@
 <?php
-$fields = array(
-    'UserId',
-    'ApplicantId',
-    'FirstName',
-    'MiddleInitial',
-    'LastName',
-    'Address1',
-    'Address2',
-    'City',
-    'StateId',
-    'ZipCode',
-    'CountyId',
-    'CellPhone',
-    'AlternativePhone',
-    'Email',
-    'user_email',
-    'Last4SSN',
-    'DateOfBirth',
-    'SexId',
-    'FirstGenerationStudent',
-    'EducationAttainmentId',
-    'HighSchoolId',
-    'HighSchoolGraduationDate',
-    'HighSchoolGPA',
-    'CollegeId',
-    'MajorId',
-    'OtherSchool',
-    'IsIndependent',
-    'PlayedHighSchoolSports',
-    'Employer',
-    'ApplicationDateTime',
-    'InformationSharingAllowed',
-    'IsComplete',
-    'EthnicityId',
-    'ApplicantHaveRead',
-    'ApplicantDueDate',
-    'ApplicantDocsReq',
-    'ApplicantReporting',
-    'CPSPublicSchools',
-    'GuardianHaveRead',
-    'GuardianDueDate',
-    'GuardianDocsReq',
-    'GuardianReporting',
-    'GuardianFullName1',
-    'GuardianEmployer1',
-    'GuardianFullName2',
-    'GuardianEmployer2',
-    'ApplicantEmployer',
-    'ApplicantIncome',
-    'SpouseEmployer',
-    'SpouseIncome',
-    'Homeowner',
-    'HomeValue',
-    'AmountOwedOnHome',
-    'InformationSharingAllowedByGuardian',
-    'Documents',
-    'Notes',
+$fields['required'] = array(
+    'UserId' => 'UserId',
+    'ApplicantId' => 'ApplicantId',
 );
-$fields2 = array(
-    'UserId',
-    'RenewalId',
-    'ApplicantId',
-    'FirstName',
-    'MiddleInitial',
-    'LastName',
-    'Address1',
-    'Address2',
-    'City',
-    'StateId',
-    'ZipCode',
-    'CountyId',
-    'CellPhone',
-    'AlternativePhone',
-    'Email',
-    'Last4SSN',
-    'DateOfBirth',
-    'CurrentCumulativeGPA',
-    'RenewalDateTime',
-    'AnticipatedGraduationDate',
-    'YearsWithCSF',
-    'CollegeId',
-    'MajorId',
-    'TermsAcknowledged',
-    'RenewalLocked',
-    'Notes'
+$fields['applicant'] = array(
+    'StudentId' => 'Student ID',
+    'FirstName' => 'First Name',
+    'MiddleInitial' => 'Middle Initial',
+    'LastName' => 'Last Name',
+    'Address1' => 'Address 1',
+    'Address2' => 'Address 2',
+    'City' => 'City',
+    'StateId' => 'State',
+    'ZipCode' => 'ZipCode',
+    'CountyId' => 'County',
+    'CellPhone' => 'Cell Phone',
+    'AlternativePhone' => 'Alternative Phone',
+    'Email' => 'Email',
+    'user_email' => 'user_email',
+    'Last4SSN' => 'Last 4 SSN',
+    'DateOfBirth' => 'Date Of Birth',
+    'SexId' => 'Gender',
+    'FirstGenerationStudent' => 'First Generation Student',
+    'EducationAttainmentId' => 'Education Attainment',
+    'HighSchoolId' => 'High School',
+    'HighSchoolGraduationDate' => 'High School Graduation Date',
+    'HighSchoolGPA' => 'High School GPA',
+    'CPSPublicSchools' => 'CPS Public Schools',
+    'CollegeId' => 'College',
+    'MajorId' => 'Major',
+    'OtherSchool' => 'Other School',
+    'IsIndependent' => 'Is Independent',
+    'PlayedHighSchoolSports' => 'Played High School Sports',
+    'Employer' => 'Employer',
+    'ApplicationDateTime' => 'Application Date',
+    'InformationSharingAllowed' => 'Information Sharing Allowed',
+    'IsComplete' => 'Is Complete',
+    'EthnicityId' => 'Ethnicity',
+    'ResumeOK' => 'Resume OK',
+    'TranscriptOK' => 'Transcript OK',
+    'FinancialAidOK' => 'Financial Aid OK',
+    'FAFSAOK' => 'FAFSA OK',
+    'ApplicationLocked' => 'Locked',
+    'AppliedBefore' => 'Applied Before',
+    'Rejected' => 'Rejected',
+    'Documents' => 'Documents',
+);
+$fields['agreements'] = array(
+    'ApplicantHaveRead' => 'Applicant Have Read',
+    'ApplicantDueDate' => 'Applicant Due Date',
+    'ApplicantDocsReq' => 'Applicant Docs Req',
+    'ApplicantReporting' => 'Applicant Reporting',
+    'GuardianHaveRead' => 'Guardian Have Read',
+    'GuardianDueDate' => 'Guardian Due Date',
+    'GuardianDocsReq' => 'Guardian Docs Req',
+    'GuardianReporting' => 'Guardian Reporting',
+);
+$fields['financial'] = array(
+    'GuardianFullName1' => 'GuardianFullName1',
+    'GuardianEmployer1' => 'GuardianEmployer1',
+    'GuardianFullName2' => 'GuardianFullName2',
+    'GuardianEmployer2' => 'GuardianEmployer2',
+    'ApplicantEmployer' => 'ApplicantEmployer',
+    'ApplicantIncome' => 'ApplicantIncome',
+    'SpouseEmployer' => 'SpouseEmployer',
+    'SpouseIncome' => 'SpouseIncome',
+    'Homeowner' => 'Homeowner',
+    'HomeValue' => 'HomeValue',
+    'AmountOwedOnHome' => 'AmountOwedOnHome',
+    'InformationSharingAllowedByGuardian' => 'InformationSharingAllowedByGuardian',
+    'DirectNeed' => 'Direct Need',
+    'IndirectNeed' => 'Indirect Need',
+    );
+$fields['renewal_required'] = array(
+    'RenewalId' => 'Renewal ID',
+);
+$fields['renewal'] = array(
+    'RenewalDateTime' => 'Renewal Date Time',
+    'AnticipatedGraduationDate' => 'Anticipated Graduation Date',
+    'CurrentCumulativeGPA' => 'Current Cumulative GPA',
+    'YearsWithCSF' => 'Years With CSF',
+    'TermsAcknowledged' => 'Terms Acknowledged',
+    'RenewalLocked' => 'Renewal Locked',
+    'Reject' => 'Reject',
+);
+$fields['award'] = array(
+    'AwardId' => 'Award ID',
+    'ScholarshipId' => 'Scholarship',
+    'DateAwarded' => 'Date Awarded',
+    'AmountAwarded' => 'Amount Awarded',
+    'AmountActuallyAwarded' => 'Amount Actually Awarded',
+    'Renew' => 'Renew',
+    'ThankYou' => 'ThankYou',
+    'Signed' => 'Signed',
+    'GPA1' => 'GPA1',
+    'GPA2' => 'GPA2',
+    'GPA3' => 'GPA3',
+    'GPAC' => 'GPAC',
 );
 $tabs = $pane = array();
 if($_POST) {
@@ -95,8 +108,9 @@ if($_POST) {
         $(".collapse-button i").removeClass("fa-compress").addClass("fa-expand");
         ';
     $results_exisit = false;
-    $result = $this->queries->get_report_set($fields);
-    ts_data($result);
+    $select_applicant_fields = array_merge($fields['required'],$_POST['applicant_fields_input'],$_POST['financial_fields_input'],$_POST['award_fields_input']);
+    $result = $this->queries->get_report_set($select_applicant_fields);
+    //ts_data($result);
     $submitted = $incomplete = $awarded = array();
     foreach ($result AS $k => $applicant) {
         if(!empty($this->post_vars['college_search_input'])){
@@ -133,8 +147,11 @@ if($_POST) {
     }
     if(count($awarded) > 0 || count($submitted) > 0 || count($incomplete) > 0){$results_exisit = true;}
 
-    $result = $this->queries->get_renewal_report_set($fields2);
-    ts_data($result);
+
+    $select_renewal_fields = array_merge($fields['required'],$fields['renewal_required'],$_POST['applicant_fields_input'],$_POST['renewal_fields_input'],$_POST['financial_fields_input'],$_POST['award_fields_input']);
+
+    $result = $this->queries->get_renewal_report_set($select_renewal_fields);
+    //ts_data($result);
     $renewals = array();
     foreach ($result AS $k => $renewal) {
         if(!empty($this->post_vars['college_search_input'])){
@@ -179,7 +196,7 @@ if($_POST) {
         if(count($awarded)>0){
             $pane['awarded'] = '<div role="tabpanel" class="tab-pane active" id="awarded">
                             <div class="result-count">'.count($awarded).' Results Found</div>
-                            ' . implode("\n\r",$this->report->print_table('application_awarded',$fields,$awarded,$info,$class,false)) .'
+                            ' . implode("\n\r",$this->report->print_table('application_awarded',$select_applicant_fields,$awarded,$info,$class,false)) .'
                         </div>';
         } else {
             $pane['awarded'] = '<div role="tabpanel" class="tab-pane active" id="awarded">
@@ -189,7 +206,7 @@ if($_POST) {
         if(count($submitted)>0){
             $pane['submitted'] = '<div role="tabpanel" class="tab-pane" id="submitted">
                             <div class="result-count">'.count($submitted).' Results Found</div>
-                            ' . implode("\n\r",$this->report->print_table('application_submitted',$fields,$submitted,$info,$class,false)) .'
+                            ' . implode("\n\r",$this->report->print_table('application_submitted',$select_applicant_fields,$submitted,$info,$class,false)) .'
                         </div>';
         } else {
             $pane['submitted'] = '<div role="tabpanel" class="tab-pane" id="submitted">
@@ -199,7 +216,7 @@ if($_POST) {
         if(count($incomplete)>0){
             $pane['incomplete'] = '<div role="tabpanel" class="tab-pane" id="incomplete">
                             <div class="result-count">'.count($incomplete).' Results Found</div>
-                            ' . implode("\n\r",$this->report->print_table('application_incomplete',$fields,$incomplete,$info,$class,false)) .'
+                            ' . implode("\n\r",$this->report->print_table('application_incomplete',$select_applicant_fields,$incomplete,$info,$class,false)) .'
                         </div>';
         } else {
             $pane['incomplete'] = '<div role="tabpanel" class="tab-pane" id="incomplete">
@@ -208,8 +225,8 @@ if($_POST) {
         }
         if(count($renewal)>0){
             $pane['renewal'] = '<div role="tabpanel" class="tab-pane" id="renewal">
-                            <div class="result-count">'.count($renewal).' Results Found</div>
-                            ' . implode("\n\r",$this->report->print_table('renewal',$fields2,$renewals,$info,$class,false)) .'
+                            <div class="result-count">'.count($renewals).' Results Found</div>
+                            ' . implode("\n\r",$this->report->print_table('renewal',$select_renewal_fields,$renewals,$info,$class,false)) .'
                         </div>';
         } else {
             $pane['renewal'] = '<div role="tabpanel" class="tab-pane" id="renewal">
@@ -221,10 +238,15 @@ if($_POST) {
     }
 }
 print '<h2>Scholarship Application Reports</h2>';
-$this->search->javascript['collapse-btn'] = '
-        $(".collapse-button").click(function(){
+$this->search->javascript['collapse-fields'] = '
+        $(".collapse-fields").click(function(){
             $(this).find("i").toggleClass("fa-compress").toggleClass("fa-expand");
-            $(".collapsable").slideToggle("slow");
+            $(".collapsable-fields").slideToggle("slow");
+        });';
+$this->search->javascript['collapse-search'] = '
+        $(".collapse-search").click(function(){
+            $(this).find("i").toggleClass("fa-compress").toggleClass("fa-expand");
+            $(".collapsable-search").slideToggle("slow");
         });';
 if(!$_POST) {
     $this->search->javascript['search-btn'] = '
@@ -233,7 +255,7 @@ if(!$_POST) {
             $(".search-button input").val("SEARCH");
         });';
 }
-$this->search->print_form('consolidated');
+$this->search->print_form('consolidated',true,$fields);
 if($_POST) {
     print $tabs;
     print '

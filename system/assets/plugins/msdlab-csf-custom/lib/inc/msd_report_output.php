@@ -210,6 +210,12 @@ class MSDLAB_Report_Output{
                     case 'HighSchoolId':
                         $printval = $this->queries->get_highschool_by_id($user->{$value});
                         break;
+                    case 'ScholarshipId':
+                        $printval = $this->queries->get_scholarship_by_id($user->{$value});
+                        break;
+                    case 'EmployerId':
+                        $printval = $this->queries->get_employer_by_id($user->{$value});
+                        break;
                     case 'FirstGenerationStudent':
                     case 'IsIndependent':
                     case 'PlayedHighSchoolSports':
@@ -226,6 +232,20 @@ class MSDLAB_Report_Output{
                     case 'GuardianReporting':
                     case 'Homeowner':
                     case 'InformationSharingAllowedByGuardian':
+                    case 'ResumeOK':
+                    case 'TranscriptOK':
+                    case 'FinancialAidOK':
+                    case 'FAFSAOK':
+                    case 'ApplicationLocked':
+                    case 'AppliedBefore':
+                    case 'Rejected':
+                    case 'AppliedBefore':
+                    case 'TermsAcknowledged':
+                    case 'RenewalLocked':
+                    case 'Reject':
+                    case 'Renew':
+                    case 'ThankYou':
+                    case 'Signed':
                         $printval = $user->{$value}>0?'Yes':'No';
                         break;
                     case 'Activities':

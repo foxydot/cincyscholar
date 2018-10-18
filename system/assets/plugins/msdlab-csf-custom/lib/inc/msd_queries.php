@@ -244,7 +244,7 @@ class MSDLAB_Queries{
                  }
              }
              if($table == 'payment') { //handling payments with keys
-                 ts_data($data[$table]);
+                 //ts_data($data[$table]);
 
                  foreach ($data[$table] as $key => $datum) {
                      $select_sql = 'SELECT paymentid FROM ' . $table . ' WHERE ' . $table . 'key = "' . $key . '" AND ' . $where[$table] . ';';
@@ -1280,6 +1280,13 @@ class MSDLAB_Queries{
         $sql = "SELECT MajorName FROM major WHERE MajorId = '".$id."';";
         $result = $wpdb->get_results( $sql );
         return $result[0]->MajorName;
+    }
+
+    function get_employer_by_id($id){
+        global $wpdb;
+        $sql = "SELECT employername FROM employer WHERE employerid = '".$id."';";
+        $result = $wpdb->get_results( $sql );
+        return $result[0]->employername;
     }
 
     function get_educationalattainment_by_id($id){

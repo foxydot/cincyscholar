@@ -82,7 +82,7 @@ class MSDLab_ReportControls{
         return apply_filters('msdlab_csf_manage_date_search_type', $ret);
     }
 
-    public function print_form($id = 'application',$echo = true){
+    public function print_form($id = 'application',$echo = true,$fields = false){
         $ret = array();
 
         //select populate
@@ -100,14 +100,22 @@ class MSDLab_ReportControls{
         $fund = $this->queries->get_select_array_from_db('fund', 'FundId', 'Name','FundId');
         $educational_attainment = $this->queries->get_select_array_from_db('educationalattainment', 'EducationalAttainmentId', 'EducationalAttainment','EducationalAttainmentId');
         $bool_options = array('0'=>'No','1'=>'Yes');
-
-        $ret['collapse_search'] = '<div class="collapse-button"><i class="fa fa-compress"><span class="screen-reader-text">Collapse</span></i></div>';
         $ret['search_all_button'] = $this->search_button('SEARCH','search_button_top');
         $ret['reset_button_top'] = $this->reset_button();
 
-        $ret['collapsable'] = '<div class="collapsable">';
 
+        $ret['collapse_fields'] = '<div class="collapse-button collapse-fields"><i class="fa fa-compress"><span class="screen-reader-text">Collapse</span> Fields</i></div>';
+        $ret['fields_to_get_label'] = '<h4>Columns to return:</h4>';
+        $ret[] = '<div class="collapsable collapsable-fields">';
+        $ret['applicant_fields'] = $this->search_checkbox_array('applicant_fields',null,'Applicant Fields',$fields['applicant'],null,array('col-sm-12'));
+        $ret['renewal_fields'] = $this->search_checkbox_array('renewal_fields',null,'Renewal Fields',$fields['renewal'],null,array('col-sm-12'));
+        $ret['financial_fields'] = $this->search_checkbox_array('financial_fields',null,'Financial Fields',$fields['financial'],null,array('col-sm-12'));
+        $ret['award_fields'] = $this->search_checkbox_array('award_fields',null,'Award Fields',$fields['award'],null,array('col-sm-12'));
+        $ret[] = '</div>';
+
+        $ret['collapse_search'] = '<div class="collapse-button collapse-search"><i class="fa fa-compress"><span class="screen-reader-text">Collapse</span> Search</i></div>';
         $ret['instructional_text'] = '<h4>Search By:</h4>';
+        $ret['collapsable'] = '<div class="collapsable collapsable-search">';
         switch($id){
             case 'renewal':
                 $ret['search_by_name'] = $this->search_box('Name:','','name_search');
@@ -287,6 +295,38 @@ class MSDLab_ReportControls{
         $class = implode(" ",apply_filters('msdlab_csf_manage_boolean_search_'.$id.'_class', $class));
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
         return apply_filters('msdlab_csf_manage_boolean_search_'.$id.'', $ret);
+    }
+
+    public function search_checkbox_array($id, $value = null, $title = "", $options = array(), $validation = null, $class = array('checkbox')){
+        $vals = array();
+        $id_array = explode('_',$id);
+        $col = $id_array[1];
+        foreach ($value AS $k => $v){
+            $vals[] = $v->{$col};
+        }
+        $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$title.'</label>');
+        //iterate through $options
+        foreach ($options AS $k => $v){
+            $options_array[] = '<div class="'.$id.'_'.$k.'_wrapper checkbox-wrapper"><input id="'.$id.'_'.$k.'" name="'.$id.'_input[]" type="checkbox" value="'.$k.'"'.$this->checked_in_array($vals,$k,false).' /> '.$v.'</div>';
+        }
+        $options_str = '<div class="checkbox-array-options-wrapper"><div class="inner-wrap">'.implode("\n\r",$options_array).'</div></div>';
+        $form_field = apply_filters('msdlab_csf_'.$id.'_field', $options_str );
+        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
+        $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
+        return apply_filters('msdlab_csf_'.$id.'', $ret);
+    }
+
+    public function checked_in_array($array,$current,$echo = true){
+        if(!is_array($array)){return false;}
+        if(in_array($current,$array)){
+            if($echo){
+                print "checked";
+            } else {
+                return "checked";
+            }
+        } else {
+            return false;
+        }
     }
 
     public function reset_button($button = "RESET", $id = "reset_button", $class = array('reset-button')){
