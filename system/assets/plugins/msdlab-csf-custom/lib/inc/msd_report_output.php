@@ -94,6 +94,7 @@ class MSDLAB_Report_Output{
      * @return string The footer to be printed, or void if the param $echo is true.
      */
     public function print_table($id, $fields, $result, $info, $class = array(), $echo = true){
+        ts_data($fields);
         $class = implode(" ",apply_filters('msdlab_csf_report_display_table_class', $class));
         $ret = array();
         $ret['start_table'] = '<table id="'.$id.'" class="'.$class.'">';

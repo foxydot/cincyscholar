@@ -107,8 +107,14 @@ if($_POST) {
         $(".collapsable").css("display","none");
         $(".collapse-button i").removeClass("fa-compress").addClass("fa-expand");
         ';
-    $results_exisit = false;
-    $select_applicant_fields = array_merge($fields['required'],$_POST['applicant_fields_input'],$_POST['financial_fields_input'],$_POST['award_fields_input']);
+    $results_exist = false;
+    $applicant_fields_input = $_POST['applicant_fields_input']?$_POST['applicant_fields_input']:array();
+    $financial_fields_input = $_POST['financial_fields_input']?$_POST['financial_fields_input']:array();
+    $award_fields_input = $_POST['award_fields_input']?$_POST['award_fields_input']:array();
+    $renewal_fields_input = $_POST['renewal_fields_input']?$_POST['renewal_fields_input']:array();
+
+    $select_applicant_fields = array_merge($fields['required'],$applicant_fields_input,$financial_fields_input,$award_fields_input);
+    //ts_data($select_applicant_fields);
     $result = $this->queries->get_report_set($select_applicant_fields);
     //ts_data($result);
     $submitted = $incomplete = $awarded = array();
@@ -145,10 +151,10 @@ if($_POST) {
             $incomplete[] = $applicant;
         }
     }
-    if(count($awarded) > 0 || count($submitted) > 0 || count($incomplete) > 0){$results_exisit = true;}
+    if(count($awarded) > 0 || count($submitted) > 0 || count($incomplete) > 0){$results_exist = true;}
 
 
-    $select_renewal_fields = array_merge($fields['required'],$fields['renewal_required'],$_POST['applicant_fields_input'],$_POST['renewal_fields_input'],$_POST['financial_fields_input'],$_POST['award_fields_input']);
+    $select_renewal_fields = array_merge($fields['required'],$fields['renewal_required'],$fields['required'],$applicant_fields_input,$renewal_fields_input,$financial_fields_input,$award_fields_input);
 
     $result = $this->queries->get_renewal_report_set($select_renewal_fields);
     //ts_data($result);
@@ -181,11 +187,10 @@ if($_POST) {
         }
     }
 
-    if(count($awarded) > 0 || count($renewals) > 0){$results_exisit = true;}
-
+    if(count($awarded) > 0 || count($renewals) > 0){$results_exist = true;}
     $info = '';
     $class = array('table','table-bordered','sortable');
-    if($results_exisit){
+    if($results_exist){
         $tabs = '
 <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#awarded" aria-controls="awarded" role="tab" data-toggle="tab">Scholarship Awardees</a></li>
