@@ -345,3 +345,31 @@ div.submit,div.delete{
     column-gap: 2em;
   }
 }
+
+ul.menu{
+  li{
+    display: inline-block;
+    color: #555;
+    border-color: #ccc;
+    background: #f7f7f7;
+    box-shadow: 0 1px 0 #ccc;
+    font-size: 13px;
+    cursor: pointer;
+    border-width: 1px;
+    border-style: solid;
+    -webkit-appearance: none;
+    border-radius: 3px;
+    white-space: nowrap;
+    box-sizing: border-box;
+    height: 30px;
+    line-height: 28px;
+    padding: 0 12px 2px;
+    &:hover{
+      background: #f0f0f0;
+    }
+    a{
+      color: #555;
+      text-decoration: none;
+    }
+  }
+}

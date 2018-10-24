@@ -200,6 +200,18 @@ class MSDLAB_SettingControls{
                 $ret['javascript'] = $this->build_javascript($form_id);
                 $ret['ftr'] = $this->form_footer();
                 break;
+            case 'csf_county':
+                $states = array('IN' => 'Indiana','KY' => 'Kentucky','OH' => 'Ohio');
+                $county_id = isset($data->CountyId)?$data->CountyId:$this->queries->get_next_id('county','CountyId');
+                $ret['hdr'] = $this->form_header($form_id);
+                $ret['county_id'] = $this->settings_hidden('county_CountyId',$data->CountyId,'County ID',null,null);
+                $ret['name'] = $this->settings_textfield('County Name','county_County',array('large','setting-field'),$data->County);
+                $ret['state'] = $this->settings_select('county_StateID',$data->StateID?$data->StateID:'','State',array('','Select'),$states,null, array('large','setting-field'));
+                $ret['submit'] = $this->settings_button();
+                $ret['nonce'] = wp_nonce_field( $form_id );
+                $ret['javascript'] = $this->build_javascript($form_id);
+                $ret['ftr'] = $this->form_footer();
+                break;
             case 'csf_major':
                 $programlength = array(0,1,2,3,4,5,6,7,8);
                 $major_id = isset($data->MajorId)?$data->MajorId:$this->queries->get_next_id('major','MajorId');

@@ -92,6 +92,12 @@ class MSDLAB_Queries{
         $results = $this->get_result_set($data);
         return $results;
     }
+    public function get_all_counties($options = array()){
+        $data['tables']['county'] = array('*');
+        $data['order'] = 'StateId, County ASC';
+        $results = $this->get_result_set($data);
+        return $results;
+    }
 
 
     /*
@@ -177,6 +183,12 @@ class MSDLAB_Queries{
     public function get_major($major_id){
         $data['tables']['major'] = array('*');
         $data['where'] = 'major.MajorId = '.$major_id;
+        $results = $this->get_result_set($data);
+        return $results[0];
+    }
+    public function get_county($county_id){
+        $data['tables']['county'] = array('*');
+        $data['where'] = 'county.CountyId = '.$county_id;
         $results = $this->get_result_set($data);
         return $results[0];
     }
