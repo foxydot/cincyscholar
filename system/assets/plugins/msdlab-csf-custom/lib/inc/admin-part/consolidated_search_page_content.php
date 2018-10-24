@@ -154,7 +154,7 @@ if($_POST) {
     if(count($awarded) > 0 || count($submitted) > 0 || count($incomplete) > 0){$results_exist = true;}
 
 
-    $select_renewal_fields = array_merge($fields['required'],$fields['renewal_required'],$fields['required'],$applicant_fields_input,$renewal_fields_input,$financial_fields_input,$award_fields_input);
+    $select_renewal_fields = array_merge($fields['required'],$fields['renewal_required'],$applicant_fields_input,$renewal_fields_input,$financial_fields_input,$award_fields_input);
 
     $result = $this->queries->get_renewal_report_set($select_renewal_fields);
     //ts_data($result);
