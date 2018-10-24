@@ -98,6 +98,18 @@ class MSDLAB_Queries{
         $results = $this->get_result_set($data);
         return $results;
     }
+    public function get_all_ethnicities($options = array()){
+        $data['tables']['ethnicity'] = array('*');
+        $data['order'] = 'Ethnicity ASC';
+        $results = $this->get_result_set($data);
+        return $results;
+    }
+    public function get_all_genders($options = array()){
+        $data['tables']['sex'] = array('*');
+        $data['order'] = 'Sex ASC';
+        $results = $this->get_result_set($data);
+        return $results;
+    }
 
 
     /*
@@ -195,6 +207,18 @@ class MSDLAB_Queries{
     public function get_scholarship($scholarship_id){
         $data['tables']['scholarship'] = array('*');
         $data['where'] = 'scholarship.ScholarshipId = '.$scholarship_id;
+        $results = $this->get_result_set($data);
+        return $results[0];
+    }
+    public function get_ethnicity($ethnicity_id){
+        $data['tables']['ethnicity'] = array('*');
+        $data['where'] = 'ethnicity.EthnicityId = '.$ethnicity_id;
+        $results = $this->get_result_set($data);
+        return $results[0];
+    }
+    public function get_gender($gender_id){
+        $data['tables']['sex'] = array('*');
+        $data['where'] = 'sex.SexId = '.$gender_id;
         $results = $this->get_result_set($data);
         return $results[0];
     }

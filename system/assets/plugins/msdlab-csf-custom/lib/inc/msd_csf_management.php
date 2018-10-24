@@ -88,6 +88,10 @@ if (!class_exists('MSDLab_CSF_Management')) {
             add_submenu_page(null,__('Scholarship Recommendations'),__('Scholarship Recommendations'),'manage_csf','scholarship-recommends', array(&$this,'scholarship_recommends_page_content'));
             add_submenu_page(null,__('County Settings'),__('County Settings'),'manage_csf','csf-county', array(&$this,'county_page_content'));
             add_submenu_page(null,__('Edit County'),__('Edit County'),'manage_csf','county-edit', array(&$this,'county_edit_page_content'));
+            add_submenu_page(null,__('Ethnicity Settings'),__('Ethnicity Settings'),'manage_csf','csf-ethnicity', array(&$this,'ethnicity_page_content'));
+            add_submenu_page(null,__('Edit Ethnicity'),__('Edit Ethnicity'),'manage_csf','ethnicity-edit', array(&$this,'ethnicity_edit_page_content'));
+            add_submenu_page(null,__('Gender Settings'),__('Gender Settings'),'manage_csf','csf-gender', array(&$this,'gender_page_content'));
+            add_submenu_page(null,__('Edit Gender'),__('Edit Gender'),'manage_csf','gender-edit', array(&$this,'gender_edit_page_content'));
             add_submenu_page('csf-manage',__('Donor Management'),__('Donor Management'),'manage_csf','csf-donors', array(&$this,'donor_page_content'));
             add_submenu_page(null,__('Edit Donor'),__('Edit Donor'),'manage_csf','donor-edit', array(&$this,'donor_edit_page_content'));
 
@@ -122,6 +126,8 @@ if (!class_exists('MSDLab_CSF_Management')) {
             $ret[] = '<li><a href="admin.php?page=csf-major" class="page-title-action">Major Settings</a></li>';
             $ret[] = '<li><a href="admin.php?page=csf-scholarship" class="page-title-action">Scholarship Settings</a></li>';
             $ret[] = '<li><a href="admin.php?page=csf-county" class="page-title-action">County Settings</a></li>';
+            $ret[] = '<li><a href="admin.php?page=csf-ethnicity" class="page-title-action">Ethnicity Settings</a></li>';
+            $ret[] = '<li><a href="admin.php?page=csf-gender" class="page-title-action">Gender Settings</a></li>';
             $ret[] = '</ul>';
             if($print){
                 print implode("\n\r", $ret);
@@ -182,6 +188,30 @@ if (!class_exists('MSDLab_CSF_Management')) {
         function county_edit_page_content(){
             $this->setting_page_content_menu();
             include_once(plugin_dir_path(__FILE__).'/admin-part/county_edit_page_content.php');
+
+        }
+
+
+        function ethnicity_page_content(){
+            $this->setting_page_content_menu();
+            include_once(plugin_dir_path(__FILE__).'/admin-part/ethnicity_page_content.php');
+
+        }
+        function ethnicity_edit_page_content(){
+            $this->setting_page_content_menu();
+            include_once(plugin_dir_path(__FILE__).'/admin-part/ethnicity_edit_page_content.php');
+
+        }
+
+
+        function gender_page_content(){
+            $this->setting_page_content_menu();
+            include_once(plugin_dir_path(__FILE__).'/admin-part/gender_page_content.php');
+
+        }
+        function gender_edit_page_content(){
+            $this->setting_page_content_menu();
+            include_once(plugin_dir_path(__FILE__).'/admin-part/gender_edit_page_content.php');
 
         }
 

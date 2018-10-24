@@ -240,6 +240,26 @@ class MSDLAB_SettingControls{
                 $ret['javascript'] = $this->build_javascript($form_id);
                 $ret['ftr'] = $this->form_footer();
                 break;
+            case 'csf_ethnicity':
+                $ethnicity_id = isset($data->EthnicityId)?$data->EthnicityId:$this->queries->get_next_id('ethnicity','EthnicityId');
+                $ret['hdr'] = $this->form_header($form_id);
+                $ret['ethnicity_id'] = $this->settings_hidden('ethnicity_EthnicityId',$data->EthnicityId,'Ethnicity ID',null,null);
+                $ret['name'] = $this->settings_textfield('Ethnicity Name','ethnicity_Ethnicity',array('large','setting-field'),$data->Ethnicity);
+                $ret['submit'] = $this->settings_button();
+                $ret['nonce'] = wp_nonce_field( $form_id );
+                $ret['javascript'] = $this->build_javascript($form_id);
+                $ret['ftr'] = $this->form_footer();
+                break;
+            case 'csf_gender':
+                $sex_id = isset($data->SexId)?$data->SexId:$this->queries->get_next_id('sex','SexId');
+                $ret['hdr'] = $this->form_header($form_id);
+                $ret['sex_id'] = $this->settings_hidden('sex_SexId',$data->SexId,'Gender ID',null,null);
+                $ret['name'] = $this->settings_textfield('Gender Name','sex_Sex',array('large','setting-field'),$data->Sex);
+                $ret['submit'] = $this->settings_button();
+                $ret['nonce'] = wp_nonce_field( $form_id );
+                $ret['javascript'] = $this->build_javascript($form_id);
+                $ret['ftr'] = $this->form_footer();
+                break;
         }
         return implode("\n",$ret);
     }

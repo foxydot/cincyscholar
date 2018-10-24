@@ -21,8 +21,7 @@ if (count($counties) > 0) {
     }
     $linkstrip = implode(' | ', $links);
     foreach ($counties AS $county) {
-        $cell['county_name'] = '<span id="counties-' . substr($county->County, 0, 1) . '"><stong>' . $county->County . ' ('.$county->StateID.')</stong></span><br />
-'. $types[$county->SchoolTypeId];
+        $cell['county_name'] = '<span id="counties-' . substr($county->County, 0, 1) . '"><stong>' . $county->County . ' ('.$county->StateID.')</stong></span>';
         $cell['edit'] = '<a href="admin.php?page=county-edit&county_id=' . $county->CountyId . '" class="button">Edit County</a>';
         $row[] = implode('</td><td>', $cell);
     }
