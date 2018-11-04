@@ -75,7 +75,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
             add_submenu_page('csf-manage',__('All Students'),__('Search All Students'),'manage_csf','csf-students', array(&$this,'consolidated_search_page_content'));
             add_submenu_page(null,__('View Student'),__('View Student'),'manage_csf','student-edit', array(&$this,'single_student_record_page_content'));
             add_submenu_page(null,__('Recommend Student'),__('Recommend Student'),'manage_csf','student-recommend', array(&$this,'single_student_recommend_page_content'));
-            add_submenu_page('csf-manage',__('Settings'),__('Settings'),'manage_csf','csf-general', array(&$this,'general_page_content'));
+            add_submenu_page('csf-manage',__('Settings'),__('Settings'),'manage_csf','csf-settings', array(&$this,'general_page_content'));
             add_submenu_page(null,__('College Settings'),__('College Settings'),'manage_csf','csf-college', array(&$this,'college_page_content'));
             add_submenu_page(null,__('Edit College'),__('Edit College'),'manage_csf','college-edit', array(&$this,'college_edit_page_content'));
             add_submenu_page(null,__('Edit Contact'),__('Edit Contact'),'manage_csf','contact-edit', array(&$this,'contact_edit_page_content'));
@@ -92,6 +92,20 @@ if (!class_exists('MSDLab_CSF_Management')) {
             add_submenu_page(null,__('Edit Ethnicity'),__('Edit Ethnicity'),'manage_csf','ethnicity-edit', array(&$this,'ethnicity_edit_page_content'));
             add_submenu_page(null,__('Gender Settings'),__('Gender Settings'),'manage_csf','csf-gender', array(&$this,'gender_page_content'));
             add_submenu_page(null,__('Edit Gender'),__('Edit Gender'),'manage_csf','gender-edit', array(&$this,'gender_edit_page_content'));
+            add_submenu_page(null,__('Fund Settings'),__('Fund Settings'),'manage_csf','csf-fund', array(&$this,'fund_page_content'));
+            add_submenu_page(null,__('Edit Fund'),__('Edit Fund'),'manage_csf','fund-edit', array(&$this,'fund_edit_page_content'));
+            add_submenu_page(null,__('High School Type Settings'),__('High School Type Settings'),'manage_csf','csf-highschooltype', array(&$this,'highschooltype_page_content'));
+            add_submenu_page(null,__('Edit High School Type'),__('Edit High School Type'),'manage_csf','highschooltype-edit', array(&$this,'highschooltype_edit_page_content'));
+            add_submenu_page(null,__('Employer Settings'),__('Employer Settings'),'manage_csf','csf-employer', array(&$this,'employer_page_content'));
+            add_submenu_page(null,__('Edit Employer'),__('Edit Employer'),'manage_csf','employer-edit', array(&$this,'employer_edit_page_content'));
+            add_submenu_page(null,__('Educational Attainment Settings'),__('Educational Attainment Settings'),'manage_csf','csf-educationalattainment', array(&$this,'educationalattainment_page_content'));
+            add_submenu_page(null,__('Edit Educational Attainment'),__('Edit Educational Attainment'),'manage_csf','educationalattainment-edit', array(&$this,'educationalattainment_edit_page_content'));
+            add_submenu_page(null,__('Donor Type Settings'),__('Donor Type Settings'),'manage_csf','csf-donortype', array(&$this,'donortype_page_content'));
+            add_submenu_page(null,__('Edit Donor Type'),__('Edit Donor Type'),'manage_csf','donortype-edit', array(&$this,'donortype_edit_page_content'));
+            add_submenu_page(null,__('Institution Term Type Settings'),__('Institution Term Type Settings'),'manage_csf','csf-institutiontermtype', array(&$this,'institutiontermtype_page_content'));
+            add_submenu_page(null,__('Edit Institution Term Type'),__('Edit Institution Term Type'),'manage_csf','institutiontermtype-edit', array(&$this,'institutiontermtype_edit_page_content'));
+
+
             add_submenu_page('csf-manage',__('Donor Management'),__('Donor Management'),'manage_csf','csf-donors', array(&$this,'donor_page_content'));
             add_submenu_page(null,__('Edit Donor'),__('Edit Donor'),'manage_csf','donor-edit', array(&$this,'donor_edit_page_content'));
 
@@ -104,30 +118,34 @@ if (!class_exists('MSDLab_CSF_Management')) {
             print '<h1 class="wp-heading-inline">'.get_bloginfo('name').' Admin Tools</h1>';
             print '<hr class="wp-header-end">';
             print '<h3>Reporting</h3>';
-            //print '<a href="admin.php?page=csf-report" class="page-title-action">Application Reports</a>';
-            //print '<a href="admin.php?page=csf-renewals" class="page-title-action">Renewal Reports</a>';
-            print '<a href="admin.php?page=csf-students" class="page-title-action">Search All Students</a>';
+            print '<ul class="menu">';
+            print '<li><a href="admin.php?page=csf-students" >Search All Students</a></li>';
+            print '</ul>';
             print '<h3>Settings</h3>';
-            print '<a href="admin.php?page=csf-settings" class="page-title-action">General Settings</a>';
-            print '<a href="admin.php?page=csf-college" class="page-title-action">College and Contact Settings</a>';
-            print '<a href="admin.php?page=csf-highschool" class="page-title-action">High School Settings</a>';
-            print '<a href="admin.php?page=csf-major" class="page-title-action">Major Settings</a>';
-            print '<a href="admin.php?page=csf-scholarship" class="page-title-action">Scholarship Settings</a>';
+            $this->setting_page_content_menu();
             print '<h3>Users</h3>';
-            print '<a href="admin.php?page=csf-donors" class="page-title-action">Donor Management</a>';
+            print '<ul class="menu">';
+            print '<li><a href="admin.php?page=csf-donors" >Donor Management</a></li>';
+            print '<li><a href="admin.php?page=csf-donortype" >Donor Type Setting</a></li>';
+            print '</ul>';
         }
 
         function setting_page_content_menu($print = true){
             $ret = array();
             $ret[] = '<ul class="menu">';
-            $ret[] = '<li><a href="admin.php?page=csf-settings" class="page-title-action">General Settings</a></li>';
-            $ret[] = '<li><a href="admin.php?page=csf-college" class="page-title-action">College and Contact Settings</a></li>';
-            $ret[] = '<li><a href="admin.php?page=csf-highschool" class="page-title-action">High School Settings</a></li>';
-            $ret[] = '<li><a href="admin.php?page=csf-major" class="page-title-action">Major Settings</a></li>';
-            $ret[] = '<li><a href="admin.php?page=csf-scholarship" class="page-title-action">Scholarship Settings</a></li>';
-            $ret[] = '<li><a href="admin.php?page=csf-county" class="page-title-action">County Settings</a></li>';
-            $ret[] = '<li><a href="admin.php?page=csf-ethnicity" class="page-title-action">Ethnicity Settings</a></li>';
-            $ret[] = '<li><a href="admin.php?page=csf-gender" class="page-title-action">Gender Settings</a></li>';
+            $ret[] = '<li><a href="admin.php?page=csf-settings" >General Settings</a></li>';
+            $ret[] = '<li><a href="admin.php?page=csf-college" >College and Contact Settings</a></li>';
+            $ret[] = '<li><a href="admin.php?page=csf-highschool" >High School Settings</a></li>';
+            $ret[] = '<li><a href="admin.php?page=csf-major" >Major Settings</a></li>';
+            $ret[] = '<li><a href="admin.php?page=csf-scholarship" >Scholarship Settings</a></li>';
+            $ret[] = '<li><a href="admin.php?page=csf-county" >County Settings</a></li>';
+            $ret[] = '<li><a href="admin.php?page=csf-ethnicity" >Ethnicity Settings</a></li>';
+            $ret[] = '<li><a href="admin.php?page=csf-gender" >Gender Settings</a></li>';
+            $ret[] = '<li><a href="admin.php?page=csf-fund" >Fund Settings</a></li>';
+            $ret[] = '<li><a href="admin.php?page=csf-highschooltype" >High School Type Settings</a></li>';
+            $ret[] = '<li><a href="admin.php?page=csf-employer" >Employer Settings</a></li>';
+            $ret[] = '<li><a href="admin.php?page=csf-educationalattainment" >Educational Attainment Settings</a></li>';
+            $ret[] = '<li><a href="admin.php?page=csf-institutiontermtype" >Institution Term Type Settings</a></li>';
             $ret[] = '</ul>';
             if($print){
                 print implode("\n\r", $ret);
@@ -191,6 +209,27 @@ if (!class_exists('MSDLab_CSF_Management')) {
 
         }
 
+        function educationalattainment_page_content(){
+            $this->setting_page_content_menu();
+            include_once(plugin_dir_path(__FILE__).'/admin-part/educationalattainment_page_content.php');
+
+        }
+        function educationalattainment_edit_page_content(){
+            $this->setting_page_content_menu();
+            include_once(plugin_dir_path(__FILE__).'/admin-part/educationalattainment_edit_page_content.php');
+
+        }
+
+        function employer_page_content(){
+            $this->setting_page_content_menu();
+            include_once(plugin_dir_path(__FILE__).'/admin-part/employer_page_content.php');
+
+        }
+        function employer_edit_page_content(){
+            $this->setting_page_content_menu();
+            include_once(plugin_dir_path(__FILE__).'/admin-part/employer_edit_page_content.php');
+
+        }
 
         function ethnicity_page_content(){
             $this->setting_page_content_menu();
@@ -204,6 +243,17 @@ if (!class_exists('MSDLab_CSF_Management')) {
         }
 
 
+
+        function fund_page_content(){
+            $this->setting_page_content_menu();
+            include_once(plugin_dir_path(__FILE__).'/admin-part/fund_page_content.php');
+
+        }
+        function fund_edit_page_content(){
+            $this->setting_page_content_menu();
+            include_once(plugin_dir_path(__FILE__).'/admin-part/fund_edit_page_content.php');
+
+        }
         function gender_page_content(){
             $this->setting_page_content_menu();
             include_once(plugin_dir_path(__FILE__).'/admin-part/gender_page_content.php');
@@ -224,6 +274,17 @@ if (!class_exists('MSDLab_CSF_Management')) {
         function highschool_edit_page_content(){
             $this->setting_page_content_menu();
             include_once(plugin_dir_path(__FILE__).'/admin-part/highschool_edit_page_content.php');
+
+        }
+        function highschooltype_page_content(){
+            $this->setting_page_content_menu();
+            include_once(plugin_dir_path(__FILE__).'/admin-part/highschooltype_page_content.php');
+
+        }
+
+        function highschooltype_edit_page_content(){
+            $this->setting_page_content_menu();
+            include_once(plugin_dir_path(__FILE__).'/admin-part/highschooltype_edit_page_content.php');
 
         }
 
@@ -257,6 +318,24 @@ if (!class_exists('MSDLab_CSF_Management')) {
         }
         function donor_edit_page_content(){
             include_once(plugin_dir_path(__FILE__).'/admin-part/donor_edit_page_content.php');
+
+        }
+        function donortype_page_content(){
+            include_once(plugin_dir_path(__FILE__).'/admin-part/donortype_page_content.php');
+
+        }
+        function donortype_edit_page_content(){
+            include_once(plugin_dir_path(__FILE__).'/admin-part/donortype_edit_page_content.php');
+
+        }
+        function institutiontermtype_page_content(){
+            $this->setting_page_content_menu();
+            include_once(plugin_dir_path(__FILE__).'/admin-part/institutiontermtype_page_content.php');
+
+        }
+        function institutiontermtype_edit_page_content(){
+            $this->setting_page_content_menu();
+            include_once(plugin_dir_path(__FILE__).'/admin-part/institutiontermtype_edit_page_content.php');
 
         }
 

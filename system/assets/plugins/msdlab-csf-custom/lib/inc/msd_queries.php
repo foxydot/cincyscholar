@@ -66,12 +66,6 @@ class MSDLAB_Queries{
         $results = $this->get_result_set($data);
         return $results;
     }
-    public function get_all_highschooltypes($options = array()){
-        $data['tables']['highschooltype'] = array('*');
-        $data['order'] = 'Type ASC';
-        $results = $this->get_result_set($data);
-        return $results;
-    }
     public function get_all_majors($options = array()){
         $data['tables']['major'] = array('*');
         $data['where'] = 'major.Publish = 1';
@@ -110,7 +104,37 @@ class MSDLAB_Queries{
         $results = $this->get_result_set($data);
         return $results;
     }
+    public function get_all_highschooltypes($options = array()){
+        $data['tables']['highschooltype'] = array('*');
+        $data['order'] = 'Type ASC';
+        $results = $this->get_result_set($data);
+        return $results;
+    }
 
+    public function get_all_employers($options = array()){
+        $data['tables']['employer'] = array('*');
+        $data['order'] = 'employername ASC';
+        $results = $this->get_result_set($data);
+        return $results;
+    }
+    public function get_all_educationalattainments($options = array()){
+        $data['tables']['educationalattainment'] = array('*');
+        $data['order'] = 'EducationalAttainment ASC';
+        $results = $this->get_result_set($data);
+        return $results;
+    }
+    public function get_all_donortypes($options = array()){
+        $data['tables']['donortype'] = array('*');
+        $data['order'] = 'DonorType ASC';
+        $results = $this->get_result_set($data);
+        return $results;
+    }
+    public function get_all_institutiontermtypes($options = array()){
+        $data['tables']['institutiontermtype'] = array('*');
+        $data['order'] = 'InstitutionTermType ASC';
+        $results = $this->get_result_set($data);
+        return $results;
+    }
 
     /*
      * Setting Queries
@@ -210,6 +234,18 @@ class MSDLAB_Queries{
         $results = $this->get_result_set($data);
         return $results[0];
     }
+    public function get_educationalattainment($educationalattainment_id){
+        $data['tables']['educationalattainment'] = array('*');
+        $data['where'] = 'educationalattainment.EducationalAttainmentId = '.$educationalattainment_id;
+        $results = $this->get_result_set($data);
+        return $results[0];
+    }
+    public function get_employer($employer_id){
+        $data['tables']['employer'] = array('*');
+        $data['where'] = 'employer.employerid = '.$employer_id;
+        $results = $this->get_result_set($data);
+        return $results[0];
+    }
     public function get_ethnicity($ethnicity_id){
         $data['tables']['ethnicity'] = array('*');
         $data['where'] = 'ethnicity.EthnicityId = '.$ethnicity_id;
@@ -219,6 +255,30 @@ class MSDLAB_Queries{
     public function get_gender($gender_id){
         $data['tables']['sex'] = array('*');
         $data['where'] = 'sex.SexId = '.$gender_id;
+        $results = $this->get_result_set($data);
+        return $results[0];
+    }
+    public function get_fund($fund_id){
+        $data['tables']['fund'] = array('*');
+        $data['where'] = 'fund.FundId = '.$fund_id;
+        $results = $this->get_result_set($data);
+        return $results[0];
+    }
+    public function get_highschooltype($type_id){
+        $data['tables']['highschooltype'] = array('*');
+        $data['where'] = 'highschooltype.HighSchoolTypeId = '.$type_id;
+        $results = $this->get_result_set($data);
+        return $results[0];
+    }
+    public function get_donortype($type_id){
+        $data['tables']['donortype'] = array('*');
+        $data['where'] = 'donortype.DonorTypeId = '.$type_id;
+        $results = $this->get_result_set($data);
+        return $results[0];
+    }
+    public function get_institutiontermtype($type_id){
+        $data['tables']['institutiontermtype'] = array('*');
+        $data['where'] = 'institutiontermtype.InstitutionTermTypeId = '.$type_id;
         $results = $this->get_result_set($data);
         return $results[0];
     }

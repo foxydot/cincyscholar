@@ -260,6 +260,68 @@ class MSDLAB_SettingControls{
                 $ret['javascript'] = $this->build_javascript($form_id);
                 $ret['ftr'] = $this->form_footer();
                 break;
+            case 'csf_fund':
+                $fund_id = isset($data->FundId)?$data->FundId:$this->queries->get_next_id('fund','FundId');
+                $ret['hdr'] = $this->form_header($form_id);
+                $ret['fund_id'] = $this->settings_hidden('fund_FundId',$data->FundId,'Fund ID',null,null);
+                $ret['name'] = $this->settings_textfield('Fund Name','fund_Name',array('large','setting-field'),$data->Name);
+                $ret['submit'] = $this->settings_button();
+                $ret['nonce'] = wp_nonce_field( $form_id );
+                $ret['javascript'] = $this->build_javascript($form_id);
+                $ret['ftr'] = $this->form_footer();
+                break;
+            case 'csf_highschooltype':
+                $type_id = isset($data->HighSchoolTypeId)?$data->HighSchoolTypeId:$this->queries->get_next_id('highschooltype','HighSchoolTypeId');
+                $ret['hdr'] = $this->form_header($form_id);
+                $ret['highschooltype_id'] = $this->settings_hidden('highschooltype_HighSchoolTypeId',$data->HighSchoolTypeId,'High School Type ID',null,null);
+                $ret['name'] = $this->settings_textfield('Type','highschooltype_Type',array('large','setting-field'),$data->Type);
+                $ret['description'] = $this->settings_textarea('Description','highschooltype_Description',null,$data->Description);
+                $ret['submit'] = $this->settings_button();
+                $ret['nonce'] = wp_nonce_field( $form_id );
+                $ret['javascript'] = $this->build_javascript($form_id);
+                $ret['ftr'] = $this->form_footer();
+                break;
+            case 'csf_employer':
+                $type_id = isset($data->employerid)?$data->employerid:$this->queries->get_next_id('employer','employerid');
+                $ret['hdr'] = $this->form_header($form_id);
+                $ret['employer_id'] = $this->settings_hidden('employer_employerid',$data->employerid,'Employer ID',null,null);
+                $ret['name'] = $this->settings_textfield('Employer Name','employer_employername',array('large','setting-field'),$data->employername);
+                $ret['description'] = $this->settings_textarea('Notes','employer_Notes',null,$data->Notes);
+                $ret['submit'] = $this->settings_button();
+                $ret['nonce'] = wp_nonce_field( $form_id );
+                $ret['javascript'] = $this->build_javascript($form_id);
+                $ret['ftr'] = $this->form_footer();
+                break;
+            case 'csf_educationalattainment':
+                $type_id = isset($data->EducationalAttainmentId)?$data->EducationalAttainmentId:$this->queries->get_next_id('educationalattainment','EducationalAttainmentId');
+                $ret['hdr'] = $this->form_header($form_id);
+                $ret['EducationalAttainmentId_id'] = $this->settings_hidden('educationalattainment_EducationalAttainmentId',$data->EducationalAttainmentId,'Educational Attainment ID',null,null);
+                $ret['name'] = $this->settings_textfield('Educational Attainment','educationalattainment_EducationalAttainment',array('large','setting-field'),$data->EducationalAttainment);
+                $ret['submit'] = $this->settings_button();
+                $ret['nonce'] = wp_nonce_field( $form_id );
+                $ret['javascript'] = $this->build_javascript($form_id);
+                $ret['ftr'] = $this->form_footer();
+                break;
+            case 'csf_donortype':
+                $type_id = isset($data->DonorTypeId)?$data->DonorTypeId:$this->queries->get_next_id('donortype','DonorTypeId');
+                $ret['hdr'] = $this->form_header($form_id);
+                $ret['DonorTypeId'] = $this->settings_hidden('donortype_DonorTypeId',$data->DonorTypeId,'Donor Type ID',null,null);
+                $ret['name'] = $this->settings_textfield('Donor Type','donortype_DonorType',array('large','setting-field'),$data->DonorType);
+                $ret['submit'] = $this->settings_button();
+                $ret['nonce'] = wp_nonce_field( $form_id );
+                $ret['javascript'] = $this->build_javascript($form_id);
+                $ret['ftr'] = $this->form_footer();
+                break;
+            case 'csf_institutiontermtype':
+                $type_id = isset($data->DonorTypeId)?$data->DonorTypeId:$this->queries->get_next_id('institutiontermtype','InstitutionTermTypeId');
+                $ret['hdr'] = $this->form_header($form_id);
+                $ret['InstitutionTermTypeId'] = $this->settings_hidden('institutiontermtype_InstitutionTermTypeId',$data->InstitutionTermTypeId,'Institution Term Type ID',null,null);
+                $ret['name'] = $this->settings_textfield('Institution Term Type','institutiontermtype_InstitutionTermType',array('large','setting-field'),$data->InstitutionTermType);
+                $ret['submit'] = $this->settings_button();
+                $ret['nonce'] = wp_nonce_field( $form_id );
+                $ret['javascript'] = $this->build_javascript($form_id);
+                $ret['ftr'] = $this->form_footer();
+                break;
         }
         return implode("\n",$ret);
     }

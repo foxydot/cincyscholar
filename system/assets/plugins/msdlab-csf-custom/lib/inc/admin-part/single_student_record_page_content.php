@@ -48,7 +48,7 @@ if($student = $this->queries->get_student_data($applicant_id)) {
         ts_data($student); //display errors
     } else {
 
-        ts_data($student); //display errors
+       ts_data($student); //display errors
         $tabs = $pane = array();
         if($student){
             $form_id = 'single_student';
@@ -146,7 +146,10 @@ if($student = $this->queries->get_student_data($applicant_id)) {
                     '.$this->report->other_form($student).'
                 </div>';
 
-            $ret['title'] = '<h2>Edit '.$student['personal']->FirstName.' '.$student['personal']->LastName.' (User '.$student['personal']->UserId.')</h2>';
+            $student['firstname'] = $student['renewal']->FirstName?$student['renewal']->FirstName:$student['personal']->FirstName;
+            $student['lastname'] = $student['renewal']->LastName?$student['renewal']->LastName:$student['personal']->LastName;
+
+            $ret['title'] = '<h2>Edit '.$student['firstname'].' '.$student['lastname'].' (User '.$student['personal']->UserId.')</h2>';
             $ret['form_header'] = $this->form->form_header($form_id,array($form_id));
             $ret['Applicant_UserId'] = $this->form->field_hidden("UserId", $user_id);
             $ret['ApplicantId'] = $this->form->field_utility("ApplicantId", $applicant_id);

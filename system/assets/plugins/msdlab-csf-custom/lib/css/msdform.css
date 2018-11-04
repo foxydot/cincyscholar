@@ -265,7 +265,7 @@ div.submit, div.delete {
     column-count: 3;
     column-gap: 2em; }
 
-ul.menu li {
+.wp-admin ul.menu li {
   display: inline-block;
   color: #555;
   border-color: #ccc;
@@ -282,8 +282,9 @@ ul.menu li {
   height: 30px;
   line-height: 28px;
   padding: 0 12px 2px; }
-  ul.menu li:hover {
-    background: #f0f0f0; }
-  ul.menu li a {
+  .wp-admin ul.menu li:hover {
+    border-color: #008EC2;
+    background: #00a0d2; }
+  .wp-admin ul.menu li a {
     color: #555;
     text-decoration: none; }
