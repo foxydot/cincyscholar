@@ -227,6 +227,37 @@ class MSDLab_ReportControls{
         }
     }
 
+    function print_form_custom_searches($id,$echo = true){
+        if($id == null){return false;}
+        $ret = array();
+        //select populate
+        $colleges = $this->queries->get_select_array_from_db('college', 'CollegeId', 'Name','Name',1);
+        $scholarship = $this->queries->get_select_array_from_db('scholarship', 'ScholarshipId', 'Name','Name',1);
+        $fund = $this->queries->get_select_array_from_db('fund', 'FundId', 'Name','FundId');
+        $bool_options = array('0'=>'No','1'=>'Yes');
+        $paymentkeys = array('1' => '1','1-Adj' => '1-Adj','2' => '2','2-Adj' => '2-Adj','3' => '3','4' => '4','5' => '5');
+
+        switch($id){
+            case 'checks_to_print':
+                $ret['payment_number'] = $this->select_search('Payment #','payment_number',$paymentkeys);
+                break;
+        }
+
+        $ret['footer_break'] = '<hr class="break">';
+        $ret['search_button'] = $this->search_button('Get Report','search_button_btm');
+        $ret['reset_button'] = $this->reset_button();
+        $ret['nonce'] = wp_nonce_field( $id );
+        $ret['javascript'] = $this->build_javascript();
+
+        if($echo){
+            print $this->form_header($id ,array('csf_report_search_form'));
+            print implode("\n\r", $ret);
+            print $this->form_footer();
+        } else {
+            return $ret;
+        }
+    }
+
     public function search_button($button = "SEARCH", $id = "search_button", $class = array('search-button')){
         $button = apply_filters('msdlab_csf_manage_search_button','<input id="'.$id.'_button" name="'.$id.'_button" type="submit" class="button button-primary" value="'.$button.'" />');
         $class = implode(" ",apply_filters('msdlab_csf_manage_search_button_class', $class));

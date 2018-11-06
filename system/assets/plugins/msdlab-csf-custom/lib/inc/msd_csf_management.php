@@ -75,6 +75,10 @@ if (!class_exists('MSDLab_CSF_Management')) {
             add_submenu_page('csf-manage',__('All Students'),__('Search All Students'),'manage_csf','csf-students', array(&$this,'consolidated_search_page_content'));
             add_submenu_page(null,__('View Student'),__('View Student'),'manage_csf','student-edit', array(&$this,'single_student_record_page_content'));
             add_submenu_page(null,__('Recommend Student'),__('Recommend Student'),'manage_csf','student-recommend', array(&$this,'single_student_recommend_page_content'));
+            add_submenu_page('csf-manage',__('Reports'),__('Reports'),'manage_csf','csf-reports', array(&$this,'reports_page_content'));
+            add_submenu_page(null,__('Checks to Print'),__('Checks to Print'),'manage_csf','checks-to-print', array(&$this,'checks_to_print_report_content'));
+
+
             add_submenu_page('csf-manage',__('Settings'),__('Settings'),'manage_csf','csf-settings', array(&$this,'general_page_content'));
             add_submenu_page(null,__('College Settings'),__('College Settings'),'manage_csf','csf-college', array(&$this,'college_page_content'));
             add_submenu_page(null,__('Edit College'),__('Edit College'),'manage_csf','college-edit', array(&$this,'college_edit_page_content'));
@@ -118,9 +122,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
             print '<h1 class="wp-heading-inline">'.get_bloginfo('name').' Admin Tools</h1>';
             print '<hr class="wp-header-end">';
             print '<h3>Reporting</h3>';
-            print '<ul class="menu">';
-            print '<li><a href="admin.php?page=csf-students" >Search All Students</a></li>';
-            print '</ul>';
+            $this->report_page_content_menu();
             print '<h3>Settings</h3>';
             $this->setting_page_content_menu();
             print '<h3>Users</h3>';
@@ -128,6 +130,20 @@ if (!class_exists('MSDLab_CSF_Management')) {
             print '<li><a href="admin.php?page=csf-donors" >Donor Management</a></li>';
             print '<li><a href="admin.php?page=csf-donortype" >Donor Type Setting</a></li>';
             print '</ul>';
+        }
+
+        function report_page_content_menu($print = true){
+            $ret = array();
+            $ret[] = '<ul class="menu">';
+            $ret[] = '<li><a href="admin.php?page=csf-students" >Search All Students</a></li>';
+            $ret[] = '<li><a href="admin.php?page=checks-to-print" >Checks to Print</a></li>';
+            $ret[] = '</ul>';
+            if($print){
+                print implode("\n\r", $ret);
+                return true;
+            } else {
+                return implode("\n\r", $ret);
+            }
         }
 
         function setting_page_content_menu($print = true){
@@ -166,21 +182,30 @@ if (!class_exists('MSDLab_CSF_Management')) {
         }
 
         function report_page_content(){
-            include_once(plugin_dir_path(__FILE__).'/admin-part/report_page_content.php');
+            include_once(plugin_dir_path(__FILE__).'/reports/report_page_content.php');
         }
 
         function renewal_report_page_content(){
-            include_once(plugin_dir_path(__FILE__).'/admin-part/renewal_report_page_content.php');
+            include_once(plugin_dir_path(__FILE__).'/reports/renewal_report_page_content.php');
         }
         function consolidated_search_page_content(){
-            include_once(plugin_dir_path(__FILE__).'/admin-part/consolidated_search_page_content.php');
+            $this->report_page_content_menu();
+            include_once(plugin_dir_path(__FILE__).'/reports/consolidated_search_page_content.php');
         }
         function single_student_record_page_content(){
-            include_once(plugin_dir_path(__FILE__).'/admin-part/single_student_record_page_content.php');
+            include_once(plugin_dir_path(__FILE__).'/reports/single_student_record_page_content.php');
         }
         function single_student_recomend_page_content(){
-            include_once(plugin_dir_path(__FILE__).'/admin-part/single_student_recommend_page_content.php');
+            include_once(plugin_dir_path(__FILE__).'/reports/single_student_recommend_page_content.php');
         }
+        function checks_to_print_report_content(){
+            $this->report_page_content_menu();
+            include_once(plugin_dir_path(__FILE__).'/reports/checks_to_print_content.php');
+        }
+
+
+
+
         function college_page_content(){
             $this->setting_page_content_menu();
             include_once(plugin_dir_path(__FILE__).'/admin-part/college_page_content.php');
@@ -309,7 +334,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
 
         }
         function scholarship_recommends_page_content(){
-            include_once(plugin_dir_path(__FILE__).'/admin-part/scholarship_recommends_page_content.php');
+            include_once(plugin_dir_path(__FILE__).'/reports/scholarship_recommends_page_content.php');
 
         }
         function donor_page_content(){

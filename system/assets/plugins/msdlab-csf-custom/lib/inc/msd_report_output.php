@@ -94,7 +94,6 @@ class MSDLAB_Report_Output{
      * @return string The footer to be printed, or void if the param $echo is true.
      */
     public function print_table($id, $fields, $result, $info, $class = array(), $echo = true){
-        ts_data($fields);
         $class = implode(" ",apply_filters('msdlab_csf_report_display_table_class', $class));
         $ret = array();
         $ret['start_table'] = '<table id="'.$id.'" class="'.$class.'">';
@@ -194,7 +193,11 @@ class MSDLAB_Report_Output{
                         $printval = $this->queries->get_state_by_id($user->{$value});
                         break;
                     case 'CollegeId':
-                        $printval = $this->queries->get_college_by_id($user->{$value});
+                        //if($user->{$value} == '343'){
+                          //  $printval = $this->queries->get_other_school($user->ApplicantId);
+                        //} else {
+                            $printval = $this->queries->get_college_by_id($user->{$value});
+                        //}
                         break;
                     case 'MajorId':
                         $printval = $this->queries->get_major_by_id($user->{$value});
@@ -721,4 +724,158 @@ class MSDLAB_Report_Output{
         }
         return implode("\n",$ret);
     }
+
+    function check_table_data($fields,$result){
+        $ret = array();
+        $ecsv = array();
+        $i = 0;
+        $portal_page = get_option('csf_settings_student_welcome_page');
+        foreach($result as $k => $user){
+            $row = array();
+            $erow = array();
+            foreach ($fields as $key => $value) {
+                switch ($value){
+                    //special for checks
+                    case 'College':
+                        if(is_array($user) && is_string($user[$value])){
+                            $printval = $user[$value];
+                        }
+                        break;
+                    case 'Students':
+                        if(is_array($user) && is_array($user[$value])) {
+                            $printval = implode(",<br>\n",$user[$value]);
+                        }
+                        break;
+                    case 'CheckAmount':
+                        if(is_array($user) && is_array($user[$value])){
+                            $printval = '$'.array_sum($user[$value]);
+                        } else {
+                            switch ($user->InstitutionTermTypeId) {
+                                case 2:
+                                    $printval = $user->AmountAwarded / 3;
+                                    break;
+                                case 3:
+                                default:
+                                    $printval = $user->AmountAwarded / 2;
+                                    break;
+                            }
+                        }
+                        break;
+                    //normal
+                    case 'UserId':
+                        $printval = '<strong>'.$user->{$value}.'</strong><br />';
+                        if(current_user_can('manage_csf')) {
+                            $printval .= '<a href="?page=student-edit&user_id=' . $user->{$value} . '" class="button" target="_blank">View/Edit</a>';
+                        }
+                        break;
+                    case 'ApplicantId':
+                        if(current_user_can('manage_csf')) {
+                            $printval = '<a href="' . get_permalink($portal_page) . '?applicant_id=' . $user->{$value} . '&renewal_id=' . $user->RenewalId . '" target="_blank">' . $user->{$value} . '</a>';
+                        } else {
+                            $printval = $user->{$value};
+                        }
+                        break;
+                    case 'RenewalId':
+                        if(current_user_can('manage_csf')) {
+                            $printval = '<a href="' . get_permalink($portal_page) . '?applicant_id=' . $user->ApplicantId . '&renewal_id=' . $user->{$value} . '" target="_blank">' . $user->{$value} . '</a>';
+                        } else {
+                            $printval = $user->{$value};
+                        }
+                        break;
+                    case 'CountyId':
+                        $printval = $this->queries->get_county_by_id($user->{$value});
+                        break;
+                    case 'StateId':
+                        $printval = $this->queries->get_state_by_id($user->{$value});
+                        break;
+                    case 'CollegeId':
+                        if($user->{$value} == '343'){
+                            $printval = $this->queries->get_other_school($user->ApplicantId);
+                        } else {
+                            $printval = $this->queries->get_college_by_id($user->{$value});
+                        }
+                        break;
+                    case 'MajorId':
+                        $printval = $this->queries->get_major_by_id($user->{$value});
+                        break;
+                    case 'SexId':
+                        $printval = $this->queries->get_sex_by_id($user->{$value});
+                        break;
+                    case 'EducationAttainmentId':
+                        $printval = $this->queries->get_educationalattainment_by_id($user->{$value});
+                        break;
+                    case 'EthnicityId':
+                        $printval = $this->queries->get_ethnicity_by_id($user->{$value});
+                        break;
+                    case 'HighSchoolId':
+                        $printval = $this->queries->get_highschool_by_id($user->{$value});
+                        break;
+                    case 'ScholarshipId':
+                        $printval = $this->queries->get_scholarship_by_id($user->{$value});
+                        break;
+                    case 'EmployerId':
+                        $printval = $this->queries->get_employer_by_id($user->{$value});
+                        break;
+                    case 'FirstGenerationStudent':
+                    case 'IsIndependent':
+                    case 'PlayedHighSchoolSports':
+                    case 'CPSPublicSchools':
+                    case 'InformationSharingAllowed':
+                    case 'IsComplete':
+                    case 'ApplicantHaveRead':
+                    case 'ApplicantDueDate':
+                    case 'ApplicantDocsReq':
+                    case 'ApplicantReporting':
+                    case 'GuardianHaveRead':
+                    case 'GuardianDueDate':
+                    case 'GuardianDocsReq':
+                    case 'GuardianReporting':
+                    case 'Homeowner':
+                    case 'InformationSharingAllowedByGuardian':
+                    case 'ResumeOK':
+                    case 'TranscriptOK':
+                    case 'FinancialAidOK':
+                    case 'FAFSAOK':
+                    case 'ApplicationLocked':
+                    case 'AppliedBefore':
+                    case 'Rejected':
+                    case 'AppliedBefore':
+                    case 'TermsAcknowledged':
+                    case 'RenewalLocked':
+                    case 'Reject':
+                    case 'Renew':
+                    case 'ThankYou':
+                    case 'Signed':
+                        $printval = $user->{$value}>0?'Yes':'No';
+                        break;
+                    case 'Activities':
+                    case 'HardshipNote':
+                    case 'CoopStudyAbroadNote':
+                        $printval = strip_tags($user->{$value});
+                        break;
+                    default:
+                        $printval = $user->{$value};
+                        break;
+                }
+                $row[] = '<td class="'.$value.'"><div>'.$printval.'</div></td>';
+                if(!in_array($value,$this->skipcsv)) {
+                    $erow[] = $this->csv_safe($printval);
+                }
+            }
+            $class = $i%2==0?'even':'odd';
+            if($user->Reject){$class = 'reject';}
+            $ret[] = '<tr class="'.$class.'">'.implode("\n\r", $row).'</tr>';
+            $ecsv[] = implode(",",$erow);
+            $i++;
+        }
+
+        $this->export_csv = implode("\n", $ecsv);
+
+        if($echo){
+            print implode("\n\r", $ret);
+        } else {
+            return implode("\n\r", $ret);
+        }
+    }
 }
+

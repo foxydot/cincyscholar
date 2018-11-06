@@ -192,7 +192,6 @@ class MSDLAB_Queries{
         return $results[0];
     }
 
-
      public function get_all_contacts($college_id){
          $data['tables']['collegecontact'] = array('*');
          $data['where'] = 'collegecontact.CollegeId = '.$college_id.' AND collegecontact.Publish = 1';
@@ -1369,6 +1368,18 @@ class MSDLAB_Queries{
         $sql = "SELECT Name FROM college WHERE CollegeId = '".$id."';";
         $result = $wpdb->get_results( $sql );
         return $result[0]->Name;
+    }
+
+    public function get_other_school($applicant_id){
+        $data['tables']['renewal'] = array('OtherSchool');
+        $data['where'] = 'renewal.ApplicantId = '.$applicant_id.' AND renewal.CollegeId = 343';
+        $results = $this->get_result_set($data);
+        if(count($results) < 1){
+            $data['tables']['applicant'] = array('OtherSchool');
+            $data['where'] = 'applicant.ApplicantId = '.$applicant_id.' AND applicant.CollegeId = 343';
+            $results = $this->get_result_set($data);
+        }
+        return $results[0]->OtherSchool;
     }
 
     function get_major_by_id($id){
