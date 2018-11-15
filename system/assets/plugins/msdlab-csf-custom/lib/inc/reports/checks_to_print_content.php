@@ -4,8 +4,8 @@ if($_POST){
     //get a report
     //custom report queries lazy (to refactor?)
     global $wpdb;
-    $sql['select']  = 'SELECT a.UserId, a.ApplicantId, a.FirstName, a.LastName, a.StudentId, a.Last4SSN, b.*, c.* , d.Name, d.InstitutionTermTypeId ';
-    $sql['from']    = 'FROM applicant a, applicantscholarship b, payment c, college d ';
+    $sql['select']  = 'SELECT a.UserId, a.ApplicantId, a.FirstName, a.LastName, a.StudentId, a.Last4SSN, b.*, c.* , d.Name, d.InstitutionTermTypeId, e.* , f.* ';
+    $sql['from']    = 'FROM applicant a, applicantscholarship b, payment c, college d, scholarship e, fund f ';
     $sql['where'][] = 'WHERE a.ApplicantId = b.ApplicantId ';
     $sql['where'][] = 'AND b.DateAwarded > \''.get_option('csf_settings_start_date').'\' ';
     $sql['where'][] = 'AND b.ThankYou = 1 ';
@@ -23,6 +23,8 @@ if($_POST){
             break;
     }
     $sql['where'][] = 'AND a.ApplicantId = c.ApplicantId ';
+    $sql['where'][] = 'AND b.ScholarshipId = e.ScholarshipId ';
+    $sql['where'][] = 'AND e.FundId = f.FundId ';
     $sql['where'][] = 'AND c.paymentkey = \''.$_POST['payment_number_input'].'\' ';
     $sql['where'][] = 'AND c.PaymentAmt = \'0.00\' ';
     $sql['where'][] = 'AND c.CollegeId = d.CollegeId ';
@@ -31,30 +33,34 @@ if($_POST){
     $sql['orderby'] = 'ORDER BY d.Name';
 
     $result = $wpdb->get_results(implode(' ',$sql));
+    //ts_data($result);
     $check_data = array();
     foreach($result as $k => $user){
         $student_id = $user->StudentId != ''?$user->StudentId:'SSN '.$user->Last4SSN;
         $college = $user->CollegeId != 343?$this->queries->get_college_by_id($user->CollegeId):$this->queries->get_other_school($user->ApplicantId);
-        $check_data[$college]['College'] = $college;
-        $check_data[$college]['Students'][] = $user->FirstName.' '.$user->LastName.' ('. $student_id . ')';
+        $fund = $user->Name;
+        $collegefund = $college.': '.$fund;
+        $check_data[$collegefund]['College'] = $college;
+        $check_data[$collegefund]['Students'][] = $user->FirstName.' '.$user->LastName.' ('. $student_id . ')';
         switch($user->InstitutionTermTypeId){
             case 2:
-                $check_data[$college]['CheckAmount'][] = $user->AmountAwarded/3;
+                $check_data[$collegefund]['CheckAmount'][] = $user->AmountAwarded/3;
                 break;
             case 3:
             default:
-            $check_data[$college]['CheckAmount'][] = $user->AmountAwarded/2;
+            $check_data[$collegefund]['CheckAmount'][] = $user->AmountAwarded/2;
                 break;
         }
+        $check_data[$collegefund]['Fund'] = $user->Name;
     }
-    ts_data($check_data);
+    //ts_data($check_data);
 }
 //print a small selection form
 $this->search->print_form_custom_searches('checks_to_print',true,$fields);
 //turn result into a report.
 $class = implode(" ",apply_filters('msdlab_csf_report_display_table_class', array('table','table-bordered','sortable')));
-
-$fields = array('College','Students','CheckAmount');
+print '<h2>DOES THIS TABLE COVER WHAT IS NEEDED FOR CHECKS TO PRINT??? WHAT ABOUT FOR ATTACHMENTS? SHOULD ATTACHEMTNS BE A PARED DOWN VERSION OF THIS REPORT? vvvv</h2>';
+$fields = array('College','Students','CheckAmount','Fund');
 $ret = array();
 $ret['start_table'] = '<table id="'.$id.'" class="'.$class.'">';
 $ret['table_header'] = $this->report->table_header($fields,false);
@@ -64,6 +70,7 @@ $ret['end_table'] = '</table>';
 $ret['export'] = $this->report->print_export_tools($id);
 print implode("\n\r", $ret);
 
+print '<h2>IS THIS TABLE NEEDED/USEFUL? vvvvv</h2>';
 $fields = array('CollegeId','FirstName','LastName','AmountAwarded','CheckAmount');
 $ret = array();
 $ret['start_table'] = '<table id="'.$id.'" class="'.$class.'">';

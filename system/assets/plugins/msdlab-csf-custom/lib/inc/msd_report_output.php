@@ -761,6 +761,9 @@ class MSDLAB_Report_Output{
                             }
                         }
                         break;
+                    case "Fund":
+                        $printval = $user[$value];
+                        break;
                     //normal
                     case 'UserId':
                         $printval = '<strong>'.$user->{$value}.'</strong><br />';
