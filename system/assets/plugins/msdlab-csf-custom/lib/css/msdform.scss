@@ -135,9 +135,6 @@ input, select, textarea {
   form.csf_report_search_form,form#csf_college{
     background: #dddddd;
     padding: 1em;
-    .collapse-button{
-      float: right;
-    }
     .query-filter,.setting-field{
       height: 3.5em;
       input[type=search],input[type=text],select{
@@ -332,7 +329,7 @@ input, select, textarea {
     }
   }
 }
-div.submit,div.delete{
+div.submit,div.delete,div.search-button,div.reset-button{
   display: inline-block;
 }
 .checkbox-array-options-wrapper{
@@ -374,4 +371,8 @@ div.submit,div.delete{
       }
     }
   }
+}
+
+tr.total{
+  background: #c9e5f5;
 }

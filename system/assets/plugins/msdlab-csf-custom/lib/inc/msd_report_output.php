@@ -470,13 +470,12 @@ class MSDLAB_Report_Output{
 
         $ret[] = '<hr />';
         $ret['ApplicantScholarship_ScholarshipId'] = $this->form->field_select('ApplicantScholarship_ScholarshipId', $student_data['scholarship']->ScholarshipId ? $student_data['scholarship']->ScholarshipId : null , 'Scholarship', null, $this->scholarship_array, array(), array('col-md-3', 'col-sm-12'));
-        $ret['infoFund'] = $this->form->field_textinfo('infoFund',$this->queries->get_fund_by_scholarshipid($student_data['scholarship']->ScholarshipId),'Fund',null,null, array('col-md-3', 'col-sm-12'));
-        $ret['ApplicantScholarship_AmountAwarded'] = $this->form->field_textfield('ApplicantScholarship_AmountAwarded', $student_data['scholarship']->AmountAwarded ? $student_data['scholarship']->AmountAwarded : null, 'Amount Awarded', '', array('type' => 'number'), array('col-md-3', 'col-sm-12','currency'));
-        $ret['ApplicantScholarship_AmountActuallyAwarded'] = $this->form->field_textfield('ApplicantScholarship_AmountActuallyAwarded', $student_data['scholarship']->AmountActuallyAwarded ? $student_data['scholarship']->AmountActuallyAwarded : null, 'Amount Actually Awarded', '', array('type' => 'number'), array('col-md-3', 'col-sm-12','currency'));
+        $ret['infoFund'] = $this->form->field_textinfo('infoFund',$this->queries->get_fund_by_scholarshipid($student_data['scholarship']->ScholarshipId),'Fund',null,null, array('col-md-2', 'col-sm-12'));
+        $ret['ApplicantScholarship_AmountAwarded'] = $this->form->field_textfield('ApplicantScholarship_AmountAwarded', $student_data['scholarship']->AmountAwarded ? $student_data['scholarship']->AmountAwarded : null, 'Amount Awarded', '', array('type' => 'number'), array('col-md-2', 'col-sm-12','currency'));
+        $ret['ApplicantScholarship_AmountActuallyAwarded'] = $this->form->field_textfield('ApplicantScholarship_AmountActuallyAwarded', $student_data['scholarship']->AmountActuallyAwarded ? $student_data['scholarship']->AmountActuallyAwarded : null, 'Amount Actually Awarded', '', array('type' => 'number'), array('col-md-2', 'col-sm-12','currency'));
 
         $ret['ApplicantScholarship_DateAwarded'] = $this->form->field_date("ApplicantScholarship_DateAwarded", (strtotime($student_data['scholarship']->DateAwarded) > 0) ? date("Y-m-d", strtotime($student_data['scholarship']->DateAwarded)) : '','Date Awarded',array(),array('datepicker','col-md-3', 'col-sm-12'));
         $ret['ApplicantScholarship_Renew'] = $this->form->field_boolean('ApplicantScholarship_Renew',$student_data['scholarship']->Renew?$student_data['scholarship']->Renew:0,'Renew',array(),array('col-md-2', 'col-sm-12'));
-        $ret['Applicant_EducationAttainmentId'] = $this->form->field_select("Applicant_EducationAttainmentId", $student_data['personal']->EducationAttainmentId ? $student_data['personal']->EducationAttainmentId : null, "Year in School", array('option' => 'Select', 'value' => '5'), $this->educationalattainment_array, array('required' => 'required'), array('required', 'col-md-3', 'col-sm-12'));
         $ret['ApplicantScholarship_ThankYou'] = $this->form->field_boolean('ApplicantScholarship_ThankYou',$student_data['scholarship']->ThankYou?$student_data['scholarship']->ThankYou:0,'Thank You',array(),array('col-md-2', 'col-sm-12'));
         $ret['ApplicantScholarship_Signed'] = $this->form->field_boolean('ApplicantScholarship_Signed',$student_data['scholarship']->Signed?$student_data['scholarship']->Signed:0,'Signed',array(),array('col-md-2', 'col-sm-12'));
         $ret[] = '<hr />';
@@ -484,6 +483,7 @@ class MSDLAB_Report_Output{
             $ret['Renewal_YearsWithCSF'] = $this->form->field_textfield('Renewal_YearsWithCSF', $student_data['renewal']->YearsWithCSF ? $student_data['renewal']->YearsWithCSF : 0, 'Years With CSF', '0', array('type' => 'number', 'minlength' => 1), array('col-md-2', 'col-sm-12'));
             $ret['Renewal_AnticipatedGraduationDate'] = $this->form->field_select('Renewal_AnticipatedGraduationDate', $student_data['renewal']->AnticipatedGraduationDate ? date("Y", strtotime($student_data['renewal']->AnticipatedGraduationDate)) : date("Y") . '-01-01', "Anticipated Graduation Date", array('value' => date("Y") . '-01-01', 'option' => date("Y")), $this->col_gradyr_array, array('required' => 'required'), array('required', 'col-md-2', 'col-sm-12'));
         }
+        $ret['Applicant_EducationAttainmentId'] = $this->form->field_select("Applicant_EducationAttainmentId", $student_data['personal']->EducationAttainmentId ? $student_data['personal']->EducationAttainmentId : null, "Year in School", array('option' => 'Select', 'value' => '5'), $this->educationalattainment_array, array('required' => 'required'), array('required', 'col-md-3', 'col-sm-12'));
         $ret['ApplicantScholarship_GPA1'] = $this->form->field_textfield('ApplicantScholarship_GPA1', $student_data['scholarship']->GPA1 ? $student_data['scholarship']->GPA1 : 0, 'GPA 1', '0.00', array('type' => 'number', 'min' => 0.00, 'max' => 100.00, 'step'=> 0.01, 'minlength' => 1), array('col-md-2', 'col-sm-12'));
         $ret['ApplicantScholarship_GPA2'] = $this->form->field_textfield('ApplicantScholarship_GPA2', $student_data['scholarship']->GPA2 ? $student_data['scholarship']->GPA2 : 0, 'GPA 2', '0.00', array('type' => 'number', 'min' => 0.00, 'max' => 100.00, 'step'=> 0.01, 'minlength' => 1), array('col-md-2', 'col-sm-12'));
         $ret['ApplicantScholarship_GPA3'] = $this->form->field_textfield('ApplicantScholarship_GPA3', $student_data['scholarship']->GPA3 ? $student_data['scholarship']->GPA3 : 0, 'GPA 3', '0.00', array('type' => 'number', 'min' => 0.00, 'max' => 100.00, 'step'=> 0.01, 'minlength' => 1), array('col-md-2', 'col-sm-12'));
@@ -609,7 +609,7 @@ class MSDLAB_Report_Output{
             $college_id = $student_data['personal']->CollegeId;
         }
         $scholarship_id = $student_data['scholarship']->ScholarshipId;
-        $paymentkeys = array('1','1-Adj','2','2-Adj','3','4','5');
+        $paymentkeys = array('1','1-Adj','2','2-Adj','3');
         $ret[] = '<div class="col-md-5 row">';
         $ret['infoCurrentCollege'] = $this->form->field_textinfo('infoCurrentCollege',$this->queries->get_college_by_id($college_id),'School',null,null,array('col-sm-12'));
         $ret['infoScholarshipId'] = $this->form->field_textinfo('infoScholarshipId',$this->queries->get_scholarship_by_id($scholarship_id),'Scholarship',null,null,array('col-sm-12'));
@@ -725,146 +725,177 @@ class MSDLAB_Report_Output{
         return implode("\n",$ret);
     }
 
-    function check_table_data($fields,$result){
+    function check_table_data($fields,$result,$table_data){
         $ret = array();
         $ecsv = array();
         $i = 0;
         $portal_page = get_option('csf_settings_student_welcome_page');
-        foreach($result as $k => $user){
+        $oldcollege = '';
+        foreach($result AS $k => $user){
             $row = array();
             $erow = array();
-            foreach ($fields as $key => $value) {
-                switch ($value){
-                    //special for checks
-                    case 'College':
-                        if(is_array($user) && is_string($user[$value])){
-                            $printval = $user[$value];
-                        }
-                        break;
-                    case 'Students':
-                        if(is_array($user) && is_array($user[$value])) {
-                            $printval = implode(",<br>\n",$user[$value]);
-                        }
-                        break;
-                    case 'CheckAmount':
-                        if(is_array($user) && is_array($user[$value])){
-                            $printval = '$'.array_sum($user[$value]);
-                        } else {
-                            switch ($user->InstitutionTermTypeId) {
-                                case 2:
-                                    $printval = $user->AmountAwarded / 3;
-                                    break;
-                                case 3:
-                                default:
-                                    $printval = $user->AmountAwarded / 2;
-                                    break;
-                            }
-                        }
-                        break;
-                    case "Fund":
-                        $printval = $user[$value];
-                        break;
-                    //normal
-                    case 'UserId':
-                        $printval = '<strong>'.$user->{$value}.'</strong><br />';
-                        if(current_user_can('manage_csf')) {
-                            $printval .= '<a href="?page=student-edit&user_id=' . $user->{$value} . '" class="button" target="_blank">View/Edit</a>';
-                        }
-                        break;
-                    case 'ApplicantId':
-                        if(current_user_can('manage_csf')) {
-                            $printval = '<a href="' . get_permalink($portal_page) . '?applicant_id=' . $user->{$value} . '&renewal_id=' . $user->RenewalId . '" target="_blank">' . $user->{$value} . '</a>';
-                        } else {
-                            $printval = $user->{$value};
-                        }
-                        break;
-                    case 'RenewalId':
-                        if(current_user_can('manage_csf')) {
-                            $printval = '<a href="' . get_permalink($portal_page) . '?applicant_id=' . $user->ApplicantId . '&renewal_id=' . $user->{$value} . '" target="_blank">' . $user->{$value} . '</a>';
-                        } else {
-                            $printval = $user->{$value};
-                        }
-                        break;
-                    case 'CountyId':
-                        $printval = $this->queries->get_county_by_id($user->{$value});
-                        break;
-                    case 'StateId':
-                        $printval = $this->queries->get_state_by_id($user->{$value});
-                        break;
-                    case 'CollegeId':
-                        if($user->{$value} == '343'){
-                            $printval = $this->queries->get_other_school($user->ApplicantId);
-                        } else {
-                            $printval = $this->queries->get_college_by_id($user->{$value});
-                        }
-                        break;
-                    case 'MajorId':
-                        $printval = $this->queries->get_major_by_id($user->{$value});
-                        break;
-                    case 'SexId':
-                        $printval = $this->queries->get_sex_by_id($user->{$value});
-                        break;
-                    case 'EducationAttainmentId':
-                        $printval = $this->queries->get_educationalattainment_by_id($user->{$value});
-                        break;
-                    case 'EthnicityId':
-                        $printval = $this->queries->get_ethnicity_by_id($user->{$value});
-                        break;
-                    case 'HighSchoolId':
-                        $printval = $this->queries->get_highschool_by_id($user->{$value});
-                        break;
-                    case 'ScholarshipId':
-                        $printval = $this->queries->get_scholarship_by_id($user->{$value});
-                        break;
-                    case 'EmployerId':
-                        $printval = $this->queries->get_employer_by_id($user->{$value});
-                        break;
-                    case 'FirstGenerationStudent':
-                    case 'IsIndependent':
-                    case 'PlayedHighSchoolSports':
-                    case 'CPSPublicSchools':
-                    case 'InformationSharingAllowed':
-                    case 'IsComplete':
-                    case 'ApplicantHaveRead':
-                    case 'ApplicantDueDate':
-                    case 'ApplicantDocsReq':
-                    case 'ApplicantReporting':
-                    case 'GuardianHaveRead':
-                    case 'GuardianDueDate':
-                    case 'GuardianDocsReq':
-                    case 'GuardianReporting':
-                    case 'Homeowner':
-                    case 'InformationSharingAllowedByGuardian':
-                    case 'ResumeOK':
-                    case 'TranscriptOK':
-                    case 'FinancialAidOK':
-                    case 'FAFSAOK':
-                    case 'ApplicationLocked':
-                    case 'AppliedBefore':
-                    case 'Rejected':
-                    case 'AppliedBefore':
-                    case 'TermsAcknowledged':
-                    case 'RenewalLocked':
-                    case 'Reject':
-                    case 'Renew':
-                    case 'ThankYou':
-                    case 'Signed':
-                        $printval = $user->{$value}>0?'Yes':'No';
-                        break;
-                    case 'Activities':
-                    case 'HardshipNote':
-                    case 'CoopStudyAbroadNote':
-                        $printval = strip_tags($user->{$value});
-                        break;
-                    default:
-                        $printval = $user->{$value};
-                        break;
-                }
-                $row[] = '<td class="'.$value.'"><div>'.$printval.'</div></td>';
-                if(!in_array($value,$this->skipcsv)) {
-                    $erow[] = $this->csv_safe($printval);
-                }
+            if($user->CollegeId == '343'){
+                $college = $this->queries->get_other_school($user->ApplicantId);
+            } else {
+                $college = $this->queries->get_college_by_id($user->CollegeId);
             }
+            if($oldcollege != $college){
+                foreach ($fields as $key => $value) {
+                    switch($value){
+                        case 'CollegeId':
+                            $printval = $table_data[$oldcollege]['College'];
+                            break;
+                        case 'CheckAmount':
+                            $printval = '$'.array_sum($table_data[$oldcollege]['CheckAmount']);
+                            break;
+                        default:
+                            $printval = '';
+                            break;
+                    }
+                    $row[] = '<td class="'.$value.'"><div><strong>'.$printval.'</strong></div></td>';
+                    if(!in_array($value,$this->skipcsv)) {
+                        $erow[] = $this->csv_safe($printval);
+                    }
+                }
+                $ret[] = '<tr class="total '.$class.'">'.implode("\n\r", $row).'</tr>';
+                $ecsv[] = implode(",",$erow);
+
+                $row = array();
+                $erow = array();
+            }
+                foreach ($fields as $key => $value) {
+                    switch ($value) {
+                        //special for checks
+                        case 'College':
+                            if (is_array($user) && is_string($user[$value])) {
+                                $printval = $user[$value];
+                            }
+                            break;
+                        case 'Students':
+                            if (is_array($user) && is_array($user[$value])) {
+                                $printval = implode(",<br>\n", $user[$value]);
+                            }
+                            break;
+                        case 'CheckAmount':
+                            if (is_array($user) && is_array($user[$value])) {
+                                $printval = '$' . array_sum($user[$value]);
+                            } else {
+                                switch ($user->InstitutionTermTypeId) {
+                                    case 2:
+                                        $printval = '$' . $user->AmountAwarded / 3;
+                                        break;
+                                    case 3:
+                                    default:
+                                        $printval = '$' . $user->AmountAwarded / 2;
+                                        break;
+                                }
+                            }
+                            break;
+                        case "Fund":
+                            $printval = $user[$value];
+                            break;
+                        //normal
+                        case 'UserId':
+                            $printval = '<strong>' . $user->{$value} . '</strong><br />';
+                            if (current_user_can('manage_csf')) {
+                                $printval .= '<a href="?page=student-edit&user_id=' . $user->{$value} . '" class="button" target="_blank">View/Edit</a>';
+                            }
+                            break;
+                        case 'ApplicantId':
+                            if (current_user_can('manage_csf')) {
+                                $printval = '<a href="' . get_permalink($portal_page) . '?applicant_id=' . $user->{$value} . '&renewal_id=' . $user->RenewalId . '" target="_blank">' . $user->{$value} . '</a>';
+                            } else {
+                                $printval = $user->{$value};
+                            }
+                            break;
+                        case 'RenewalId':
+                            if (current_user_can('manage_csf')) {
+                                $printval = '<a href="' . get_permalink($portal_page) . '?applicant_id=' . $user->ApplicantId . '&renewal_id=' . $user->{$value} . '" target="_blank">' . $user->{$value} . '</a>';
+                            } else {
+                                $printval = $user->{$value};
+                            }
+                            break;
+                        case 'CountyId':
+                            $printval = $this->queries->get_county_by_id($user->{$value});
+                            break;
+                        case 'StateId':
+                            $printval = $this->queries->get_state_by_id($user->{$value});
+                            break;
+                        case 'CollegeId':
+                            if ($user->{$value} == '343') {
+                                $printval = $this->queries->get_other_school($user->ApplicantId);
+                            } else {
+                                $printval = $this->queries->get_college_by_id($user->{$value});
+                            }
+                            break;
+                        case 'MajorId':
+                            $printval = $this->queries->get_major_by_id($user->{$value});
+                            break;
+                        case 'SexId':
+                            $printval = $this->queries->get_sex_by_id($user->{$value});
+                            break;
+                        case 'EducationAttainmentId':
+                            $printval = $this->queries->get_educationalattainment_by_id($user->{$value});
+                            break;
+                        case 'EthnicityId':
+                            $printval = $this->queries->get_ethnicity_by_id($user->{$value});
+                            break;
+                        case 'HighSchoolId':
+                            $printval = $this->queries->get_highschool_by_id($user->{$value});
+                            break;
+                        case 'ScholarshipId':
+                            $printval = $this->queries->get_scholarship_by_id($user->{$value});
+                            break;
+                        case 'EmployerId':
+                            $printval = $this->queries->get_employer_by_id($user->{$value});
+                            break;
+                        case 'FirstGenerationStudent':
+                        case 'IsIndependent':
+                        case 'PlayedHighSchoolSports':
+                        case 'CPSPublicSchools':
+                        case 'InformationSharingAllowed':
+                        case 'IsComplete':
+                        case 'ApplicantHaveRead':
+                        case 'ApplicantDueDate':
+                        case 'ApplicantDocsReq':
+                        case 'ApplicantReporting':
+                        case 'GuardianHaveRead':
+                        case 'GuardianDueDate':
+                        case 'GuardianDocsReq':
+                        case 'GuardianReporting':
+                        case 'Homeowner':
+                        case 'InformationSharingAllowedByGuardian':
+                        case 'ResumeOK':
+                        case 'TranscriptOK':
+                        case 'FinancialAidOK':
+                        case 'FAFSAOK':
+                        case 'ApplicationLocked':
+                        case 'AppliedBefore':
+                        case 'Rejected':
+                        case 'AppliedBefore':
+                        case 'TermsAcknowledged':
+                        case 'RenewalLocked':
+                        case 'Reject':
+                        case 'Renew':
+                        case 'ThankYou':
+                        case 'Signed':
+                            $printval = $user->{$value} > 0 ? 'Yes' : 'No';
+                            break;
+                        case 'Activities':
+                        case 'HardshipNote':
+                        case 'CoopStudyAbroadNote':
+                            $printval = strip_tags($user->{$value});
+                            break;
+                        default:
+                            $printval = $user->{$value};
+                            break;
+                    }
+                    $oldcollege = $college;
+                    $row[] = '<td class="' . $value . '"><div>' . $printval . '</div></td>';
+                    if (!in_array($value, $this->skipcsv)) {
+                        $erow[] = $this->csv_safe($printval);
+                    }
+                }
             $class = $i%2==0?'even':'odd';
             if($user->Reject){$class = 'reject';}
             $ret[] = '<tr class="'.$class.'">'.implode("\n\r", $row).'</tr>';

@@ -4,10 +4,10 @@ $fields['required'] = array(
     'ApplicantId' => 'ApplicantId',
 );
 $fields['applicant'] = array(
-    'StudentId' => 'Student ID',
+    'LastName' => 'Last Name',
     'FirstName' => 'First Name',
     'MiddleInitial' => 'Middle Initial',
-    'LastName' => 'Last Name',
+    'StudentId' => 'Student ID',
     'Address1' => 'Address 1',
     'Address2' => 'Address 2',
     'City' => 'City',
@@ -18,35 +18,39 @@ $fields['applicant'] = array(
     'AlternativePhone' => 'Alternative Phone',
     'Email' => 'Email',
     'user_email' => 'user_email',
+    'SexId' => 'Gender',
+    'EthnicityId' => 'Ethnicity',
     'Last4SSN' => 'Last 4 SSN',
     'DateOfBirth' => 'Date Of Birth',
-    'SexId' => 'Gender',
-    'FirstGenerationStudent' => 'First Generation Student',
-    'EducationAttainmentId' => 'Education Attainment',
-    'HighSchoolId' => 'High School',
-    'HighSchoolGraduationDate' => 'High School Graduation Date',
-    'HighSchoolGPA' => 'High School GPA',
-    'CPSPublicSchools' => 'CPS Public Schools',
     'CollegeId' => 'College',
     'MajorId' => 'Major',
-    'OtherSchool' => 'Other School',
-    'IsIndependent' => 'Is Independent',
-    'PlayedHighSchoolSports' => 'Played High School Sports',
-    'Employer' => 'Employer',
-    'ApplicationDateTime' => 'Application Date',
-    'InformationSharingAllowed' => 'Information Sharing Allowed',
-    'IsComplete' => 'Is Complete',
-    'EthnicityId' => 'Ethnicity',
+    'HighSchoolGraduationDate' => 'High School Graduation Date',
     'ResumeOK' => 'Resume OK',
     'TranscriptOK' => 'Transcript OK',
     'FinancialAidOK' => 'Financial Aid OK',
     'FAFSAOK' => 'FAFSA OK',
+    'HighSchoolId' => 'High School',
+
+    'HighSchoolGPA' => 'High School GPA',
+    'PlayedHighSchoolSports' => 'Played High School Sports',
+
+
+/*
+    'EducationAttainmentId' => 'Education Attainment',
+    'FirstGenerationStudent' => 'First Generation Student',
+    'CPSPublicSchools' => 'CPS Public Schools',
+    'OtherSchool' => 'Other School',
+    'IsIndependent' => 'Is Independent',
+    'Employer' => 'Employer',
+    'ApplicationDateTime' => 'Application Date',
+    'InformationSharingAllowed' => 'Information Sharing Allowed',
+    'IsComplete' => 'Is Complete',
     'ApplicationLocked' => 'Locked',
     'AppliedBefore' => 'Applied Before',
     'Rejected' => 'Rejected',
-    'Documents' => 'Documents',
+    'Documents' => 'Documents',*/
 );
-$fields['agreements'] = array(
+/*$fields['agreements'] = array(
     'ApplicantHaveRead' => 'Applicant Have Read',
     'ApplicantDueDate' => 'Applicant Due Date',
     'ApplicantDocsReq' => 'Applicant Docs Req',
@@ -55,37 +59,39 @@ $fields['agreements'] = array(
     'GuardianDueDate' => 'Guardian Due Date',
     'GuardianDocsReq' => 'Guardian Docs Req',
     'GuardianReporting' => 'Guardian Reporting',
-);
+);*/
 $fields['financial'] = array(
+    //'InformationSharingAllowedByGuardian' => 'InformationSharingAllowedByGuardian',
+    'DirectNeed' => 'Direct Need',
+    'IndirectNeed' => 'Indirect Need',
     'GuardianFullName1' => 'GuardianFullName1',
     'GuardianEmployer1' => 'GuardianEmployer1',
     'GuardianFullName2' => 'GuardianFullName2',
     'GuardianEmployer2' => 'GuardianEmployer2',
+    'Homeowner' => 'Homeowner',
+    'AmountOwedOnHome' => 'AmountOwedOnHome',
+    'HomeValue' => 'HomeValue',
+    /*
     'ApplicantEmployer' => 'ApplicantEmployer',
     'ApplicantIncome' => 'ApplicantIncome',
     'SpouseEmployer' => 'SpouseEmployer',
     'SpouseIncome' => 'SpouseIncome',
-    'Homeowner' => 'Homeowner',
-    'HomeValue' => 'HomeValue',
-    'AmountOwedOnHome' => 'AmountOwedOnHome',
-    'InformationSharingAllowedByGuardian' => 'InformationSharingAllowedByGuardian',
-    'DirectNeed' => 'Direct Need',
-    'IndirectNeed' => 'Indirect Need',
+    */
     );
 $fields['renewal_required'] = array(
     'RenewalId' => 'Renewal ID',
 );
 $fields['renewal'] = array(
-    'RenewalDateTime' => 'Renewal Date Time',
+    //'RenewalDateTime' => 'Renewal Date Time',
     'AnticipatedGraduationDate' => 'Anticipated Graduation Date',
     'CurrentCumulativeGPA' => 'Current Cumulative GPA',
     'YearsWithCSF' => 'Years With CSF',
-    'TermsAcknowledged' => 'Terms Acknowledged',
-    'RenewalLocked' => 'Renewal Locked',
-    'Reject' => 'Reject',
+    //'TermsAcknowledged' => 'Terms Acknowledged',
+    //'RenewalLocked' => 'Renewal Locked',
+    //'Reject' => 'Reject',
 );
 $fields['award'] = array(
-    'AwardId' => 'Award ID',
+    //'AwardId' => 'Award ID',
     'ScholarshipId' => 'Scholarship',
     'DateAwarded' => 'Date Awarded',
     'AmountAwarded' => 'Amount Awarded',
@@ -98,6 +104,27 @@ $fields['award'] = array(
     'GPA3' => 'GPA3',
     'GPAC' => 'GPAC',
 );
+
+
+$select_fields['default'] = array('title' => 'Default', 'fields' => array(
+    'applicant_fields_LastName',
+    'applicant_fields_FirstName',
+    'applicant_fields_StudentId',
+    'applicant_fields_EducationAttainmentId',
+    'applicant_fields_CollegeId',
+    'applicant_fields_MajorId',
+));
+$select_fields['scholarshipwhs'] = array('title' => 'Scholarship & High School', 'fields' => array(
+    'applicant_fields_StudentId',
+    'applicant_fields_FirstName',
+    'applicant_fields_LastName',
+    'applicant_fields_Email',
+    'applicant_fields_HighSchoolId',
+    'applicant_fields_HighSchoolGraduationDate',
+    'applicant_fields_CollegeId',
+    'award_fields_ScholarshipId',
+    'award_fields_AmountAwarded',
+));
 $tabs = $pane = array();
 if($_POST) {
     //ts_data($_POST);
@@ -253,6 +280,21 @@ $this->search->javascript['collapse-search'] = '
             $(this).find("i").toggleClass("fa-compress").toggleClass("fa-expand");
             $(".collapsable-search").slideToggle("slow");
         });';
+$this->search->javascript['preset-fields'] = '
+        var def = $(".default_button").attr("fieldset").split(",");
+        $(".checkbox-wrapper input").each(function(){
+            if($.inArray("#"+$(this).attr("id"),def) > -1){
+                $(this).prop("checked", true);
+            }
+        });
+        $(".fieldset_button").click(function(){
+            $(".checkbox-wrapper input").prop("checked",false);
+            fs = $(this).attr("fieldset");
+            $(fs).prop("checked", true);
+        });';
+$this->search->javascript['collapse-fields-init'] = '
+        $(".collapsable-fields").css("display","none");
+        ';
 if(!$_POST) {
     $this->search->javascript['search-btn'] = '
         $(".search-button input").val("Load All Students");
@@ -260,7 +302,7 @@ if(!$_POST) {
             $(".search-button input").val("SEARCH");
         });';
 }
-$this->search->print_form('consolidated',true,$fields);
+$this->search->print_form('consolidated',true,$fields,$select_fields);
 if($_POST) {
     print $tabs;
     print '

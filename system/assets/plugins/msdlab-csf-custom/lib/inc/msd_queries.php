@@ -1412,9 +1412,9 @@ class MSDLAB_Queries{
 
     function get_highschool_type_by_highschool_id($id){
         global $wpdb;
-        $sql = "SELECT SchoolTypeId FROM highschool WHERE HighSchoolId = '".$id."';";
+        $sql = "SELECT a.Type FROM highschooltype a, highschool b WHERE a.HighSchoolTypeId = b.SchoolTypeId AND b.HighSchoolId = '".$id."';";
         $result = $wpdb->get_results( $sql );
-        return $result[0]->SchoolTypeId;
+        return $result[0]->Type;
     }
 
     function get_scholarship_by_id($id){

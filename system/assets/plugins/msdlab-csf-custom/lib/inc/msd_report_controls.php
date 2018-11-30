@@ -82,7 +82,7 @@ class MSDLab_ReportControls{
         return apply_filters('msdlab_csf_manage_date_search_type', $ret);
     }
 
-    public function print_form($id = 'application',$echo = true,$fields = false){
+    public function print_form($id = 'application',$echo = true,$fields = false,$columns = false){
         $ret = array();
 
         //select populate
@@ -104,8 +104,19 @@ class MSDLab_ReportControls{
         $ret['reset_button_top'] = $this->reset_button();
 
 
-        $ret['collapse_fields'] = '<div class="collapse-button collapse-fields"><i class="fa fa-compress"><span class="screen-reader-text">Collapse</span> Fields</i></div>';
+        //$ret['collapse_fields'] = '<div class="collapse-button collapse-fields"><i class="fa fa-compress"><span class="screen-reader-text">Collapse</span> Fields</i></div>';
         $ret['fields_to_get_label'] = '<h4>Columns to return:</h4>';
+        if($columns) {
+            $ret[] = '<ul class="menu">';
+            foreach ($columns AS $k => $v) {
+                    foreach($v['fields'] AS $field_id){
+                        $switch[] = '#'.$field_id;
+                    }
+                    $ret[$k . '_btn'] = '<li><a href="#" class="fieldset_button '.$k.'_button" fieldset="'.implode(',',$switch).'">'.$v['title'].'</a></li>';
+            }
+            $ret['custom_btn'] = '<li><a href="#" class="collapse-button collapse-fields">Custom</a></li>';
+            $ret[] = '</ul>';
+        }
         $ret[] = '<div class="collapsable collapsable-fields">';
         $ret['applicant_fields'] = $this->search_checkbox_array('applicant_fields',null,'Applicant Fields',$fields['applicant'],null,array('col-sm-12'));
         $ret['renewal_fields'] = $this->search_checkbox_array('renewal_fields',null,'Renewal Fields',$fields['renewal'],null,array('col-sm-12'));
@@ -113,8 +124,8 @@ class MSDLab_ReportControls{
         $ret['award_fields'] = $this->search_checkbox_array('award_fields',null,'Award Fields',$fields['award'],null,array('col-sm-12'));
         $ret[] = '</div>';
 
-        $ret['collapse_search'] = '<div class="collapse-button collapse-search"><i class="fa fa-compress"><span class="screen-reader-text">Collapse</span> Search</i></div>';
         $ret['instructional_text'] = '<h4>Search By:</h4>';
+        $ret['collapse_search'] = '<ul class="menu"><li><a class="collapse-button collapse-search"><i class="fa fa-compress"><span class="screen-reader-text">Collapse</span> Search</i></a></li></ul>';
         $ret['collapsable'] = '<div class="collapsable collapsable-search">';
         switch($id){
             case 'renewal':
@@ -235,7 +246,7 @@ class MSDLab_ReportControls{
         $scholarship = $this->queries->get_select_array_from_db('scholarship', 'ScholarshipId', 'Name','Name',1);
         $fund = $this->queries->get_select_array_from_db('fund', 'FundId', 'Name','FundId');
         $bool_options = array('0'=>'No','1'=>'Yes');
-        $paymentkeys = array('1' => '1','1-Adj' => '1-Adj','2' => '2','2-Adj' => '2-Adj','3' => '3','4' => '4','5' => '5');
+        $paymentkeys = array('1' => '1','1-Adj' => '1-Adj','2' => '2','2-Adj' => '2-Adj','3' => '3');
 
         switch($id){
             case 'checks_to_print':

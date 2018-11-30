@@ -72,10 +72,10 @@ if (!class_exists('MSDLab_CSF_Management')) {
             add_menu_page(__('CSF Management and Reports'),__('CSF Management'), 'manage_csf', 'csf-manage', array(&$this,'management_page_content'),'dashicons-chart-area');
             //add_submenu_page('csf-manage',__('Application Reports'),__('Application Reports'),'manage_csf','csf-report', array(&$this,'report_page_content'));
             //add_submenu_page('csf-manage',__('Renewal Reports'),__('Renewal Reports'),'manage_csf','csf-renewals', array(&$this,'renewal_report_page_content'));
-            add_submenu_page('csf-manage',__('All Students'),__('Search All Students'),'manage_csf','csf-students', array(&$this,'consolidated_search_page_content'));
+            add_submenu_page('csf-manage',__('All Students'),__('Search All Students'),'manage_csf','csf-reports', array(&$this,'consolidated_search_page_content'));
             add_submenu_page(null,__('View Student'),__('View Student'),'manage_csf','student-edit', array(&$this,'single_student_record_page_content'));
             add_submenu_page(null,__('Recommend Student'),__('Recommend Student'),'manage_csf','student-recommend', array(&$this,'single_student_recommend_page_content'));
-            add_submenu_page('csf-manage',__('Reports'),__('Reports'),'manage_csf','csf-reports', array(&$this,'reports_page_content'));
+            add_submenu_page('csf-manage',__('Reports'),__('Reports'),'manage_csf','csf-reports', array(&$this,'consolidated_search_page_content'));
             add_submenu_page(null,__('Checks to Print'),__('Checks to Print'),'manage_csf','checks-to-print', array(&$this,'checks_to_print_report_content'));
 
 
