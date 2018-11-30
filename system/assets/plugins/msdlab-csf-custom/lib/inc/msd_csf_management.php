@@ -135,7 +135,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
         function report_page_content_menu($print = true){
             $ret = array();
             $ret[] = '<ul class="menu">';
-            $ret[] = '<li><a href="admin.php?page=csf-students" >Search All Students</a></li>';
+            $ret[] = '<li><a href="admin.php?page=csf-reports" >Search All Students</a></li>';
             $ret[] = '<li><a href="admin.php?page=checks-to-print" >Checks to Print</a></li>';
             $ret[] = '</ul>';
             if($print){

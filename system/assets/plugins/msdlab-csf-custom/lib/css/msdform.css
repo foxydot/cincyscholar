@@ -116,10 +116,10 @@ form.csf_report_search_form, form#csf_college {
   form.csf_report_search_form hr.break, form#csf_college hr.break {
     clear: both; }
 
-.toplevel_page_csf-report td > div, .csf-management_page_csf-report td > div, .csf-management_page_csf-renewals td > div, .csf-management_page_csf-students td > div, .admin_page_student-edit td > div {
+.toplevel_page_csf-report td > div, .csf-management_page_csf-report td > div, .csf-management_page_csf-reports td > div, .csf-management_page_csf-renewals td > div, .csf-management_page_csf-students td > div, .admin_page_student-edit td > div {
   height: 6em; }
 
-.toplevel_page_csf-report td.HardshipNote > div, .toplevel_page_csf-report td.Activities > div, .csf-management_page_csf-report td.HardshipNote > div, .csf-management_page_csf-report td.Activities > div, .csf-management_page_csf-renewals td.HardshipNote > div, .csf-management_page_csf-renewals td.Activities > div, .csf-management_page_csf-students td.HardshipNote > div, .csf-management_page_csf-students td.Activities > div, .admin_page_student-edit td.HardshipNote > div, .admin_page_student-edit td.Activities > div {
+.toplevel_page_csf-report td.HardshipNote > div, .toplevel_page_csf-report td.Activities > div, .csf-management_page_csf-report td.HardshipNote > div, .csf-management_page_csf-report td.Activities > div, .csf-management_page_csf-reports td.HardshipNote > div, .csf-management_page_csf-reports td.Activities > div, .csf-management_page_csf-renewals td.HardshipNote > div, .csf-management_page_csf-renewals td.Activities > div, .csf-management_page_csf-students td.HardshipNote > div, .csf-management_page_csf-students td.Activities > div, .admin_page_student-edit td.HardshipNote > div, .admin_page_student-edit td.Activities > div {
   width: 50em;
   overflow-y: scroll; }
 

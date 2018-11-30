@@ -75,9 +75,10 @@ class MSDLAB_Report_Output{
         global $current_screen;
         $allowedpages = array(
             'csf-management_page_csf-report',
+            'csf-management_page_csf-reports',
             'csf-management_page_csf-renewals',
             'csf-management_page_csf-need',
-            'csf-management_page_csf-students',
+            'csf-management_page_checks-to-print',
         );
         if(in_array($current_screen->id,$allowedpages)){
             wp_enqueue_script('sorttable',plugin_dir_url(__DIR__).'/../js/sorttable.js');
