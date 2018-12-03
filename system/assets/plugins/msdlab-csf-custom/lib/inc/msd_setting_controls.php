@@ -326,12 +326,12 @@ class MSDLAB_SettingControls{
 
                 $paymentkeys = array('1' => '1','1-Adj' => '1-Adj','2' => '2','2-Adj' => '2-Adj','3' => '3');
                 $colleges = $this->queries->get_select_array_from_db('college','CollegeId','Name','Name',1);
-
                 $ret['hdr'] = $this->form_header($form_id,array('csf_report_search_form'));
-                $ret['PaymentKey'] = $this->settings_select('payment_paymentkey', $data->paymentkey?$data->paymentkey:null,'Payment',array('','Select'),$paymentkeys,null, array('large','setting-field'));
-                $ret['CollegeId'] = $this->settings_select('payment_CollegeId',$data->CollegeId?$data->CollegeId:343,'College',array('','Select'),$colleges,null, array('large','setting-field'));
+                $ret['PaymentKey'] = $this->settings_select('payment_paymentkey', $data['payment_paymentkey_input']?$data['payment_paymentkey_input']:null,'Payment',array('','Select'),$paymentkeys,null, array('large','setting-field'));
+                $ret['CollegeId'] = $this->settings_select('payment_CollegeId',$data['payment_CollegeId_input'],'College',array('','Select'),$colleges,null, array('large','setting-field'));
                 $ret['PaymentDate'] = $this->settings_date('Payment Date','payment_PaymentDateTime',array('datepicker','large','setting-field'),date('Y-m-d'));
                 $ret['CheckNumber'] = $this->settings_textfield('Check Number','payment_CheckNumber',array('large','setting-field'),$this->queries->get_next_check_number());
+                $ret['AcademicYear'] = $this->settings_textfield('Academic Year','payment_AcademicYear',array('large','setting-field'),$this->queries->academic_year(time()));
                 $ret['submit'] = $this->settings_button();
                 $ret['nonce'] = wp_nonce_field( $form_id );
                 $ret['javascript'] = $this->build_javascript($form_id);

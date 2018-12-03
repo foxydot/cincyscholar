@@ -50,9 +50,7 @@ if($_POST){
             $check_data[$collegefund]['CheckAmount'][] = $user->AmountAwarded/2;
                 break;
         }
-        //$check_data[$collegefund]['Fund'] = $user->Name;
     }
-    //ts_data($check_data);
 }
 //print a small selection form
 $this->search->print_form_custom_searches('checks_to_print',true,$fields);

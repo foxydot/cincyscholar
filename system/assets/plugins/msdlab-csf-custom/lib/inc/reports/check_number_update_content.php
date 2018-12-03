@@ -4,13 +4,13 @@ if($_POST){
     //get a report
     //custom report queries lazy (to refactor?)
     global $wpdb;
-    $sql['select']  = 'SELECT a.UserId, a.ApplicantId, a.FirstName, a.LastName, a.StudentId, a.Last4SSN, b.*, c.* , d.Name, d.InstitutionTermTypeId, e.*';
-    $sql['from']    = 'FROM applicant a, applicantscholarship b, payment c, college d, scholarship e';
+    $sql['select']  = 'SELECT a.UserId, a.ApplicantId, a.FirstName, a.LastName, a.StudentId, a.Last4SSN, b.*, c.* , d.Name, d.InstitutionTermTypeId';
+    $sql['from']    = 'FROM applicant a, applicantscholarship b, payment c, college d';
     $sql['where'][] = 'WHERE a.ApplicantId = b.ApplicantId ';
     $sql['where'][] = 'AND b.DateAwarded > \''.get_option('csf_settings_start_date').'\' ';
     $sql['where'][] = 'AND b.ThankYou = 1 ';
     $sql['where'][] = 'AND b.Signed = 1 ';
-    switch($_POST['payment_number_input']){
+    switch($_POST['payment_paymentkey_input']){
         case '3':
             $sql['where'][] = 'AND b.GPA2 != \'0.000\' ';
         case '2-Adj':
@@ -23,43 +23,41 @@ if($_POST){
             break;
     }
     $sql['where'][] = 'AND a.ApplicantId = c.ApplicantId ';
-    $sql['where'][] = 'AND b.ScholarshipId = e.ScholarshipId ';
-    $sql['where'][] = 'AND c.paymentkey = \''.$_POST['payment_number_input'].'\' ';
+    $sql['where'][] = 'AND c.paymentkey = \''.$_POST['payment_paymentkey_input'].'\' ';
     $sql['where'][] = 'AND c.PaymentAmt = \'0.00\' ';
     $sql['where'][] = 'AND c.CollegeId = d.CollegeId ';
+    $sql['where'][] = 'AND c.CollegeId =  \''.$_POST['payment_CollegeId_input'].'\'';
     $where = implode(' ',$sql['where']);
     $sql['where'] = $where;
-    $sql['orderby'] = 'ORDER BY d.Name';
+    $sql['orderby'] = 'ORDER BY a.LastName';
 
     $result = $wpdb->get_results(implode(' ',$sql));
-    //ts_data($result);
-    $check_data = array();
+
     foreach($result as $k => $user){
-        $student_id = $user->StudentId != ''?$user->StudentId:'SSN '.$user->Last4SSN;
-        $college = $user->CollegeId != 343?$this->queries->get_college_by_id($user->CollegeId):$this->queries->get_other_school($user->ApplicantId);
-        $fund = $user->Name;
-        $collegefund = $college;
-        $check_data[$collegefund]['College'] = $college;
-        $check_data[$collegefund]['Students'][] = $user->FirstName.' '.$user->LastName.' ('. $student_id . ')';
         switch($user->InstitutionTermTypeId){
             case 2:
-                $check_data[$collegefund]['CheckAmount'][] = $user->AmountAwarded/3;
+                $check_amount = $user->AmountAwarded/3;
                 break;
             case 3:
             default:
-            $check_data[$collegefund]['CheckAmount'][] = $user->AmountAwarded/2;
+                $$check_amount = $user->AmountAwarded/2;
                 break;
         }
-        //$check_data[$collegefund]['Fund'] = $user->Name;
+        $sql2['update']  = 'UPDATE payment';
+        $sql2['set']    = 'SET payment.PaymentDateTime = \''.$_POST['payment_PaymentDateTime_input'].'\', 
+        payment.CheckNumber = \''.$_POST['payment_CheckNumber_input'].'\',
+        payment.PaymentAmt = '.$check_amount.'';
+        $sql2['where'] = 'WHERE payment.paymentid = '.$user->paymentid;
+
+        $result = $wpdb->get_results(implode(' ',$sql2));
     }
-    //ts_data($check_data);
 }
 //print a small selection form
-print $this->controls->get_form(array('form_id' => 'check_to_update','data' => $check_data));
+print $this->controls->get_form(array('form_id' => 'check_to_update',array('data' => $_POST)));
 //turn result into a report.
 $class = implode(" ",apply_filters('msdlab_csf_report_display_table_class', array('table','table-bordered','sortable')));
 
-$fields = array('CollegeId','FirstName','LastName','StudentId','ScholarshipId','CheckAmount');
+$fields = array('CollegeId','FirstName','LastName','StudentId','ScholarshipId','CheckAmount','CheckNumber');
 $ret = array();
 $ret['start_table'] = '<table id="'.$id.'" class="'.$class.'">';
 $ret['table_header'] = $this->report->table_header($fields,false);

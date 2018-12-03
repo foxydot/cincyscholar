@@ -1474,4 +1474,13 @@ class MSDLAB_Queries{
         return $results[0]->CheckNumber+1;
     }
 
+    function academic_year($date){
+         error_log(date('j',$date));
+         if(date('n',$date)<=7){
+             return (date('Y',$date) - 1);
+         } else {
+             return date('Y',$date);
+         }
+    }
+
 }

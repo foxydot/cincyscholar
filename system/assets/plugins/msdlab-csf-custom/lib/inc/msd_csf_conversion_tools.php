@@ -49,6 +49,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_create_donoruserscholarship', array(&$this,'create_donoruserscholarship') );
             add_action( 'wp_ajax_add_reject_columns', array(&$this,'add_reject_columns') );
             add_action( 'wp_ajax_add_award_id', array(&$this,'add_award_id') );
+            add_action( 'wp_ajax_add_academic_year_columns', array(&$this,'add_academic_year_columns') );
 
 
             add_filter('send_password_change_email',array(&$this,'return_false'));
@@ -776,6 +777,35 @@ beth@cincinnatischolarshipfoundation.org<br/>
             }
         }
 
+        function add_academic_year_columns(){
+            global $wpdb;
+            //table to add academic year to
+            $tables = array('applicant','renewal','payment','applicantscholarship');
+            foreach ($tables as $table){
+                $sql = "ALTER TABLE $table 
+  ADD COLUMN `AcademicYear` smallint(4) unsigned zerofill NOT NULL;";
+                if($wpdb->query($sql)) {
+                    print "Academic column added to $table!";
+                }
+            }
+            $sql = "UPDATE applicant SET AcademicYear = YEAR(ApplicationDateTime);";
+            if($wpdb->query($sql)) {
+                print "Applicant Updated";
+            }
+            $sql = "UPDATE renewal SET AcademicYear = YEAR(RenewalDateTime);";
+            if($wpdb->query($sql)) {
+                print "Renewal Updated";
+            }
+            $sql = "UPDATE payment SET AcademicYear = YEAR(PaymentDateTime);";
+            if($wpdb->query($sql)) {
+                print "Payment Updated";
+            }
+            $sql = "UPDATE applicantscholarship SET AcademicYear = YEAR(DateAwarded);";
+            if($wpdb->query($sql)) {
+                print "ApplicantScholarship Updated";
+            }
+        }
+
         //utility
         function settings_page()
         {
@@ -1093,6 +1123,15 @@ beth@cincinnatischolarshipfoundation.org<br/>
                             console.log(response);
                         });
                     });
+                    $('.add_academic_year_columns').click(function(){
+                        var data = {
+                            action: 'add_academic_year_columns',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
 
             </script>
@@ -1163,6 +1202,8 @@ beth@cincinnatischolarshipfoundation.org<br/>
                     <dd><button class="add_reject_columns">Go</button></dd>
                     <dt>add_award_id:</dt>
                     <dd><button class="add_award_id">Go</button></dd>
+                    <dt>add_academic_year_columns:</dt>
+                    <dd><button class="add_academic_year_columns">Go</button></dd>
                 </dl>
                 <div class="response1"></div>
             </div>
