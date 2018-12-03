@@ -1467,4 +1467,11 @@ class MSDLAB_Queries{
         return $results[0]->{$id_field}+1;
     }
 
+    function get_next_check_number(){
+        global $wpdb;
+        $sql = 'SELECT DISTINCT CheckNumber FROM payment ORDER BY CheckNumber DESC LIMIT 1';
+        $results = $wpdb->get_results($sql);
+        return $results[0]->CheckNumber+1;
+    }
+
 }

@@ -77,6 +77,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
             add_submenu_page(null,__('Recommend Student'),__('Recommend Student'),'manage_csf','student-recommend', array(&$this,'single_student_recommend_page_content'));
             add_submenu_page('csf-manage',__('Reports'),__('Reports'),'manage_csf','csf-reports', array(&$this,'consolidated_search_page_content'));
             add_submenu_page(null,__('Checks to Print'),__('Checks to Print'),'manage_csf','checks-to-print', array(&$this,'checks_to_print_report_content'));
+            add_submenu_page(null,__('Update check number'),__('Update check number'),'manage_csf','check-number-update', array(&$this,'check_number_update_content'));
 
 
             add_submenu_page('csf-manage',__('Settings'),__('Settings'),'manage_csf','csf-settings', array(&$this,'general_page_content'));
@@ -137,6 +138,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
             $ret[] = '<ul class="menu">';
             $ret[] = '<li><a href="admin.php?page=csf-reports" >Search All Students</a></li>';
             $ret[] = '<li><a href="admin.php?page=checks-to-print" >Checks to Print</a></li>';
+            $ret[] = '<li><a href="admin.php?page=check-number-update" >Check number update</a></li>';
             $ret[] = '</ul>';
             if($print){
                 print implode("\n\r", $ret);
@@ -201,6 +203,10 @@ if (!class_exists('MSDLab_CSF_Management')) {
         function checks_to_print_report_content(){
             $this->report_page_content_menu();
             include_once(plugin_dir_path(__FILE__).'/reports/checks_to_print_content.php');
+        }
+        function check_number_update_content(){
+            $this->report_page_content_menu();
+            include_once(plugin_dir_path(__FILE__).'/reports/check_number_update_content.php');
         }
 
 
