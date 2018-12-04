@@ -40,16 +40,15 @@ if($_POST){
                 break;
             case 3:
             default:
-                $$check_amount = $user->AmountAwarded/2;
+                $check_amount = $user->AmountAwarded/2;
                 break;
         }
         $sql2['update']  = 'UPDATE payment';
-        $sql2['set']    = 'SET payment.PaymentDateTime = \''.$_POST['payment_PaymentDateTime_input'].'\', 
-        payment.CheckNumber = \''.$_POST['payment_CheckNumber_input'].'\',
-        payment.PaymentAmt = '.$check_amount.'';
-        $sql2['where'] = 'WHERE payment.paymentid = '.$user->paymentid;
-
-        $result = $wpdb->get_results(implode(' ',$sql2));
+        $sql2['set']    = 'SET PaymentDateTime = \''.date('Y-m-d H:i:s',strtotime($_POST['payment_PaymentDateTime_input'])).'\', 
+        CheckNumber = \''.$_POST['payment_CheckNumber_input'].'\',
+        PaymentAmt = '.$check_amount.'';
+        $sql2['where'] = 'WHERE paymentid = '.$user->paymentid.';';
+        $wpdb->query(implode(' ',$sql2));
     }
 }
 //print a small selection form
@@ -57,7 +56,7 @@ print $this->controls->get_form(array('form_id' => 'check_to_update',array('data
 //turn result into a report.
 $class = implode(" ",apply_filters('msdlab_csf_report_display_table_class', array('table','table-bordered','sortable')));
 
-$fields = array('CollegeId','FirstName','LastName','StudentId','ScholarshipId','CheckAmount','CheckNumber');
+$fields = array('LastName','FirstName','StudentId','ScholarshipId','CheckAmount');
 $ret = array();
 $ret['start_table'] = '<table id="'.$id.'" class="'.$class.'">';
 $ret['table_header'] = $this->report->table_header($fields,false);
