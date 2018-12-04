@@ -740,7 +740,7 @@ class MSDLAB_Report_Output{
             } else {
                 $college = $this->queries->get_college_by_id($user->CollegeId);
             }
-            if($oldcollege != $college){
+            if($oldcollege != $college && $i>0){
                 foreach ($fields as $key => $value) {
                     switch($value){
                         case 'CollegeId':
@@ -903,6 +903,29 @@ class MSDLAB_Report_Output{
             $ecsv[] = implode(",",$erow);
             $i++;
         }
+//add on final total
+        $row = array();
+        $erow = array();
+        foreach ($fields as $key => $value) {
+            switch($value){
+                case 'CollegeId':
+                    $printval = $table_data[$oldcollege]['College'];
+                    break;
+                case 'CheckAmount':
+                    $printval = '$'.array_sum($table_data[$oldcollege]['CheckAmount']);
+                    break;
+                default:
+                    $printval = '';
+                    break;
+            }
+            $row[] = '<td class="'.$value.'"><div><strong>'.$printval.'</strong></div></td>';
+            if(!in_array($value,$this->skipcsv)) {
+                $erow[] = $this->csv_safe($printval);
+            }
+        }
+        $ret[] = '<tr class="total '.$class.'">'.implode("\n\r", $row).'</tr>';
+        $ecsv[] = implode(",",$erow);
+
         $this->export_csv = implode("\n", $ecsv);
 
         if($echo){
