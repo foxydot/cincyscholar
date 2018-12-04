@@ -903,7 +903,6 @@ class MSDLAB_Report_Output{
             $ecsv[] = implode(",",$erow);
             $i++;
         }
-
         $this->export_csv = implode("\n", $ecsv);
 
         if($echo){

@@ -30,7 +30,6 @@ if($_POST){
     $where = implode(' ',$sql['where']);
     $sql['where'] = $where;
     $sql['orderby'] = 'ORDER BY d.Name';
-ts_data(implode(' ',$sql));
     $result = $wpdb->get_results(implode(' ',$sql));
     //ts_data($result);
     $check_data = array();
