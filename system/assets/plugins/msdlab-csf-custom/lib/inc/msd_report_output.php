@@ -399,9 +399,6 @@ class MSDLAB_Report_Output{
         $renewal = isset($student_data['renewal']->RenewalId)?true:false;
         $this->set_form_select_options();
 
-        $ret['ApplicantScholarship_ApplicantId'] = $this->form->field_hidden("ApplicantScholarship_ApplicantId", $student_data['personal']->ApplicantId);
-        $ret['ApplicantScholarship_AwardId'] = $this->form->field_hidden("ApplicantScholarship_AwardId", $student_data['scholarship']->AwardId);
-
         $ret['studentneed_ApplicantId'] = $this->form->field_hidden("studentneed_ApplicantId", $student_data['personal']->ApplicantId);
         $ret['studentneed_UserId'] = $this->form->field_hidden("studentneed_UserId", $student_data['personal']->UserId);
 
@@ -470,25 +467,44 @@ class MSDLAB_Report_Output{
         }
 
         $ret[] = '<hr />';
-        $ret['ApplicantScholarship_ScholarshipId'] = $this->form->field_select('ApplicantScholarship_ScholarshipId', $student_data['scholarship']->ScholarshipId ? $student_data['scholarship']->ScholarshipId : null , 'Scholarship', null, $this->scholarship_array, array(), array('col-md-3', 'col-sm-12'));
-        $ret['infoFund'] = $this->form->field_textinfo('infoFund',$this->queries->get_fund_by_scholarshipid($student_data['scholarship']->ScholarshipId),'Fund',null,null, array('col-md-2', 'col-sm-12'));
-        $ret['ApplicantScholarship_AmountAwarded'] = $this->form->field_textfield('ApplicantScholarship_AmountAwarded', $student_data['scholarship']->AmountAwarded ? $student_data['scholarship']->AmountAwarded : null, 'Amount Awarded', '', array('type' => 'number'), array('col-md-2', 'col-sm-12','currency'));
-        $ret['ApplicantScholarship_AmountActuallyAwarded'] = $this->form->field_textfield('ApplicantScholarship_AmountActuallyAwarded', $student_data['scholarship']->AmountActuallyAwarded ? $student_data['scholarship']->AmountActuallyAwarded : null, 'Amount Actually Awarded', '', array('type' => 'number'), array('col-md-2', 'col-sm-12','currency'));
+        $scholarship_cnt = 1;
+        foreach($student_data['scholarship'] AS $scholarship) {
+            $s = $scholarship->AwardId;
+            $ret[] = '<div id="scholarship_'.$s.'" class="scholarship-entry">';
+            $ret['ApplicantScholarship_ApplicantId_'.$s] = $this->form->field_hidden("ApplicantScholarship_ApplicantId_".$s, $student_data['personal']->ApplicantId);
+            $ret['ApplicantScholarship_AwardId_'.$s] = $this->form->field_hidden("ApplicantScholarship_AwardId_".$s, $scholarship->AwardId);
 
-        $ret['ApplicantScholarship_DateAwarded'] = $this->form->field_date("ApplicantScholarship_DateAwarded", (strtotime($student_data['scholarship']->DateAwarded) > 0) ? date("Y-m-d", strtotime($student_data['scholarship']->DateAwarded)) : '','Date Awarded',array(),array('datepicker','col-md-3', 'col-sm-12'));
-        $ret['ApplicantScholarship_Renew'] = $this->form->field_boolean('ApplicantScholarship_Renew',$student_data['scholarship']->Renew?$student_data['scholarship']->Renew:0,'Renew',array(),array('col-md-2', 'col-sm-12'));
-        $ret['ApplicantScholarship_ThankYou'] = $this->form->field_boolean('ApplicantScholarship_ThankYou',$student_data['scholarship']->ThankYou?$student_data['scholarship']->ThankYou:0,'Thank You',array(),array('col-md-2', 'col-sm-12'));
-        $ret['ApplicantScholarship_Signed'] = $this->form->field_boolean('ApplicantScholarship_Signed',$student_data['scholarship']->Signed?$student_data['scholarship']->Signed:0,'Signed',array(),array('col-md-2', 'col-sm-12'));
-        $ret[] = '<hr />';
-        if($renewal) {
+            $ret['ApplicantScholarship_ScholarshipId_'.$s] = $this->form->field_select('ApplicantScholarship_ScholarshipId_'.$s, $scholarship->ScholarshipId ? $scholarship->ScholarshipId : null, 'Scholarship '.$scholarship_cnt, null, $this->scholarship_array, array(), array('col-md-3', 'col-sm-12'));
+            $ret['infoFund_'.$s] = $this->form->field_textinfo('infoFund', $this->queries->get_fund_by_scholarshipid($scholarship->ScholarshipId), 'Fund', null, null, array('col-md-2', 'col-sm-12'));
+            $ret['ApplicantScholarship_AmountAwarded_'.$s] = $this->form->field_textfield('ApplicantScholarship_AmountAwarded_'.$s, $scholarship->AmountAwarded ? $scholarship->AmountAwarded : null, 'Amount Awarded', '', array('type' => 'number'), array('col-md-2', 'col-sm-12', 'currency'));
+            $ret['ApplicantScholarship_AmountActuallyAwarded_'.$s] = $this->form->field_textfield('ApplicantScholarship_AmountActuallyAwarded_'.$s, $scholarship->AmountActuallyAwarded ? $scholarship->AmountActuallyAwarded : null, 'Amount Actually Awarded', '', array('type' => 'number'), array('col-md-2', 'col-sm-12', 'currency'));
+
+            $ret['ApplicantScholarship_DateAwarded_'.$s] = $this->form->field_date("ApplicantScholarship_DateAwarded_".$s, (strtotime($scholarship->DateAwarded) > 0) ? date("Y-m-d", strtotime($scholarship->DateAwarded)) : '', 'Date Awarded', array(), array('datepicker', 'col-md-3', 'col-sm-12'));
+            $ret['ApplicantScholarship_Renew_'.$s] = $this->form->field_boolean('ApplicantScholarship_Renew_'.$s, $scholarship->Renew ? $scholarship->Renew : 0, 'Renew', array(), array('col-md-2', 'col-sm-12'));
+            $ret['ApplicantScholarship_ThankYou_'.$s] = $this->form->field_boolean('ApplicantScholarship_ThankYou_'.$s, $scholarship->ThankYou ? $scholarship->ThankYou : 0, 'Thank You', array(), array('col-md-2', 'col-sm-12'));
+            $ret['ApplicantScholarship_Signed_'.$s] = $this->form->field_boolean('ApplicantScholarship_Signed_'.$s, $scholarship->Signed ? $scholarship->Signed : 0, 'Signed', array(), array('col-md-2', 'col-sm-12'));
+            $ret[] = '<div class="gpas gpas-'.$s.'" style="clear:both;">';
+            $ret['Applicant_EducationAttainmentId'] = $this->form->field_select("Applicant_EducationAttainmentId", $student_data['personal']->EducationAttainmentId ? $student_data['personal']->EducationAttainmentId : null, "Year in School", array('option' => 'Select', 'value' => '5'), $this->educationalattainment_array, array('required' => 'required'), array('required', 'col-md-3', 'col-sm-12'));
+            if($scholarship_cnt == 1) {
+                $ret['ApplicantScholarship_GPA1_' . $s] = $this->form->field_textfield('ApplicantScholarship_GPA1_' . $s, $scholarship->GPA1 ? $scholarship->GPA1 : 0, 'GPA 1', '0.00', array('type' => 'number', 'min' => 0.00, 'max' => 100.00, 'step' => 0.01, 'minlength' => 1), array('col-md-2', 'col-sm-12', 'gpa1in'));
+                $ret['ApplicantScholarship_GPA2_' . $s] = $this->form->field_textfield('ApplicantScholarship_GPA2_' . $s, $scholarship->GPA2 ? $scholarship->GPA2 : 0, 'GPA 2', '0.00', array('type' => 'number', 'min' => 0.00, 'max' => 100.00, 'step' => 0.01, 'minlength' => 1), array('col-md-2', 'col-sm-12', 'gpa2in'));
+                $ret['ApplicantScholarship_GPA3_' . $s] = $this->form->field_textfield('ApplicantScholarship_GPA3_' . $s, $scholarship->GPA3 ? $scholarship->GPA3 : 0, 'GPA 3', '0.00', array('type' => 'number', 'min' => 0.00, 'max' => 100.00, 'step' => 0.01, 'minlength' => 1), array('col-md-2', 'col-sm-12', 'gpa3in'));
+                $ret['ApplicantScholarship_GPAC_' . $s] = $this->form->field_textfield('ApplicantScholarship_GPAC_' . $s, $scholarship->GPAC ? $scholarship->GPAC : 0, 'GPA Cumulative', '0.00', array('type' => 'number', 'min' => 0.00, 'max' => 100.00, 'step' => 0.01, 'minlength' => 1), array('col-md-2', 'col-sm-12', 'gpacin'));
+            } else {
+                $ret['ApplicantScholarship_GPA1_' . $s] = $this->form->field_hidden('ApplicantScholarship_GPA1_' . $s, $scholarship->GPA1 ? $scholarship->GPA1 : 0, 'GPA 1', '0.00', array('col-md-2', 'col-sm-12', 'gpa1'));
+                $ret['ApplicantScholarship_GPA2_' . $s] = $this->form->field_hidden('ApplicantScholarship_GPA2_' . $s, $scholarship->GPA2 ? $scholarship->GPA2 : 0, 'GPA 2', '0.00', array('col-md-2', 'col-sm-12', 'gpa2'));
+                $ret['ApplicantScholarship_GPA3_' . $s] = $this->form->field_hidden('ApplicantScholarship_GPA3_' . $s, $scholarship->GPA3 ? $scholarship->GPA3 : 0, 'GPA 3', '0.00', array('col-md-2', 'col-sm-12', 'gpa3'));
+                $ret['ApplicantScholarship_GPAC_' . $s] = $this->form->field_hidden('ApplicantScholarship_GPAC_' . $s, $scholarship->GPAC ? $scholarship->GPAC : 0, 'GPA Cumulative', '0.00', array('col-md-2', 'col-sm-12', 'gpac'));
+            }
+            $ret[] = '</div>';
+            $ret[] = '</div>';
+            $scholarship_cnt++;
+        }
+        $ret[] = '<div id="scholarship_new" class="scholarship-entry"><div class="col-md-12"><a id="add_scholarship_btn" class="button">Add Scholarship</a></div></div>';
+        if ($renewal) {
             $ret['Renewal_YearsWithCSF'] = $this->form->field_textfield('Renewal_YearsWithCSF', $student_data['renewal']->YearsWithCSF ? $student_data['renewal']->YearsWithCSF : 0, 'Years With CSF', '0', array('type' => 'number', 'minlength' => 1), array('col-md-2', 'col-sm-12'));
             $ret['Renewal_AnticipatedGraduationDate'] = $this->form->field_select('Renewal_AnticipatedGraduationDate', $student_data['renewal']->AnticipatedGraduationDate ? date("Y", strtotime($student_data['renewal']->AnticipatedGraduationDate)) : date("Y") . '-01-01', "Anticipated Graduation Date", array('value' => date("Y") . '-01-01', 'option' => date("Y")), $this->col_gradyr_array, array('required' => 'required'), array('required', 'col-md-2', 'col-sm-12'));
         }
-        $ret['Applicant_EducationAttainmentId'] = $this->form->field_select("Applicant_EducationAttainmentId", $student_data['personal']->EducationAttainmentId ? $student_data['personal']->EducationAttainmentId : null, "Year in School", array('option' => 'Select', 'value' => '5'), $this->educationalattainment_array, array('required' => 'required'), array('required', 'col-md-3', 'col-sm-12'));
-        $ret['ApplicantScholarship_GPA1'] = $this->form->field_textfield('ApplicantScholarship_GPA1', $student_data['scholarship']->GPA1 ? $student_data['scholarship']->GPA1 : 0, 'GPA 1', '0.00', array('type' => 'number', 'min' => 0.00, 'max' => 100.00, 'step'=> 0.01, 'minlength' => 1), array('col-md-2', 'col-sm-12'));
-        $ret['ApplicantScholarship_GPA2'] = $this->form->field_textfield('ApplicantScholarship_GPA2', $student_data['scholarship']->GPA2 ? $student_data['scholarship']->GPA2 : 0, 'GPA 2', '0.00', array('type' => 'number', 'min' => 0.00, 'max' => 100.00, 'step'=> 0.01, 'minlength' => 1), array('col-md-2', 'col-sm-12'));
-        $ret['ApplicantScholarship_GPA3'] = $this->form->field_textfield('ApplicantScholarship_GPA3', $student_data['scholarship']->GPA3 ? $student_data['scholarship']->GPA3 : 0, 'GPA 3', '0.00', array('type' => 'number', 'min' => 0.00, 'max' => 100.00, 'step'=> 0.01, 'minlength' => 1), array('col-md-2', 'col-sm-12'));
-        $ret['ApplicantScholarship_GPAC'] = $this->form->field_textfield('ApplicantScholarship_GPAC', $student_data['scholarship']->GPAC ? $student_data['scholarship']->GPAC : 0, 'GPA Cumulative', '0.00', array('type' => 'number', 'min' => 0.00, 'max' => 100.00, 'step'=> 0.01, 'minlength' => 1), array('col-md-2', 'col-sm-12'));
         return implode("\n",$ret);
     }
 
@@ -601,7 +617,7 @@ class MSDLAB_Report_Output{
         return implode("\n",$ret);
     }
 
-    function payment_form($student_data){
+    function payment_form($student_data, $scholarship_key){
         $this->set_form_select_options();
         $renewal = isset($student_data['renewal']->RenewalId)?true:false;
         if($renewal){
@@ -619,7 +635,7 @@ class MSDLAB_Report_Output{
         $ret['ApplicantScholarship_AmountActuallyAwarded'] = $this->form->field_textinfo('ApplicantScholarship_AmountActuallyAwarded', $student_data['scholarship']->AmountActuallyAwarded ? $student_data['scholarship']->AmountActuallyAwarded : null, 'Amount Actually Awarded', '', array(), array('col-md-6', 'col-sm-12', 'currency'));
         $ret[] = '</div>';
         $ret[] = '<div class="col-md-7 row">';
-       $ret['ApplicantScholarship_Notes'] = $this->form->field_textarea('ApplicantScholarship_Notes',$student_data['scholarship']->Notes ? $student_data['scholarship']->Notes : '',"Scholarship Notes (CSF only)",null,array('col-md-12'));
+        $ret['ApplicantScholarship_Notes'] = $this->form->field_textarea('ApplicantScholarship_Notes', $scholarship->Notes ? $scholarship->Notes : '', $this->queries->get_scholarship_by_id($scholarship->ScholarshipId)." Award Notes (CSF only)", null, array('col-md-12'));
         $ret[] = '</div>';
         $ret[] = '<div class="col-md-12 row"><table>';
         $ret[] = '<tr><th>Payment #</th><th>Amount</th><th>Date</th><th>Check #</th><th>Refund Rec.</th><th>Refund Amt.</th><th>Refund #</th></tr>';

@@ -289,3 +289,12 @@ div.submit, div.delete, div.search-button, div.reset-button {
 
 tr.total {
   background: #c9e5f5; }
+
+.scholarship-entry {
+  display: block;
+  clear: both; }
+  .scholarship-entry.after {
+    content: " ";
+    display: table;
+    clear: both;
+    zoom: 1; }

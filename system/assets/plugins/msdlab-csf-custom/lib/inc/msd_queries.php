@@ -338,7 +338,24 @@ class MSDLAB_Queries{
                      return new WP_Error( 'attachments', '<div class="error">Error updating '.$table.'</div>' );
                  }
              }
-             if($table == 'payment') { //handling payments with keys
+             if($table == 'applicantscholarship'){
+                 ts_data($data[$table]);
+                 foreach ($data[$table] as $key => $datum) {
+                     $select_sql = 'SELECT ScholarshipId FROM ' . $table . ' WHERE ' . $table . 'AwardId = "' . $key . '" AND ' . $where[$table] . ';';
+                     error_log('check_sql: '.$select_sql);
+                     if ($r = $wpdb->get_row($select_sql)) {
+                         $sql = 'UPDATE ' . $table . ' SET ' . implode(', ', $data[$table][$key]) . ' WHERE ScholarshipId = ' . $r->ScholarshipId . ';';
+                     } else {
+                         $sql = 'INSERT INTO ' . $table . ' SET ' . implode(', ', $data[$table][$key]) . ';';
+                     }
+                     error_log('update_sql: '.$sql);
+                     $result = $wpdb->get_results($sql);
+                     if (is_wp_error($result)) {
+                         return new WP_Error('update', '<div class="error">Error updating ' . $table . '</div>');
+                     }
+                 }
+             }
+             elseif($table == 'payment') { //handling payments with keys
                  //ts_data($data[$table]);
 
                  foreach ($data[$table] as $key => $datum) {
@@ -1304,6 +1321,7 @@ class MSDLAB_Queries{
                         $results[$query][$ra->paymentkey] = $ra;
                     }
                     break;
+                case 'scholarship':
                 case 'recommend':
                 case 'docs':
                     $results[$query] = $result_array;

@@ -214,10 +214,6 @@ if (!class_exists('MSDLab_CSF_Management')) {
             $this->report_page_content_menu();
             include_once(plugin_dir_path(__FILE__).'/reports/check_attachments_content.php');
         }
-
-
-
-
         function college_page_content(){
             $this->setting_page_content_menu();
             include_once(plugin_dir_path(__FILE__).'/admin-part/college_page_content.php');

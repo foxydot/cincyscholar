@@ -67,6 +67,24 @@ if($student = $this->queries->get_student_data($applicant_id)) {
                     '.$this->report->payment_form($student).'
                 </div>';
             $jquery[] = "
+                $('.gpa1in input').change(function(){
+                    var gpa = $(this).val();
+                    $('.gpa1 input').val(gpa);
+                });
+                $('.gpa2in input').change(function(){
+                    var gpa = $(this).val();
+                    $('.gpa2 input').val(gpa);
+                });
+                $('.gpa3in input').change(function(){
+                    var gpa = $(this).val();
+                    $('.gpa3 input').val(gpa);
+                });
+                $('.gpacin input').change(function(){
+                    var gpa = $(this).val();
+                    $('.gpac input').val(gpa);
+                });
+            ";
+            $jquery[] = "
             $('#calculateneed_button').click(function(e){
                 e.preventDefault();
                 var direct;
@@ -119,6 +137,28 @@ if($student = $this->queries->get_student_data($applicant_id)) {
                     $('#ApplicantScholarship_AmountAwarded_input').val(0);
                     $('#ApplicantScholarship_DateAwarded_input').val(0);
                 }
+            });
+            ";
+            $scholarship_array = $this->queries->get_select_array_from_db('scholarship', 'ScholarshipId', 'Name','Name',1);
+
+            $newscholarship['ApplicantScholarship_ApplicantId_new'] = $this->form->field_hidden("ApplicantScholarship_ApplicantId_new", $student['personal']->ApplicantId);
+
+            $newscholarship['ApplicantScholarship_ScholarshipId_new'] = $this->form->field_select('ApplicantScholarship_ScholarshipId_new', null, 'New Scholarship', null, $scholarship_array, array(), array('col-md-3', 'col-sm-12'));
+            $newscholarship['ApplicantScholarship_AmountAwarded_new'] = $this->form->field_textfield('ApplicantScholarship_AmountAwarded_new', null, 'Amount Awarded', '', array('type' => 'number'), array('col-md-3', 'col-sm-12', 'currency'));
+            $newscholarship['ApplicantScholarship_AmountActuallyAwarded_new'] = $this->form->field_textfield('ApplicantScholarship_AmountActuallyAwarded_new', null, 'Amount Actually Awarded', '', array('type' => 'number'), array('col-md-3', 'col-sm-12', 'currency'));
+
+            $newscholarship['ApplicantScholarship_DateAwarded_new'] = $this->form->field_date('ApplicantScholarship_DateAwarded_new','', 'Date Awarded', array(), array('datepicker', 'col-md-3', 'col-sm-12'));
+            $newscholarship['ApplicantScholarship_Renew_new'] = $this->form->field_boolean('ApplicantScholarship_Renew_new', 0, 'Renew', array(), array('col-md-2', 'col-sm-12'));
+            $newscholarship['ApplicantScholarship_ThankYou_new'] = $this->form->field_boolean('ApplicantScholarship_ThankYou_new', 0, 'Thank You', array(), array('col-md-2', 'col-sm-12'));
+            $newscholarship['ApplicantScholarship_Signed_new'] = $this->form->field_boolean('ApplicantScholarship_Signed_new', 0, 'Signed', array(), array('col-md-2', 'col-sm-12'));
+
+            $newscholarshipform = str_replace(array("\n", "\r"), '', implode("",$newscholarship));
+            $newscholarshipform = str_replace("'","\'",$newscholarshipform);
+
+            $jquery[] = "
+            $('#add_scholarship_btn').click(function(){
+                var html = '".$newscholarshipform."';
+                $('#scholarship_new').html(html);
             });
             ";
             /*$jquery[] = '$("#' . $form_id . '").validate({

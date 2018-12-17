@@ -50,6 +50,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_add_reject_columns', array(&$this,'add_reject_columns') );
             add_action( 'wp_ajax_add_award_id', array(&$this,'add_award_id') );
             add_action( 'wp_ajax_add_academic_year_columns', array(&$this,'add_academic_year_columns') );
+            add_action( 'wp_ajax_add_awardid_to_payments', array(&$this,'add_awardid_to_payments') );
 
 
             add_filter('send_password_change_email',array(&$this,'return_false'));
@@ -806,6 +807,24 @@ beth@cincinnatischolarshipfoundation.org<br/>
             }
         }
 
+        function add_awardid_to_payments(){
+            global $wpdb;
+            $table = 'payment';
+            $sql = "ALTER TABLE $table ADD COLUMN `AwardId` int(11) NOT NULL;";
+            if($wpdb->query($sql)) {
+                print "AwardId column added to $table!";
+            }
+            $sql = "SELECT DISTINCT a.ApplicantId, b.AwardId FROM payment a, applicantscholarship b WHERE a.ApplicantId = b.ApplicantId;";
+            //for each ApplicantId, get the awardId
+            $results = $wpdb->get_results($sql);
+            foreach ($results AS $r){
+                $sql = "UPDATE payment SET AwardId = ".$r->AwardId." WHERE ApplicantId = ".$r->ApplicantId.";";
+                if($wpdb->query($sql)) {
+                    print "AwardId added to Payments for ".$r->ApplicantId."<br />";
+                }
+            }
+        }
+
         //utility
         function settings_page()
         {
@@ -1132,6 +1151,15 @@ beth@cincinnatischolarshipfoundation.org<br/>
                             console.log(response);
                         });
                     });
+                    $('.add_awardid_to_payments').click(function(){
+                        var data = {
+                            action: 'add_awardid_to_payments',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
 
             </script>
@@ -1204,6 +1232,8 @@ beth@cincinnatischolarshipfoundation.org<br/>
                     <dd><button class="add_award_id">Go</button></dd>
                     <dt>add_academic_year_columns:</dt>
                     <dd><button class="add_academic_year_columns">Go</button></dd>
+                    <dt>add_awardid_to_payments:</dt>
+                    <dd><button class="add_awardid_to_payments">Go</button></dd>
                 </dl>
                 <div class="response1"></div>
             </div>

@@ -1,9 +1,8 @@
 <?php
-
 if($_POST){
+    global $wpdb;
     //get a report
     //custom report queries lazy (to refactor?)
-    global $wpdb;
     $sql['select']  = 'SELECT a.UserId, a.ApplicantId, a.FirstName, a.LastName, a.StudentId, a.Last4SSN, b.*, c.* , d.Name, d.InstitutionTermTypeId';
     $sql['from']    = 'FROM applicant a, applicantscholarship b, payment c, college d';
     $sql['where'][] = 'WHERE a.ApplicantId = b.ApplicantId ';
@@ -33,14 +32,23 @@ if($_POST){
 
     $result = $wpdb->get_results(implode(' ',$sql));
 
+    $check_data = array();
     foreach($result as $k => $user){
+        $student_id = $user->StudentId != ''?$user->StudentId:'SSN '.$user->Last4SSN;
+        $college = $user->CollegeId != 343?$this->queries->get_college_by_id($user->CollegeId):$this->queries->get_other_school($user->ApplicantId);
+        $fund = $user->Name;
+        $collegefund = $college;
+        $check_data[$collegefund]['College'] = $college;
+        $check_data[$collegefund]['Students'][] = $user->FirstName.' '.$user->LastName.' ('. $student_id . ')';
         switch($user->InstitutionTermTypeId){
             case 2:
                 $check_amount = $user->AmountAwarded/3;
+                $check_data[$collegefund]['CheckAmount'][] = $user->AmountAwarded/3;
                 break;
             case 3:
             default:
                 $check_amount = $user->AmountAwarded/2;
+            $check_data[$collegefund]['CheckAmount'][] = $user->AmountAwarded/2;
                 break;
         }
         $sql2['update']  = 'UPDATE payment';
