@@ -625,17 +625,18 @@ class MSDLAB_Report_Output{
         } else {
             $college_id = $student_data['personal']->CollegeId;
         }
-        $scholarship_id = $student_data['scholarship']->ScholarshipId;
+        $scholarship_id = $student_data['scholarship'][$scholarship_key]->ScholarshipId;
+        $award_id       = $student_data['scholarship'][$scholarship_key]->AwardId;
         $paymentkeys = array('1','1-Adj','2','2-Adj','3');
         $ret[] = '<div class="col-md-5 row">';
         $ret['infoCurrentCollege'] = $this->form->field_textinfo('infoCurrentCollege',$this->queries->get_college_by_id($college_id),'School',null,null,array('col-sm-12'));
         $ret['infoScholarshipId'] = $this->form->field_textinfo('infoScholarshipId',$this->queries->get_scholarship_by_id($scholarship_id),'Scholarship',null,null,array('col-sm-12'));
         //$ret['infoFund'] = $this->form->field_textinfo('infoFund',$this->queries->get_fund_by_scholarshipid($student_data['scholarship']->ScholarshipId),'Fund',null,null,array('col-sm-12'));
-        $ret['ApplicantScholarship_AmountAwarded'] = $this->form->field_textinfo('ApplicantScholarship_AmountAwarded', $student_data['scholarship']->AmountAwarded ? $student_data['scholarship']->AmountAwarded : null, 'Amount Awarded', '', array(), array('col-md-6', 'col-sm-12', 'currency'));
-        $ret['ApplicantScholarship_AmountActuallyAwarded'] = $this->form->field_textinfo('ApplicantScholarship_AmountActuallyAwarded', $student_data['scholarship']->AmountActuallyAwarded ? $student_data['scholarship']->AmountActuallyAwarded : null, 'Amount Actually Awarded', '', array(), array('col-md-6', 'col-sm-12', 'currency'));
+        $ret['ApplicantScholarship_AmountAwarded'] = $this->form->field_textinfo('ApplicantScholarship_AmountAwarded', $student_data['scholarship'][$scholarship_key]->AmountAwarded ? $student_data['scholarship'][$scholarship_key]->AmountAwarded : null, 'Amount Awarded', '', array(), array('col-md-6', 'col-sm-12', 'currency'));
+        $ret['ApplicantScholarship_AmountActuallyAwarded'] = $this->form->field_textinfo('ApplicantScholarship_AmountActuallyAwarded', $student_data['scholarship'][$scholarship_key]->AmountActuallyAwarded ? $student_data['scholarship'][$scholarship_key]->AmountActuallyAwarded : null, 'Amount Actually Awarded', '', array(), array('col-md-6', 'col-sm-12', 'currency'));
         $ret[] = '</div>';
         $ret[] = '<div class="col-md-7 row">';
-        $ret['ApplicantScholarship_Notes'] = $this->form->field_textarea('ApplicantScholarship_Notes', $scholarship->Notes ? $scholarship->Notes : '', $this->queries->get_scholarship_by_id($scholarship->ScholarshipId)." Award Notes (CSF only)", null, array('col-md-12'));
+        $ret['ApplicantScholarship_Notes_'.$award_id] = $this->form->field_textarea('ApplicantScholarship_Notes_'.$award_id, $student_data['scholarship'][$scholarship_key]->Notes ? $student_data['scholarship'][$scholarship_key]->Notes : '', $this->queries->get_scholarship_by_id($student_data['scholarship'][$scholarship_key]->ScholarshipId)." Award Notes (CSF only)", null, array('col-md-12'));
         $ret[] = '</div>';
         $ret[] = '<div class="col-md-12 row"><table>';
         $ret[] = '<tr><th>Payment #</th><th>Amount</th><th>Date</th><th>Check #</th><th>Refund Rec.</th><th>Refund Amt.</th><th>Refund #</th></tr>';

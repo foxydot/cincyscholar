@@ -339,16 +339,15 @@ class MSDLAB_Queries{
                  }
              }
              if($table == 'applicantscholarship'){
-                 ts_data($data[$table]);
                  foreach ($data[$table] as $key => $datum) {
-                     $select_sql = 'SELECT ScholarshipId FROM ' . $table . ' WHERE ' . $table . 'AwardId = "' . $key . '" AND ' . $where[$table] . ';';
-                     error_log('check_sql: '.$select_sql);
+                     $select_sql = 'SELECT AwardId, ApplicantId, ScholarshipId FROM ' . $table . ' WHERE ' . $table . '.AwardId = "' . $key . '";';
+                     //error_log('check_sql: '.$select_sql);
                      if ($r = $wpdb->get_row($select_sql)) {
-                         $sql = 'UPDATE ' . $table . ' SET ' . implode(', ', $data[$table][$key]) . ' WHERE ScholarshipId = ' . $r->ScholarshipId . ';';
+                         $sql = 'UPDATE ' . $table . ' SET ' . implode(', ', $data[$table][$key]) . ' WHERE AwardId = ' . $r->AwardId . ';';
                      } else {
                          $sql = 'INSERT INTO ' . $table . ' SET ' . implode(', ', $data[$table][$key]) . ';';
                      }
-                     error_log('update_sql: '.$sql);
+                     //error_log('update_sql: '.$sql);
                      $result = $wpdb->get_results($sql);
                      if (is_wp_error($result)) {
                          return new WP_Error('update', '<div class="error">Error updating ' . $table . '</div>');
@@ -1310,7 +1309,7 @@ class MSDLAB_Queries{
 
         $scholarship['tables']['scholarship'] = array('*');
         $scholarship['tables']['applicantscholarship'] = array('*');
-        $scholarship['where'] = 'applicantscholarship.ApplicantId = '.$applicant_id.' AND scholarship.ScholarshipId = applicantscholarship.ScholarshipId';
+        $scholarship['where'] = 'applicantscholarship.ApplicantId = '.$applicant_id.' AND scholarship.ScholarshipId = applicantscholarship.ScholarshipId ORDER BY applicantscholarship.DateAwarded';
 
         $queries = array('personal','recommend','independence','financial','agreements','docs','renewal','need','payment','scholarship');
         foreach($queries AS $query){

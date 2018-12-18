@@ -52,19 +52,19 @@ if($student = $this->queries->get_student_data($applicant_id)) {
         $tabs = $pane = array();
         if($student){
             $form_id = 'single_student';
+            foreach($student['scholarship'] AS $disbursement_scholarship) {
+                $disbursement_tabs[] = '<li role="presentation"><a href="#disbursement_'.$disbursement_scholarship->ScholarshipId.'" aria-controls="disbursement_'.$disbursement_scholarship->ScholarshipId.'" role="tab" data-toggle="tab">Disbursement ('.$this->queries->get_scholarship_by_id($disbursement_scholarship->ScholarshipId).')</a></li>';
+                    }
             $tabs = '
 <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#student" aria-controls="student" role="tab" data-toggle="tab">Student</a></li>
-    <li role="presentation"><a href="#disbursement" aria-controls="disbursement" role="tab" data-toggle="tab">Disbursement</a></li>
+    '.implode('',$disbursement_tabs).'
     <li role="presentation"><a href="#application" aria-controls="application" role="tab" data-toggle="tab">Application</a></li>
     <li role="presentation"><a href="#signatures" aria-controls="signatures" role="tab" data-toggle="tab">Signatures</a></li>
   </ul>';
 
             $pane['student'] = '<div role="tabpanel" class="tab-pane active" id="student">
                     '.$this->report->student_form($student).'
-                </div>';
-            $pane['disbursement'] = '<div role="tabpanel" class="tab-pane" id="disbursement">
-                    '.$this->report->payment_form($student).'
                 </div>';
             $jquery[] = "
                 $('.gpa1in input').change(function(){
@@ -84,6 +84,11 @@ if($student = $this->queries->get_student_data($applicant_id)) {
                     $('.gpac input').val(gpa);
                 });
             ";
+            foreach($student['scholarship'] AS $k => $disbursement_scholarship) {
+                $pane['disbursement_'.$disbursement_scholarship->ScholarshipId] = '<div role="tabpanel" class="tab-pane" id="disbursement_'.$disbursement_scholarship->ScholarshipId.'">
+                    ' . $this->report->payment_form($student,$k) . '
+                </div>';
+            }
             $jquery[] = "
             $('#calculateneed_button').click(function(e){
                 e.preventDefault();
