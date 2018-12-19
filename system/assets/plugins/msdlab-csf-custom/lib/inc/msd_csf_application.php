@@ -139,7 +139,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     //$ret[] = 'VIEW AWARD';
                 }
                 if(current_user_can('submit_application')){
-                    if($today >= $start_date && $today <= $end_date || current_user_can('view_application_process')){
+                    if($today >= $start_date && $today <= $end_date){
                         $ret[2] = implode("\n\r",$this->get_form('application'));
                     } else {
                         return $content;
