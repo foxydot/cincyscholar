@@ -12,6 +12,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
         var $highschool_array;
         var $gradyr_array;
         var $col_gradyr_array;
+        var $employer_array;
 
         //Methods
         /**
@@ -480,12 +481,21 @@ if (!class_exists('MSDLab_CSF_Application')) {
                                 $ret['Guardian_CPSPublicSchools'] = $this->form->field_boolean('Guardian_CPSPublicSchools', $result->CPSPublicSchools?$result->CPSPublicSchools:0, "Is either of your parents employed by Cincinnati Public Schools?",null, array('required', 'col-md-12'));
                                 $ret['Guardian_ApplicantId'] = $this->form->field_hidden("Guardian_ApplicantId", $applicant_id);
                                 $ret['Guardian_GuardianFullName1'] = $this->form->field_textfield('Guardian_GuardianFullName1', $result->GuardianFullName1 ? $result->GuardianFullName1 : null, "First Guardian Full Name",null,array('minlength' => '2', 'required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
-                                $ret['Guardian_GuardianEmployer1'] = $this->form->field_textfield('Guardian_GuardianEmployer1', $result->GuardianEmployer1 ? $result->GuardianEmployer1 : null, "Place of Employment",null,array('minlength' => '2', 'required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
-                                $ret[] = '<div class="second-guardian">';
+                                $ret['Guardian_Guardian1EmployerId'] = $this->form->field_select('Guardian_Guardian1EmployerId', $result->Guardian_Guardian1EmployerId ? $result->Guardian_Guardian1EmployerId : null, "Place of Employment",null, $this->employer_array ,null, array('required', 'col-md-6', 'col-sm-12'));
+                                $ret['Guardian_GuardianEmployer1'] = $this->form->field_textfield('Guardian_GuardianEmployer1', $result->GuardianEmployer1 ? $result->GuardianEmployer1 : null, "Other Employer",null,null, array('col-md-6', 'col-sm-12'));
+                                $ret['Guardian_Guardian1Deceased'] = $this->form->field_boolean('Guardian_Guardian1Deceased', $result->Guardian1Deceased?$result->Guardian1Deceased:0, "Deceased?",null, array('required', 'col-md-6', 'col-sm-12'));
+
+                                $ret[] = '<div class="second-guardian" style="clear:both;">';
                                 $ret['Guardian_GuardianFullName2'] = $this->form->field_textfield('Guardian_GuardianFullName2', $result->GuardianFullName2 ? $result->GuardianFullName2 : null, "Second Guardian Full Name",null,null, array('col-md-6', 'col-sm-12'));
-                                $ret['Guardian_GuardianEmployer2'] = $this->form->field_textfield('Guardian_GuardianEmployer2', $result->GuardianEmployer2 ? $result->GuardianEmployer2 : null, "Place of Employment",null,null, array('col-md-6', 'col-sm-12'));
+                                $ret['Guardian_Guardian2EmployerId'] = $this->form->field_select('Guardian_Guardian2EmployerId', $result->Guardian_Guardian2EmployerId ? $result->Guardian_Guardian2EmployerId : null, "Place of Employment",null, $this->employer_array ,null, array('required', 'col-md-6', 'col-sm-12'));
+                                $ret['Guardian_GuardianEmployer2'] = $this->form->field_textfield('Guardian_GuardianEmployer2', $result->GuardianEmployer2 ? $result->GuardianEmployer2 : null, "Other Employer",null,null, array('col-md-6', 'col-sm-12'));
+                                $ret['Guardian_Guardian2Deceased'] = $this->form->field_boolean('Guardian_Guardian2Deceased', $result->Guardian2Deceased?$result->Guardian2Deceased:0, "Deceased?",null, array('required', 'col-md-6', 'col-sm-12'));
+
                                 $ret[] = '</div>';
+                                $ret[] = '<div style="clear:both;">';
                                 $ret['Applicant_Employer'] = $this->form->field_textfield('Applicant_Employer', $result->Employer ? $result->Employer : null, "Applicant Employer",null,null, array('col-md-6', 'col-sm-12'));
+
+                                $ret[] = '</div>';
                                 //property
                                 $ret['Guardian_Homeowner'] = $this->form->field_boolean('Guardian_Homeowner', $result->Homeowner ? $result->Homeowner : 0, "Do the applicant's parents own their home?",null, array('required', 'col-md-12'));
                                 $ret[] = '<div class="switchable">';
@@ -1064,6 +1074,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                 $this->col_gradyr_array[$yr.'-01-01'] = $yr;
             }
             $this->col_gradyr_array = array_reverse($this->col_gradyr_array);
+            $this->employer_array = $this->queries->get_select_array_from_db('Employer','employerid','employername', 'employername');
         }
     } //End Class
 } //End if class exists statement
