@@ -1317,7 +1317,7 @@ class MSDLAB_Queries{
             switch($query){
                 case 'payment':
                     foreach($result_array AS $ra){
-                        $results[$query][$ra->paymentkey] = $ra;
+                        $results[$query][$ra->AwardId][$ra->paymentkey] = $ra;
                     }
                     break;
                 case 'scholarship':

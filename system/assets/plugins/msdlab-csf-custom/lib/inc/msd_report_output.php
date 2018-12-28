@@ -643,19 +643,19 @@ class MSDLAB_Report_Output{
         foreach($paymentkeys AS $paymentkey){
             $ret[] = '<tr>';
             $ret[] = '<td class="key">'.$paymentkey.'</td>';
-            $ret['payment_ApplicantId_'.$paymentkey] = $this->form->field_hidden("payment_ApplicantId_".$paymentkey, $student_data['personal']->ApplicantId);
-            $ret['payment_UserId_'.$paymentkey] = $this->form->field_hidden("payment_UserId_".$paymentkey, $student_data['personal']->UserId);
-            $ret['payment_paymentkey_'.$paymentkey] = $this->form->field_hidden("payment_paymentkey_".$paymentkey, $paymentkey);
+            $ret['payment_ApplicantId_'.$award_id.'-'.$paymentkey] = $this->form->field_hidden("payment_ApplicantId_".$award_id."-".$paymentkey, $student_data['personal']->ApplicantId);
+            $ret['payment_UserId_'.$award_id.'-'.$paymentkey] = $this->form->field_hidden("payment_UserId_".$award_id."-".$paymentkey, $student_data['personal']->UserId);
+            $ret['payment_paymentkey_'.$award_id.'-'.$paymentkey] = $this->form->field_hidden("payment_paymentkey_".$award_id."-".$paymentkey, $paymentkey);
 
-            $ret['payment_PaymentAmt_'.$paymentkey] = '<td>'.$this->form->field_textfield('payment_PaymentAmt_'.$paymentkey,$student_data['payment'][$paymentkey]->PaymentAmt,'','0.00',array('type' => 'number'),array('currency','awardcalc','plus')).'</td>';
-            $ret['payment_PaymentDateTime_'.$paymentkey] = '<td>'.$this->form->field_date('payment_PaymentDateTime_'.$paymentkey,date("Y-m-d", strtotime($student_data['payment'][$paymentkey]->PaymentDateTime)),'').'</td>';
-            $ret['payment_CheckNumber_'.$paymentkey] = '<td>'.$this->form->field_textfield('payment_CheckNumber_'.$paymentkey,$student_data['payment'][$paymentkey]->CheckNumber).'</td>';
-            $ret['payment_CollegeId_'.$paymentkey] = $this->form->field_hidden('payment_CollegeId_'.$paymentkey,$student_data['payment'][$paymentkey]->CollegeId?$student_data['payment'][$paymentkey]->CollegeId:$college_id);
-            //$ret['payment_Notes_'.$paymentkey] = '<td>'.$this->form->field_textarea_simple('payment_Notes_'.$paymentkey,$student_data['payment'][$paymentkey]->Notes).'</td>';
-            //$ret['payment_RefundRequested_'.$paymentkey] = '<td>$'.$this->form->field_textfield('payment_RefundRequested_'.$paymentkey,$student_data['payment'][$paymentkey]->RefundRequested).'</td>';
-            $ret['payment_RefundReceived_'.$paymentkey] = '<td>'.$this->form->field_date('payment_RefundReceived_'.$paymentkey,date("Y-m-d", strtotime($student_data['payment'][$paymentkey]->RefundReceived)),'').'</td>';
-            $ret['payment_RefundAmt_'.$paymentkey] = '<td>'.$this->form->field_textfield('payment_RefundAmt_'.$paymentkey,$student_data['payment'][$paymentkey]->RefundAmt,'','0.00',array('type' => 'number'),array('currency','awardcalc','minus')).'</td>';
-            $ret['payment_RefundNumber_'.$paymentkey] = '<td>'.$this->form->field_textfield('payment_RefundNumber_'.$paymentkey,$student_data['payment'][$paymentkey]->RefundNumber).'</td>';
+            $ret['payment_PaymentAmt_'.$award_id.'-'.$paymentkey] = '<td>'.$this->form->field_textfield('payment_PaymentAmt_'.$award_id."-".$paymentkey,$student_data['payment'][$award_id][$paymentkey]->PaymentAmt,'','0.00',array('type' => 'number'),array('currency','awardcalc','plus')).'</td>';
+            $ret['payment_PaymentDateTime_'.$award_id.'-'.$paymentkey] = '<td>'.$this->form->field_date('payment_PaymentDateTime_'.$award_id."-".$paymentkey,date("Y-m-d", strtotime($student_data['payment'][$award_id][$paymentkey]->PaymentDateTime)),'').'</td>';
+            $ret['payment_CheckNumber_'.$award_id.'-'.$paymentkey] = '<td>'.$this->form->field_textfield('payment_CheckNumber_'.$award_id."-".$paymentkey,$student_data['payment'][$award_id][$paymentkey]->CheckNumber).'</td>';
+            $ret['payment_CollegeId_'.$award_id.'-'.$paymentkey] = $this->form->field_hidden('payment_CollegeId_'.$award_id."-".$paymentkey,$student_data['payment'][$award_id][$paymentkey]->CollegeId?$student_data['payment'][$award_id][$paymentkey]->CollegeId:$college_id);
+            //$ret['payment_Notes_'.$award_id.'-'.$paymentkey] = '<td>'.$this->form->field_textarea_simple('payment_Notes_'.$award_id."-".$paymentkey,$student_data['payment'][$award_id][$paymentkey]->Notes).'</td>';
+            //$ret['payment_RefundRequested_'.$award_id.'-'.$paymentkey] = '<td>$'.$this->form->field_textfield('payment_RefundRequested_'.$award_id."-".$paymentkey,$student_data['payment'][$award_id][$paymentkey]->RefundRequested).'</td>';
+            $ret['payment_RefundReceived_'.$award_id.'-'.$paymentkey] = '<td>'.$this->form->field_date('payment_RefundReceived_'.$award_id."-".$paymentkey,date("Y-m-d", strtotime($student_data['payment'][$award_id][$paymentkey]->RefundReceived)),'').'</td>';
+            $ret['payment_RefundAmt_'.$award_id.'-'.$paymentkey] = '<td>'.$this->form->field_textfield('payment_RefundAmt_'.$award_id."-".$paymentkey,$student_data['payment'][$award_id][$paymentkey]->RefundAmt,'','0.00',array('type' => 'number'),array('currency','awardcalc','minus')).'</td>';
+            $ret['payment_RefundNumber_'.$award_id.'-'.$paymentkey] = '<td>'.$this->form->field_textfield('payment_RefundNumber_'.$award_id."-".$paymentkey,$student_data['payment'][$award_id][$paymentkey]->RefundNumber).'</td>';
             $ret[] = '</tr>';
         }
         $ret[] = '</table></div>';
