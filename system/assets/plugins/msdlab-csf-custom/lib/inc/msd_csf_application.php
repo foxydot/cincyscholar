@@ -434,17 +434,19 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             if($this->queries->is_indy($applicant_id)){
                                 //Independent Form
                                 //sets up the query
-                                $data['tables']['ApplicantFinancial'] = array('ApplicantEmployer','ApplicantIncome','SpouseEmployer','SpouseIncome', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
+                                $data['tables']['ApplicantFinancial'] = array('ApplicantEmployer','ApplicantEmployerId','ApplicantIncome','SpouseEmployer','SpouseEmployerId','SpouseIncome', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
                                 $data['where'] .= ' AND applicantfinancial.ApplicantId = ' . $applicant_id;
                                 $results = $this->queries->get_result_set($data);
                                 $result = $results[0];
                                 //form
                                 $ret['hdrFinancialInfo'] = $this->form->section_header('hdrFinancialInfo', 'Independent Student Financial Information');
-                                $ret['Applicant_Employer'] = $this->form->field_textfield('Applicant_Employer', $result->Employer ? $result->Employer : null, "Applicant Employer",null,null, array('col-md-6', 'col-sm-12'));
+                                $ret['Applicant_ApplicantEmployerId'] = $this->form->field_select('Applicant_ApplicantEmployerId', $result->ApplicantEmployerId ? $result->ApplicantEmployerId : null, "Place of Employment",null, $this->employer_array ,null, array('required', 'col-md-6', 'col-sm-12'));
+                                $ret['Applicant_Employer'] = $this->form->field_textfield('Applicant_Employer', $result->Employer ? $result->Employer : null, "Other Employer",null,null, array('col-md-6', 'col-sm-12'));
                                 $ret['ApplicantFinancial_ApplicantId'] = $this->form->field_hidden("ApplicantFinancial_ApplicantId", $applicant_id);
                                 $ret['ApplicantFinancial_ApplicantIncome'] = $this->form->field_textfield('ApplicantFinancial_ApplicantIncome', $result->ApplicantIncome ? $result->ApplicantIncome : null, "Applicant Annual Income",'00,000', array('type' => 'number'), array('col-md-6', 'col-sm-12'));
 
-                                $ret['ApplicantFinancial_SpouseEmployer'] = $this->form->field_textfield('ApplicantFinancial_SpouseEmployer', $result->SpouseEmployer ? $result->SpouseEmployer : null, "Spouse Employer",null,null, array('col-md-6', 'col-sm-12'));
+                                $ret['ApplicantFinancial_SpouseEmployerId'] = $this->form->field_select('ApplicantFinancial_SpouseEmployerId', $result->SpouseEmployerId ? $result->SpouseEmployerId : null, "Place of Employment",null, $this->employer_array ,null, array('required', 'col-md-6', 'col-sm-12'));
+                                $ret['ApplicantFinancial_SpouseEmployer'] = $this->form->field_textfield('ApplicantFinancial_SpouseEmployer', $result->SpouseEmployer ? $result->SpouseEmployer : null, "Other Employer",null,null, array('col-md-6', 'col-sm-12'));
                                 $ret['ApplicantFinancial_SpouseIncome'] = $this->form->field_textfield('ApplicantFinancial_SpouseIncome', $result->SpouseIncome ? $result->SpouseIncome : null, "Spouse Annual Income",'00,000', array('type' => 'number'), array('col-md-6', 'col-sm-12'));
 
                                 $ret['ApplicantFinancial_Homeowner'] = $this->form->field_boolean('ApplicantFinancial_Homeowner', $result->Homeowner ? $result->Homeowner : 0, "Is the applicant a homeowner?",null, array('required', 'col-md-12'));
@@ -455,7 +457,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             } else {
                                 //Dependent Form
                                 //sets up the query
-                                $data['tables']['Guardian'] = array('CPSPublicSchools','GuardianFullName1', 'GuardianEmployer1', 'GuardianFullName2', 'GuardianEmployer2', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
+                                $data['tables']['Guardian'] = array('CPSPublicSchools','GuardianFullName1', 'Guardian1EmployerId','GuardianEmployer1','Guardian1Deceased', 'GuardianFullName2', 'Guardian2EmployerId', 'GuardianEmployer2','Guardian2Deceased', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
                                 $data['where'] .= ' AND guardian.ApplicantId = ' . $applicant_id;
                                 $results = $this->queries->get_result_set($data);
                                 $result = $results[0];
@@ -487,7 +489,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
 
                                 $ret[] = '<div class="second-guardian" style="clear:both;">';
                                 $ret['Guardian_GuardianFullName2'] = $this->form->field_textfield('Guardian_GuardianFullName2', $result->GuardianFullName2 ? $result->GuardianFullName2 : null, "Second Guardian Full Name",null,null, array('col-md-6', 'col-sm-12'));
-                                $ret['Guardian_Guardian2EmployerId'] = $this->form->field_select('Guardian_Guardian2EmployerId', $result->Guardian_Guardian2EmployerId ? $result->Guardian_Guardian2EmployerId : null, "Place of Employment",null, $this->employer_array ,null, array('required', 'col-md-6', 'col-sm-12'));
+                                $ret['Guardian_Guardian2EmployerId'] = $this->form->field_select('Guardian_Guardian2EmployerId', $result->Guardian2EmployerId ? $result->Guardian2EmployerId : null, "Place of Employment",null, $this->employer_array ,null, array('required', 'col-md-6', 'col-sm-12'));
                                 $ret['Guardian_GuardianEmployer2'] = $this->form->field_textfield('Guardian_GuardianEmployer2', $result->GuardianEmployer2 ? $result->GuardianEmployer2 : null, "Other Employer",null,null, array('col-md-6', 'col-sm-12'));
                                 $ret['Guardian_Guardian2Deceased'] = $this->form->field_boolean('Guardian_Guardian2Deceased', $result->Guardian2Deceased?$result->Guardian2Deceased:0, "Deceased?",null, array('required', 'col-md-6', 'col-sm-12'));
 
