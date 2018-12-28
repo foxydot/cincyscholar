@@ -50,6 +50,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_add_reject_columns', array(&$this,'add_reject_columns') );
             add_action( 'wp_ajax_add_award_id', array(&$this,'add_award_id') );
             add_action( 'wp_ajax_add_academic_year_columns', array(&$this,'add_academic_year_columns') );
+            add_action( 'wp_ajax_add_employerid_columns', array(&$this,'add_employerid_columns') );
 
 
             add_filter('send_password_change_email',array(&$this,'return_false'));
@@ -806,6 +807,17 @@ beth@cincinnatischolarshipfoundation.org<br/>
             }
         }
 
+        function add_employerid_columns(){
+            global $wpdb;
+            $sql = "ALTER TABLE applicant ADD `ApplicantEmployerId` int(11) NULL;";
+            if($wpdb->query($sql)) {
+                print "EmployerId column added to applicant!";
+            }
+            $sql = "ALTER TABLE applicantfinancial ADD `ApplicantEmployerId` int(11) NULL, ADD `SpouseEmployerId` int(11) NULL;";
+            if($wpdb->query($sql)) {
+                print "EmployerId column added to applicantfinancial!";
+            }
+        }
         //utility
         function settings_page()
         {
@@ -1132,6 +1144,15 @@ beth@cincinnatischolarshipfoundation.org<br/>
                             console.log(response);
                         });
                     });
+                    $('.add_employerid_columns').click(function(){
+                        var data = {
+                            action: 'add_employerid_columns',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
 
             </script>
@@ -1204,6 +1225,8 @@ beth@cincinnatischolarshipfoundation.org<br/>
                     <dd><button class="add_award_id">Go</button></dd>
                     <dt>add_academic_year_columns:</dt>
                     <dd><button class="add_academic_year_columns">Go</button></dd>
+                    <dt>add_employerid_columns:</dt>
+                    <dd><button class="add_employerid_columns">Go</button></dd>
                 </dl>
                 <div class="response1"></div>
             </div>
