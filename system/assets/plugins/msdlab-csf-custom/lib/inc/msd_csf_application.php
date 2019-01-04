@@ -551,7 +551,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $ret[] = '</tr>';
 
                             $ret[] = '<tr class="table-row">';
-                            $ret[] = '<td class="table-cell">I/we understand that applications submitted after the April 30, 2018 deadline will not be considered;</td>';
+                            $ret[] = '<td class="table-cell">I/we understand that applications submitted after the April 30, '.date("Y").' deadline will not be considered;</td>';
                             $ret['Agreements_ApplicantDueDate'] = '<td class="table-cell">'.$this->form->field_boolean('Agreements_ApplicantDueDate', $result->ApplicantDueDate?$result->ApplicantDueDate:0,'',array('required')).'</td>';
                             if(!$this->queries->is_indy($applicant_id) && !$this->queries->is_adult($applicant_id)){
                                 $ret['Agreements_GuardianDueDate'] = '<td class="table-cell">'.$this->form->field_boolean('Agreements_GuardianDueDate', $result->GuardianDueDate?$result->GuardianDueDate:0,'',array('required')).'</td>';

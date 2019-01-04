@@ -342,8 +342,8 @@ class MSDLAB_Queries{
                  foreach ($data[$table] as $key => $datum) {
                      $select_sql = 'SELECT AwardId, ApplicantId, ScholarshipId FROM ' . $table . ' WHERE ' . $table . '.AwardId = "' . $key . '";';
                      //error_log('check_sql: '.$select_sql);
-                     if ($r = $wpdb->get_row($select_sql)) {
-                         $sql = 'UPDATE ' . $table . ' SET ' . implode(', ', $data[$table][$key]) . ' WHERE AwardId = ' . $r->AwardId . ';';
+                     if ($r = $wpdb->get_row($select_sql) && $key != 'new') {
+                         $sql = 'UPDATE ' . $table . ' SET ' . implode(', ', $data[$table][$key]) . ' WHERE AwardId = ' . $key . ';';
                      } else {
                          $sql = 'INSERT INTO ' . $table . ' SET ' . implode(', ', $data[$table][$key]) . ';';
                      }
@@ -358,7 +358,9 @@ class MSDLAB_Queries{
                  //ts_data($data[$table]);
 
                  foreach ($data[$table] as $key => $datum) {
-                     $select_sql = 'SELECT paymentid FROM ' . $table . ' WHERE ' . $table . 'key = "' . $key . '" AND ' . $where[$table] . ';';
+                     $keys = explode('-',$key,2);
+                     $data[$table][$key]['AwardId'] = 'payment.AwardId = "'.$keys[0].'"';
+                     $select_sql = 'SELECT paymentid FROM ' . $table . ' WHERE ' . $table . '.paymentkey = "' . $keys[1] . '" AND AwardId = "'. $keys[0] .'" AND ' . $where[$table] . ';';
                      //error_log('check_sql: '.$select_sql);
                      if ($r = $wpdb->get_row($select_sql)) {
                          $sql = 'UPDATE ' . $table . ' SET ' . implode(', ', $data[$table][$key]) . ' WHERE paymentid = ' . $r->paymentid . ';';

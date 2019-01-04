@@ -293,8 +293,8 @@ class MSDLAB_FormControls{
         $transcripttitle = ($style == 'renewal')?'Grade Report':'Transcript';
         $ret[$id_prepend.'Resume'] = $this->field_upload($id_prepend.'Resume',$this->get_files_of_type('Resume',$documents),'Resume',null,null,$class);
         $ret[$id_prepend.'Transcript'] = $this->field_upload($id_prepend.'Transcript',$this->get_files_of_type('Transcript',$documents),$transcripttitle,null,null,$class);
-        $ret[$id_prepend.'FAFSA'] = $this->field_upload($id_prepend.'FAFSA',$this->get_files_of_type('FAFSA',$documents),'Student Aid Report',null,null,$class);
-        $ret[$id_prepend.'FinancialAidAward'] = $this->field_upload($id_prepend.'FinancialAidAward',$this->get_files_of_type('FinancialAidAward',$documents),'Financial Aid Award Letter From College',null,null,$class);
+        $ret[$id_prepend.'FAFSA'] = $this->field_upload($id_prepend.'FAFSA',$this->get_files_of_type('FAFSA',$documents),'Student Aid Report for '.date("Y").'-'.date("Y",strtotime('+1 year')),null,null,$class);
+        $ret[$id_prepend.'FinancialAidAward'] = $this->field_upload($id_prepend.'FinancialAidAward',$this->get_files_of_type('FinancialAidAward',$documents),'Financial Aid Award Letter From College '.date("Y").'-'.date("Y",strtotime('+1 year')),null,null,$class);
         $ret[$id_prepend.'Additional_1'] = $this->field_upload($id_prepend.'Additional_1',$this->get_files_of_type('Additional_1',$documents),'Additional Document Requested by CSF',null,null,$class);
         $ret[$id_prepend.'Additional_2'] = $this->field_upload($id_prepend.'Additional_2',$this->get_files_of_type('Additional_2',$documents),'Additional Document Requested by CSF',null,null,$class);
         $ret[$id_prepend.'Additional_3'] = $this->field_upload($id_prepend.'Additional_3',$this->get_files_of_type('Additional_3',$documents),'Additional Document Requested by CSF',null,null,$class);

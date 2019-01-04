@@ -24,6 +24,7 @@ if($_POST){
     }
     $sql['where'][] = 'AND a.ApplicantId = c.ApplicantId ';
     $sql['where'][] = 'AND b.ScholarshipId = e.ScholarshipId ';
+    $sql['where'][] = 'AND b.AwardId = c.AwardId ';
     $sql['where'][] = 'AND c.paymentkey = \''.$_POST['payment_number_input'].'\' ';
     $sql['where'][] = 'AND c.PaymentAmt = \'0.00\' ';
     $sql['where'][] = 'AND c.CollegeId = d.CollegeId ';
@@ -31,7 +32,8 @@ if($_POST){
     $sql['where'] = $where;
     $sql['orderby'] = 'ORDER BY d.Name';
     $result = $wpdb->get_results(implode(' ',$sql));
-    //ts_data($result);
+    ts_data(implode(' ',$sql));
+    ts_data($result);
     $check_data = array();
     foreach($result as $k => $user){
         $student_id = $user->StudentId != ''?$user->StudentId:'SSN '.$user->Last4SSN;
