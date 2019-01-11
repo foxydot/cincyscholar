@@ -186,6 +186,7 @@ class MSDLab_ReportControls{
                 //TODO: replace with drop down search and parents alive for next year.
                 $ret['search_by_employer'] = $this->search_box('Employer:','','employer_search',array('query-filter','search-box','col-sm-6','col-md-4')); //this is handled AFTER the query
                 $ret['search_by_CPS_employee'] = $this->boolean_search('CPS Employee:','cps_employee_search',array('col-sm-6','col-md-2')); //this is handled AFTER the query
+                $ret['search_by_Calipari'] = $this->boolean_search('Coach Calipari:','calipari_search',array('col-sm-6','col-md-2')); //this is handled AFTER the query
                 //
                 $ret[] = '</div>';
                 $ret[] = '<div class="row need_info">';

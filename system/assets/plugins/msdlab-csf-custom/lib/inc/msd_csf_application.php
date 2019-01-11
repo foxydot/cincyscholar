@@ -448,6 +448,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                                 $ret['ApplicantFinancial_SpouseEmployerId'] = $this->form->field_select('ApplicantFinancial_SpouseEmployerId', $result->SpouseEmployerId ? $result->SpouseEmployerId : null, "Place of Employment",null, $this->employer_array ,null, array('required', 'col-md-6', 'col-sm-12'));
                                 $ret['ApplicantFinancial_SpouseEmployer'] = $this->form->field_textfield('ApplicantFinancial_SpouseEmployer', $result->SpouseEmployer ? $result->SpouseEmployer : null, "Other Employer",null,null, array('col-md-6', 'col-sm-12'));
                                 $ret['ApplicantFinancial_SpouseIncome'] = $this->form->field_textfield('ApplicantFinancial_SpouseIncome', $result->SpouseIncome ? $result->SpouseIncome : null, "Spouse Annual Income",'00,000', array('type' => 'number'), array('col-md-6', 'col-sm-12'));
+                                $ret['Applicant_Calipari'] = $this->form->field_boolean('Applicant_Calipari',$result->Calipari?$result->Calipari:0,'Have you or any member of your family worked with or for Coach John Calipari?',null, array('col-md-6', 'col-sm-12'));
 
                                 $ret['ApplicantFinancial_Homeowner'] = $this->form->field_boolean('ApplicantFinancial_Homeowner', $result->Homeowner ? $result->Homeowner : 0, "Is the applicant a homeowner?",null, array('required', 'col-md-12'));
                                 $ret[] = '<div class="switchable">';
@@ -496,7 +497,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                                 $ret[] = '</div>';
                                 $ret[] = '<div style="clear:both;">';
                                 $ret['Applicant_Employer'] = $this->form->field_textfield('Applicant_Employer', $result->Employer ? $result->Employer : null, "Applicant Employer",null,null, array('col-md-6', 'col-sm-12'));
-
+                                $ret['Applicant_Calipari'] = $this->form->field_boolean('Applicant_Calipari',$result->Calipari?$result->Calipari:0,'Have you or any member of your family worked with or for Coach John Calipari?',null, array('col-md-6', 'col-sm-12'));
                                 $ret[] = '</div>';
                                 //property
                                 $ret['Guardian_Homeowner'] = $this->form->field_boolean('Guardian_Homeowner', $result->Homeowner ? $result->Homeowner : 0, "Do the applicant's parents own their home?",null, array('required', 'col-md-12'));
@@ -868,7 +869,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
 
                 $ret['ApplicantFinancial_SpouseEmployer'] = $this->form->field_result('ApplicantFinancial_SpouseEmployer', $results['financial']->SpouseEmployer ? $results['financial']->SpouseEmployer : null, "Spouse Employer", array('col-md-6', 'col-sm-12'));
                 $ret['ApplicantFinancial_SpouseIncome'] = $this->form->field_result('ApplicantFinancial_SpouseIncome', $results['financial']->SpouseIncome ? $results['financial']->SpouseIncome : null, "Spouse Annual Income",array('col-md-6', 'col-sm-12'));
-
+                $ret['Applicant_Calipari'] = $this->form->field_result('Applicant_Calipari',$results['applicant']->Calipari ? 'YES' : 'NO', 'Have you or any member of your family worked with or for Coach John Calipari?',array('col-md-12'));
                 $ret['ApplicantFinancial_Homeowner'] = $this->form->field_result('ApplicantFinancial_Homeowner', $results['financial']->Homeowner ? 'YES' : 'NO', "Is the applicant a homeowner?", array('required', 'col-md-12'));
                 if($results['financial']->Homeowner) {
                     $ret['ApplicantFinancial_HomeValue'] = $this->form->field_result('ApplicantFinancial_HomeValue', $results['financial']->HomeValue ? $results['financial']->HomeValue : null, "Current Value",  array('col-md-6', 'col-sm-12'));
@@ -883,6 +884,8 @@ if (!class_exists('MSDLab_CSF_Application')) {
                 $ret['Guardian_GuardianFullName2'] = $this->form->field_result('Guardian_GuardianFullName2', $results['financial']->GuardianFullName2 ? $results['financial']->GuardianFullName2 : null, "Second Guardian Full Name", array('col-md-6', 'col-sm-12'));
                 $ret['Guardian_GuardianEmployer2'] = $this->form->field_result('Guardian_GuardianEmployer2', $results['financial']->GuardianEmployer2 ? $results['financial']->GuardianEmployer2 : null, "Place of Employment", array('col-md-6', 'col-sm-12'));
                 $ret['Applicant_Employer'] = $this->form->field_result('Applicant_Employer', $results['personal']->Employer ? $results['personal']->Employer : null, "Applicant Employer", array('col-md-6', 'col-sm-12'));
+                $ret['Applicant_Calipari'] = $this->form->field_result('Applicant_Calipari',$results['applicant']->Calipari ? 'YES' : 'NO', 'Have you or any member of your family worked with or for Coach John Calipari?',array('col-md-12'));
+
                 //property
                 $ret['Guardian_Homeowner'] = $this->form->field_result('Guardian_Homeowner', $results['financial']->Homeowner ? 'YES' : 'NO', "Do the applicant's parents own their home?",array('required', 'col-md-12'));
                 if($results['financial']->Homeowner) {

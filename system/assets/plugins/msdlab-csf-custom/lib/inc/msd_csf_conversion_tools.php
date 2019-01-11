@@ -51,6 +51,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_add_award_id', array(&$this,'add_award_id') );
             add_action( 'wp_ajax_add_academic_year_columns', array(&$this,'add_academic_year_columns') );
             add_action( 'wp_ajax_add_employerid_columns', array(&$this,'add_employerid_columns') );
+            add_action( 'wp_ajax_add_calipari_column', array(&$this,'add_calipari_column') );
 
 
             add_filter('send_password_change_email',array(&$this,'return_false'));
@@ -818,6 +819,14 @@ beth@cincinnatischolarshipfoundation.org<br/>
                 print "EmployerId column added to applicantfinancial!";
             }
         }
+
+        function add_calipari_column(){
+            global $wpdb;
+            $sql = "ALTER TABLE applicant ADD `Calipari` tinyint(1) unsigned zerofill NOT NULL;";
+            if($wpdb->query($sql)) {
+                print "Calipari column added to applicant!";
+            }
+        }
         //utility
         function settings_page()
         {
@@ -826,7 +835,7 @@ beth@cincinnatischolarshipfoundation.org<br/>
                 //do post stuff if needed.
 
             }
-            add_submenu_page('tools.php',__('Convert Old Data'),__('Convert Old Data'), 'administrator', 'convert-options', array(&$this,'settings_page_content'));
+            add_submenu_page('tools.php',__('Database Tools'),__('Database Tools'), 'administrator', 'convert-options', array(&$this,'settings_page_content'));
         }
         function settings_page_content()
         {
@@ -1153,6 +1162,15 @@ beth@cincinnatischolarshipfoundation.org<br/>
                             console.log(response);
                         });
                     });
+                    $('.add_calipari_column').click(function(){
+                        var data = {
+                            action: 'add_calipari_column',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
 
             </script>
@@ -1227,6 +1245,8 @@ beth@cincinnatischolarshipfoundation.org<br/>
                     <dd><button class="add_academic_year_columns">Go</button></dd>
                     <dt>add_employerid_columns:</dt>
                     <dd><button class="add_employerid_columns">Go</button></dd>
+                    <dt>add_calipari_column:</dt>
+                    <dd><button class="add_calipari_column">Go</button></dd>
                 </dl>
                 <div class="response1"></div>
             </div>

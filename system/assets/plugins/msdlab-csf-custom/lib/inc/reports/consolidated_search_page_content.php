@@ -33,6 +33,7 @@ $fields['applicant'] = array(
 
     'HighSchoolGPA' => 'High School GPA',
     'PlayedHighSchoolSports' => 'Played High School Sports',
+    'Calipari' => 'Coach Calipari',
 
 
 /*
@@ -165,6 +166,11 @@ if($_POST) {
                 continue;
             }
         }
+        if(isset($_POST['calipari_search_input'])){
+            if($applicant->Calipari != 1){
+                continue;
+            }
+        }
 
         //error_log('CPS Search Gate passed');
         if (($applicant->ScholarshipId > 0) && (strtotime($applicant->DateAwarded) > strtotime($application_start_date))) {
@@ -203,6 +209,11 @@ if($_POST) {
 
         if(isset($_POST['cps_employee_search_input'])){
             if($renewal->CPSPublicSchools != 1){
+                continue;
+            }
+        }
+        if(isset($_POST['calipari_search_input'])){
+            if($applicant->Calipari != 1){
                 continue;
             }
         }
