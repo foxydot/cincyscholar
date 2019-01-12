@@ -865,6 +865,7 @@ beth@cincinnatischolarshipfoundation.org<br/>
             </style>
             <script>
                 jQuery(document).ready(function($) {
+                    $('.done button').attr("disabled", "disabled").html('Done');
                     $('.create_student_users').click(function(){
                         var data = {
                             action: 'create_student_users',
@@ -1175,9 +1176,9 @@ beth@cincinnatischolarshipfoundation.org<br/>
 
             </script>
             <div class="wrap">
-                <h2>Data Conversion Tools</h2>
+                <h2>Database Update Tools</h2>
                 <dl>
-
+                    <div class="done">
                     <dt>Create Student Users:</dt>
                    <dd><button class="create_student_users">Go</button></dd>
                     <dt>Create Donor Users:</dt>
@@ -1247,6 +1248,7 @@ beth@cincinnatischolarshipfoundation.org<br/>
                     <dd><button class="add_employerid_columns">Go</button></dd>
                     <dt>add_calipari_column:</dt>
                     <dd><button class="add_calipari_column">Go</button></dd>
+                    </div>
                 </dl>
                 <div class="response1"></div>
             </div>

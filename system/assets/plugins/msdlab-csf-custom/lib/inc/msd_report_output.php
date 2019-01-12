@@ -55,7 +55,7 @@ class MSDLAB_Report_Output{
         $this->sex_array = $this->queries->get_select_array_from_db('Sex', 'SexId', 'Sex');
         $this->ethnicity_array = $this->queries->get_select_array_from_db('Ethnicity', 'EthnicityId', 'Ethnicity');
         $this->states_array = $this->queries->get_select_array_from_db('State', 'StateId', 'State');
-        $this->counties_array = $this->queries->get_select_array_from_db('County', 'CountyId', 'County');
+        $this->counties_array = $this->queries->get_select_array_from_db('County', 'CountyId', 'County','County');
         $this->college_array = $this->queries->get_select_array_from_db('College', 'CollegeId', 'Name','Name',1);
         $this->major_array = $this->queries->get_select_array_from_db('Major', 'MajorId', 'MajorName','MajorName',1);
         $this->educationalattainment_array = $this->queries->get_select_array_from_db('EducationalAttainment', 'EducationalAttainmentId', 'EducationalAttainment');
