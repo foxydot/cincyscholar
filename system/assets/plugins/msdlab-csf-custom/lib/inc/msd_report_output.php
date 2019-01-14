@@ -666,7 +666,7 @@ class MSDLAB_Report_Output{
         $ret[] = '</tr>';
 
         $ret[] = '<tr class="table-row">';
-        $ret[] = '<td class="table-cell">I/we understand that applications submitted after the April 30, 2018 deadline will not be considered;</td>';
+        $ret[] = '<td class="table-cell">I/we understand that applications submitted after the April 30, '.date("Y").' deadline will not be considered;</td>';
         $ret['Agreements_ApplicantDueDate'] = '<td class="table-cell">'.$this->form->field_boolean('Agreements_ApplicantDueDate', $student_data['agreements']->ApplicantDueDate?$student_data['agreements']->ApplicantDueDate:0,'',array('required')).'</td>';
             $ret['Agreements_GuardianDueDate'] = '<td class="table-cell">'.$this->form->field_boolean('Agreements_GuardianDueDate', $student_data['agreements']->GuardianDueDate?$student_data['agreements']->GuardianDueDate:0,'',array('required')).'</td>';
         $ret[] = '</tr>';

@@ -406,9 +406,9 @@ password: [[TempPwd]]
  </p><p>
 Immediately upon logging in, you may be prompted to change your password. Please choose a secure password you will remember. Once you have changed your password, you will be redirected to the renewal form.
  </p><p>
-If your scholarship is need-based, you will be required to submit your 2018-2019 student aid report (SAR), financial aid award notification, and grade report to complete your renewal application. 
+If your scholarship is need-based, you will be required to submit your '.date("Y").'-'.date("Y",strtotime('+ 1 year')).' student aid report (SAR), financial aid award notification, and grade report to complete your renewal application. 
 </p><p>
-Please submit your renewal application by June 20, 2018 to be considered.
+Please submit your renewal application by June 20, '.date("Y").' to be considered.
   </p><p>
 Elizabeth Collins<br/>
 Program Administrator
