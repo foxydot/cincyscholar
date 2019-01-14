@@ -310,6 +310,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             //the fields
                             $ret['form_page_number'] = $this->form->field_utility('form_page_number', 1);
                             $ret['hdrPersInfo'] = $this->form->section_header('hdrPersInfo', 'Personal Information');
+                            $ret['Applicant_AcademicYear'] = $this->form->field_hidden("Applicant_AcademicYear", (strtotime($result->AcademicYear) > 0) ? $result->AcademicYear : date("Y"));
                             $ret['Applicant_ApplicationDateTime'] = $this->form->field_hidden("Applicant_ApplicationDateTime", (strtotime($result->ApplicationDateTime) > 0) ? $result->ApplicationDateTime : date("Y-m-d H:i:s"));
                             $ret['Applicant_UserId'] = $this->form->field_hidden("Applicant_UserId", $result->UserId ? $result->UserId: $user_id);
                             $ret['Applicant_Email'] = $this->form->field_hidden("Applicant_Email", $result->Email ? $result->Email : $current_user->user_email);
@@ -732,6 +733,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     $ret['save_data'] = $this->form->field_utility('save_data', true);
                     $ret['SendEmails'] = $this->form->field_utility('SendEmails','renewal_submitted');
                     $ret['renewal_header'] = $this->form->section_header('renewal_form','Renew Your '.date("Y").' Scholarship');
+                    $ret['renewal_AcademicYear'] = $this->form->field_hidden('renewal_AcademicYear', (strtotime($result->AcademicYear) > 0) ? $result->AcademicYear : date("Y"));
                     $ret['renewal_RenewalDateTime'] = $this->form->field_hidden('renewal_RenewalDateTime', $renewal_datetime);
                     $ret['Renewal_ApplicantId'] = $this->form->field_hidden("Renewal_ApplicantId", $applicant_id);
                     $ret['Renewal_RenewalId'] = $this->form->field_hidden("Renewal_RenewalId", $renewal_id);
