@@ -35,7 +35,6 @@ $fields['applicant'] = array(
     'PlayedHighSchoolSports' => 'Played High School Sports',
     'Calipari' => 'Coach Calipari',
 
-
 /*
     'EducationAttainmentId' => 'Education Attainment',
     'FirstGenerationStudent' => 'First Generation Student',
@@ -129,8 +128,6 @@ $select_fields['scholarshipwhs'] = array('title' => 'Scholarship & High School',
 $tabs = $pane = array();
 if($_POST) {
     //ts_data($_POST);
-    $application_start_date = get_option('csf_settings_start_date');
-    $application_end_date = get_option('csf_settings_end_date');
     $this->search->javascript['collapse-btn-init'] = '
         $(".collapsable").css("display","none");
         $(".collapse-button i").removeClass("fa-compress").addClass("fa-expand");

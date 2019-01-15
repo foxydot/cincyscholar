@@ -665,7 +665,7 @@ class MSDLAB_Queries{
         $data['tables']['applicant'] = array('*');
 
         if(empty($this->post_vars['application_date_search_input_start']) && empty($this->post_vars['application_date_search_input_end'])) {
-            $data['where'] = 'UNIX_TIMESTAMP(applicant.ApplicationDateTime) > '.strtotime(get_option('csf_settings_start_date')); //replace with dates from settings
+            $data['where'] = 'applicant.AcademicYear = '.$this->post_vars['academic_year_input'];
         } else {
             if(!empty($this->post_vars['application_date_search_input_start'])){
                 $where[] = 'UNIX_TIMESTAMP(applicant.ApplicationDateTime) > '.strtotime($this->post_vars['application_date_search_input_start']);
@@ -958,7 +958,7 @@ class MSDLAB_Queries{
          global $wpdb;
          $usertable = $wpdb->prefix . 'users';
          $data['tables']['applicant'] = array('*');
-         $data['where'] = 'applicant.ApplicationDateTime > 20180101000000'; //replace with dates from settings
+         $data['where'] = 'applicant.AcademicYear = '.date("Y"); //replace with dates from settings
          $data['tables'][$usertable] = array('user_email');
          $data['where'] .= ' AND ' . $usertable . '.ID  = applicant.UserId';
          //$data['tables']['applicantcollege'] = array('CollegeId');
@@ -1046,7 +1046,7 @@ class MSDLAB_Queries{
         $data['tables']['renewal'] = array('*');
         //ts_data($this->post_vars);
         if(empty($this->post_vars['renewal_date_search_input_start']) && empty($this->post_vars['renewal_date_search_input_end'])) {
-            $data['where'] = 'UNIX_TIMESTAMP(renewal.RenewalDateTime) > '.strtotime(get_option('csf_settings_start_date')); //replace with dates from settings
+            $data['where'] = 'renewal.AcademicYear'.$this->post_vars['academic_year_input'];
         } else {
             if(!empty($this->post_vars['renewal_date_search_input_start'])){
                 $where[] = 'UNIX_TIMESTAMP(renewal.RenewalDateTime) > '.strtotime($this->post_vars['renewal_date_search_input_start']);

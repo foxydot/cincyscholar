@@ -86,6 +86,12 @@ class MSDLab_ReportControls{
         $ret = array();
 
         //select populate
+        $academic_years = array();
+        for ($yr = date("Y")+1; $yr >= 2016; $yr--) {
+            $a = (string) $yr;
+            $b = (string) ($yr+1);
+            $academic_years[$yr] = $a . '/' . $b;
+        }
         $states = $this->queries->get_select_array_from_db('state', 'StateId', 'State','State');
         $counties = $this->queries->get_select_array_from_db('county', 'CountyId', 'County','County');
         $colleges = $this->queries->get_select_array_from_db('college', 'CollegeId', 'Name','Name',1);
@@ -126,6 +132,10 @@ class MSDLab_ReportControls{
 
         $ret['instructional_text'] = '<h4>Search By:</h4>';
         $ret['collapse_search'] = '<ul class="menu"><li><a class="collapse-button collapse-search"><i class="fa fa-compress"><span class="screen-reader-text">Collapse</span> Search</i></a></li></ul>';
+
+        $ret[] = '<div class="row academic_year">';
+        $ret['search_academic_year'] = $this->select_search('Academic Year:','academic_year',$academic_years,array('query-filter','select-search','col-md-6'),date("Y"));
+        $ret[] = '</div>';
         $ret['collapsable'] = '<div class="collapsable collapsable-search">';
         switch($id){
             case 'renewal':
@@ -300,9 +310,8 @@ class MSDLab_ReportControls{
         return apply_filters('msdlab_csf_manage_date_search', $ret);
     }
 
-    public function select_search($title = "Select", $id = "select_search", $data = array(), $class = array('query-filter','select-search','col-sm-6')){
+    public function select_search($title = "Select", $id = "select_search", $data = array(), $class = array('query-filter','select-search','col-sm-6'), $default = null){
         $options = array('<option value=""' . selected("", $default, false) . '>---Select---</option>');
-
         foreach($data AS $k => $v){
             if(empty( $_POST )) {
                 $options[] = '<option value="' . $k . '"' . selected($k, $default, false) . '>' . $v . '</option>';
