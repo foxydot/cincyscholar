@@ -20,6 +20,7 @@ function msdlab_print_header_login_modal(){
         <h4 class="modal-title">Login to '.get_bloginfo('name').'</h4>
       </div>
       <div class="modal-body">
+        <p>'.get_option('unique_note').'</p>
         '.wp_login_form($args).'
         <p id="nav">';
 if ( get_option( 'users_can_register' ) ) :

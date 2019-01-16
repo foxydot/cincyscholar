@@ -33,7 +33,7 @@ $fields['applicant'] = array(
 
     'HighSchoolGPA' => 'High School GPA',
     'PlayedHighSchoolSports' => 'Played High School Sports',
-
+    'Calipari' => 'Coach Calipari',
 
 /*
     'EducationAttainmentId' => 'Education Attainment',
@@ -128,8 +128,6 @@ $select_fields['scholarshipwhs'] = array('title' => 'Scholarship & High School',
 $tabs = $pane = array();
 if($_POST) {
     //ts_data($_POST);
-    $application_start_date = get_option('csf_settings_start_date');
-    $application_end_date = get_option('csf_settings_end_date');
     $this->search->javascript['collapse-btn-init'] = '
         $(".collapsable").css("display","none");
         $(".collapse-button i").removeClass("fa-compress").addClass("fa-expand");
@@ -162,6 +160,11 @@ if($_POST) {
         //error_log('Employer Search Gate passed');
         if(isset($_POST['cps_employee_search_input'])){
             if($applicant->CPSPublicSchools != 1){
+                continue;
+            }
+        }
+        if(isset($_POST['calipari_search_input'])){
+            if($applicant->Calipari != 1){
                 continue;
             }
         }
@@ -203,6 +206,11 @@ if($_POST) {
 
         if(isset($_POST['cps_employee_search_input'])){
             if($renewal->CPSPublicSchools != 1){
+                continue;
+            }
+        }
+        if(isset($_POST['calipari_search_input'])){
+            if($applicant->Calipari != 1){
                 continue;
             }
         }

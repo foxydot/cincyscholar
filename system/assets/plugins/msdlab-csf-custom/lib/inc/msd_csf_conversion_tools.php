@@ -51,6 +51,9 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_add_award_id', array(&$this,'add_award_id') );
             add_action( 'wp_ajax_add_academic_year_columns', array(&$this,'add_academic_year_columns') );
             add_action( 'wp_ajax_add_awardid_to_payments', array(&$this,'add_awardid_to_payments') );
+            add_action( 'wp_ajax_add_employerid_columns', array(&$this,'add_employerid_columns') );
+            add_action( 'wp_ajax_add_calipari_column', array(&$this,'add_calipari_column') );
+            add_action( 'wp_ajax_update_academic_year_columns', array(&$this,'update_academic_year_columns') );
 
 
             add_filter('send_password_change_email',array(&$this,'return_false'));
@@ -405,9 +408,9 @@ password: [[TempPwd]]
  </p><p>
 Immediately upon logging in, you may be prompted to change your password. Please choose a secure password you will remember. Once you have changed your password, you will be redirected to the renewal form.
  </p><p>
-If your scholarship is need-based, you will be required to submit your 2018-2019 student aid report (SAR), financial aid award notification, and grade report to complete your renewal application. 
+If your scholarship is need-based, you will be required to submit your '.date("Y").'-'.date("Y",strtotime('+ 1 year')).' student aid report (SAR), financial aid award notification, and grade report to complete your renewal application. 
 </p><p>
-Please submit your renewal application by June 20, 2018 to be considered.
+Please submit your renewal application by June 20, '.date("Y").' to be considered.
   </p><p>
 Elizabeth Collins<br/>
 Program Administrator
@@ -825,6 +828,47 @@ beth@cincinnatischolarshipfoundation.org<br/>
             }
         }
 
+        function add_employerid_columns(){
+            global $wpdb;
+            $sql = "ALTER TABLE applicant ADD `ApplicantEmployerId` int(11) NULL;";
+            if($wpdb->query($sql)) {
+                print "EmployerId column added to applicant!";
+            }
+            $sql = "ALTER TABLE applicantfinancial ADD `ApplicantEmployerId` int(11) NULL, ADD `SpouseEmployerId` int(11) NULL;";
+            if($wpdb->query($sql)) {
+                print "EmployerId column added to applicantfinancial!";
+            }
+        }
+
+        function add_calipari_column(){
+            global $wpdb;
+            $sql = "ALTER TABLE applicant ADD `Calipari` tinyint(1) unsigned zerofill NOT NULL;";
+            if($wpdb->query($sql)) {
+                print "Calipari column added to applicant!";
+            }
+        }
+
+
+        function update_academic_year_columns(){
+            global $wpdb;
+
+            $sql = "UPDATE applicant SET AcademicYear = YEAR(ApplicationDateTime) WHERE AcademicYear = 0000;";
+            if($wpdb->query($sql)) {
+                print "Applicant Updated";
+            }
+            $sql = "UPDATE renewal SET AcademicYear = YEAR(RenewalDateTime) WHERE AcademicYear = 0000;";
+            if($wpdb->query($sql)) {
+                print "Renewal Updated";
+            }
+            $sql = "UPDATE payment SET AcademicYear = YEAR(PaymentDateTime) WHERE AcademicYear = 0000;";
+            if($wpdb->query($sql)) {
+                print "Payment Updated";
+            }
+            $sql = "UPDATE applicantscholarship SET AcademicYear = YEAR(DateAwarded) WHERE AcademicYear = 0000;";
+            if($wpdb->query($sql)) {
+                print "ApplicantScholarship Updated";
+            }
+        }
         //utility
         function settings_page()
         {
@@ -833,7 +877,7 @@ beth@cincinnatischolarshipfoundation.org<br/>
                 //do post stuff if needed.
 
             }
-            add_submenu_page('tools.php',__('Convert Old Data'),__('Convert Old Data'), 'administrator', 'convert-options', array(&$this,'settings_page_content'));
+            add_submenu_page('tools.php',__('Database Tools'),__('Database Tools'), 'administrator', 'convert-options', array(&$this,'settings_page_content'));
         }
         function settings_page_content()
         {
@@ -863,6 +907,7 @@ beth@cincinnatischolarshipfoundation.org<br/>
             </style>
             <script>
                 jQuery(document).ready(function($) {
+                    $('.done button').attr("disabled", "disabled").html('Done');
                     $('.create_student_users').click(function(){
                         var data = {
                             action: 'create_student_users',
@@ -1160,13 +1205,40 @@ beth@cincinnatischolarshipfoundation.org<br/>
                             console.log(response);
                         });
                     });
+                    $('.add_employerid_columns').click(function(){
+                        var data = {
+                            action: 'add_employerid_columns',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
+                    $('.add_calipari_column').click(function(){
+                        var data = {
+                            action: 'add_calipari_column',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
+                    $('.update_academic_year_columns').click(function(){
+                        var data = {
+                            action: 'update_academic_year_columns',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
 
             </script>
             <div class="wrap">
-                <h2>Data Conversion Tools</h2>
+                <h2>Database Update Tools</h2>
                 <dl>
-
+                    <div class="done">
                     <dt>Create Student Users:</dt>
                    <dd><button class="create_student_users">Go</button></dd>
                     <dt>Create Donor Users:</dt>
@@ -1234,6 +1306,14 @@ beth@cincinnatischolarshipfoundation.org<br/>
                     <dd><button class="add_academic_year_columns">Go</button></dd>
                     <dt>add_awardid_to_payments:</dt>
                     <dd><button class="add_awardid_to_payments">Go</button></dd>
+                    <dt>add_employerid_columns:</dt>
+                    <dd><button class="add_employerid_columns">Go</button></dd>
+                    <dt>add_calipari_column:</dt>
+                    <dd><button class="add_calipari_column">Go</button></dd>
+                    </div>
+
+                    <dt>update_academic_year_columns:</dt>
+                    <dd><button class="update_academic_year_columns">Go</button></dd>
                 </dl>
                 <div class="response1"></div>
             </div>
