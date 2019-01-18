@@ -869,6 +869,7 @@ beth@cincinnatischolarshipfoundation.org<br/>
                 print "ApplicantScholarship Updated";
             }
         }
+        
         //utility
         function settings_page()
         {

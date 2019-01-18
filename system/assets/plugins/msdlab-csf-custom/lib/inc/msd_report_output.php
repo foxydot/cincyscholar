@@ -503,7 +503,7 @@ class MSDLAB_Report_Output{
         $ret[] = '<div id="scholarship_new" class="scholarship-entry"><div class="col-md-12"><a id="add_scholarship_btn" class="button">Add Scholarship</a></div></div>';
         if ($renewal) {
             $ret['Renewal_YearsWithCSF'] = $this->form->field_textfield('Renewal_YearsWithCSF', $student_data['renewal']->YearsWithCSF ? $student_data['renewal']->YearsWithCSF : 0, 'Years With CSF', '0', array('type' => 'number', 'minlength' => 1), array('col-md-2', 'col-sm-12'));
-            $ret['Renewal_AnticipatedGraduationDate'] = $this->form->field_select('Renewal_AnticipatedGraduationDate', $student_data['renewal']->AnticipatedGraduationDate ? date("Y", strtotime($student_data['renewal']->AnticipatedGraduationDate)) : date("Y") . '-01-01', "Anticipated Graduation Date", array('value' => date("Y") . '-01-01', 'option' => date("Y")), $this->col_gradyr_array, array('required' => 'required'), array('required', 'col-md-2', 'col-sm-12'));
+            $ret['Renewal_AnticipatedGraduationDate'] = $this->form->field_select('Renewal_AnticipatedGraduationDate', $student_data['renewal']->AnticipatedGraduationDate ? $student_data['renewal']->AnticipatedGraduationDate : date("Y") . '-01-01', "Anticipated Graduation Date", array('value' => date("Y") . '-01-01', 'option' => date("Y")), $this->col_gradyr_array, array('required' => 'required'), array('required', 'col-md-2', 'col-sm-12'));
         }
         return implode("\n",$ret);
     }

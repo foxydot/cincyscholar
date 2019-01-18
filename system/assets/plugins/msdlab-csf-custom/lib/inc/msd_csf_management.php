@@ -73,6 +73,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
             //add_submenu_page('csf-manage',__('Application Reports'),__('Application Reports'),'manage_csf','csf-report', array(&$this,'report_page_content'));
             //add_submenu_page('csf-manage',__('Renewal Reports'),__('Renewal Reports'),'manage_csf','csf-renewals', array(&$this,'renewal_report_page_content'));
             add_submenu_page('csf-manage',__('All Students'),__('Search All Students'),'manage_csf','csf-reports', array(&$this,'consolidated_search_page_content'));
+            add_submenu_page(null,__('Maintenance'),__('Maintenance'),'manage_csf','csf-maintenance', array(&$this,'maintenance_search_page_content'));
             add_submenu_page(null,__('View Student'),__('View Student'),'manage_csf','student-edit', array(&$this,'single_student_record_page_content'));
             add_submenu_page(null,__('Recommend Student'),__('Recommend Student'),'manage_csf','student-recommend', array(&$this,'single_student_recommend_page_content'));
             add_submenu_page('csf-manage',__('Reports'),__('Reports'),'manage_csf','csf-reports', array(&$this,'consolidated_search_page_content'));
@@ -195,6 +196,10 @@ if (!class_exists('MSDLab_CSF_Management')) {
         function consolidated_search_page_content(){
             $this->report_page_content_menu();
             include_once(plugin_dir_path(__FILE__).'/reports/consolidated_search_page_content.php');
+        }
+        function maintenance_search_page_content(){
+            $this->report_page_content_menu();
+            include_once(plugin_dir_path(__FILE__).'/reports/maintenance_search_page_content.php');
         }
         function single_student_record_page_content(){
             include_once(plugin_dir_path(__FILE__).'/reports/single_student_record_page_content.php');

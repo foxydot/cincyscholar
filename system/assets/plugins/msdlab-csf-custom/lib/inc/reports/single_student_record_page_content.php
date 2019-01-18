@@ -2,7 +2,7 @@
 $tabs = '';
 $pane = array();
 if($_POST) {
-    ts_data($_POST);
+    //ts_data($_POST);
     $user_id = $_POST['Applicant_UserId_input'];
     $notifications = array(
         'nononce' => 'Student info could not be saved.',
@@ -66,6 +66,15 @@ if($student = $this->queries->get_student_data($applicant_id)) {
                     '.$this->report->student_form($student).'
                 </div>';
             $jquery[] = "
+                $('input[type=tel]').change(function(){
+                    text = $(this).val().replace(/(\d{3})(\d{3})(\d{4})/, \"($1) $2-$3\");
+                    $(this).val(text);
+                });
+                $('input[type=date]').each(function(){
+                    if($(this).val() == '1970-01-01'){
+                          $(this).val('');
+                    }
+                });
                 $('.gpa1in input').change(function(){
                     var gpa = $(this).val();
                     $('.gpa1 input').val(gpa);
