@@ -78,14 +78,21 @@ $social_media_inputs = array();
         <input name="sharethis_link" type="text" id="sharethis_link" value="' . stripcslashes(get_option('msdsocial_sharethis_link')) . '" class="regular-text" />
       </div>
   </li>';
-  $social_media_inputs['contact'] = '<li>
+    $social_media_inputs['contact'] = '<li>
       <label for="contact_link">Contact Link <i class="fa fa-envelope"></i></label>
       <div class="input">
         <input name="contact_link" type="text" id="contact_link" value="' . stripcslashes(get_option('msdsocial_contact_link')) . '" class="regular-text" />
       </div>
   </li>';
-  $blog_checked = get_option('msdsocial_show_blog')==true?'CHECKED':'';
-  $social_media_inputs['blog'] = '<li>
+  $phone_checked = get_option('msdsocial_show_phone')==true?'CHECKED':'';
+  $social_media_inputs['phone'] = '<li>
+      <label for="show_phone">Show Phone Link? <i class="fa fa-phone"></i></label>
+      <div class="input">
+        <input name="show_phone" type="checkbox" id="show_phone" value="true" ' . $phone_checked . '> yes
+      </div>
+  </li>';
+    $blog_checked = get_option('msdsocial_show_blog')==true?'CHECKED':'';
+    $social_media_inputs['blog'] = '<li>
       <label for="show_blog">Show Blog Link? <i class="fa fa-newspaper-o"></i></label>
       <div class="input">
         <input name="show_blog" type="checkbox" id="show_blog" value="true" ' . $blog_checked . '> yes

@@ -45,6 +45,7 @@ function msdsocial_theme_page ()
         'vine_link',
 		'sharethis_link',
 		'contact_link',
+        'show_phone',
         'show_blog',
         'show_feed',
 		'hours_sunday_open',

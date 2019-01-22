@@ -47,6 +47,8 @@ if (!class_exists('MSDLab_CSF_Management')) {
             add_action('admin_menu', array(&$this,'settings_page'));
             //add_action('wp_enqueue_scripts', array(&$this,'add_styles_and_scripts'));
             add_action('admin_enqueue_scripts', array(&$this,'add_admin_styles_and_scripts'));
+            add_action( 'admin_bar_menu', array(&$this,'toolbar_settings'), 999 );
+
             //Filters
 
             //Shortcodes
@@ -66,6 +68,32 @@ if (!class_exists('MSDLab_CSF_Management')) {
         }
 
         function add_styles_and_scripts(){
+        }
+
+        function toolbar_settings( $wp_admin_bar ) {
+            $args = array(
+                'id'    => 'csf-manage',
+                'title' => 'CSF Management',
+                'href'  => admin_url('admin.php?page=csf-manage'),
+                'meta'  => array( 'class' => 'csf-manage' )
+            );
+            $wp_admin_bar->add_node( $args );
+            $args = array(
+                'id'    => 'csf-reports',
+                'parent'    => 'csf-manage',
+                'title' => 'Search/Reports',
+                'href'  => admin_url('admin.php?page=csf-reports'),
+                'meta'  => array( 'class' => 'csf-reports' )
+            );
+            $wp_admin_bar->add_node( $args );
+            $args = array(
+                'id'    => 'csf-settings',
+                'parent'    => 'csf-manage',
+                'title' => 'Settings',
+                'href'  => admin_url('admin.php?page=csf-settings'),
+                'meta'  => array( 'class' => 'csf-settings' )
+            );
+            $wp_admin_bar->add_node( $args );
         }
 
         function settings_page(){

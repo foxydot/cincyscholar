@@ -2,9 +2,9 @@
 /*
 Plugin Name: MSD Site Settings
 Description: Provides settings panel for several social/address options and widgets/shortcodes/functions for display.
-Version: 1.0
-Author: Catherine M OBrien Sandrick (CMOS)
-Author URI: http://msdlab.com/biological-assets/catherine-obrien-sandrick/
+Version: 1.1
+Author: MSDLab
+Author URI: http://msdlab.com/
 GitHub Plugin URI: https://github.com/msdlab/msd_site_settings
 GitHub Branch:     master
 License: GPL v2
@@ -29,7 +29,7 @@ class MSDSocial{
         $this->the_path = plugin_dir_path(__FILE__);
         $this->the_url = plugin_dir_url(__FILE__);
         $this->icon_size = get_option('msdsocial_icon_size')?get_option('msdsocial_icon_size'):'0';
-        $this->ver = '1.0';
+        $this->ver = '1.1';
         /*
          * Pull in some stuff from other files
          */
@@ -59,7 +59,7 @@ class MSDSocial{
         function add_admin_scripts() {
             global $current_screen;
             if($current_screen->id == 'settings_page_msdsocial-options'){
-                wp_enqueue_script('bootstrap-jquery','//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js',array('jquery'),$this->ver,TRUE);
+                wp_enqueue_script('bootstrap-jquery','//maxcdn.bootstrapcdn.com/bootstrap/latest/js/bootstrap.min.js',array('jquery'),$this->ver,TRUE);
                 wp_enqueue_script('timepicker-jquery',$this->the_url.'lib/js/jquery.timepicker.min.js',array('jquery'),$this->ver,FALSE);
                 wp_enqueue_script( 'jquery-ui-datepicker' );
                 wp_enqueue_script('msdsocial-jquery',$this->the_url.'lib/js/plugin-jquery.js',array('jquery','timepicker-jquery'),$this->ver,TRUE);
@@ -70,7 +70,7 @@ class MSDSocial{
         function add_admin_styles() {
             global $current_screen;
             if($current_screen->id == 'settings_page_msdsocial-options'){
-                wp_register_style('bootstrap-style','//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css');
+                wp_register_style('bootstrap-style','//maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css');
                 wp_register_style('font-awesome-style','//maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css',array('bootstrap-style'));
                 wp_register_style('timepicker-style',$this->the_url.'lib/css/jquery.timepicker.css');
                 wp_enqueue_style('font-awesome-style');
@@ -389,7 +389,21 @@ function social_media($atts = array()){
     }    
     if(get_option('msdsocial_contact_link')!=""){
         $ret .= '<a href="'.get_option('msdsocial_contact_link').'" class="fa fa-envelope" title="Contact Us" target="_blank"></a>';
-    }    
+    }
+    if(get_option('msdsocial_show_phone')!=""){
+        if(get_option('msdsocial_tracking_tollfree')!=''){
+            $phone = get_option('msdsocial_tracking_tollfree');
+        } elseif (get_option('msdsocial_tracking_phone')!=''){
+            $phone = get_option('msdsocial_tracking_phone');
+        } elseif(get_option('msdsocial_tollfree')!=''){
+            $phone = get_option('msdsocial_tollfree');
+        } elseif (get_option('msdsocial_phone')!='') {
+            $phone = get_option('msdsocial_phone');
+        }
+        if($phone != '') {
+            $ret .= '<a href="tel:+1' . $phone . '" class="fa fa-phone" title="Call Us"></a>';
+        }
+    }
     if(get_option('msdsocial_show_blog')!=""){
         if (get_option('show_on_front')=='page') {
           $blog_page_id = get_option('page_for_posts');
