@@ -54,6 +54,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_add_employerid_columns', array(&$this,'add_employerid_columns') );
             add_action( 'wp_ajax_add_calipari_column', array(&$this,'add_calipari_column') );
             add_action( 'wp_ajax_move_temp_payments_to_payments', array(&$this,'move_temp_payments_to_payments') );
+            add_action( 'wp_ajax_update_awarded_users', array(&$this,'update_awarded_users') );
             add_action( 'wp_ajax_update_academic_year_columns', array(&$this,'update_academic_year_columns') );
 
 
@@ -863,6 +864,21 @@ VALUES
             }
         }
 
+        function update_awarded_users(){
+            global $wpdb;
+            $sql = "SELECT a.UserId FROM applicant AS a, applicantscholarship AS b WHERE a.ApplicantId = b.ApplicantId;";
+            $results = $wpdb->get_results($sql);
+            foreach ($results AS $r){
+                $user = get_user_by('ID',$r->UserId);
+                if ( in_array( 'applicant', (array) $user->roles ) ) {
+                    //update the user role
+                    if(wp_update_user(array('ID' => $user->ID,'role' => 'awardee'))){
+                        print "$user->display_name upgraded. <br/>";
+                    }
+                }
+            }
+        }
+
 
         function update_academic_year_columns(){
             global $wpdb;
@@ -1248,6 +1264,15 @@ VALUES
                             console.log(response);
                         });
                     });
+                    $('.update_awarded_users').click(function(){
+                        var data = {
+                            action: 'update_awarded_users',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                     $('.update_academic_year_columns').click(function(){
                         var data = {
                             action: 'update_academic_year_columns',
@@ -1338,6 +1363,8 @@ VALUES
                     <dd><button class="add_calipari_column">Go</button></dd>
                     <dt>move_temp_payments_to_payments:</dt>
                     <dd><button class="move_temp_payments_to_payments">Go</button></dd>
+                    <dt>update_awarded_users:</dt>
+                    <dd><button class="update_awarded_users">Go</button></dd>
 
                     <dt>update_academic_year_columns:</dt>
                     <dd><button class="update_academic_year_columns">Go</button></dd>
