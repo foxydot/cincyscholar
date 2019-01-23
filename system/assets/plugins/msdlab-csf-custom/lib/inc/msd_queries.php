@@ -678,7 +678,7 @@ class MSDLAB_Queries{
         if(empty($this->post_vars)){
             return $this->get_all_applications();
         }
-        //ts_data($this->post_vars);
+        ts_data($this->post_vars);
         $usertable = $wpdb->prefix . 'users';
         $data['tables']['applicant'] = array('*');
 
@@ -793,6 +793,7 @@ class MSDLAB_Queries{
             is_numeric($this->post_vars['scholarship_search_input']) ||
             !empty($this->post_vars['award_date_search_input_start']) ||
             !empty($this->post_vars['award_date_search_input_end']) ||
+            $this->post_vars['multischolarship_search_input'] != 0 ||
             is_numeric($this->post_vars['thankyounote_search_input']) ||
             is_numeric($this->post_vars['signed_search_input']) ||
             is_numeric($this->post_vars['award_search_input']) ||
@@ -823,6 +824,12 @@ class MSDLAB_Queries{
                 $data['where'] .= ' AND '.implode(' AND ',$where);
             } else {
                 $data['where'] .= ' AND UNIX_TIMESTAMP(applicantscholarship.DateAwarded) > '.strtotime(get_option('csf_settings_start_date')); //replace with dates from settings
+            }
+            if($this->post_vars['multischolarship_search_input'] == 2){
+                $data['where'] .= ' AND applicant.ApplicantId IN (SELECT ApplicantId FROM applicantscholarship GROUP BY ApplicantId HAVING COUNT(*) > 1)';
+            }
+            if($this->post_vars['multischolarship_search_input'] == 1){
+                $data['where'] .= ' AND applicant.ApplicantId IN (SELECT ApplicantId FROM applicantscholarship GROUP BY ApplicantId HAVING COUNT(*) = 1)';
             }
 
             if(is_numeric($this->post_vars['thankyounote_search_input'])){
@@ -1064,7 +1071,7 @@ class MSDLAB_Queries{
         $data['tables']['renewal'] = array('*');
         //ts_data($this->post_vars);
         if(empty($this->post_vars['renewal_date_search_input_start']) && empty($this->post_vars['renewal_date_search_input_end'])) {
-            $data['where'] = 'renewal.AcademicYear'.$this->post_vars['academic_year_input'];
+            $data['where'] = 'renewal.AcademicYear = '.$this->post_vars['academic_year_input'];
         } else {
             if(!empty($this->post_vars['renewal_date_search_input_start'])){
                 $where[] = 'UNIX_TIMESTAMP(renewal.RenewalDateTime) > '.strtotime($this->post_vars['renewal_date_search_input_start']);
@@ -1144,6 +1151,7 @@ class MSDLAB_Queries{
             is_numeric($this->post_vars['scholarship_search_input']) ||
             !empty($this->post_vars['award_date_search_input_start']) ||
             !empty($this->post_vars['award_date_search_input_end']) ||
+            $this->post_vars['multischolarship_search_input'] != 0 ||
             is_numeric($this->post_vars['thankyounote_search_input']) ||
             is_numeric($this->post_vars['signed_search_input']) ||
             is_numeric($this->post_vars['award_search_input']) ||
@@ -1171,6 +1179,13 @@ class MSDLAB_Queries{
                 $data['where'] .= ' AND '.implode(' AND ',$where);
             } else {
                 $data['where'] .= ' AND UNIX_TIMESTAMP(applicantscholarship.DateAwarded) > '.strtotime(get_option('csf_settings_start_date')); //replace with dates from settings
+            }
+
+            if($this->post_vars['multischolarship_search_input'] == 2){
+                $data['where'] .= ' AND renewal.ApplicantId IN (SELECT ApplicantId FROM applicantscholarship GROUP BY ApplicantId HAVING COUNT(*) > 1)';
+            }
+            if($this->post_vars['multischolarship_search_input'] == 1){
+                $data['where'] .= ' AND renewal.ApplicantId IN (SELECT ApplicantId FROM applicantscholarship GROUP BY ApplicantId HAVING COUNT(*) = 1)';
             }
             if(is_numeric($this->post_vars['thankyounote_search_input'])){
                 $data['where'] .= ' AND applicantscholarship.ThankYou = ' . $this->post_vars['thankyounote_search_input'];

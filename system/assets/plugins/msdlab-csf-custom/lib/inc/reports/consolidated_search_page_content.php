@@ -127,7 +127,7 @@ $select_fields['scholarshipwhs'] = array('title' => 'Scholarship & High School',
 ));
 $tabs = $pane = array();
 if($_POST) {
-    ts_data($_POST);
+    //ts_data($_POST);
     $this->search->javascript['collapse-btn-init'] = '
         $(".collapsable").css("display","none");
         $(".collapse-button i").removeClass("fa-compress").addClass("fa-expand");

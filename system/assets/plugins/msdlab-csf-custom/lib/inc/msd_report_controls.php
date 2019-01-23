@@ -168,8 +168,9 @@ class MSDLab_ReportControls{
                 $ret['college_search'] = $this->select_search('College: ','college_search', $colleges,array('query-filter','select-search','col-sm-6'));
                 $ret['major_search'] = $this->select_search('Major: ','major_search', $majors,array('query-filter','select-search','col-sm-6'));
                 $ret['scholarship_search'] = $this->select_search('Scholarship:','scholarship_search',$scholarship,array('query-filter','select-search','col-sm-6','col-md-4'));
-                $ret['fund_search'] = $this->select_search('Fund:','fund_search',$fund,array('query-filter','select-search','col-sm-6','col-md-3'));
-                $ret['award_date_search'] = $this->date_search('Award Date Between:','','award_date_search',array('query-filter','col-sm-6','col-md-5'),'00/00/0000','00/00/0000');
+                $ret['fund_search'] = $this->select_search('Fund:','fund_search',$fund,array('query-filter','select-search','col-sm-6','col-md-2'));
+                $ret['award_date_search'] = $this->date_search('Award Date Between:','','award_date_search',array('query-filter','col-sm-6','col-md-6'),'00/00/0000','00/00/0000');
+                $ret['multischolarship_search'] = $this->select_search('Number of Scholarships','multischolarship_search',array(0 => 'Any',1 => 'One',2 => 'Multiple'),array('query-filter','col-sm-6','col-md-12'),0);
                 $ret['educational_attainment'] = $this->select_search('Year In School','educational_attainment',$educational_attainment,array('query-filter','col-sm-6','col-md-4'));
                 $ret['thankyounote_search'] = $this->select_search('Thank You','thankyounote_search',$bool_options,array('query-filter','col-sm-6','col-md-4'));
                 $ret['signed_search'] = $this->select_search('Papers Signed','signed_search',$bool_options,array('query-filter','col-sm-6','col-md-4'));
