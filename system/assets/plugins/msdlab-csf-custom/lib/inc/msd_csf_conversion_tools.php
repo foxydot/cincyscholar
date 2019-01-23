@@ -53,6 +53,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_add_awardid_to_payments', array(&$this,'add_awardid_to_payments') );
             add_action( 'wp_ajax_add_employerid_columns', array(&$this,'add_employerid_columns') );
             add_action( 'wp_ajax_add_calipari_column', array(&$this,'add_calipari_column') );
+            add_action( 'wp_ajax_move_temp_payments_to_payments', array(&$this,'move_temp_payments_to_payments') );
             add_action( 'wp_ajax_update_academic_year_columns', array(&$this,'update_academic_year_columns') );
 
 
@@ -848,6 +849,20 @@ beth@cincinnatischolarshipfoundation.org<br/>
             }
         }
 
+        function move_temp_payments_to_payments(){
+            global $wpdb;
+            $sql = "SELECT * FROM temp_payment";
+            $results = $wpdb->get_results($sql);
+            foreach ($results AS $r){
+                $sql = "INSERT INTO `payment` (`paymentkey`, `UserId`, `ApplicantId`, `PaymentAmt`, `PaymentDateTime`, `CheckNumber`, `CollegeId`, `RefundReceived`, `RefundAmt`, `RefundNumber`, `Notes`, `PaymentLocked`, `AcademicYear`, `AwardId`) 
+VALUES
+	('$r->paymentkey', '$r->UserId', '$r->ApplicantId', '$r->PaymentAmt', '$r->PaymentDateTime', '$r->CheckNumber', '$r->CollegeId', '$r->RefundReceived', '$r->RefundAmt', '$r->RefundNumber', '$r->Notes', '$r->PaymentLocked', '$r->AcademicYear', '$r->AwardId');";
+                if($wpdb->query($sql)) {
+                    print "Payment ".$wpdb->insert_id." created from temp_payment ".$r->paymentid."<br />";
+                }
+            }
+        }
+
 
         function update_academic_year_columns(){
             global $wpdb;
@@ -1224,6 +1239,15 @@ beth@cincinnatischolarshipfoundation.org<br/>
                             console.log(response);
                         });
                     });
+                    $('.move_temp_payments_to_payments').click(function(){
+                        var data = {
+                            action: 'move_temp_payments_to_payments',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                     $('.update_academic_year_columns').click(function(){
                         var data = {
                             action: 'update_academic_year_columns',
@@ -1312,7 +1336,8 @@ beth@cincinnatischolarshipfoundation.org<br/>
                     <dd><button class="add_employerid_columns">Go</button></dd>
                     <dt>add_calipari_column:</dt>
                     <dd><button class="add_calipari_column">Go</button></dd>
-
+                    <dt>move_temp_payments_to_payments:</dt>
+                    <dd><button class="move_temp_payments_to_payments">Go</button></dd>
 
                     <dt>update_academic_year_columns:</dt>
                     <dd><button class="update_academic_year_columns">Go</button></dd>
