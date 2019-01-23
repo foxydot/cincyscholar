@@ -1305,13 +1305,14 @@ beth@cincinnatischolarshipfoundation.org<br/>
                     <dd><button class="add_award_id">Go</button></dd>
                     <dt>add_academic_year_columns:</dt>
                     <dd><button class="add_academic_year_columns">Go</button></dd>
+                    </div>
                     <dt>add_awardid_to_payments:</dt>
                     <dd><button class="add_awardid_to_payments">Go</button></dd>
                     <dt>add_employerid_columns:</dt>
                     <dd><button class="add_employerid_columns">Go</button></dd>
                     <dt>add_calipari_column:</dt>
                     <dd><button class="add_calipari_column">Go</button></dd>
-                    </div>
+
 
                     <dt>update_academic_year_columns:</dt>
                     <dd><button class="update_academic_year_columns">Go</button></dd>
