@@ -160,6 +160,12 @@ input, select, textarea {
     width: 50em;
     overflow-y: scroll;
   }
+  tr.reject{
+    background-color: rgba(red,0.3);
+  }
+  tr.renewal{
+    background-color: rgba(yellow,0.3);
+  }
 }
 
 .admin_page_student-edit {

@@ -87,7 +87,7 @@ class MSDLab_ReportControls{
 
         //select populate
         $academic_years = array();
-        for ($yr = date("Y")+1; $yr >= 2016; $yr--) {
+        for ($yr = date("Y"); $yr >= 2016; $yr--) {
             $a = (string) $yr;
             $b = (string) ($yr+1);
             $academic_years[$yr] = $a . '/' . $b;

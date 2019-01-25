@@ -269,6 +269,7 @@ class MSDLAB_Report_Output{
             }
             $class = $i%2==0?'even':'odd';
             if($user->Reject){$class = 'reject';}
+            if($user->RenewalId){$class = 'renewal';}
             $ret[] = '<tr class="'.$class.'">'.implode("\n\r", $row).'</tr>';
             $ecsv[] = implode(",",$erow);
             $i++;

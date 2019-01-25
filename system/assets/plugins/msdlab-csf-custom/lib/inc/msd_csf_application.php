@@ -508,7 +508,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                                 $ret[] = '</div>';
                             }
                             //hardships
-                            $ret['Applicant_HardshipNote'] = $this->form->field_textarea('Applicant_HardshipNote', $result->HardshipNote ? $result->HardshipNote : null, "If applicable, please use this space to describe how you overcame hardships (family environment, health issues, or physical challenges, etc.) to achieve your dream of pursuing a college education.",null,array('col-md-12'));
+                            $ret['Applicant_HardshipNote'] = $this->form->field_textarea('Applicant_HardshipNote', $result->HardshipNote ? $result->HardshipNote : null, "Please use this space to describe how you overcame hardships (family environment, health issues, or physical challenges, etc.) to pursue your education and a college degree.  <strong>PLEASE DO NOT USE THIS SPACE FOR AN ESSAY. THIS IS FOR A HARDSHIP STATEMENT ONLY.</strong> You may upload an essay at the end of this application. ",null,array('col-md-12'));
 
                             break;
                         case 5:

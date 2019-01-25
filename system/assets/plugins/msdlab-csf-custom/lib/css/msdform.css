@@ -123,6 +123,12 @@ form.csf_report_search_form, form#csf_college {
   width: 50em;
   overflow-y: scroll; }
 
+.toplevel_page_csf-report tr.reject, .csf-management_page_csf-report tr.reject, .csf-management_page_csf-reports tr.reject, .csf-management_page_csf-renewals tr.reject, .csf-management_page_csf-students tr.reject, .admin_page_student-edit tr.reject {
+  background-color: rgba(255, 0, 0, 0.3); }
+
+.toplevel_page_csf-report tr.renewal, .csf-management_page_csf-report tr.renewal, .csf-management_page_csf-reports tr.renewal, .csf-management_page_csf-renewals tr.renewal, .csf-management_page_csf-students tr.renewal, .admin_page_student-edit tr.renewal {
+  background-color: rgba(255, 255, 0, 0.3); }
+
 .admin_page_student-edit input:not([type="radio"]):not([type="checkbox"]), .admin_page_student-edit select, .admin_page_student-edit textarea {
   background-color: #FCFCFC;
   border: 1px solid #CCC;
