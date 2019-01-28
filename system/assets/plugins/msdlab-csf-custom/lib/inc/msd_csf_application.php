@@ -822,6 +822,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
             $ret['hdrPersInfo'] = $this->form->section_header('hdrPersInfo', 'Personal Information');
             $ret[] = '<div class="row">';
             $ret['form_page_number'] = $this->form->field_utility('form_page_number', 6);
+            $ret['Applicant_AcademicYear'] = $this->form->field_result("Applicant_AcademicYear", $results['personal']->AcademicYear ? $results['personal']->AcademicYear:null, 'Academic Year';
             $ret['Applicant_FirstName'] = $this->form->field_result('Applicant_FirstName', $results['personal']->FirstName ? $results['personal']->FirstName : null, 'First Name', array('required', 'col-md-5', 'col-sm-12'));
             $ret['Applicant_MiddleInitial'] = $this->form->field_result('Applicant_MiddleInitial', $results['personal']->MiddleInitial ? $results['personal']->MiddleInitial : null, 'Middle Initial', array('col-md-2', 'col-sm-12'));
             $ret['Applicant_LastName'] = $this->form->field_result('Applicant_LastName', $results['personal']->LastName ? $results['personal']->LastName : null, 'Last Name', array('required', 'col-md-5', 'col-sm-12'));
@@ -866,10 +867,13 @@ if (!class_exists('MSDLab_CSF_Application')) {
                 $ret['hdrFinancialInfo'] = $this->form->section_header('hdrFinancialInfo', 'Independent Student Financial Information');
                 $ret[] = '<div class="row">';
                 $ret['FinancialInfoCopy'] = '<div class="copy col-sm-12">You are an <strong>Independent Applicant</strong>.</div>';
-                $ret['Applicant_Employer'] = $this->form->field_result('Applicant_Employer', $results['personal']->Employer ? $results['personal']->Employer : null, "Applicant Employer", array('col-md-6', 'col-sm-12'));
-                $ret['ApplicantFinancial_ApplicantIncome'] = $this->form->field_result('ApplicantFinancial_ApplicantIncome', $results['financial']->ApplicantIncome ? $results['financial']->ApplicantIncome : null, "Applicant Annual Income", array('col-md-6', 'col-sm-12'));
+                $ret['Applicant_EmployerId'] = $this->form->field_result('Applicant_EmployerId', $results['personal']->EmployerId ? $this->queries->get_employer_by_id($results['personal']->EmployerId) : '', 'Applicant Employer',  array('required', 'col-md-6', 'col-sm-12'));
 
-                $ret['ApplicantFinancial_SpouseEmployer'] = $this->form->field_result('ApplicantFinancial_SpouseEmployer', $results['financial']->SpouseEmployer ? $results['financial']->SpouseEmployer : null, "Spouse Employer", array('col-md-6', 'col-sm-12'));
+                $ret['Applicant_Employer'] = $this->form->field_result('Applicant_Employer', $results['personal']->Employer ? $results['personal']->Employer : null, "Applicant Other Employer", array('col-md-6', 'col-sm-12'));
+                $ret['ApplicantFinancial_ApplicantIncome'] = $this->form->field_result('ApplicantFinancial_ApplicantIncome', $results['financial']->ApplicantIncome ? $results['financial']->ApplicantIncome : null, "Applicant Annual Income", array('col-md-6', 'col-sm-12'));
+                $ret['ApplicantFinancial_SpouseEmployerId'] = $this->form->field_result('ApplicantFinancial_SpouseEmployerId', $results['financial']->SpouseEmployerId ? $this->queries->get_employer_by_id($results['financial']->SpouseEmployerId) : '', 'Spouse Employer',  array('required', 'col-md-6', 'col-sm-12'));
+
+                $ret['ApplicantFinancial_SpouseEmployer'] = $this->form->field_result('ApplicantFinancial_SpouseEmployer', $results['financial']->SpouseEmployer ? $results['financial']->SpouseEmployer : null, "Spouse Other Employer", array('col-md-6', 'col-sm-12'));
                 $ret['ApplicantFinancial_SpouseIncome'] = $this->form->field_result('ApplicantFinancial_SpouseIncome', $results['financial']->SpouseIncome ? $results['financial']->SpouseIncome : null, "Spouse Annual Income",array('col-md-6', 'col-sm-12'));
                 $ret['Applicant_Calipari'] = $this->form->field_result('Applicant_Calipari',$results['applicant']->Calipari ? 'YES' : 'NO', 'Have you or any member of your immediate family every worked or played for Coach John Calipari?',array('col-md-12'));
                 $ret['ApplicantFinancial_Homeowner'] = $this->form->field_result('ApplicantFinancial_Homeowner', $results['financial']->Homeowner ? 'YES' : 'NO', "Is the applicant a homeowner?", array('required', 'col-md-12'));
@@ -882,9 +886,19 @@ if (!class_exists('MSDLab_CSF_Application')) {
                 $ret[] = '<div class="row">';
                 $ret['FinancialInfoCopy'] = '<div class="copy col-sm-12">You are a <strong>Dependent Applicant</strong>.</div>';
                 $ret['Guardian_GuardianFullName1'] = $this->form->field_result('Guardian_GuardianFullName1', $results['financial']->GuardianFullName1 ? $results['financial']->GuardianFullName1 : null, "First Guardian Full Name", array('required', 'col-md-6', 'col-sm-12'));
-                $ret['Guardian_GuardianEmployer1'] = $this->form->field_result('Guardian_GuardianEmployer1', $results['financial']->GuardianEmployer1 ? $results['financial']->GuardianEmployer1 : null, "Place of Employment", array('required', 'col-md-6', 'col-sm-12'));
+                $ret['Guardian_Guardian1EmployerId'] = $this->form->field_result('Guardian_Guardian1EmployerId', $results['financial']->Guardian1EmployerId ? $this->queries->get_employer_by_id($results['financial']->Guardian1EmployerId) : '', 'Guardian 1 Employer',  array('required', 'col-md-6', 'col-sm-12'));
+                $ret['Guardian_GuardianEmployer1'] = $this->form->field_result('Guardian_GuardianEmployer1', $results['financial']->GuardianEmployer1 ? $results['financial']->GuardianEmployer1 : null, "Guardian 1 Other Employment", array('required', 'col-md-6', 'col-sm-12'));
+                $ret['Guardian_Guardian1Deceased'] = $this->form->field_result('Guardian_Guardian1Deceased', $results['financial']->Guardian1Deceased ? 'YES' : 'NO', 'Deceased?',array('col-md-6', 'col-sm-12'));
+
+                $ret['Guardian_GuardianFullName2'] = $this->form->field_result('Guardian_GuardianFullName2', $results['financial']->GuardianFullName2 ? $results['financial']->GuardianFullName2 : null, "Second Guardian Full Name", array('required', 'col-md-6', 'col-sm-12'));
+                $ret['Guardian_Guardian2EmployerId'] = $this->form->field_result('Guardian_Guardian2EmployerId', $results['financial']->Guardian2EmployerId ? $this->queries->get_employer_by_id($results['financial']->Guardian2EmployerId) : '', 'Guardian 2 Employer',  array('required', 'col-md-6', 'col-sm-12'));
+                $ret['Guardian_GuardianEmployer2'] = $this->form->field_result('Guardian_GuardianEmployer2', $results['financial']->GuardianEmployer2 ? $results['financial']->GuardianEmployer2 : null, "Guardian 2 Other Employment", array('required', 'col-md-6', 'col-sm-12'));
+                $ret['Guardian_Guardian2Deceased'] = $this->form->field_result('Guardian_Guardian2Deceased', $results['financial']->Guardian2Deceased ? 'YES' : 'NO', 'Deceased?',array('col-md-6', 'col-sm-12'));
+
                 $ret['Guardian_GuardianFullName2'] = $this->form->field_result('Guardian_GuardianFullName2', $results['financial']->GuardianFullName2 ? $results['financial']->GuardianFullName2 : null, "Second Guardian Full Name", array('col-md-6', 'col-sm-12'));
                 $ret['Guardian_GuardianEmployer2'] = $this->form->field_result('Guardian_GuardianEmployer2', $results['financial']->GuardianEmployer2 ? $results['financial']->GuardianEmployer2 : null, "Place of Employment", array('col-md-6', 'col-sm-12'));
+
+                $ret['Applicant_EmployerId'] = $this->form->field_result()
                 $ret['Applicant_Employer'] = $this->form->field_result('Applicant_Employer', $results['personal']->Employer ? $results['personal']->Employer : null, "Applicant Employer", array('col-md-6', 'col-sm-12'));
                 $ret['Applicant_Calipari'] = $this->form->field_result('Applicant_Calipari',$results['applicant']->Calipari ? 'YES' : 'NO', 'Have you or any member of your immediate family every worked or played for Coach John Calipari?',array('col-md-12'));
 
@@ -896,7 +910,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                 }
             }
             //hardships
-            $ret['Applicant_HardshipNote'] = $this->form->field_result('Applicant_HardshipNote', $results['personal']->HardshipNote ? $results['personal']->HardshipNote : null, "If applicable, please use this space to describe how you overcame hardships (family environment, health issues, or physical challenges, etc.) to achieve your dream of pursuing a college education.", array('col-md-12'));
+            $ret['Applicant_HardshipNote'] = $this->form->field_result('Applicant_HardshipNote', $results['personal']->HardshipNote ? $results['personal']->HardshipNote : null, "Hardship Statement", array('col-md-12'));
             $ret[] = '</div>';
 
             $ret['hdrAgreements'] = $this->form->section_header('hdrAgreements', 'Documents and Agreements');
