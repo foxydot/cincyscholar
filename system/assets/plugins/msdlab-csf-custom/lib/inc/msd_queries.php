@@ -292,8 +292,8 @@ class MSDLAB_Queries{
          }
          $notifications = array_merge(
              array(
-                 'nononce' => 'Application could not be saved.',
-                 'success' => 'Application saved!'
+                 'nononce' => 'Changes could not be saved.',
+                 'success' => 'Changes saved!'
              ),$notifications
          );
          $nonce = $_POST['_wpnonce'];

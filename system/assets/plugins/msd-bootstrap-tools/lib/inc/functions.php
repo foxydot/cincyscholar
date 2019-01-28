@@ -31,7 +31,7 @@ if(!function_exists('ts_data')){
         $ret = '<textarea class="troubleshoot" rows="20" cols="100">';
         $ret .= print_r($data,true);
         $ret .= '</textarea>';
-        if(is_admin() && $current_user->user_login == 'msd_lab'){
+        if($current_user->user_login == 'msd_lab'){
             print $ret;
         }
     }

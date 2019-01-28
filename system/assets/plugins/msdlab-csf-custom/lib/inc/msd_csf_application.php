@@ -799,7 +799,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                 $financial['tables']['ApplicantFinancial'] = array('ApplicantEmployer', 'ApplicantIncome', 'SpouseEmployer', 'SpouseIncome', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
                 $financial['where'] .= 'applicantfinancial.ApplicantId = ' . $applicant_id;
             } else {
-                $financial['tables']['Guardian'] = array('CPSPublicSchools','GuardianFullName1', 'GuardianEmployer1', 'GuardianFullName2', 'GuardianEmployer2', 'Homeowner', 'HomeValue', 'AmountOwedOnHome','InformationSharingAllowedByGuardian');
+                $financial['tables']['Guardian'] = array('*');
                 $financial['where'] .= 'guardian.ApplicantId = ' . $applicant_id;
             }
             $agreements['tables']['Agreements'] = array('ApplicantHaveRead','ApplicantDueDate','ApplicantDocsReq','ApplicantReporting','GuardianHaveRead','GuardianDueDate','GuardianDocsReq','GuardianReporting');
@@ -810,6 +810,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                 $result_array = $this->queries->get_result_set(${$query});
                 $results[$query] = $result_array[0];
             }
+            ts_data($results);
 
             $docs['tables']['Attachment'] = array('AttachmentId','AttachmentTypeId','FilePath');
             $docs['where'] = 'attachment.ApplicantID = '.$applicant_id;
