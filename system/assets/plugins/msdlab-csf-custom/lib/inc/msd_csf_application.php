@@ -481,7 +481,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             }
                         });";
                                 $ret['hdrFinancialInfo'] = $this->form->section_header('hdrFinancialInfo', 'Student Guardianship and Financial Information');
-                                $ret['SingleParent'] = $this->form->field_boolean('SingleParent', strlen($result->GuardianFullName2 < 1), "Is this a single parent household?",null, array('required', 'col-md-12'));
+                                $ret['SingleParent'] = $this->form->field_boolean('SingleParent', strlen($result->GuardianFullName2) < 1, "Is this a single parent household?",null, array('required', 'col-md-12'));
                                 $ret['Guardian_CPSPublicSchools'] = $this->form->field_boolean('Guardian_CPSPublicSchools', $result->CPSPublicSchools?$result->CPSPublicSchools:0, "Is either of your parents employed by Cincinnati Public Schools?",null, array('required', 'col-md-12'));
                                 $ret['Guardian_ApplicantId'] = $this->form->field_hidden("Guardian_ApplicantId", $applicant_id);
                                 $ret['Guardian_GuardianFullName1'] = $this->form->field_textfield('Guardian_GuardianFullName1', $result->GuardianFullName1 ? $result->GuardianFullName1 : null, "First Guardian Full Name",null,array('minlength' => '2', 'required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
@@ -822,7 +822,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
             $ret['hdrPersInfo'] = $this->form->section_header('hdrPersInfo', 'Personal Information');
             $ret[] = '<div class="row">';
             $ret['form_page_number'] = $this->form->field_utility('form_page_number', 6);
-            $ret['Applicant_AcademicYear'] = $this->form->field_result("Applicant_AcademicYear", $results['personal']->AcademicYear ? $results['personal']->AcademicYear:null, 'Academic Year';
+            $ret['Applicant_AcademicYear'] = $this->form->field_result("Applicant_AcademicYear", $results['personal']->AcademicYear ? $results['personal']->AcademicYear:null, 'Academic Year');
             $ret['Applicant_FirstName'] = $this->form->field_result('Applicant_FirstName', $results['personal']->FirstName ? $results['personal']->FirstName : null, 'First Name', array('required', 'col-md-5', 'col-sm-12'));
             $ret['Applicant_MiddleInitial'] = $this->form->field_result('Applicant_MiddleInitial', $results['personal']->MiddleInitial ? $results['personal']->MiddleInitial : null, 'Middle Initial', array('col-md-2', 'col-sm-12'));
             $ret['Applicant_LastName'] = $this->form->field_result('Applicant_LastName', $results['personal']->LastName ? $results['personal']->LastName : null, 'Last Name', array('required', 'col-md-5', 'col-sm-12'));
@@ -898,7 +898,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                 $ret['Guardian_GuardianFullName2'] = $this->form->field_result('Guardian_GuardianFullName2', $results['financial']->GuardianFullName2 ? $results['financial']->GuardianFullName2 : null, "Second Guardian Full Name", array('col-md-6', 'col-sm-12'));
                 $ret['Guardian_GuardianEmployer2'] = $this->form->field_result('Guardian_GuardianEmployer2', $results['financial']->GuardianEmployer2 ? $results['financial']->GuardianEmployer2 : null, "Place of Employment", array('col-md-6', 'col-sm-12'));
 
-                $ret['Applicant_EmployerId'] = $this->form->field_result()
+                $ret['Applicant_EmployerId'] = $this->form->field_result('Applicant_EmployerId', $results['personal']->EmployerId ? $this->queries->get_employer_by_id($results['personal']->EmployerId) : '', 'Applicant Employer',  array('required', 'col-md-6', 'col-sm-12'));
                 $ret['Applicant_Employer'] = $this->form->field_result('Applicant_Employer', $results['personal']->Employer ? $results['personal']->Employer : null, "Applicant Employer", array('col-md-6', 'col-sm-12'));
                 $ret['Applicant_Calipari'] = $this->form->field_result('Applicant_Calipari',$results['applicant']->Calipari ? 'YES' : 'NO', 'Have you or any member of your immediate family every worked or played for Coach John Calipari?',array('col-md-12'));
 
