@@ -46,6 +46,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
             add_filter('nav_menu_item_title',array(&$this,'menu_item_title'),10,4);
             add_filter('genesis_post_title_text',array(&$this,'page_title'),10,4);
 
+
             //Shortcodes
             add_shortcode('application', array(&$this,'application_shortcode_handler'));
 
@@ -373,7 +374,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $ret['Applicant_MajorId'] = $this->form->field_select('Applicant_MajorId', $result->MajorId ? $result->MajorId : 5122, 'Intended Major (If Uncertain, select Undecided)', null, $this->major_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
 
                             $ret['OtherWrapOpen'] = '<div class="otherwrap">';
-                            $ret['Applicant_OtherSchool'] = $this->form->field_textfield('Applicant_OtherSchool', $result->OtherSchool?$result->OtherSchool:'','Name of Unlisted Institution',null, array('text'=>true),array('col-sm-12','required')); //how are we handling "other" in the new DB?
+                            $ret['Applicant_OtherSchool'] = $this->form->field_textfield('Applicant_OtherSchool', $result->OtherSchool?$result->OtherSchool:'','Name of Unlisted Institution',null, array('text'=>true),array('col-sm-12')); //how are we handling "other" in the new DB?
                             $ret['OtherWrapClose'] = '</div>';
                             $ret['Applicant_EducationAttainmentId'] = $this->form->field_select("Applicant_EducationAttainmentId", $result->EducationAttainmentId ? $result->EducationAttainmentId : null, "Year in School Fall Semester, ".date("Y"), array('option' => 'Select', 'value' => '5'), $this->educationalattainment_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
                             $ret['Applicant_FirstGenerationStudent'] = $this->form->field_boolean('Applicant_FirstGenerationStudent', $result->FirstGenerationStudent ? $result->FirstGenerationStudent : 0, 'Are you the first person in your family to attend college?', null, array('col-md-6', 'col-sm-12'));
@@ -449,7 +450,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                                 $ret['ApplicantFinancial_SpouseEmployerId'] = $this->form->field_select('ApplicantFinancial_SpouseEmployerId', $result->SpouseEmployerId ? $result->SpouseEmployerId : null, "Place of Employment",null, $this->employer_array ,null, array('required', 'col-md-6', 'col-sm-12'));
                                 $ret['ApplicantFinancial_SpouseEmployer'] = $this->form->field_textfield('ApplicantFinancial_SpouseEmployer', $result->SpouseEmployer ? $result->SpouseEmployer : null, "Other Employer",null,null, array('col-md-6', 'col-sm-12'));
                                 $ret['ApplicantFinancial_SpouseIncome'] = $this->form->field_textfield('ApplicantFinancial_SpouseIncome', $result->SpouseIncome ? $result->SpouseIncome : null, "Spouse Annual Income",'00,000', array('type' => 'number'), array('col-md-6', 'col-sm-12'));
-                                $ret['Applicant_Calipari'] = $this->form->field_boolean('Applicant_Calipari',$result->Calipari?$result->Calipari:0,'Have you or any member of your immediate family every worked or played for Coach John Calipari?',null, array('col-md-6', 'col-sm-12'));
+                                $ret['Applicant_Calipari'] = $this->form->field_boolean('Applicant_Calipari',$result->Calipari?$result->Calipari:0,'Have you or any member of your immediate family ever worked or played for Coach John Calipari?',null, array('col-md-6', 'col-sm-12'));
 
                                 $ret['ApplicantFinancial_Homeowner'] = $this->form->field_boolean('ApplicantFinancial_Homeowner', $result->Homeowner ? $result->Homeowner : 0, "Is the applicant a homeowner?",null, array('required', 'col-md-12'));
                                 $ret[] = '<div class="switchable">';
@@ -498,7 +499,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                                 $ret[] = '</div>';
                                 $ret[] = '<div style="clear:both;">';
                                 $ret['Applicant_Employer'] = $this->form->field_textfield('Applicant_Employer', $result->Employer ? $result->Employer : null, "Applicant Employer",null,null, array('col-md-6', 'col-sm-12'));
-                                $ret['Applicant_Calipari'] = $this->form->field_boolean('Applicant_Calipari',$result->Calipari?$result->Calipari:0,'Have you or any member of your immediate family every worked or played for Coach John Calipari?',null, array('col-md-6', 'col-sm-12'));
+                                $ret['Applicant_Calipari'] = $this->form->field_boolean('Applicant_Calipari',$result->Calipari?$result->Calipari:0,'Have you or any member of your immediate family ever worked or played for Coach John Calipari?',null, array('col-md-6', 'col-sm-12'));
                                 $ret[] = '</div>';
                                 //property
                                 $ret['Guardian_Homeowner'] = $this->form->field_boolean('Guardian_Homeowner', $result->Homeowner ? $result->Homeowner : 0, "Do the applicant's parents own their home?",null, array('required', 'col-md-12'));
@@ -508,7 +509,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                                 $ret[] = '</div>';
                             }
                             //hardships
-                            $ret['Applicant_HardshipNote'] = $this->form->field_textarea('Applicant_HardshipNote', $result->HardshipNote ? $result->HardshipNote : null, "Please use this space to describe how you overcame hardships (family environment, health issues, or physical challenges, etc.) to pursue your education and a college degree.  <strong>PLEASE DO NOT USE THIS SPACE FOR AN ESSAY. THIS IS FOR A HARDSHIP STATEMENT ONLY.</strong> You may upload an essay at the end of this application. ",null,array('col-md-12'));
+                            $ret['Applicant_HardshipNote'] = $this->form->field_textarea_simple('Applicant_HardshipNote', $result->HardshipNote ? $result->HardshipNote : null, "Please use this space to describe how you overcame hardships (family environment, health issues, or physical challenges, etc.) to pursue your education and a college degree.  <strong>PLEASE DO NOT USE THIS SPACE FOR AN ESSAY. THIS IS FOR A HARDSHIP STATEMENT ONLY. MAX 500 CHARACTERS.</strong> If additional space is needed, you may mail or email your story to the Cincinnati Scholarship Foundation. You may upload an essay at the end of this application. ",array('maxlength' => '500'),array('col-md-12'));
 
                             break;
                         case 5:
@@ -876,7 +877,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
 
                 $ret['ApplicantFinancial_SpouseEmployer'] = $this->form->field_result('ApplicantFinancial_SpouseEmployer', $results['financial']->SpouseEmployer ? $results['financial']->SpouseEmployer : null, "Spouse Other Employer", array('col-md-6', 'col-sm-12'));
                 $ret['ApplicantFinancial_SpouseIncome'] = $this->form->field_result('ApplicantFinancial_SpouseIncome', $results['financial']->SpouseIncome ? $results['financial']->SpouseIncome : null, "Spouse Annual Income",array('col-md-6', 'col-sm-12'));
-                $ret['Applicant_Calipari'] = $this->form->field_result('Applicant_Calipari',$results['applicant']->Calipari ? 'YES' : 'NO', 'Have you or any member of your immediate family every worked or played for Coach John Calipari?',array('col-md-12'));
+                $ret['Applicant_Calipari'] = $this->form->field_result('Applicant_Calipari',$results['applicant']->Calipari ? 'YES' : 'NO', 'Have you or any member of your immediate family ever worked or played for Coach John Calipari?',array('col-md-12'));
                 $ret['ApplicantFinancial_Homeowner'] = $this->form->field_result('ApplicantFinancial_Homeowner', $results['financial']->Homeowner ? 'YES' : 'NO', "Is the applicant a homeowner?", array('required', 'col-md-12'));
                 if($results['financial']->Homeowner) {
                     $ret['ApplicantFinancial_HomeValue'] = $this->form->field_result('ApplicantFinancial_HomeValue', $results['financial']->HomeValue ? $results['financial']->HomeValue : null, "Current Value",  array('col-md-6', 'col-sm-12'));
@@ -901,7 +902,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
 
                 $ret['Applicant_EmployerId'] = $this->form->field_result('Applicant_EmployerId', $results['personal']->EmployerId ? $this->queries->get_employer_by_id($results['personal']->EmployerId) : '', 'Applicant Employer',  array('required', 'col-md-6', 'col-sm-12'));
                 $ret['Applicant_Employer'] = $this->form->field_result('Applicant_Employer', $results['personal']->Employer ? $results['personal']->Employer : null, "Applicant Employer", array('col-md-6', 'col-sm-12'));
-                $ret['Applicant_Calipari'] = $this->form->field_result('Applicant_Calipari',$results['applicant']->Calipari ? 'YES' : 'NO', 'Have you or any member of your immediate family every worked or played for Coach John Calipari?',array('col-md-12'));
+                $ret['Applicant_Calipari'] = $this->form->field_result('Applicant_Calipari',$results['applicant']->Calipari ? 'YES' : 'NO', 'Have you or any member of your immediate family ever worked or played for Coach John Calipari?',array('col-md-12'));
 
                 //property
                 $ret['Guardian_Homeowner'] = $this->form->field_result('Guardian_Homeowner', $results['financial']->Homeowner ? 'YES' : 'NO', "Do the applicant's parents own their home?",array('required', 'col-md-12'));
@@ -1076,7 +1077,6 @@ if (!class_exists('MSDLab_CSF_Application')) {
                 //error_log('Error updating submission date');
             }
         }
-
 
         //util
         private function set_form_select_options(){

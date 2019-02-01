@@ -157,7 +157,7 @@ class MSDLAB_FormControls{
         }
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input" class="textarea-label">'.$title.'</label>');
         ob_start();
-        wp_editor( stripcslashes($value), $id.'_input', array('media_buttons' => false,'teeny' => true,'textarea_rows' => 5) );
+        wp_editor( stripcslashes($value), $id.'_input', array('media_buttons' => false,'teeny' => true,'textarea_rows' => 5,) );
         $form_field = ob_get_clean();
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
@@ -170,7 +170,7 @@ class MSDLAB_FormControls{
             $value = $_POST[$id.'_input'];
         }
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$title.'</label>');
-        $form_field = '<textarea id="'.$id.'_input">'.stripcslashes($value).'</textarea>';
+        $form_field = '<textarea id="'.$id.'_input"'.$this->build_validation($validation).'>'.stripcslashes($value).'</textarea>';
         $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
