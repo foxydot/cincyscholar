@@ -41,6 +41,7 @@ class MSDLabClientCustom
         require_once(plugin_dir_path(__FILE__) . 'lib/inc/gravity-forms.php'); //some custom hooks for the donate and centennial bit
         require_once(plugin_dir_path(__FILE__) . 'lib/inc/force-password-change.php'); //this was specific for the transfered renewal students. likely not needed for future use
         require_once(plugin_dir_path(__FILE__) . 'lib/inc/front-end-nav.php'); //this was specific for the transfered renewal students. likely not needed for future use
+        require_once(plugin_dir_path(__FILE__) . 'lib/inc/custom-language-in-wp.php'); //this was specific for the transfered renewal students. likely not needed for future use
 
 
         //add_action('widgets_init', @array($this,'widgets_init'));
