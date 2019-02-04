@@ -185,7 +185,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
         //meat
 
         function get_form($form_id,$options = array()){
-            global $current_user,$applicant_id,$user_id;
+            global $current_user,$applicant_id,$user_id,$csftitles;
             $defaults = array();
 
             //just in case
@@ -264,7 +264,11 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     //build the jquery
                     $jquery['prev'] = "$('#prevBtn_button').click(function(e){
                         e.preventDefault();
-                        $('#".$form_id." #form_page_next').val(".($form_page_number - 1).");
+                        if($(this).val() == 'Update Application'){
+                            $('#".$form_id." #form_page_next').val(1);
+                        } else {
+                            $('#".$form_id." #form_page_next').val(".($form_page_number - 1).");
+                        }
                         $('#".$form_id."').submit();
                     });";
                     //can I bypass save on back button? do I want to?
@@ -329,7 +333,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $ret['Applicant_CellPhone'] = $this->form->field_textfield('Applicant_CellPhone', $result->CellPhone ? $result->CellPhone : null, 'Mobile Phone Number', '(000)000-0000', array('required' => 'required', 'type' => 'tel'), array('required', 'col-md-6', 'col-sm-12'));
                             $ret['Applicant_AlternativePhone'] = $this->form->field_textfield('Applicant_AlternativePhone', $result->AlternativePhone ? $result->AlternativePhone : null, 'Alternative Phone Number', '(000)000-0000', array('type' => 'tel'), array('col-md-6', 'col-sm-12'));
                             //some optional fields
-                            $ret[] = '<hr class="col-md-12">';
+                            $ret[] = '<hr>';
                             $ret['disclaim'] = '<div>The Cincinnati Scholarship Foundation administers some scholarships that are restricted to members of a certain ethnic background or gender. While you are not required to supply this information, it may be to your advantage to do so.</div>';
                             $ret['Applicant_EthnicityId'] = $this->form->field_select('Applicant_EthnicityId', $result->EthnicityId ? $result->EthnicityId : null, 'Ethnicity', array('option' => 'Select', 'value' => '24'), $this->ethnicity_array, null, array('col-md-6', 'col-sm-12'));
                             $ret['Applicant_SexId'] = $this->form->field_radio('Applicant_SexId', $result->SexId ? $result->SexId : null, 'Gender', $this->sex_array, null, array('col-md-6', 'col-sm-12'));
@@ -383,7 +387,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $ret['Applicant_HighSchoolGraduationDate'] = $this->form->field_select('Applicant_HighSchoolGraduationDate', $result->HighSchoolGraduationDate ? $result->HighSchoolGraduationDate : date("Y").'-01-01', "Year of High School Graduation", array('value' => date("Y").'-01-01','option' => date("Y")), $this->gradyr_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
                             $ret['Applicant_HighSchoolGPA'] = $this->form->field_textfield('Applicant_HighSchoolGPA', $result->HighSchoolGPA ? $result->HighSchoolGPA : null, 'Most Current GPA', '0.00', array('required' => 'required', 'type' => 'number', 'minlength' => 1), array('required', 'col-md-6', 'col-sm-12'));
                             $ret['Applicant_PlayedHighSchoolSports'] = $this->form->field_boolean('Applicant_PlayedHighSchoolSports', $result->PlayedHighSchoolSports ? $result->PlayedHighSchoolSports : 0, 'Did you participate in sports while attending High School?');
-                            $ret['Applicant_Activities'] = $this->form->field_textarea('Applicant_Activities',$result->Activities ? $result->Activities : '',"Please list any activities participated in, with years active.",null,array('col-md-12'));
+                            $ret['Applicant_Activities'] = $this->form->field_textarea_simple('Applicant_Activities',$result->Activities ? $result->Activities : '',$csftitles->Activities,array('maxlength' => '500'),array('col-md-12'));
                             break;
                         case 3:
                             //determine independance
@@ -509,7 +513,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                                 $ret[] = '</div>';
                             }
                             //hardships
-                            $ret['Applicant_HardshipNote'] = $this->form->field_textarea_simple('Applicant_HardshipNote', $result->HardshipNote ? $result->HardshipNote : null, "Please use this space to describe how you overcame hardships (family environment, health issues, or physical challenges, etc.) to pursue your education and a college degree.  <strong>PLEASE DO NOT USE THIS SPACE FOR AN ESSAY. THIS IS FOR A HARDSHIP STATEMENT ONLY. MAX 500 CHARACTERS.</strong> If additional space is needed, you may mail or email your story to the Cincinnati Scholarship Foundation. You may upload an essay at the end of this application. ",array('maxlength' => '500'),array('col-md-12'));
+                            $ret['Applicant_HardshipNote'] = $this->form->field_textarea_simple('Applicant_HardshipNote', $result->HardshipNote ? $result->HardshipNote : null, $csftitles->HardshipNote,array('maxlength' => '500'),array('col-md-12'));
 
                             break;
                         case 5:
@@ -783,7 +787,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
         }
 
         function get_the_user_application($applicant_id){
-            global $applicant_id;
+            global $applicant_id,$csftitles;
             if(current_user_can('review_application')) {
                 $adminview = true;
             }
@@ -862,7 +866,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
             $ret['Applicant_HighSchoolGraduationDate'] = $this->form->field_result('Applicant_HighSchoolGraduationDate', $results['personal']->HighSchoolGraduationDate ? date("Y",strtotime($results['personal']->HighSchoolGraduationDate)) : '', "Year of High School Graduation", array('required', 'col-md-6', 'col-sm-12'));
             $ret['Applicant_HighSchoolGPA'] = $this->form->field_result('Applicant_HighSchoolGPA', $results['personal']->HighSchoolGPA ? $results['personal']->HighSchoolGPA : null, 'HS Weighted GPA', array('required', 'col-md-6', 'col-sm-12'));
             $ret['Applicant_PlayedHighSchoolSports'] = $this->form->field_result('Applicant_PlayedHighSchoolSports', $results['personal']->PlayedHighSchoolSports ? 'YES' : 'NO', 'Did you participate in sports while attending High School?',array('col-md-6', 'col-sm-12'));
-            $ret['Applicant_Activities'] = $this->form->field_result('Applicant_Activities',$results['personal']->Activities ? $results['personal']->Activities : '',"Please list any activities participated in, with years active.",array('col-md-12'));
+            $ret['Applicant_Activities'] = $this->form->field_result('Applicant_Activities',$results['personal']->Activities ? $results['personal']->Activities : '',$csftitles->Activities,array('col-md-12'));
             $ret[] = '</div>';
 
             if ($this->queries->is_indy($applicant_id)) {
