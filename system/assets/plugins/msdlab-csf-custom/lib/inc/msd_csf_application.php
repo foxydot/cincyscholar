@@ -1074,6 +1074,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
 
             $notes[] = $result->Notes;
             $notes[] = '"Application started: '.$result->ApplicationDateTime.'"';
+            $notes[] = '"Application submitted: '.$time.'"';
 
             $sql = 'UPDATE applicant SET applicant.Notes = '.implode("\n",$notes).', applicant.ApplicationDateTime = "'.$time.'" WHERE applicant.ApplicantId = '.$applicant_id.';';
             $result = $wpdb->get_results($sql);
