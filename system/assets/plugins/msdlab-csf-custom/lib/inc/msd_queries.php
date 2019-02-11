@@ -1268,8 +1268,8 @@ class MSDLAB_Queries{
 
     function get_applicant_id($user_id){
         global $wpdb;
-        $sql = "SELECT ApplicantId FROM applicant WHERE UserId = ". $user_id;
-        //error_log($sql);
+        $sql = "SELECT ApplicantId FROM applicant WHERE UserId = ". $user_id ." ORDER BY AcademicYear DESC LIMIT 1;";
+        error_log($sql);
         $result = $wpdb->get_results($sql);
         return $result[0]->ApplicantId;
     }
@@ -1531,5 +1531,98 @@ class MSDLAB_Queries{
              }
          }
     }
+
+    function copy_application($applicant_id){
+         global $wpdb;
+         //get original application
+        $sql = "SELECT * FROM applicant WHERE applicant.ApplicantID = ".$applicant_id.";";
+        $applicant = $wpdb->get_results($sql);
+        foreach($applicant[0] AS $k => $v){
+            switch($k){
+                case 'ApplicantId':
+                case 'ApplicationDateTime':
+                    break;
+                case 'AcademicYear':
+                    $values[] = $k.' = '.date('Y');
+                    break;
+                case 'AppliedBefore':
+                    $values[] = $k.' = 1';
+                    break;
+                case 'ApplicationlLocked':
+                case 'InformationSharingAllowed':
+                case 'IsComplete':
+                case 'ResumeOK':
+                case 'TranscriptOK':
+                case 'FinancialAidOK':
+                case 'FAFSAOK':
+                    $values[] = $k.' = 0';
+                    break;
+                case 'HardshipNote':
+                case 'Notes':
+                case 'Signature':
+                    $values[] = $k.' = \'\'';
+                    break;
+                default:
+                    $values[] = $k.' = \''.$v.'\'';
+                    break;
+            }
+        }
+        $sql = "INSERT INTO applicant SET ".implode(',',$values).";";
+        $wpdb->query($sql);
+        $new_applicant_id = $wpdb->insert_id;
+        //copy applicant financial
+        $sql = "SELECT * FROM applicantfinancial WHERE applicantfinancial.ApplicantID = ".$applicant_id.";";
+        $applicantfinancial = $wpdb->get_results($sql);
+        foreach($applicantfinancial[0] AS $k => $v){
+            switch($k){
+                case 'FinancialId':
+                    break;
+                case 'ApplicantId':
+                    $values[] = $k.' = \''. $new_applicant_id .'\'';
+                    break;
+                default:
+                    $values[] = $k.' = \''.$v.'\'';
+                    break;
+            }
+        }
+        $sql = "INSERT INTO applicantfinancial SET ".implode(',',$values).";";
+        $wpdb->query($sql);
+
+        //copy applicantindependencequery
+        $sql = "SELECT * FROM applicantindependencequery WHERE applicantfinancial.ApplicantID = ".$applicant_id.";";
+        $applicantindependencequery = $wpdb->get_results($sql);
+        foreach($applicantindependencequery[0] AS $k => $v){
+            switch($k){
+                case 'ApplicantId':
+                    $values[] = $k.' = \''. $new_applicant_id .'\'';
+                    break;
+                default:
+                    $values[] = $k.' = \''.$v.'\'';
+                    break;
+            }
+        }
+        $sql = "INSERT INTO applicantindependencequery SET ".implode(',',$values).";";
+        $wpdb->query($sql);
+
+        //copy guardian
+        $sql = "SELECT * FROM guardian WHERE applicantfinancial.ApplicantID = ".$applicant_id.";";
+        $guardian = $wpdb->get_results($sql);
+        foreach($guardian[0] AS $k => $v){
+            switch($k){
+                case 'GuardianId':
+                    break;
+                case 'ApplicantId':
+                    $values[] = $k.' = \''. $new_applicant_id .'\'';
+                    break;
+                default:
+                    $values[] = $k.' = \''.$v.'\'';
+                    break;
+            }
+        }
+        $sql = "INSERT INTO guardian SET ".implode(',',$values).";";
+        $wpdb->query($sql);
+
+        return $new_applicant_id;
+        }
 
 }

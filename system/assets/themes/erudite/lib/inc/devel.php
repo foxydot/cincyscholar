@@ -13,6 +13,16 @@ if(!function_exists('ts_data')){
         }
     }
 }
+
+if(!function_exists('ts_data_clear')){
+    function ts_data_clear($data){
+        $current_user = wp_get_current_user();
+        $ret = '<textarea class="troubleshoot" rows="20" cols="100">';
+        $ret .= print_r($data,true);
+        $ret .= '</textarea>';
+            print $ret;
+    }
+}
 /*
 * A useful troubleshooting function. Dumps variable info in an easy to follow format in a textarea.
 */
