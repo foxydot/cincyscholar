@@ -206,7 +206,6 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     //first check if the application is "locked"
                     $testwhere = $applicant_id > 0 ? 'applicant.ApplicantId = ' . $applicant_id : 'applicant.UserId = ' . $user_id;
                     $sql = "SELECT applicant.ApplicantId, applicant.ApplicationlLocked, applicant.AcademicYear FROM applicant WHERE ".$testwhere." ORDER BY applicant.AcademicYear DESC LIMIT 1;";
-                    ts_data_clear($sql);
                     global $wpdb;
                     $test = $wpdb->get_results($sql);
                     //if so, make a copy of the application and reload with that data
