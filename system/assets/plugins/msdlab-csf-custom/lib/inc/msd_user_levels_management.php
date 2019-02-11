@@ -75,6 +75,7 @@ if (!class_exists('MSDLab_User_Levels_Management')) {
             add_role('rejection','Student Non-awardee', $caps->rejection);
             add_role('applicant','Student Applicant', $caps->applicant);
             add_role('awardee','Student Awardee', $caps->awardee);
+            add_role('nonrenewable','Non-Renewable Awardee', $caps->nonrenewable);
             add_role('renewal','Student Awardee Renewing', $caps->renewal);
             add_role('donor','Donor', $caps->donor);
             add_role('scholarship','Scholarship Committee', $caps->scholarship);
@@ -83,7 +84,7 @@ if (!class_exists('MSDLab_User_Levels_Management')) {
 
         function unregister_user_levels(){
             //Remove Available Roles for CSF
-            $roles = array('rejection','applicant','awardee','renewal','donor','scholarship','csf');
+            $roles = array('rejection','applicant','nonrenewable','awardee','renewal','donor','scholarship','csf');
             foreach($roles AS $role){
                 remove_role($role);
             }
@@ -124,7 +125,7 @@ if (!class_exists('MSDLab_User_Levels_Management')) {
 if(!class_exists('MSDLab_Capabilites')){
     class MSDLab_Capabilites{
         function __construct(){
-            $roles = array('subscriber','rejection','applicant','awardee','renewal','donor','scholarship','csf','administrator');
+            $roles = array('subscriber','rejection','applicant','nonrenewable','awardee','renewal','donor','scholarship','csf','administrator');
             foreach($roles as $role){
                 $this->{$role} = $this->get_my_caps($role);
             }
@@ -234,8 +235,9 @@ if(!class_exists('MSDLab_Capabilites')){
                     case 'renewal':
                         $allcaps['view_renewal_process'] = true;
                     case 'awardee':
-                        $allcaps['view_award'] = true;
                         $allcaps['submit_renewal'] = true;
+                    case 'nonrenewable':
+                        $allcaps['view_award'] = true;
                     case 'applicant':
                     case 'rejection':
                         $allcaps['view_application_process'] = true;

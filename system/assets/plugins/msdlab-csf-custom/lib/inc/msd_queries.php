@@ -346,6 +346,7 @@ class MSDLAB_Queries{
                          $sql = 'UPDATE ' . $table . ' SET ' . implode(', ', $data[$table][$key]) . ' WHERE AwardId = ' . $key . ';';
                      } else {
                          $sql = 'INSERT INTO ' . $table . ' SET ' . implode(', ', $data[$table][$key]) . ';';
+                         $this->update_user_role_award();
                      }
                      //error_log('update_sql: '.$sql);
                      $result = $wpdb->get_results($sql);
@@ -1514,6 +1515,20 @@ class MSDLAB_Queries{
              return (date('Y',$date) - 1);
          } else {
              return date('Y',$date);
+         }
+    }
+
+    function update_user_role_award(){
+         $user_id = $this->post_vars['UserId_input'];
+         $user = new WP_User($user_id);
+         $scholarship_id = $this->post_vars['ApplicantScholarship_ScholarshipId_new_input'];
+         $scholarship = $this->get_scholarship($scholarship_id);
+         if(!user_can($user,'view_award')) {
+             if ($scholarship->Renewable == 1) {
+                 $user->set_role('awardee');
+             } else {
+                 $user->set_role('nonrenewable');
+             }
          }
     }
 
