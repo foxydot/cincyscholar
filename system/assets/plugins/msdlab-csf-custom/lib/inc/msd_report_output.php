@@ -481,7 +481,7 @@ class MSDLAB_Report_Output{
             $ret['ApplicantScholarship_AmountActuallyAwarded_'.$s] = $this->form->field_textfield('ApplicantScholarship_AmountActuallyAwarded_'.$s, $scholarship->AmountActuallyAwarded ? $scholarship->AmountActuallyAwarded : null, 'Amount Actually Awarded', '', array('type' => 'number'), array('col-md-2', 'col-sm-12', 'currency'));
 
             $ret['ApplicantScholarship_DateAwarded_'.$s] = $this->form->field_date("ApplicantScholarship_DateAwarded_".$s, (strtotime($scholarship->DateAwarded) > 0) ? date("Y-m-d", strtotime($scholarship->DateAwarded)) : '', 'Date Awarded', array(), array('datepicker', 'col-md-3', 'col-sm-12'));
-            $ret['ApplicantScholarship_Renew_'.$s] = $this->form->field_boolean('ApplicantScholarship_Renew_'.$s, $scholarship->Renew ? $scholarship->Renew : 0, 'Renew', array(), array('col-md-2', 'col-sm-12'));
+            $ret['ApplicantScholarship_Renew_'.$s] = $this->form->field_boolean('ApplicantScholarship_Renew_'.$s, $scholarship->Renew ? $scholarship->Renew : 1, 'Renew', array(), array('col-md-2', 'col-sm-12'));
             $ret['ApplicantScholarship_ThankYou_'.$s] = $this->form->field_boolean('ApplicantScholarship_ThankYou_'.$s, $scholarship->ThankYou ? $scholarship->ThankYou : 0, 'Thank You', array(), array('col-md-2', 'col-sm-12'));
             $ret['ApplicantScholarship_Signed_'.$s] = $this->form->field_boolean('ApplicantScholarship_Signed_'.$s, $scholarship->Signed ? $scholarship->Signed : 0, 'Signed', array(), array('col-md-2', 'col-sm-12'));
             $ret[] = '<div class="gpas gpas-'.$s.'" style="clear:both;">';
