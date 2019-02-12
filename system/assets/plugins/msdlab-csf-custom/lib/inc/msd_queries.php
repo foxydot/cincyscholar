@@ -1262,6 +1262,7 @@ class MSDLAB_Queries{
         global $current_user,$applicant_id,$wpdb;
         if(!$applicant_id){$applicant_id = $this->get_applicant_id($current_user->ID);}
         $sql = "SELECT * FROM applicationprocess WHERE applicationprocess.ApplicantId = ".$applicant_id ." ORDER BY applicationprocess.ProcessStepId DESC";
+        error_log($sql);
         $result = $wpdb->get_results($sql);
         return $result[0]->ProcessStepId;
     }
@@ -1560,10 +1561,10 @@ class MSDLAB_Queries{
                 case 'HardshipNote':
                 case 'Notes':
                 case 'Signature':
-                    $values[] = $k.' = \'\'';
+                    $values[] = $wpdb->prepare("$k = %s",array(''));
                     break;
                 default:
-                    $values[] = $k.' = \''.$v.'\'';
+                    $values[] = $wpdb->prepare("$k = %s",array($v));
                     break;
             }
         }
@@ -1578,26 +1579,26 @@ class MSDLAB_Queries{
                 case 'FinancialId':
                     break;
                 case 'ApplicantId':
-                    $values[] = $k.' = \''. $new_applicant_id .'\'';
+                    $values[] = $k.' = '. $new_applicant_id ;
                     break;
                 default:
-                    $values[] = $k.' = \''.$v.'\'';
+                    $values[] = $wpdb->prepare("$k = %s",array($v));
                     break;
             }
         }
+
         $sql = "INSERT INTO applicantfinancial SET ".implode(',',$values).";";
         $wpdb->query($sql);
-
         //copy applicantindependencequery
         $sql = "SELECT * FROM applicantindependencequery WHERE applicantfinancial.ApplicantID = ".$applicant_id.";";
         $applicantindependencequery = $wpdb->get_results($sql);
         foreach($applicantindependencequery[0] AS $k => $v){
             switch($k){
                 case 'ApplicantId':
-                    $values[] = $k.' = \''. $new_applicant_id .'\'';
+                    $values[] = $k.' = '. $new_applicant_id;
                     break;
                 default:
-                    $values[] = $k.' = \''.$v.'\'';
+                    $values[] = $wpdb->prepare("$k = %s",array($v));
                     break;
             }
         }
@@ -1612,10 +1613,10 @@ class MSDLAB_Queries{
                 case 'GuardianId':
                     break;
                 case 'ApplicantId':
-                    $values[] = $k.' = \''. $new_applicant_id .'\'';
+                    $values[] = $k.' = '. $new_applicant_id;
                     break;
                 default:
-                    $values[] = $k.' = \''.$v.'\'';
+                    $values[] = $wpdb->prepare("$k = %s",array($v));
                     break;
             }
         }
