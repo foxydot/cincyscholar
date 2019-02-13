@@ -56,6 +56,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_move_temp_payments_to_payments', array(&$this,'move_temp_payments_to_payments') );
             add_action( 'wp_ajax_update_awarded_users', array(&$this,'update_awarded_users') );
             add_action( 'wp_ajax_update_academic_year_columns', array(&$this,'update_academic_year_columns') );
+            add_action( 'wp_ajax_create_renewal_users_from_paper_applicant_list', array(&$this,'create_renewal_users_from_paper_applicant_list') );
 
 
             add_filter('send_password_change_email',array(&$this,'return_false'));
@@ -900,6 +901,78 @@ VALUES
                 print "ApplicantScholarship Updated";
             }
         }
+
+
+        function create_renewal_users_from_paper_applicant_list(){
+            global $wpdb;
+            $sql = "SELECT * FROM z_paper_applicant_list";
+
+            $students = $wpdb->get_results($sql);
+            add_filter('send_password_change_email',array(&$this,'return_false'));
+            add_filter('send_email_change_email',array(&$this,'return_false'));
+            //return ts_data($students,0);
+            foreach($students AS $student){
+                $user = get_user_by('email',$student->Email);
+                if(!$user) {
+                    $sql = 'SELECT UserId FROM applicant WHERE LastName = "'.$student->LastName.'" AND FirstName = "'.$student->FirstName.'";';
+                    if($res = $wpdb->get_results($sql)){
+                        $user = get_user_by('ID',$res[0]->UserId);
+                    }
+                    if(!$user){
+                        $user = get_user_by('login',sanitize_title_with_dashes(strtolower($student->FirstName . '_' . $student->LastName)));
+                    }
+                }
+                if($user){
+                    $user_id = $user->ID;
+                    $sql = 'UPDATE z_paper_applicant_list SET UserId = '.$user->ID.', Permissions = "'.implode(',',$user->roles).'" WHERE id = "'.$student->id.'";';
+                    if($wpdb->get_results($sql)){
+                        print $user->display_name .' <br>';
+                    }
+                    if($student->Email != $user->user_email){
+                        wp_update_user(array('ID' => $user->ID,'user_email' => $student->Email, 'role' => 'awardee'));
+                    } else {
+                        wp_update_user(array('ID' => $user->ID, 'role' => 'awardee'));
+
+                    }
+                } else { //there is still not a user! Create One.
+                    $pwd = $this->random_str();
+                    $args = array(
+                        'first_name' => $student->FirstName,
+                        'last_name' => $student->LastName,
+                        'user_login' => sanitize_title_with_dashes(strtolower($student->FirstName . '_' . $student->LastName)),
+                        'user_email' => $student->Email, //doublecheck that no one is actually going to get emailed.
+                        'role' => 'awardee',
+                        'user_pass' => $pwd,
+                    );
+                    $user_id = wp_insert_user($args);
+                    if(is_wp_error($user_id)){
+                        ts_data($user_id);
+                        continue;
+                    }
+                    $sql = 'UPDATE z_paper_applicant_list SET UserId = '.$user_id.', TempPwd = "'.$pwd.'" WHERE id = "'.$student->id.'";';
+                    if($wpdb->query($sql)){
+                        print $user->display_name .':';
+                    }
+                }
+                //attach to an application. if there is no application, create one.
+                $applicant = $this->queries->get_applicant_id($user_id);
+                if(!$applicant){
+                    $sql = 'INSERT INTO applicant SET applicant.ApplicationDateTime = "2017-04-16 21:32:33", applicant.UserId = "'.$user_id.'", applicant.Email = "'.$student->Email.'", applicant.FirstName = "'.$student->FirstName.'", applicant.MiddleInitial = "", applicant.LastName = "'.$student->LastName.'", applicant.Last4SSN = "0000", applicant.DateOfBirth = "'.$student->DOB.'", applicant.Address1 = "Unknown", applicant.Address2 = "", applicant.City = "Unknown", applicant.StateId = "OH", applicant.CountyId = "24", applicant.ZipCode = "00000", applicant.CellPhone = "unknown", applicant.AlternativePhone = "", applicant.EthnicityId = "24", applicant.StudentId = "'.$student->StudentId.'";';
+                    $wpdb->query($sql);
+                    $applicant_id = $wpdb->insert_id;
+                    $sql = 'UPDATE z_paper_applicant_list SET ApplicantId = "'.$applicant_id.'" WHERE id = "'.$student->id.'";';
+                    if($wpdb->query($sql)){
+                        print ' Application '.$applicant_id.' created <br>';
+                    }
+                    $sql = 'SELECT * FROM applicantcollege WHERE applicantcollege.ApplicantId = "'.$applicant_id.'";';
+                    $test = $wpdb->get_results($sql);
+                    if(count($test) == 0){
+                        $sql = 'INSERT INTO applicantcollege SET applicantcollege.ApplicantId = "'.$applicant_id.'", applicantcollege.CollegeId = "343";';
+                        $wpdb->query($sql);
+                    }
+                }
+            }
+        }
         
         //utility
         function settings_page()
@@ -1282,6 +1355,15 @@ VALUES
                             console.log(response);
                         });
                     });
+                    $('.create_renewal_users_from_paper_applicant_list').click(function(){
+                        var data = {
+                            action: 'create_renewal_users_from_paper_applicant_list',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
 
             </script>
@@ -1368,6 +1450,8 @@ VALUES
 
                     <dt>update_academic_year_columns:</dt>
                     <dd><button class="update_academic_year_columns">Go</button></dd>
+                    <dt>create_renewal_users_from_paper_applicant_list:</dt>
+                    <dd><button class="create_renewal_users_from_paper_applicant_list">Go</button></dd>
                 </dl>
                 <div class="response1"></div>
             </div>
