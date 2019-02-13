@@ -26,8 +26,11 @@ if (count($scholarships) > 0) {
     }
     $linkstrip = implode(' | ', $links);
     foreach ($scholarships AS $scholarship) {
-        $cell['scholarship_name'] = '<span id="scholarships-' . substr($scholarship->Name, 0, 1) . '"><stong>' . $scholarship->Name . '</stong></span><br />
-Fund: '. $funds[$scholarship->FundId] . '<br />';
+        $renewable = $scholarship->Renewable == 1?'YES':'NO';
+        $cell['scholarship_name'] = '<span id="scholarships-' . substr($scholarship->Name, 0, 1) . '"><strong>' . $scholarship->Name . '</strong></span><br />
+Fund: '. $funds[$scholarship->FundId] . '<br />
+Renewable: '.$renewable.'<br />
+Expires: '.$scholarship->Expiration.'<br />';
         $cell['edit'] = '<a href="admin.php?page=scholarship-edit&scholarship_id=' . $scholarship->ScholarshipId . '" class="button">Edit Scholarship</a>';
         $cell['recommends'] = '<a href="admin.php?page=scholarship-recommends&scholarship_id=' . $scholarship->ScholarshipId . '" class="button">View recommended students</a>';
 
