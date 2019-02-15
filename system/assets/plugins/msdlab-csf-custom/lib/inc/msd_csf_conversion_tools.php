@@ -428,7 +428,7 @@ beth@cincinnatischolarshipfoundation.org<br/>
 <a href = "http://cincinnatischolarshipfoundation.org">www.cincinnatischolarshipfoundation.org</a>
 </p>
 ';
-            $sql = "SELECT `Email`,`FirstName`,`LastName`,`TempPwd` FROM z_paper_applicant_list WHERE id = 680;";
+            $sql = "SELECT `Email`,`FirstName`,`LastName`,`TempPwd` FROM z_paper_applicant_list;";
             $results = $wpdb->get_results($sql);
             foreach ($results AS $r){
                 $to = $r->FirstName.' '.$r->LastName.' <'.$r->Email.'>';
