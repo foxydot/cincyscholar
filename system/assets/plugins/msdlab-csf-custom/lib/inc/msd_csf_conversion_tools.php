@@ -1429,8 +1429,6 @@ VALUES
                     <dd><button class="move_collegeid">Go</button></dd>
                     <dt>Add renewal to attachment table:</dt>
                     <dd><button class="add_renewal_to_attachment_table">Go</button></dd>
-                    <dt>Send renewal emails:</dt>
-                    <dd><button class="send_renewal_emails">Go</button></dd>
                     <dt>Fix up renewal attachments:</dt>
                     <dd><button class="fix_up_renewal_attachments">Go</button></dd>
                     <dt>Update unpublishable tables:</dt>
@@ -1487,6 +1485,9 @@ VALUES
                     <dd><button class="update_academic_year_columns">Go</button></dd>
                     <dt>create_renewal_users_from_paper_applicant_list:</dt>
                     <dd><button class="create_renewal_users_from_paper_applicant_list">Go</button></dd>
+
+                    <dt>Send renewal emails:</dt>
+                    <dd><button class="send_renewal_emails">Go</button></dd>
                 </dl>
                 <div class="response1"></div>
             </div>
