@@ -398,13 +398,13 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
 
         function send_renewal_emails(){
             global $wpdb;
-            $subject = 'Your application to renew your scholarship is now available!';
+            $subject = 'An account has been prepared for you on CincinnatiScholarshipFooundation.org';
             $headers[] = 'From: Elizabeth Collins <beth@cincinnatischolarshipfoundation.org>';
             $headers[] = 'Content-Type: text/html; charset=UTF-8';
             $headers[] = 'Bcc: beth@cincinnatischolarshipfoundation.org';
 
             $email_str = '
-            <p>Your application to renew your scholarship is now available.  To begin the process, an account has been created for you. Please surf to <a href = "http://cincinnatischolarshipfoundation.org">http://cincinnatischolarshipfoundation.org</a>, click the Login/Register button, and login with the following information:</p>
+            <p>An account has been created for you. Please surf to <a href = "http://cincinnatischolarshipfoundation.org">http://cincinnatischolarshipfoundation.org</a>, click the Login/Register button, and login with the following information:</p>
  <p>
 email: [[email]]<br/>
 password: [[TempPwd]]
@@ -428,16 +428,14 @@ beth@cincinnatischolarshipfoundation.org<br/>
 <a href = "http://cincinnatischolarshipfoundation.org">www.cincinnatischolarshipfoundation.org</a>
 </p>
 ';
-            //$sql = "SELECT `email`,`FirstName`,`LastName`,`TempPwd` FROM temp_emails WHERE `id` NOT IN (54,55,62,63,64,76,77,128,129,211,212,242,243,303,304,352,353,365,366,513,514,544,545);";
-            //$sql = "SELECT `email`,`FirstName`,`LastName`,`TempPwd` FROM temp_emails WHERE `id` IN (54,55,62,63,64,76,77,128,211,242,243,303,304,352,353,365,366,513,514,544,545,748);";
-            $sql = "SELECT `email`,`FirstName`,`LastName`,`TempPwd` FROM temp_emails WHERE `id` IN (242,243);";
+            $sql = "SELECT `Email`,`FirstName`,`LastName`,`TempPwd` FROM z_paper_applicant_list WHERE id = 680;";
             $results = $wpdb->get_results($sql);
             foreach ($results AS $r){
-                $to = $r->FirstName.' '.$r->LastName.' <'.$r->email.'>';
+                $to = $r->FirstName.' '.$r->LastName.' <'.$r->Email.'>';
 
                 $temppwd = is_null($r->TempPwd)?'Please use the "forgot password" system to retrieve your password.':$r->TempPwd;
                 $pattern = array('/\[\[email\]\]/','/\[\[TempPwd\]\]/');
-                $replacement = array($r->email,$temppwd);
+                $replacement = array($r->Email,$temppwd);
                 $message = preg_replace($pattern,$replacement,$email_str);
 
 
@@ -904,6 +902,43 @@ VALUES
 
 
         function create_renewal_users_from_paper_applicant_list(){
+            /**
+             * NOTE: The paper applicant list comes from
+             *
+             * Create a temp DB for Beth's list
+             * CREATE TABLE `z_renewals1819` (
+            `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+            `LastName` varchar(255) DEFAULT NULL,
+            `FirstName` varchar(255) DEFAULT NULL,
+            `Email` varchar(255) DEFAULT NULL,
+            `UserId` int(11) DEFAULT NULL,
+            `ApplicantId` int(11) DEFAULT NULL,
+            `RenewalId` int(11) DEFAULT NULL,
+            PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB AUTO_INCREMENT=764 DEFAULT CHARSET=utf8;
+             *
+             * Now import her CSV and then run:
+             *
+            UPDATE z_renewals1819 SET UserId = (SELECT UserId FROM applicant WHERE applicant.Email = z_renewals1819.Email LIMIT 1);
+            UPDATE z_renewals1819 SET ApplicantId = (SELECT ApplicantId FROM applicant WHERE applicant.Email = z_renewals1819.Email LIMIT 1);
+
+            UPDATE z_renewals1819 SET UserId = (SELECT UserId FROM renewal WHERE renewal.Email = z_renewals1819.Email LIMIT 1) WHERE UserId IS NULL;
+            UPDATE z_renewals1819 SET ApplicantId = (SELECT ApplicantId FROM renewal WHERE renewal.Email = z_renewals1819.Email LIMIT 1) WHERE ApplicantId IS NULL;
+            UPDATE z_renewals1819 SET RenewalId = (SELECT RenewalId FROM renewal WHERE renewal.Email = z_renewals1819.Email LIMIT 1) WHERE RenewalId IS NULL;
+
+            UPDATE z_renewals1819 SET UserId = (SELECT ID FROM fdn_users WHERE fdn_users.user_email = z_renewals1819.Email LIMIT 1) WHERE UserId IS NULL;
+            UPDATE z_renewals1819 SET ApplicantId = (SELECT ApplicantId FROM applicant WHERE applicant.UserId = z_renewals1819.UserId LIMIT 1) WHERE ApplicantId IS NULL;
+
+            UPDATE z_renewals1819 SET UserId = (SELECT UserId FROM applicant WHERE applicant.FirstName = z_renewals1819.FirstName AND applicant.LastName = z_renewals1819.LastName LIMIT 1) WHERE UserId IS NULL;
+            UPDATE z_renewals1819 SET ApplicantId = (SELECT ApplicantId FROM applicant WHERE applicant.FirstName = z_renewals1819.FirstName AND applicant.LastName = z_renewals1819.LastName LIMIT 1) WHERE ApplicantId IS NULL;
+             *
+             * This will check for exisiting users/applications
+             *
+             * Now create z_paper_applicant_list by duplicating the above structure and importing hte result of the following query:
+             * SELECT * FROM `z_renewals1819` WHERE UserId IS NULL;
+             *
+             * THEN run this to create users. After this, re-running the test queries should result in a ZERO result.
+             */
             global $wpdb;
             $sql = "SELECT * FROM z_paper_applicant_list";
 
@@ -949,7 +984,7 @@ VALUES
                         ts_data($user_id);
                         continue;
                     }
-                    $sql = 'UPDATE z_paper_applicant_list SET UserId = '.$user_id.', TempPwd = "'.$pwd.'" WHERE id = "'.$student->id.'";';
+                    $sql = 'UPDATE z_paper_applicant_list SET UserId = '.$user_id.'" WHERE id = "'.$student->id.'";';
                     if($wpdb->query($sql)){
                         print $user->display_name .':';
                     }
