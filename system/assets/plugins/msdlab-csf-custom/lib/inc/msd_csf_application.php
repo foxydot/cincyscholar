@@ -400,7 +400,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $ret['Applicant_HighSchoolGraduationDate'] = $this->form->field_select('Applicant_HighSchoolGraduationDate', $result->HighSchoolGraduationDate ? $result->HighSchoolGraduationDate : date("Y").'-01-01', "Year of High School Graduation", array('value' => date("Y").'-01-01','option' => date("Y")), $this->gradyr_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
                             $ret['Applicant_HighSchoolGPA'] = $this->form->field_textfield('Applicant_HighSchoolGPA', $result->HighSchoolGPA ? $result->HighSchoolGPA : null, 'Most Current GPA', '0.00', array('required' => 'required', 'type' => 'number', 'minlength' => 1), array('required', 'col-md-6', 'col-sm-12'));
                             $ret['Applicant_PlayedHighSchoolSports'] = $this->form->field_boolean('Applicant_PlayedHighSchoolSports', $result->PlayedHighSchoolSports ? $result->PlayedHighSchoolSports : 0, 'Did you participate in sports while attending High School?');
-                            $ret['Applicant_Activities'] = $this->form->field_textarea_simple('Applicant_Activities',$result->Activities ? strip_tags($result->Activities) : '',$csftitles->Activities,array('maxlength' => '500'),array('col-md-12'));
+                            $ret['Applicant_Activities'] = $this->form->field_textarea_simple('Applicant_Activities',$result->Activities ? strip_tags($result->Activities) : '',$csftitles->Activities,array('maxlength' => '1200'),array('col-md-12'));
                             break;
                         case 3:
                             //determine independance
@@ -526,7 +526,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                                 $ret[] = '</div>';
                             }
                             //hardships
-                            $ret['Applicant_HardshipNote'] = $this->form->field_textarea_simple('Applicant_HardshipNote', $result->HardshipNote ? strip_tags($result->HardshipNote) : null, $csftitles->HardshipNote,array('maxlength' => '500'),array('col-md-12'));
+                            $ret['Applicant_HardshipNote'] = $this->form->field_textarea_simple('Applicant_HardshipNote', $result->HardshipNote ? strip_tags($result->HardshipNote) : null, $csftitles->HardshipNote,array('maxlength' => '1200'),array('col-md-12'));
 
                             break;
                         case 5:
