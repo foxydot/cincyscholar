@@ -328,8 +328,8 @@ class MSDLAB_Queries{
                 }
              }
          }
-         error_log(json_encode($this->post_vars));
-         error_log(json_encode($data));
+         //error_log(json_encode($this->post_vars));
+         //error_log(json_encode($data));
          $tables = array_flip(array_unique($tables));
          foreach($tables AS $table => $v){
              unset($tables[$table]);
@@ -433,13 +433,13 @@ class MSDLAB_Queries{
                  }
              } else {
                  $select_sql = 'SELECT * FROM ' . $table . ' WHERE ' . $where[$table] . ';';
-                 error_log('check_sql: '.$select_sql);
+                 //error_log('check_sql: '.$select_sql);
                  if ($r = $wpdb->get_row($select_sql)) {
                      $sql = 'UPDATE ' . $table . ' SET ' . implode(', ', $data[$table]) . ' WHERE ' . $where[$table] . ';';
                  } else {
                      $sql = 'INSERT INTO ' . $table . ' SET ' . implode(', ', $data[$table]) . ';';
                  }
-                 error_log('update_sql: '.$sql);
+                 //error_log('update_sql: '.$sql);
                  $result = $wpdb->get_results($sql);
                  if (is_wp_error($result)) {
                      return new WP_Error('update', '<div class="error">Error updating ' . $table . '</div>');
@@ -898,7 +898,7 @@ class MSDLAB_Queries{
             }
         }
         $results = $this->get_result_set($data);
-        error_log('REPORT QUERY: ' . $wpdb->last_query);
+        //error_log('REPORT QUERY: ' . $wpdb->last_query);
 
         foreach ($results AS $k => $r){
             $applicant_id = $r->ApplicantId;
@@ -1254,7 +1254,7 @@ class MSDLAB_Queries{
         }
 
         $results = $this->get_result_set($data);
-        error_log('RENEWAL REPORT QUERY: ' . $wpdb->last_query);
+        //error_log('RENEWAL REPORT QUERY: ' . $wpdb->last_query);
         return $results;
     }
 
@@ -1264,7 +1264,7 @@ class MSDLAB_Queries{
         global $current_user,$applicant_id,$wpdb;
         if(!$applicant_id){$applicant_id = $this->get_applicant_id($current_user->ID);}
         $sql = "SELECT * FROM applicationprocess WHERE applicationprocess.ApplicantId = ".$applicant_id ." ORDER BY applicationprocess.ProcessStepId DESC";
-        error_log($sql);
+        //error_log($sql);
         $result = $wpdb->get_results($sql);
         return $result[0]->ProcessStepId;
     }
@@ -1272,7 +1272,7 @@ class MSDLAB_Queries{
     function get_applicant_id($user_id){
         global $wpdb;
         $sql = "SELECT ApplicantId FROM applicant WHERE UserId = ". $user_id ." ORDER BY AcademicYear DESC LIMIT 1;";
-        error_log($sql);
+        //error_log($sql);
         $result = $wpdb->get_results($sql);
         return $result[0]->ApplicantId;
     }
@@ -1513,7 +1513,7 @@ class MSDLAB_Queries{
     }
 
     function academic_year($date){
-         error_log(date('j',$date));
+         //error_log(date('j',$date));
          if(date('n',$date)<=7){
              return (date('Y',$date) - 1);
          } else {
