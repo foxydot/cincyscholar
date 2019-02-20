@@ -186,7 +186,7 @@ if($_POST) {
     $select_renewal_fields = array_merge($fields['required'],$fields['renewal_required'],$applicant_fields_input,$renewal_fields_input,$financial_fields_input,$award_fields_input);
 
     $result = $this->queries->get_renewal_report_set($select_renewal_fields);
-    ts_data($result);
+    //ts_data($result);
     $renewals = array();
     foreach ($result AS $k => $renewal) {
         if(!empty($this->post_vars['college_search_input'])){
