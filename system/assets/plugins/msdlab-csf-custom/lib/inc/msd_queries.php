@@ -1073,6 +1073,7 @@ class MSDLAB_Queries{
         //$usertable = $wpdb->prefix . 'users';
         $data['tables']['renewal'] = array('*');
         //ts_data($this->post_vars);
+
         if(empty($this->post_vars['renewal_date_search_input_start']) && empty($this->post_vars['renewal_date_search_input_end'])) {
             $data['where'] = 'renewal.AcademicYear = '.$this->post_vars['academic_year_input'];
         } else {
@@ -1086,7 +1087,6 @@ class MSDLAB_Queries{
             }
             $data['where'] = implode(' AND ',$where);
         }
-
         if(!empty($this->post_vars['name_search_input'])) {
             //add search for name on application
             $search_terms = explode(' ',$this->post_vars['name_search_input']);
