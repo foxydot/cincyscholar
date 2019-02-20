@@ -57,6 +57,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_update_awarded_users', array(&$this,'update_awarded_users') );
             add_action( 'wp_ajax_update_academic_year_columns', array(&$this,'update_academic_year_columns') );
             add_action( 'wp_ajax_create_renewal_users_from_paper_applicant_list', array(&$this,'create_renewal_users_from_paper_applicant_list') );
+            add_action( 'wp_ajax_send_renewal_emails_2019', array(&$this,'send_renewal_emails_2019') );
 
 
             add_filter('send_password_change_email',array(&$this,'return_false'));
@@ -428,6 +429,54 @@ beth@cincinnatischolarshipfoundation.org<br/>
 <a href = "http://cincinnatischolarshipfoundation.org">www.cincinnatischolarshipfoundation.org</a>
 </p>
 ';
+            $sql = "SELECT `Email`,`FirstName`,`LastName`,`TempPwd` FROM z_paper_applicant_list;";
+            $results = $wpdb->get_results($sql);
+            foreach ($results AS $r){
+                $to = $r->FirstName.' '.$r->LastName.' <'.$r->Email.'>';
+
+                $temppwd = is_null($r->TempPwd)?'Please use the "forgot password" system to retrieve your password.':$r->TempPwd;
+                $pattern = array('/\[\[email\]\]/','/\[\[TempPwd\]\]/');
+                $replacement = array($r->Email,$temppwd);
+                $message = preg_replace($pattern,$replacement,$email_str);
+
+
+                //send the email
+                if(wp_mail($to, $subject, $message, $headers)){
+                    print $r->FirstName.' '.$r->LastName.', '.$r->email.'<br />';
+                }
+            }
+        }
+
+        function send_renewal_emails_2019(){
+            global $wpdb;
+            $subject = 'It is time to renew your scholarship at CincinnatiScholarshipFooundation.org';            $headers[] = 'From: Elizabeth Collins <beth@cincinnatischolarshipfoundation.org>';
+            $headers[] = 'Content-Type: text/html; charset=UTF-8';
+            $headers[] = 'Bcc: beth@cincinnatischolarshipfoundation.org';
+
+            $email_str = '
+            <p>Please surf to <a href = "http://cincinnatischolarshipfoundation.org">http://cincinnatischolarshipfoundation.org</a>, click the Login/Register button, and login with the same account information as last year.</p>
+            <p>If you cannot remember your password, please use the "forgot password" feature to recover it.</p>
+<p>
+Immediately upon logging in, you will be redirected to the renewal form.
+ </p><p>
+If your scholarship is need-based, you will be required to submit your '.date("Y").'-'.date("Y",strtotime('+ 1 year')).' student aid report (SAR), financial aid award notification, and grade report to complete your renewal application. 
+</p><p>
+Please submit your renewal application by June 20, '.date("Y").' to be considered.
+  </p><p>
+Elizabeth Collins<br/>
+Program Administrator
+</p><p>
+602 Main St., Suite 1000<br/>
+Cincinnati OH  45202
+ </p><p>
+Ph:  (513)345-6701<br/>
+Fax:  (513)345-6705
+ </p><p>
+beth@cincinnatischolarshipfoundation.org<br/>
+<a href = "http://cincinnatischolarshipfoundation.org">www.cincinnatischolarshipfoundation.org</a>
+</p>
+';
+
             $sql = "SELECT `Email`,`FirstName`,`LastName`,`TempPwd` FROM z_paper_applicant_list;";
             $results = $wpdb->get_results($sql);
             foreach ($results AS $r){
@@ -1156,6 +1205,15 @@ VALUES
                             console.log(response);
                         });
                     });
+                    $('.send_renewal_emails_2019').click(function(){
+                        var data = {
+                            action: 'send_renewal_emails_2019',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                     $('.fix_up_renewal_attachments').click(function(){
                         var data = {
                             action: 'fix_up_renewal_attachments',
@@ -1487,7 +1545,7 @@ VALUES
                     <dd><button class="create_renewal_users_from_paper_applicant_list">Go</button></dd>
 
                     <dt>Send renewal emails:</dt>
-                    <dd><button class="send_renewal_emails">Go</button></dd>
+                    <dd><button class="send_renewal_emails_2019">Go</button></dd>
                 </dl>
                 <div class="response1"></div>
             </div>

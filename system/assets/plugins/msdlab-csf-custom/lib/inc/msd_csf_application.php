@@ -709,7 +709,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     $data['order'] = 'RenewalDateTime DESC';
                     $results = $this->queries->get_result_set($data);
                     $result = $results[0];
-                    $user_id = $result->UserId;
+                    $user_id = $result->UserId?$result->UserId:$user_id;
                     $docs['tables']['Attachment'] = array('AttachmentId','AttachmentTypeId','FilePath');
                     $docs['where'] = 'RenewalId = '.$result->RenewalId;
                     $documents = $this->queries->get_result_set($docs);
