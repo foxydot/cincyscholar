@@ -449,12 +449,14 @@ beth@cincinnatischolarshipfoundation.org<br/>
 
         function send_renewal_emails_2019(){
             global $wpdb;
-            $subject = 'It is time to renew your scholarship at CincinnatiScholarshipFooundation.org';            $headers[] = 'From: Elizabeth Collins <beth@cincinnatischolarshipfoundation.org>';
-            $headers[] = 'Content-Type: text/html; charset=UTF-8';
-            $headers[] = 'Bcc: beth@cincinnatischolarshipfoundation.org';
+            $subject = 'It is time to renew your scholarship at CincinnatiScholarshipFooundation.org';
+            $headers['from'] = 'From: Elizabeth Collins <beth@cincinnatischolarshipfoundation.org>';
+            $headers['content-type'] = 'Content-Type: text/html; charset=UTF-8';
+            $headers['bcc'] = 'Bcc: beth@cincinnatischolarshipfoundation.org';
 
             $email_str = '
             <p>Please surf to <a href = "http://cincinnatischolarshipfoundation.org">http://cincinnatischolarshipfoundation.org</a>, click the Login/Register button, and login with the same account information as last year.</p>
+            <p>The email associated with your account is: [[user_email]]</p>
             <p>If you cannot remember your password, please use the "forgot password" feature to recover it.</p>
 <p>
 Immediately upon logging in, you will be redirected to the renewal form.
@@ -477,20 +479,24 @@ beth@cincinnatischolarshipfoundation.org<br/>
 </p>
 ';
 
-            $sql = "SELECT `Email`,`FirstName`,`LastName`,`TempPwd` FROM z_paper_applicant_list;";
+            $sql = "SELECT * FROM z_renewals1819;";
             $results = $wpdb->get_results($sql);
             foreach ($results AS $r){
                 $to = $r->FirstName.' '.$r->LastName.' <'.$r->Email.'>';
+                if($r->Email != $r->UserEmail){
+                    $headers['cc'] = 'Cc: '.$r->UserEmail;
+                } else {
+                    unset($headers['cc']);
+                }
 
-                $temppwd = is_null($r->TempPwd)?'Please use the "forgot password" system to retrieve your password.':$r->TempPwd;
-                $pattern = array('/\[\[email\]\]/','/\[\[TempPwd\]\]/');
-                $replacement = array($r->Email,$temppwd);
+                $pattern = array('/\[\[email\]\]/','/\[\[TempPwd\]\]/','/\[\[user_email\]\]/');
+                $replacement = array($r->Email,$temppwd,$r->UserEmail);
                 $message = preg_replace($pattern,$replacement,$email_str);
 
 
                 //send the email
                 if(wp_mail($to, $subject, $message, $headers)){
-                    print $r->FirstName.' '.$r->LastName.', '.$r->email.'<br />';
+                    print $r->FirstName.' '.$r->LastName.', '.$r->Email.'<br />';
                 }
             }
         }
