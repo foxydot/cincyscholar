@@ -284,7 +284,9 @@ class MSDLAB_FormControls{
         if($placeholder == null){$placeholder = $title;}
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_result">'.$title.'</label>');
         $form_field = apply_filters('msdlab_csf_'.$id.'_field','<span class="result">'.$value.'</span>');
-        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
+        if(is_array($class)) {
+            $class = implode(" ", apply_filters('msdlab_csf_' . $id . '_class', $class));
+        }
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
