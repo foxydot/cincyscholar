@@ -328,8 +328,8 @@ class MSDLAB_Queries{
                 }
              }
          }
-         //error_log(json_encode($this->post_vars));
-         //error_log(json_encode($data));
+         error_log(json_encode($this->post_vars));
+         error_log(json_encode($data));
          $tables = array_flip(array_unique($tables));
          foreach($tables AS $table => $v){
              unset($tables[$table]);
@@ -343,14 +343,14 @@ class MSDLAB_Queries{
              if($table == 'applicantscholarship'){
                  foreach ($data[$table] as $key => $datum) {
                      $select_sql = 'SELECT AwardId, ApplicantId, ScholarshipId FROM ' . $table . ' WHERE ' . $table . '.AwardId = "' . $key . '";';
-                     //error_log('check_sql: '.$select_sql);
+                     error_log('check_sql: '.$select_sql);
                      if ($r = $wpdb->get_row($select_sql) && $key != 'new') {
                          $sql = 'UPDATE ' . $table . ' SET ' . implode(', ', $data[$table][$key]) . ' WHERE AwardId = ' . $key . ';';
                      } else {
                          $sql = 'INSERT INTO ' . $table . ' SET ' . implode(', ', $data[$table][$key]) . ';';
                          $this->update_user_role_award();
                      }
-                     //error_log('update_sql: '.$sql);
+                     error_log('update_sql: '.$sql);
                      $result = $wpdb->get_results($sql);
                      if (is_wp_error($result)) {
                          return new WP_Error('update', '<div class="error">Error updating ' . $table . '</div>');

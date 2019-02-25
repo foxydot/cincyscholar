@@ -203,17 +203,20 @@ if (!class_exists('MSDLab_CSF_Application')) {
             }
             switch($form_id) {
                 case 'application':
-                    //first check if the application is "locked"
-                    $testwhere = $applicant_id > 0 ? 'applicant.ApplicantId = ' . $applicant_id : 'applicant.UserId = ' . $user_id;
-                    $sql = "SELECT applicant.ApplicantId, applicant.ApplicationlLocked, applicant.AcademicYear FROM applicant WHERE ".$testwhere." ORDER BY applicant.AcademicYear DESC LIMIT 1;";
-                    global $wpdb;
-                    $test = $wpdb->get_results($sql);
-                    //if so, make a copy of the application and reload with that data
-                    if($test[0]->ApplicationlLocked == 1){
-                        $academic_year = $test[0]->AcademicYear;
-                        print "Your application from the $academic_year Academic Year is locked. Copying to a new application for the current academic year.";
-                        //docopy
-                        $applicant_id = $this->queries->copy_application($test[0]->ApplicantId);
+                    //only do this if it is a student user!
+                    if(!current_user_can('submit_renewal') && !current_user_can('view_csf_reports')) {
+                        //first check if the application is "locked"
+                        $testwhere = $applicant_id > 0 ? 'applicant.ApplicantId = ' . $applicant_id : 'applicant.UserId = ' . $user_id;
+                        $sql = "SELECT applicant.ApplicantId, applicant.ApplicationlLocked, applicant.AcademicYear FROM applicant WHERE " . $testwhere . " ORDER BY applicant.AcademicYear DESC LIMIT 1;";
+                        global $wpdb;
+                        $test = $wpdb->get_results($sql);
+                        //if so, make a copy of the application and reload with that data
+                        if ($test[0]->ApplicationlLocked == 1) {
+                            $academic_year = $test[0]->AcademicYear;
+                            print "Your application from the $academic_year Academic Year is locked. Copying to a new application for the current academic year.";
+                            //docopy
+                            $applicant_id = $this->queries->copy_application($test[0]->ApplicantId);
+                        }
                     }
 
                     $form_page_number = isset($_POST['form_page_number']) ? $_POST['form_page_number'] : 1;
