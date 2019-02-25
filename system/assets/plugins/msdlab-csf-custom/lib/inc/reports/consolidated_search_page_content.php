@@ -262,7 +262,7 @@ if($_POST) {
                             <div class="notice bg-info text-info">No results</div>
                         </div>';
         }
-        if(count($renewal)>0){
+        if(count($renewals)>0){
             $pane['renewal'] = '<div role="tabpanel" class="tab-pane" id="renewal">
                             <div class="result-count">'.count($renewals).' Results Found</div>
                             ' . implode("\n\r",$this->report->print_table('renewal',$select_renewal_fields,$renewals,$info,$class,false)) .'

@@ -352,8 +352,10 @@ class MSDLab_ReportControls{
 
     public function search_checkbox_array($id, $value = null, $title = "", $options = array(), $validation = null, $class = array('checkbox')){
         $vals = array();
-        foreach ($_POST[$id.'_input'] AS $v){
-            $vals[] = $v;
+        if(is_array($_POST[$id.'_input'])) {
+            foreach ($_POST[$id . '_input'] AS $v) {
+                $vals[] = $v;
+            }
         }
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$title.'</label>');
         //iterate through $options

@@ -524,7 +524,7 @@ class MSDLAB_Report_Output{
         $ret['Applicant_TranscriptOK'] = $this->form->field_boolean('Applicant_TranscriptOK',$student_data['personal']->TranscriptOK,'Transcript',array(),array('col-md-1', 'col-sm-12'));
         $ret['Applicant_FinancialAidOK'] = $this->form->field_boolean('Applicant_FinancialAidOK',$student_data['personal']->FinancialAidOK,'Fin. Aid',array(),array('col-md-1', 'col-sm-12'));
         $ret['Applicant_FAFSAOK'] = $this->form->field_boolean('Applicant_FAFSAOK',$student_data['personal']->FAFSAOK,'FAFSA',array(),array('col-md-1', 'col-sm-12'));
-        $ret['infoAward'] = $this->form->field_textinfo('infoAward',$student_data['scholarship']->AmountAwarded>0 ?'YES':'NO','Award?','','',array('col-md-1', 'col-sm-12'));
+        $ret['infoAward'] = $this->form->field_textinfo('infoAward',$student_data['scholarship'][0]->AmountAwarded>0 ?'YES':'NO','Award?','','',array('col-md-1', 'col-sm-12'));
         $ret[] = '<hr />';
         $ret['Applicant_HighSchoolId'] = $this->form->field_select('Applicant_HighSchoolId', $student_data['personal']->HighSchoolId ? $student_data['personal']->HighSchoolId : 136, "High School Attended", $student_data['personal']->HighSchoolId ? $student_data['personal']->HighSchoolId : null, $this->highschool_array, array('required' => 'required'), array('required', 'col-md-4', 'col-sm-12'));
         $ret['HighSchoolType'] = $this->form->field_textinfo('HighSchoolType', $this->queries->get_highschool_type_by_highschool_id($student_data['personal']->HighSchoolId) , "High School Type", null, null, array('required', 'col-md-2', 'col-sm-12'));

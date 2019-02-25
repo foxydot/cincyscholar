@@ -228,6 +228,8 @@ if($student = $this->queries->get_student_data($applicant_id)) {
             $ret['form_close'] = $this->form->form_close();
 
             print implode("\n",$ret);
+
+            ts_data($student);
         } else {
             print "Error. No records for this student. This should never happen.";
             die();
