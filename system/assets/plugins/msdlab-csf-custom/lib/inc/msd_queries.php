@@ -1537,6 +1537,12 @@ class MSDLAB_Queries{
 
     function copy_application($applicant_id){
          global $wpdb;
+         //why is this getting tripped on renewals?
+        error_log('~~~~~BEGIN MYSTERY MACHINE~~~~~');
+        error_log('Q: Why is copy_application getting tripped on renewals?');
+        error_log('Data Passed: '. json_encode($applicant_id));
+        error_log('User Data: '. json_encode(get_current_user()));
+        error_log('~~~~~END MYSTERY MACHINE~~~~~');
          //get original application
         $sql = "SELECT * FROM applicant WHERE applicant.ApplicantID = ".$applicant_id.";";
         $applicant = $wpdb->get_results($sql);
