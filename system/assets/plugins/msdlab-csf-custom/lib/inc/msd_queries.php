@@ -153,7 +153,7 @@ class MSDLAB_Queries{
             error_log('~~~~~BEGIN MYSTERY MACHINE~~~~~');
             error_log('Q: Why is get_result_set creating errors?');
             error_log('Data Passed: '. json_encode($data));
-            error_log('User Data: '. json_encode(get_current_user()));
+            error_log('User Data: '. json_encode(wp_get_current_user()));
             error_log('Server Data: '. json_encode($_SERVER));
             error_log('Request Data: ',json_encode($_REQUEST));
             error_log('~~~~~END MYSTERY MACHINE~~~~~');
@@ -1552,7 +1552,7 @@ class MSDLAB_Queries{
         error_log('~~~~~BEGIN MYSTERY MACHINE~~~~~');
         error_log('Q: Why is copy_application getting tripped on renewals?');
         error_log('Data Passed: '. json_encode($applicant_id));
-        error_log('User Data: '. json_encode(get_current_user()));
+        error_log('User Data: '. json_encode(wp_get_current_user()));
         error_log('Server Data: '. json_encode($_SERVER));
         error_log('Request Data: ',json_encode($_REQUEST));
         error_log('~~~~~END MYSTERY MACHINE~~~~~');
