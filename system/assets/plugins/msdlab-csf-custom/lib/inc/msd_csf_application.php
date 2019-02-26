@@ -259,7 +259,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     }
                     if ($_POST['application_form']) {
 
-                        error_log(json_encode($_POST));
+                        //error_log(json_encode($_POST));
                         //Do the stuff
                         print $this->queries->set_data($form_id . $form_page_number, $set['where']);
                         if(!$applicant_id){$applicant_id = $this->queries->get_applicant_id($current_user->ID);}
@@ -682,7 +682,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                 case 'renewal':
                     if ($_POST['renewal_form']) {
                         //ts_data($_POST);
-                        error_log(json_encode($_POST));
+                        //error_log(json_encode($_POST));
                         //Do the stuff
                         if(isset($_POST['Renewal_RenewalId_input'])) {
                             $set['where']['renewal'] = 'renewal.RenewalId = ' . $_POST['Renewal_RenewalId_input'];
