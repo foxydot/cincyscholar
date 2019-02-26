@@ -58,6 +58,7 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             add_action( 'wp_ajax_update_academic_year_columns', array(&$this,'update_academic_year_columns') );
             add_action( 'wp_ajax_create_renewal_users_from_paper_applicant_list', array(&$this,'create_renewal_users_from_paper_applicant_list') );
             add_action( 'wp_ajax_send_renewal_emails_2019', array(&$this,'send_renewal_emails_2019') );
+            add_action( 'wp_ajax_fix_stupid_extra_duplicates', array(&$this,'fix_stupid_extra_duplicates') );
 
 
             add_filter('send_password_change_email',array(&$this,'return_false'));
@@ -1063,6 +1064,22 @@ VALUES
                 }
             }
         }
+
+        function fix_stupid_extra_duplicates(){
+            global $wpdb;
+
+            $sql = 'SELECT a.ApplicantId, b.ApplicantId AS RenewalApplicantId, a.UserId, b.RenewalId, a.FirstName, a.LastName, a.Email FROM applicant a, renewal b WHERE a.AcademicYear = 2018 AND b.AcademicYear = 2019 AND a.UserId = b.UserId AND a.ApplicantId != b.ApplicantId;';
+            $students = $wpdb->get_results($sql);
+            foreach($students AS $student){
+                $sql = 'UPDATE renewal SET ApplicantId = '.$student->ApplicantId.' WHERE ApplicantId = '.$student->RenewalApplicantId.';';
+                if($wpdb->query($sql)){
+                    print '<li>'.$student->FirstName.' '.$student->LastName.' ('.$student->UserId.') renewal moved from Application #'.$student->RenewalApplicantId.' to '.$student->ApplicantId.'.</li>';
+                }
+                $sql = 'DELETE FROM applicant WHERE ApplicantId = '.$student->RenewalApplicantId.';';
+                if($wpdb->query($sql)){
+                    print '<li>Duplicate application #'.$student->RenewalApplicantId.' deleted.</li>';
+                }              }
+        }
         
         //utility
         function settings_page()
@@ -1463,6 +1480,15 @@ VALUES
                             console.log(response);
                         });
                     });
+                    $('.fix_stupid_extra_duplicates').click(function(){
+                        var data = {
+                            action: 'fix_stupid_extra_duplicates',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
                 });
 
             </script>
@@ -1552,6 +1578,8 @@ VALUES
 
                     <dt>Send renewal emails:</dt>
                     <dd><button class="send_renewal_emails_2019">Go</button></dd>
+                    <dt>fix_stupid_extra_duplicates:</dt>
+                    <dd><button class="fix_stupid_extra_duplicates">Go</button></dd>
                 </dl>
                 <div class="response1"></div>
             </div>
