@@ -328,6 +328,15 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             //sets up the query
                             $data['tables']['Applicant'] = array('UserId','Email','ApplicationDateTime', 'FirstName', 'MiddleInitial', 'LastName', 'Last4SSN', 'Address1', 'Address2', 'City', 'StateId',
                                 'CountyId', 'ZipCode', 'CellPhone', 'AlternativePhone', 'DateOfBirth', 'EthnicityId', 'SexId');
+                            if(!$applicant_id){
+                                error_log('~~~~~BEGIN MYSTERY MACHINE~~~~~');
+                                error_log('Q: Why is there no applicant_id at 331?');
+                                error_log('Data Passed: '. json_encode($data));
+                                error_log('User Data: '. json_encode(wp_get_current_user()));
+                                error_log('Server Data: '. json_encode($_SERVER));
+                                error_log('Request Data: ',json_encode($_REQUEST));
+                                error_log('~~~~~END MYSTERY MACHINE~~~~~');
+                            }
                             $results = $this->queries->get_result_set($data);
                             $result = $results[0];
                             //the fields
@@ -365,6 +374,15 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $data['tables']['Applicant'] = array('MajorId', 'EducationAttainmentId', 'HighSchoolGraduationDate', 'HighSchoolId', 'HighSchoolGraduationDate', 'HighSchoolGPA', 'PlayedHighSchoolSports', 'FirstGenerationStudent','Activities','CollegeId','OtherSchool');
                             //$data['tables']['ApplicantCollege'] = array('CollegeId');
                             //$data['where'] .= ' AND applicantcollege.ApplicantId = ' . $applicant_id;
+                            if(!$applicant_id){
+                                error_log('~~~~~BEGIN MYSTERY MACHINE~~~~~');
+                                error_log('Q: Why is there no applicant_id at 386?');
+                                error_log('Data Passed: '. json_encode($data));
+                                error_log('User Data: '. json_encode(wp_get_current_user()));
+                                error_log('Server Data: '. json_encode($_SERVER));
+                                error_log('Request Data: ',json_encode($_REQUEST));
+                                error_log('~~~~~END MYSTERY MACHINE~~~~~');
+                            }
                             $results = $this->queries->get_result_set($data);
                             $result = $results[0];
                             //the fields
@@ -413,6 +431,15 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             $data['tables']['Applicant'] = array('IsIndependent');
                             $data['tables']['ApplicantIndependenceQuery'] = array('ApplicantId', 'AdvancedDegree', 'Children', 'Married', 'TwentyFour', 'Veteran', 'Orphan', 'Emancipated', 'Homeless');
                             $data['where'] .= ' AND applicantindependencequery.ApplicantId = ' . $applicant_id;
+                            if(!$applicant_id){
+                                error_log('~~~~~BEGIN MYSTERY MACHINE~~~~~');
+                                error_log('Q: Why is there no applicant_id at 443?');
+                                error_log('Data Passed: '. json_encode($data));
+                                error_log('User Data: '. json_encode(wp_get_current_user()));
+                                error_log('Server Data: '. json_encode($_SERVER));
+                                error_log('Request Data: ',json_encode($_REQUEST));
+                                error_log('~~~~~END MYSTERY MACHINE~~~~~');
+                            }
                             $results = $this->queries->get_result_set($data);
                             $result = $results[0];
                             //the fields
@@ -460,6 +487,15 @@ if (!class_exists('MSDLab_CSF_Application')) {
                                 //sets up the query
                                 $data['tables']['ApplicantFinancial'] = array('ApplicantEmployer','ApplicantEmployerId','ApplicantIncome','SpouseEmployer','SpouseEmployerId','SpouseIncome', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
                                 $data['where'] .= ' AND applicantfinancial.ApplicantId = ' . $applicant_id;
+                                if(!$applicant_id){
+                                    error_log('~~~~~BEGIN MYSTERY MACHINE~~~~~');
+                                    error_log('Q: Why is there no applicant_id at 499?');
+                                    error_log('Data Passed: '. json_encode($data));
+                                    error_log('User Data: '. json_encode(wp_get_current_user()));
+                                    error_log('Server Data: '. json_encode($_SERVER));
+                                    error_log('Request Data: ',json_encode($_REQUEST));
+                                    error_log('~~~~~END MYSTERY MACHINE~~~~~');
+                                }
                                 $results = $this->queries->get_result_set($data);
                                 $result = $results[0];
                                 //form
@@ -484,6 +520,15 @@ if (!class_exists('MSDLab_CSF_Application')) {
                                 //sets up the query
                                 $data['tables']['Guardian'] = array('CPSPublicSchools','GuardianFullName1', 'Guardian1EmployerId','GuardianEmployer1','Guardian1Deceased', 'GuardianFullName2', 'Guardian2EmployerId', 'GuardianEmployer2','Guardian2Deceased', 'Homeowner', 'HomeValue', 'AmountOwedOnHome');
                                 $data['where'] .= ' AND guardian.ApplicantId = ' . $applicant_id;
+                                if(!$applicant_id){
+                                    error_log('~~~~~BEGIN MYSTERY MACHINE~~~~~');
+                                    error_log('Q: Why is there no applicant_id at 532?');
+                                    error_log('Data Passed: '. json_encode($data));
+                                    error_log('User Data: '. json_encode(wp_get_current_user()));
+                                    error_log('Server Data: '. json_encode($_SERVER));
+                                    error_log('Request Data: ',json_encode($_REQUEST));
+                                    error_log('~~~~~END MYSTERY MACHINE~~~~~');
+                                }
                                 $results = $this->queries->get_result_set($data);
                                 $result = $results[0];
                                 //form
@@ -544,11 +589,29 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             }
                             $data['tables']['Agreements'] = array('ApplicantHaveRead','ApplicantDueDate','ApplicantDocsReq','ApplicantReporting','GuardianHaveRead','GuardianDueDate','GuardianDocsReq','GuardianReporting');
                             $data['where'] .= ' AND agreements.ApplicantId = ' . $applicant_id;
+                            if(!$applicant_id){
+                                error_log('~~~~~BEGIN MYSTERY MACHINE~~~~~');
+                                error_log('Q: Why is there no applicant_id at 601?');
+                                error_log('Data Passed: '. json_encode($data));
+                                error_log('User Data: '. json_encode(wp_get_current_user()));
+                                error_log('Server Data: '. json_encode($_SERVER));
+                                error_log('Request Data: ',json_encode($_REQUEST));
+                                error_log('~~~~~END MYSTERY MACHINE~~~~~');
+                            }
                             $results = $this->queries->get_result_set($data);
                             $result = $results[0];
 
                             $docs['tables']['Attachment'] = array('AttachmentId','AttachmentTypeId','FilePath');
                             $docs['where'] = 'applicantid = '.$applicant_id;
+                            if(!$applicant_id){
+                                error_log('~~~~~BEGIN MYSTERY MACHINE~~~~~');
+                                error_log('Q: Why is there no applicant_id at 615?');
+                                error_log('Data Passed: '. json_encode($data));
+                                error_log('User Data: '. json_encode(wp_get_current_user()));
+                                error_log('Server Data: '. json_encode($_SERVER));
+                                error_log('Request Data: ',json_encode($_REQUEST));
+                                error_log('~~~~~END MYSTERY MACHINE~~~~~');
+                            }
                             $documents = $this->queries->get_result_set($docs);
                             //fields
                             $fwdBtnTitle = "Save & Review";
@@ -718,11 +781,29 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     $data['tables']['Renewal'] = array('*');
                     $data['where'] .= 'renewal.ApplicantId = ' . $applicant_id;
                     $data['order'] = 'RenewalDateTime DESC';
+                    if(!$applicant_id){
+                        error_log('~~~~~BEGIN MYSTERY MACHINE~~~~~');
+                        error_log('Q: Why is there no applicant_id at 793?');
+                        error_log('Data Passed: '. json_encode($data));
+                        error_log('User Data: '. json_encode(wp_get_current_user()));
+                        error_log('Server Data: '. json_encode($_SERVER));
+                        error_log('Request Data: ',json_encode($_REQUEST));
+                        error_log('~~~~~END MYSTERY MACHINE~~~~~');
+                    }
                     $results = $this->queries->get_result_set($data);
                     $result = $results[0];
                     $user_id = $result->UserId?$result->UserId:$user_id;
                     $docs['tables']['Attachment'] = array('AttachmentId','AttachmentTypeId','FilePath');
                     $docs['where'] = 'RenewalId = '.$result->RenewalId;
+                    if(!$applicant_id){
+                        error_log('~~~~~BEGIN MYSTERY MACHINE~~~~~');
+                        error_log('Q: Why is there no applicant_id at 807?');
+                        error_log('Data Passed: '. json_encode($data));
+                        error_log('User Data: '. json_encode(wp_get_current_user()));
+                        error_log('Server Data: '. json_encode($_SERVER));
+                        error_log('Request Data: ',json_encode($_REQUEST));
+                        error_log('~~~~~END MYSTERY MACHINE~~~~~');
+                    }
                     $documents = $this->queries->get_result_set($docs);
                     //ts_data($result->RenewalId);
                     if(!$result){ //there is no renewal! oh no! get the application data and populate the form with that.
@@ -730,6 +811,15 @@ if (!class_exists('MSDLab_CSF_Application')) {
                         $data['tables']['Applicant'] = array('UserId','Email','ApplicationDateTime', 'FirstName', 'MiddleInitial', 'LastName', 'Last4SSN', 'Address1', 'Address2', 'City', 'StateId',
                             'CountyId', 'ZipCode', 'CellPhone', 'AlternativePhone', 'DateOfBirth','MajorId','StudentId','CollegeId');
                         $data['where'] = 'applicant.ApplicantId = ' . $applicant_id ;
+                        if(!$applicant_id){
+                            error_log('~~~~~BEGIN MYSTERY MACHINE~~~~~');
+                            error_log('Q: Why is there no applicant_id at 823?');
+                            error_log('Data Passed: '. json_encode($data));
+                            error_log('User Data: '. json_encode(wp_get_current_user()));
+                            error_log('Server Data: '. json_encode($_SERVER));
+                            error_log('Request Data: ',json_encode($_REQUEST));
+                            error_log('~~~~~END MYSTERY MACHINE~~~~~');
+                        }
                         $results = $this->queries->get_result_set($data);
                         $result = $results[0];
                     }
@@ -847,6 +937,15 @@ if (!class_exists('MSDLab_CSF_Application')) {
 
             $docs['tables']['Attachment'] = array('AttachmentId','AttachmentTypeId','FilePath');
             $docs['where'] = 'attachment.ApplicantID = '.$applicant_id;
+            if(!$applicant_id){
+                error_log('~~~~~BEGIN MYSTERY MACHINE~~~~~');
+                error_log('Q: Why is there no applicant_id at 949?');
+                error_log('Data Passed: '. json_encode($data));
+                error_log('User Data: '. json_encode(wp_get_current_user()));
+                error_log('Server Data: '. json_encode($_SERVER));
+                error_log('Request Data: ',json_encode($_REQUEST));
+                error_log('~~~~~END MYSTERY MACHINE~~~~~');
+            }
             $documents = $this->queries->get_result_set($docs);
 
             $applicant_user_id = $this->queries->get_user_id_by_applicant($applicant_id);

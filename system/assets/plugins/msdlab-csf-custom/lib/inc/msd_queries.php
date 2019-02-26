@@ -155,7 +155,7 @@ class MSDLAB_Queries{
             error_log('Data Passed: '. json_encode($data));
             error_log('User Data: '. json_encode(wp_get_current_user()));
             error_log('Server Data: '. json_encode($_SERVER));
-            error_log('Request Data: ',json_encode($_REQUEST));
+            error_log('Request Data: '.json_encode($_REQUEST));
             error_log('~~~~~END MYSTERY MACHINE~~~~~');
             return false;
         }
@@ -1554,7 +1554,7 @@ class MSDLAB_Queries{
         error_log('Data Passed: '. json_encode($applicant_id));
         error_log('User Data: '. json_encode(wp_get_current_user()));
         error_log('Server Data: '. json_encode($_SERVER));
-        error_log('Request Data: ',json_encode($_REQUEST));
+        error_log('Request Data: '.json_encode($_REQUEST));
         error_log('~~~~~END MYSTERY MACHINE~~~~~');
          //get original application
         $sql = "SELECT * FROM applicant WHERE applicant.ApplicantID = ".$applicant_id.";";
