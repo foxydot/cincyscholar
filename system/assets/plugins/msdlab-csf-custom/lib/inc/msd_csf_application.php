@@ -675,7 +675,12 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     if($form_page_number != 7) {
                         $ftr['button'] = $this->form->field_button('saveBtn', $fwdBtnTitle, array('submit', 'btn'));
                     }
-                    $ret['form_footer'] = $this->form->form_footer('form_footer',implode("\n",$ftr),array('form-footer', 'col-md-12'));
+                    if(is_array($ftr)){
+                        $ftrstr = implode("\n",$ftr);
+                    } else {
+                        $ftrstr = $ftr;
+                    }
+                    $ret['form_footer'] = $this->form->form_footer('form_footer',$ftrstr,array('form-footer', 'col-md-12'));
 
                     $ret['javascript'] = $this->form->build_jquery($form_id,$jquery);
                     break;

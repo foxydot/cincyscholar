@@ -63,7 +63,9 @@ class MSDLAB_FormControls{
     //TODO: Refactor for redundancies
 
     public function section_header($id, $value = null, $class = array('section-header')){
-        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
+        if(is_array($class)) {
+            $class = implode(" ", apply_filters('msdlab_csf_' . $id . '_class', $class));
+        }
         $ret = '<div class="row"><h3 id="'.$id.'_wrapper" class="col-sm-12 '.$class.'">'.$value.'</h3></div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
@@ -73,7 +75,9 @@ class MSDLAB_FormControls{
             $value = $_POST[$id];
         }
         $form_field = apply_filters('msdlab_csf_'.$id.'_field','<input id="'.$id.'" name="'.$id.'" type="hidden" value="'.$value.'" />');
-        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
+        if(is_array($class)) {
+            $class = implode(" ", apply_filters('msdlab_csf_' . $id . '_class', $class));
+        }
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
@@ -83,7 +87,9 @@ class MSDLAB_FormControls{
             $value = $_POST[$id.'_input'];
         }
         $form_field = apply_filters('msdlab_csf_'.$id.'_field','<input id="'.$id.'_input" name="'.$id.'_input" type="hidden" value="'.$value.'" />');
-        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
+        if(is_array($class)) {
+            $class = implode(" ", apply_filters('msdlab_csf_' . $id . '_class', $class));
+        }
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
@@ -102,7 +108,9 @@ class MSDLAB_FormControls{
         $form_field = apply_filters('msdlab_csf_'.$id.'_field','<div class="ui-toggle-btn">
         <input id="'.$id.'_input" name="'.$id.'_input" type="checkbox" value="1"'.checked($value,1,false).' '.$this->build_validation($validation).' />
         <div class="handle" data-on="'.$settings['true'].'" data-off="'.$settings['false'].'"></div></div>');
-        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
+        if(is_array($class)) {
+            $class = implode(" ", apply_filters('msdlab_csf_' . $id . '_class', $class));
+        }
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$bkp_field.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
@@ -122,7 +130,9 @@ class MSDLAB_FormControls{
         }
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$title.'</label>');
         $form_field = apply_filters('msdlab_csf_'.$id.'_field','<input id="'.$id.'_input" name="'.$id.'_input" type="date" value="'.$value.'" placeholder="'.$title.'" '.$this->build_validation($validation).' />');
-        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
+        if(is_array($class)) {
+            $class = implode(" ", apply_filters('msdlab_csf_' . $id . '_class', $class));
+        }
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
@@ -133,7 +143,9 @@ class MSDLAB_FormControls{
         }
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_info">'.$title.'</label>');
         $form_field = apply_filters('msdlab_csf_'.$id.'_field','<span class="symbol"><span id="'.$id.'_info" name="'.$id.'_info" class="info">'.$value.'</span></span>');
-        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
+        if(is_array($class)) {
+            $class = implode(" ", apply_filters('msdlab_csf_' . $id . '_class', $class));
+        }
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
@@ -146,7 +158,9 @@ class MSDLAB_FormControls{
         if($placeholder == null){$placeholder = $title;}
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$title.'</label>');
         $form_field = apply_filters('msdlab_csf_'.$id.'_field','<span class="symbol"><input id="'.$id.'_input" name="'.$id.'_input" type="'.$type.'" value="'.$value.'" placeholder="'.$placeholder.'" '.$this->build_validation($validation).' /></span>');
-        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
+        if(is_array($class)) {
+            $class = implode(" ", apply_filters('msdlab_csf_' . $id . '_class', $class));
+        }
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
@@ -159,7 +173,9 @@ class MSDLAB_FormControls{
         ob_start();
         wp_editor( stripcslashes($value), $id.'_input', array('media_buttons' => false,'teeny' => true,'textarea_rows' => 5,) );
         $form_field = ob_get_clean();
-        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
+        if(is_array($class)) {
+            $class = implode(" ", apply_filters('msdlab_csf_' . $id . '_class', $class));
+        }
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
@@ -171,7 +187,9 @@ class MSDLAB_FormControls{
         }
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$title.'</label>');
         $form_field = '<textarea id="'.$id.'_input" name="'.$id.'_input" '.$this->build_validation($validation).'>'.stripcslashes($value).'</textarea>';
-        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
+        if(is_array($class)) {
+            $class = implode(" ", apply_filters('msdlab_csf_' . $id . '_class', $class));
+        }
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
@@ -186,7 +204,9 @@ class MSDLAB_FormControls{
         $options_str = implode("\n\r",$this->build_options($options,$value,$null_option));
         $select = '<select id="'.$id.'_input" name="'.$id.'_input" '.$this->build_validation($validation).'>'.$options_str.'</select>';
         $form_field = apply_filters('msdlab_csf_'.$id.'_field', $select );
-        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
+        if(is_array($class)) {
+            $class = implode(" ", apply_filters('msdlab_csf_' . $id . '_class', $class));
+        }
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
@@ -221,7 +241,9 @@ class MSDLAB_FormControls{
 
         $options_str = '<div class="radio-wrapper">'.implode("\n\r",$options_array).'</div>';
         $form_field = apply_filters('msdlab_csf_'.$id.'_field', $options_str );
-        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
+        if(is_array($class)) {
+            $class = implode(" ", apply_filters('msdlab_csf_' . $id . '_class', $class));
+        }
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
@@ -240,7 +262,9 @@ class MSDLAB_FormControls{
         }
         $options_str = '<div class="checkbox-array-options-wrapper"><div class="inner-wrap">'.implode("\n\r",$options_array).'</div></div>';
         $form_field = apply_filters('msdlab_csf_'.$id.'_field', $options_str );
-        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
+        if(is_array($class)) {
+            $class = implode(" ", apply_filters('msdlab_csf_' . $id . '_class', $class));
+        }
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
@@ -264,7 +288,9 @@ class MSDLAB_FormControls{
         }
         $form_field = apply_filters('msdlab_csf_'.$id.'_field','<input id="'.$id.'_input" name="'.$id.'_input"  value="1" type="checkbox" '.checked(1,$_POST[$id.'_input'],0).' />');
         $label = apply_filters('msdlab_csf_'.$id.'_label','<label for="'.$id.'_input">'.$form_field.$title.'</label>');
-        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
+        if(is_array($class)) {
+            $class = implode(" ", apply_filters('msdlab_csf_' . $id . '_class', $class));
+        }
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
@@ -272,7 +298,9 @@ class MSDLAB_FormControls{
     public function field_button($id,$title = "Save", $class = array('submit'), $type = "submit", $validate = true){
         if($validate == false){$atts = ' formnovalidate=formnovalidate ';}
         $form_field = apply_filters('msdlab_csf_'.$id.'_button','<input id="'.$id.'_button" type="'.$type.'" value="'.$title.'"'.$atts.'/>');
-        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
+        if(is_array($class)) {
+            $class = implode(" ", apply_filters('msdlab_csf_' . $id . '_class', $class));
+        }
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
@@ -333,7 +361,9 @@ class MSDLAB_FormControls{
 		</div>
 	</div>';
         $form_field = apply_filters('msdlab_csf_'.$id.'_field',$form_field);
-        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
+        if(is_array($class)) {
+            $class = implode(" ", apply_filters('msdlab_csf_' . $id . '_class', $class));
+        }
         $ret = '<div id="'.$id.'_wrapper" class="upload-wrapper '.$class.'">'.$label.$file_display.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
@@ -428,7 +458,9 @@ class MSDLAB_FormControls{
             }
         }
         $form_field = apply_filters('msdlab_csf_'.$id.'_field','<span class="result">'.$value.'</span>');
-        $class = implode(" ",apply_filters('msdlab_csf_'.$id.'_class', $class));
+        if(is_array($class)) {
+            $class = implode(" ", apply_filters('msdlab_csf_' . $id . '_class', $class));
+        }
         $ret = '<div id="'.$id.'_wrapper" class="'.$class.'">'.$label.$form_field.'</div>';
         return apply_filters('msdlab_csf_'.$id.'', $ret);
     }
