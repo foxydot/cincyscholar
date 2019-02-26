@@ -156,7 +156,7 @@ function get_all_locations(){
 }
 
 function get_digits($dowrap = TRUE,$sep = " | "){
-        $sepsize = strlen($sep);
+        $sepsize = count($sep);
         if((get_option('msdsocial_phone')!='') || (get_option('msdsocial_tollfree')!='') || (get_option('msdsocial_fax')!='')) {
             if((get_option('msdsocial_tracking_phone')!='')){
                 if(wp_is_mobile()){

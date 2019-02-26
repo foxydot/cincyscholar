@@ -328,17 +328,13 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             //sets up the query
                             $data['tables']['Applicant'] = array('UserId','Email','ApplicationDateTime', 'FirstName', 'MiddleInitial', 'LastName', 'Last4SSN', 'Address1', 'Address2', 'City', 'StateId',
                                 'CountyId', 'ZipCode', 'CellPhone', 'AlternativePhone', 'DateOfBirth', 'EthnicityId', 'SexId');
-                            if(!$applicant_id){
-                                error_log('~~~~~BEGIN MYSTERY MACHINE~~~~~');
-                                error_log('Q: Why is there no applicant_id at 331?');
-                                error_log('Data Passed: '. json_encode($data));
-                                error_log('User Data: '. json_encode(wp_get_current_user()));
-                                error_log('Server Data: '. json_encode($_SERVER));
-                                error_log('Request Data: ',json_encode($_REQUEST));
-                                error_log('~~~~~END MYSTERY MACHINE~~~~~');
+                            //if this is a new person, there may not be any applicant id.
+                            if($applicant_id) {
+                                $results = $this->queries->get_result_set($data);
+                                $result = $results[0];
+                            } else {
+                                $result = new stdClass();
                             }
-                            $results = $this->queries->get_result_set($data);
-                            $result = $results[0];
                             //the fields
                             $ret['form_page_number'] = $this->form->field_utility('form_page_number', 1);
                             $ret['hdrPersInfo'] = $this->form->section_header('hdrPersInfo', 'Personal Information');
