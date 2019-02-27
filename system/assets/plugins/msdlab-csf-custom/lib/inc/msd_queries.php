@@ -150,6 +150,7 @@ class MSDLAB_Queries{
         $this->__construct();
         if(!is_array($data['tables'])){
             //why is this creating errors?
+            /*
             $backtrace = debug_backtrace(TRUE,5);
             error_log('~~~~~BEGIN MYSTERY MACHINE~~~~~');
             error_log('Q: Why is get_result_set creating errors?');
@@ -159,7 +160,7 @@ class MSDLAB_Queries{
             error_log('Server Data: '. json_encode($_SERVER));
             error_log('Request Data: '.json_encode($_REQUEST));
             error_log('~~~~~END MYSTERY MACHINE~~~~~');
-
+            */
             return false;
         }
         foreach($data['tables'] AS $table => $fieldslist){

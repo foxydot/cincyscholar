@@ -684,6 +684,16 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             break;
                         case 6:
                         case 7:
+
+                        if(!$applicant_id){
+                            error_log('~~~~~BEGIN MYSTERY MACHINE~~~~~');
+                            error_log('Q: Why is there no applicant_id at 697?');
+                            error_log('Data Passed: '. json_encode($data));
+                            error_log('User Data: '. json_encode(wp_get_current_user()));
+                            error_log('Server Data: '. json_encode($_SERVER));
+                            error_log('Request Data: ',json_encode($_REQUEST));
+                            error_log('~~~~~END MYSTERY MACHINE~~~~~');
+                        }
                             $ret['Application'] = $this->get_the_user_application($applicant_id);
                             if($form_page_number == 6){
                                 $fwdBtnTitle = "Submit Application";
