@@ -229,7 +229,7 @@ if($_POST) {
 <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#awarded" aria-controls="awarded" role="tab" data-toggle="tab">Scholarship Awardees</a></li>
     <li role="presentation"><a href="#submitted" aria-controls="submitted" role="tab" data-toggle="tab">Submitted Applications</a></li>
-    <li role="presentation"><a href="#incomplete" aria-controls="incomplete" role="tab" data-toggle="tab">Incomplete Applications</a></li>
+    <li role="presentation"><a href="#incomplete" aria-controls="incomplete" role="tab" data-toggle="tab">Started Applications</a></li>
     <li role="presentation"><a href="#renewal" aria-controls="renewal" role="tab" data-toggle="tab">Submitted Renewals</a></li>
   </ul>';
         if(count($awarded)>0){

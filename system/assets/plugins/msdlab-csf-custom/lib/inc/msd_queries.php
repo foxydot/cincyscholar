@@ -150,7 +150,7 @@ class MSDLAB_Queries{
         $this->__construct();
         if(!is_array($data['tables'])){
             //why is this creating errors?
-            $backtrace = debug_backtrace();
+            $backtrace = debug_backtrace(TRUE,5);
             error_log('~~~~~BEGIN MYSTERY MACHINE~~~~~');
             error_log('Q: Why is get_result_set creating errors?');
             error_log('Backtrace: '.json_encode($backtrace));
