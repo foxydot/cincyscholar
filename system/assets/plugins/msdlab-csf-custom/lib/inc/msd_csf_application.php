@@ -927,9 +927,21 @@ if (!class_exists('MSDLab_CSF_Application')) {
             $queries = array('personal','college','independence','financial','agreements');
             foreach($queries AS $query){
                 $result_array = $this->queries->get_result_set(${$query});
+                if(!$result_array){
+                    //why is this creating errors?
+                    $backtrace = debug_backtrace();
+                    error_log('~~~~~BEGIN MYSTERY MACHINE~~~~~');
+                    error_log('Q: Why is get_result_set creating errors?');
+                    error_log('Backtrace: '.json_encode($backtrace));
+                    error_log('Query: '. json_encode(${$query}));
+                    error_log('User Data: '. json_encode(wp_get_current_user()));
+                    error_log('Server Data: '. json_encode($_SERVER));
+                    error_log('Request Data: '.json_encode($_REQUEST));
+                    error_log('~~~~~END MYSTERY MACHINE~~~~~');
+                }
                 $results[$query] = $result_array[0];
             }
-            ts_data($results);
+            //ts_data($results);
 
             $docs['tables']['Attachment'] = array('AttachmentId','AttachmentTypeId','FilePath');
             $docs['where'] = 'attachment.ApplicantID = '.$applicant_id;
