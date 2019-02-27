@@ -942,10 +942,9 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     $backtrace = debug_backtrace();
                     error_log('~~~~~BEGIN MYSTERY MACHINE~~~~~');
                     error_log('Q: Why is get_result_set creating errors?');
-                    error_log('Backtrace: '.json_encode($backtrace));
+                    error_log('Query type: '.json_encode($query));
                     error_log('Query: '. json_encode(${$query}));
                     error_log('User Data: '. json_encode(wp_get_current_user()));
-                    error_log('Server Data: '. json_encode($_SERVER));
                     error_log('Request Data: '.json_encode($_REQUEST));
                     error_log('~~~~~END MYSTERY MACHINE~~~~~');
                 }
