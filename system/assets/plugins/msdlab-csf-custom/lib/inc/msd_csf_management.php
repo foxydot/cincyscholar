@@ -2,7 +2,7 @@
 if (!class_exists('MSDLab_CSF_Management')) {
     class MSDLab_CSF_Management {
         //Properties
-
+        var $management_pages;
         //Methods
         /**
          * PHP 5 Constructor
@@ -45,6 +45,7 @@ if (!class_exists('MSDLab_CSF_Management')) {
             //register stylesheet
             //Actions
             add_action('admin_menu', array(&$this,'settings_page'));
+            add_action('admin_menu', array(&$this,'get_pages'),400);
             //add_action('wp_enqueue_scripts', array(&$this,'add_styles_and_scripts'));
             add_action('admin_enqueue_scripts', array(&$this,'add_admin_styles_and_scripts'));
             add_action( 'admin_bar_menu', array(&$this,'toolbar_settings'), 999 );
@@ -52,19 +53,28 @@ if (!class_exists('MSDLab_CSF_Management')) {
             //Filters
 
             //Shortcodes
+        }
 
+        function get_pages(){
+            global $_registered_pages;
+            $this->management_pages = preg_grep('/^csf-management_page_.*/', array_keys($_registered_pages));
+            $this->management_pages = array_merge($this->management_pages,preg_grep('/^admin_page_.*/', array_keys($_registered_pages)));
+            array_push($this->management_pages,'toplevel_page_csf-manage');
         }
 
         function add_admin_styles_and_scripts(){
-            wp_enqueue_style('bootstrap-style','//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css',false,'4.5.0');
-            wp_enqueue_style('font-awesome-style','//maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css',false,'4.5.0');
-            wp_enqueue_style('csf-report-style',preg_replace('#/inc/#i','/css/',plugin_dir_url(__FILE__)).'msdform.css');
-            wp_enqueue_script('bootstrap-jquery','//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js',array('jquery'));
-            //wp_enqueue_script( 'jquery-ui-datepicker' );
-            //wp_enqueue_style('jqueryui-smoothness','//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css');
+            global $current_screen;
+            if(in_array($current_screen->id,$this->management_pages)) {
+                wp_enqueue_style('bootstrap-style', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css', false, '4.5.0');
+                wp_enqueue_style('font-awesome-style', '//maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css', false, '4.5.0');
+                wp_enqueue_style('csf-report-style', preg_replace('#/inc/#i', '/css/', plugin_dir_url(__FILE__)) . 'msdform.css');
+                wp_enqueue_script('bootstrap-jquery', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', array('jquery'));
+                //wp_enqueue_script( 'jquery-ui-datepicker' );
+                //wp_enqueue_style('jqueryui-smoothness','//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css');
 
-            //wp_enqueue_script('jquery-validate',plugin_dir_url(__DIR__).'/../js/jquery.validate.min.js',array('jquery'));
-            //wp_enqueue_script('jquery-validate-addl',plugin_dir_url(__DIR__).'/../js/additional-methods.min.js',array('jquery','jquery-validate'));
+                //wp_enqueue_script('jquery-validate',plugin_dir_url(__DIR__).'/../js/jquery.validate.min.js',array('jquery'));
+                //wp_enqueue_script('jquery-validate-addl',plugin_dir_url(__DIR__).'/../js/additional-methods.min.js',array('jquery','jquery-validate'));
+            }
         }
 
         function add_styles_and_scripts(){

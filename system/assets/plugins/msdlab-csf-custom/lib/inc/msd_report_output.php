@@ -158,6 +158,7 @@ class MSDLAB_Report_Output{
      * @return string The footer to be printed, or void if the param $echo is true.
      */
     public function table_data($fields, $result, $echo = true){
+        global $academic_year;
         $ret = array();
         $ecsv = array();
         $i = 0;
@@ -170,7 +171,7 @@ class MSDLAB_Report_Output{
                     case 'UserId':
                         $printval = '<strong>'.$user->{$value}.'</strong><br />';
                         if(current_user_can('manage_csf')) {
-                            $printval .= '<a href="?page=student-edit&user_id=' . $user->{$value} . '" class="button" target="_blank">View/Edit</a>';
+                            $printval .= '<a href="?page=student-edit&academic_year='.$academic_year.'&user_id=' . $user->{$value} . '" class="button" target="_blank">View/Edit</a>';
                         }
                         break;
                     case 'ApplicantId':

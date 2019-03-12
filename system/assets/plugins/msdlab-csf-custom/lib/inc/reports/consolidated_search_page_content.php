@@ -1,4 +1,5 @@
 <?php
+global $academic_year;
 $fields['required'] = array(
     'UserId' => 'UserId',
     'ApplicantId' => 'ApplicantId',
@@ -127,6 +128,7 @@ $select_fields['scholarshipwhs'] = array('title' => 'Scholarship & High School',
 ));
 $tabs = $pane = array();
 if($_POST) {
+    $academic_year = $_POST['academic_year_input'];
     //ts_data($_POST);
     $this->search->javascript['collapse-btn-init'] = '
         $(".collapsable").css("display","none");
