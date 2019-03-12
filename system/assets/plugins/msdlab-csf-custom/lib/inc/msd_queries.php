@@ -953,7 +953,8 @@ class MSDLAB_Queries{
 
             //add scholarship info
             $scholarship['tables']['applicantscholarship'] = array('*');
-            $scholarship['where'] = 'ApplicantId = '.$applicant_id;
+            $scholarship['where'] = 'ApplicantId = '.$applicant_id.'AND AcademicYear = '.$this->post_vars['academic_year_input'];
+
             $scholarship_results = $this->get_result_set($scholarship);
             foreach($scholarship_results AS $sr){
                 foreach($sr as $y => $z){
@@ -1171,7 +1172,7 @@ class MSDLAB_Queries{
             $this->post_vars['gpac_range_search_input_end'] != 100
         ){
             $data['tables']['applicantscholarship'] = array('AmountAwarded','DateAwarded');
-            $data['where'] .= ' AND applicantscholarship.ApplicantId = renewal.ApplicantId';
+            $data['where'] .= ' AND applicantscholarship.ApplicantId = renewal.ApplicantId AND AcademicYear = '.$this->post_vars['academic_year_input'];
 
             if(!empty($this->post_vars['award_date_search_input_start']) || !empty($this->post_vars['award_date_search_input_end'])) {
                 if(!empty($this->post_vars['award_date_search_input_start'])){
