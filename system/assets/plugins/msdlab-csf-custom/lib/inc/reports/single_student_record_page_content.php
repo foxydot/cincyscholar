@@ -1,4 +1,5 @@
 <?php
+global $academic_year;
 $tabs = '';
 $pane = array();
 if($_POST) {
@@ -36,6 +37,7 @@ if($_POST) {
     }
 } elseif($_GET){
     $user_id = $_GET['user_id'];
+    $academic_year = $_GET['academic_year'];
 } else {
     print "Error. Please select student.";
     die();
@@ -43,14 +45,21 @@ if($_POST) {
 
 $applicant_id = $this->queries->get_applicant_id($user_id);
 
-if($student = $this->queries->get_student_data($applicant_id)) {
+if($student = $this->queries->get_student_data($applicant_id,$academic_year)) {
     if(is_wp_error($student)){
         //ts_data($student); //display errors
     } else {
         //ts_data($student); //display errors
         $tabs = $pane = array();
+        $academic_years = array();
+        for ($yr = date("Y"); $yr >= 2016; $yr--) {
+            $a = (string) $yr;
+            $b = (string) ($yr+1);
+            $academic_years[$yr] = $a . '/' . $b;
+        }
         if($student){
             $form_id = 'single_student';
+            $disbursement_tabs = array();
             foreach($student['scholarship'] AS $disbursement_scholarship) {
                 $disbursement_tabs[] = '<li role="presentation"><a href="#disbursement_'.$disbursement_scholarship->ScholarshipId.'" aria-controls="disbursement_'.$disbursement_scholarship->ScholarshipId.'" role="tab" data-toggle="tab">Disbursement ('.$this->queries->get_scholarship_by_id($disbursement_scholarship->ScholarshipId).')</a></li>';
                     }
@@ -199,9 +208,18 @@ if($student = $this->queries->get_student_data($applicant_id)) {
                     '.$this->report->other_form($student).'
                 </div>';
 
+            $ret['year_selector'] = $this->form->field_select('year_selector', $academic_year, 'Academic Year: ', null, $academic_years, array(), array('alignright'));
+            $jquery[] = "   
+                $('#year_selector_input').change(function(){
+                    var url = window.location.href; 
+                    var newdate = '&academic_year=' + $(this).val();
+                    url = url.replace(/&academic_year=\d{4}/gm,newdate);
+                    window.location.href = url;
+                });
+            ";
+
             $student['firstname'] = $student['renewal']->FirstName?$student['renewal']->FirstName:$student['personal']->FirstName;
             $student['lastname'] = $student['renewal']->LastName?$student['renewal']->LastName:$student['personal']->LastName;
-
             $ret['title'] = '<h2>Edit '.$student['firstname'].' '.$student['lastname'].' (User '.$student['personal']->UserId.')</h2>';
             $ret['form_header'] = $this->form->form_header($form_id,array($form_id));
             $ret['Applicant_UserId'] = $this->form->field_hidden("UserId", $user_id);
@@ -229,7 +247,7 @@ if($student = $this->queries->get_student_data($applicant_id)) {
 
             print implode("\n",$ret);
 
-            ts_data($student);
+            //ts_data($student);
         } else {
             print "Error. No records for this student. This should never happen.";
             die();

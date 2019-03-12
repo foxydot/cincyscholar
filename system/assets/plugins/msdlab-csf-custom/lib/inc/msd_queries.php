@@ -1299,7 +1299,8 @@ class MSDLAB_Queries{
     }
 
 
-    function get_student_data($applicant_id){
+    function get_student_data($applicant_id,$academic_year = FALSE){
+         if(!$academic_year){$academic_year = date("Y");}
         $personal['tables']['Applicant'] = array('*');
         $personal['where'] = 'applicant.ApplicantId = ' . $applicant_id;
 
@@ -1333,8 +1334,7 @@ class MSDLAB_Queries{
 
         $scholarship['tables']['scholarship'] = array('*');
         $scholarship['tables']['applicantscholarship'] = array('*');
-        $scholarship['where'] = 'applicantscholarship.ApplicantId = '.$applicant_id.' AND scholarship.ScholarshipId = applicantscholarship.ScholarshipId ORDER BY applicantscholarship.DateAwarded';
-
+        $scholarship['where'] = 'applicantscholarship.ApplicantId = '.$applicant_id.' AND applicantscholarship.AcademicYear = '.$academic_year.' AND scholarship.ScholarshipId = applicantscholarship.ScholarshipId ORDER BY applicantscholarship.DateAwarded';
         $queries = array('personal','recommend','independence','financial','agreements','docs','renewal','need','payment','scholarship');
         foreach($queries AS $query){
             $result_array = $this->get_result_set(${$query});
