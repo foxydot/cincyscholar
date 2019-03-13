@@ -831,7 +831,19 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     }
 
                     //ts_data($result);
-
+                    //create the notes on previous awards
+                    $award['tables']['applicantscholarship'] = array('*');
+                    $award['tables']['scholarship'] = array('*');
+                    $award['where'] = 'applicantscholarship.ApplicantId = ' . $applicant_id .' AND applicantscholarship.ScholarshipId = scholarship.ScholarshipId';
+                    $awards = $this->queries->get_result_set($award);
+                    foreach ($awards AS $award){
+                        $notes[] = 'Academic Year: '.$award->AcademicYear;
+                        $notes[] = 'Award ID: '.$award->AwardId;
+                        $notes[] = 'Scholarship & Amount: '.$award->Name.', $'.$award->AmountAwarded;
+                        $notes[] = 'Award Date: '.$award->DateAwarded;
+                        $award_notes[] = implode("\n",$notes);
+                    }
+                    $award_note = implode("\n",$award_notes);
 
                     $jquery['phone'] = "$('input[type=tel]').mask('(000) 000-0000');";
                     $jquery[] = '$("#' . $form_id . '").validate({
@@ -887,6 +899,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     $ret['Renewal_AnticipatedGraduationDate'] = $this->form->field_select('Renewal_AnticipatedGraduationDate', $result->AnticipatedGraduationDate ? $result->AnticipatedGraduationDate : date("Y").'-01-01', "Anticipated Graduation Date", array('value' => date("Y").'-01-01','option' => date("Y")), $this->col_gradyr_array, array('required' => 'required'), array('required', 'col-md-6', 'col-sm-12'));
                     $ret['Renewal_CurrentCumulativeGPA'] = $this->form->field_textfield('Renewal_CurrentCumulativeGPA', $result->CurrentCumulativeGPA ? $result->CurrentCumulativeGPA : null, 'Current Cumulative GPA', '0.00', array('required' => 'required', 'type' => 'number', 'minlength' => 1), array('required', 'col-md-6', 'col-sm-12'));
                     $ret['Renewal_CoopStudyAbroadNote'] = $this->form->field_textarea('Renewal_CoopStudyAbroadNote',$result->CoopStudyAbroadNote ? $result->CoopStudyAbroadNote : '',"Please indicate any plans to co-op or study abroad here so that your scholarship may be paid accordingly (scholarship is applied only to terms when enrolled full-time) :",null,array('col-md-12'));
+                    $ret['Renewal_Notes'] = $this->form->field_hidden("Renewal_Notes", $result->Notes?$result->Notes."\n".$award_note:$award_note);
 
                     $ret['Attachment_ApplicantId'] = $this->form->field_hidden("Attachment_ApplicantId", $applicant_id);
                     $ret['Attachment_RenewalId'] = $this->form->field_hidden("Attachment_RenewalId", $renewal_id);
