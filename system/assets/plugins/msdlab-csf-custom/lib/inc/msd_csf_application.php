@@ -837,10 +837,13 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     $award['where'] = 'applicantscholarship.ApplicantId = ' . $applicant_id .' AND applicantscholarship.ScholarshipId = scholarship.ScholarshipId';
                     $awards = $this->queries->get_result_set($award);
                     foreach ($awards AS $award){
+                        $notes = array();
+                        $notes[] = $award->AwardId.'(';
                         $notes[] = 'Academic Year: '.$award->AcademicYear;
-                        $notes[] = 'Award ID: '.$award->AwardId;
-                        $notes[] = 'Scholarship & Amount: '.$award->Name.', $'.$award->AmountAwarded;
+                        $notes[] = 'Scholarship: '.$award->Name;
+                        $notes[] = 'Amount Awarded: $'.$award->AmountAwarded;
                         $notes[] = 'Award Date: '.$award->DateAwarded;
+                        $notes[] = ');';
                         $award_notes[] = implode("\n",$notes);
                     }
                     $award_note = implode("\n",$award_notes);

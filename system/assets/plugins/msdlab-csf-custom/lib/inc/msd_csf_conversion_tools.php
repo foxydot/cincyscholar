@@ -100,6 +100,8 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
             </script>
             <div class="wrap">
                 <h2>Database Update Tools</h2>
+                <div class="row">
+                    <div style="float: left;width: 25%;">
                 <ul>
                     <?php
                     foreach ($methods AS $method){
@@ -108,7 +110,11 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
                     }
                     ?>
                 </ul>
+                    </div>
+                    <div style="float: left;width: 75%;">
                 <div class="response1"></div>
+                    </div>
+                </div>
             </div>
             <?php
         }
@@ -1186,6 +1192,37 @@ ADD `FinancialAidOK` tinyint(1) unsigned zerofill NOT NULL,
 ADD `FAFSAOK` tinyint(1) unsigned zerofill NOT NULL;";
             if($wpdb->query($sql)) {
                 print "renewal table updated!";
+            }
+        }
+
+        function add_previous_award_info_to_renewals(){
+            global $wpdb;
+            $sql = 'SELECT ApplicantId FROM renewal';
+            $result = $wpdb->get_results($sql);
+            foreach ($result AS $r){
+                $award = $award_notes = array();
+                $applicant_id = $r->ApplicantId;
+                $award['tables']['applicantscholarship'] = array('*');
+                $award['tables']['scholarship'] = array('*');
+                $award['where'] = 'applicantscholarship.ApplicantId = ' . $applicant_id .' AND applicantscholarship.ScholarshipId = scholarship.ScholarshipId';
+                $awards = $this->queries->get_result_set($award);
+
+                foreach ($awards AS $award){
+                    $notes = array();
+
+                    $notes[] = $award->AwardId.'(';
+                    $notes[] = 'Academic Year: '.$award->AcademicYear;
+                    $notes[] = 'Scholarship: '.$award->Name;
+                    $notes[] = 'Amount Awarded: $'.$award->AmountAwarded;
+                    $notes[] = 'Award Date: '.$award->DateAwarded;
+                    $notes[] = ');';
+                    $award_notes[] = implode("\n",$notes);
+                }
+                $award_note = implode("\n",$award_notes);
+                $sql = 'UPDATE renewal SET Notes = "'.$award_note.'" WHERE ApplicantId = '.$applicant_id.';';
+                if($wpdb->query($sql)) {
+                    print $applicant_id." updated!";
+                }
             }
         }
     }
