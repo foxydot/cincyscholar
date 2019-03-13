@@ -1325,7 +1325,7 @@ class MSDLAB_Queries{
         $docs['where'] = 'attachment.ApplicantID = '.$applicant_id;
 
         $renewal['tables']['renewal'] = array('*');
-        $renewal['where'] = 'renewal.ApplicantId = '.$applicant_id;
+        $renewal['where'] = 'renewal.ApplicantId = '.$applicant_id.' AND renewal.AcademicYear = '.$academic_year;
 
         $need['tables']['studentneed'] = array('*');
         $need['where'] = 'studentneed.ApplicantId = '.$applicant_id;

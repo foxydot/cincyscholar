@@ -512,19 +512,31 @@ class MSDLAB_Report_Output{
 
 
     function application_form($student_data){
-        $renewal = isset($student_data['renewal']->RenewalId)?true:false;
+        $renewal = false;
+
+        if(isset($student_data['renewal']->RenewalId)){
+            $renewal = true;
+        }
 
         $this->set_form_select_options();
         $ret['Applicant_ApplicationDateTime'] = $this->form->field_date("Applicant_ApplicationDateTime", (strtotime($student_data['personal']->ApplicationDateTime) > 0) ? date("Y-m-d", strtotime($student_data['personal']->ApplicationDateTime)) : '','Application Date',array(),array('datepicker','col-md-2', 'col-sm-12'));
         if($renewal){
             $ret['Renewal_RenewalDateTime'] = $this->form->field_date("Renewal_RenewalDateTime", (strtotime($student_data['renewal']->RenewalDateTime) > 0) ? date("Y-m-d", strtotime($student_data['renewal']->RenewalDateTime)): '','Renewal Date',array(),array('datepicker','col-md-2', 'col-sm-12'));
         }
-        $ret['Applicant_IsComplete'] = $this->form->field_boolean('Applicant_IsComplete',$student_data['personal']->IsComplete,'Complete',array(),array('col-md-1', 'col-sm-12'));
 
+        $ret['Applicant_IsComplete'] = $this->form->field_boolean('Applicant_IsComplete',$student_data['personal']->IsComplete,'Complete',array(),array('col-md-1', 'col-sm-12'));
         $ret['Applicant_ResumeOK'] = $this->form->field_boolean('Applicant_ResumeOK',$student_data['personal']->ResumeOK,'Resume',array(),array('col-md-1', 'col-sm-12'));
         $ret['Applicant_TranscriptOK'] = $this->form->field_boolean('Applicant_TranscriptOK',$student_data['personal']->TranscriptOK,'Transcript',array(),array('col-md-1', 'col-sm-12'));
         $ret['Applicant_FinancialAidOK'] = $this->form->field_boolean('Applicant_FinancialAidOK',$student_data['personal']->FinancialAidOK,'Fin. Aid',array(),array('col-md-1', 'col-sm-12'));
         $ret['Applicant_FAFSAOK'] = $this->form->field_boolean('Applicant_FAFSAOK',$student_data['personal']->FAFSAOK,'FAFSA',array(),array('col-md-1', 'col-sm-12'));
+        //override with renewal data
+        if($renewal) {
+            $ret['Applicant_IsComplete'] = $this->form->field_boolean('Renewal_IsComplete',$student_data['renewal']->IsComplete,'Complete',array(),array('col-md-1', 'col-sm-12'));
+            $ret['Applicant_ResumeOK'] = $this->form->field_boolean('Renewal_ResumeOK',$student_data['renewal']->ResumeOK,'Resume',array(),array('col-md-1', 'col-sm-12'));
+            $ret['Applicant_TranscriptOK'] = $this->form->field_boolean('Renewal_TranscriptOK',$student_data['renewal']->TranscriptOK,'Transcript',array(),array('col-md-1', 'col-sm-12'));
+            $ret['Applicant_FinancialAidOK'] = $this->form->field_boolean('Renewal_FinancialAidOK',$student_data['renewal']->FinancialAidOK,'Fin. Aid',array(),array('col-md-1', 'col-sm-12'));
+            $ret['Applicant_FAFSAOK'] = $this->form->field_boolean('renewal_FAFSAOK',$student_data['renewal']->FAFSAOK,'FAFSA',array(),array('col-md-1', 'col-sm-12'));
+        }
         $ret['infoAward'] = $this->form->field_textinfo('infoAward',$student_data['scholarship'][0]->AmountAwarded>0 ?'YES':'NO','Award?','','',array('col-md-1', 'col-sm-12'));
         $ret[] = '<hr />';
         $ret['Applicant_HighSchoolId'] = $this->form->field_select('Applicant_HighSchoolId', $student_data['personal']->HighSchoolId ? $student_data['personal']->HighSchoolId : 136, "High School Attended", $student_data['personal']->HighSchoolId ? $student_data['personal']->HighSchoolId : null, $this->highschool_array, array('required' => 'required'), array('required', 'col-md-4', 'col-sm-12'));
@@ -551,12 +563,12 @@ class MSDLAB_Report_Output{
         $ret['Guardian_AmountOwedOnHome'] = $this->form->field_textfield('Guardian_AmountOwedOnHome', $student_data['financial']->AmountOwedOnHome ? $student_data['financial']->AmountOwedOnHome : null, "Amount Owed",'50,000', array('type' => 'number'), array('col-md-4', 'col-sm-12','currency'));
         $ret['Guardian_HomeValue'] = $this->form->field_textfield('Guardian_HomeValue', $student_data['financial']->HomeValue ? $student_data['financial']->HomeValue : null, "Current Value",'100,000', array('type' => 'number'), array('col-md-4', 'col-sm-12','currency'));
 
+        $ret['infoCollegeId'] = $this->form->field_textinfo('infoCollegeId', $this->queries->get_college_by_id($student_data['personal']->CollegeId), 'College Attending', null, null, array('col-md-3', 'col-sm-12'));
+        $ret['infoOtherSchool'] = $this->form->field_textinfo('infoOtherSchool', $student_data['renewal']->OtherSchool ? $student_data['personal']->OtherSchool : '', 'Name of Unlisted Institution', null, null, array('col-md-3','col-sm-12')); //how are we handling "other" in the new DB?
+        //override with renewal info
         if($renewal){
             $ret['infoCollegeId'] = $this->form->field_textinfo('infoCollegeId', $this->queries->get_college_by_id($student_data['renewal']->CollegeId), 'College Attending', null, null, array('col-md-3', 'col-sm-12'));
             $ret['infoOtherSchool'] = $this->form->field_textinfo('infoOtherSchool', $student_data['renewal']->OtherSchool ? $student_data['renewal']->OtherSchool : '', 'Name of Unlisted Institution', null, null, array('col-md-3','col-sm-12')); //how are we handling "other" in the new DB?
-        } else {
-            $ret['infoCollegeId'] = $this->form->field_textinfo('infoCollegeId', $this->queries->get_college_by_id($student_data['personal']->CollegeId), 'College Attending', null, null, array('col-md-3', 'col-sm-12'));
-            $ret['infoOtherSchool'] = $this->form->field_textinfo('infoOtherSchool', $student_data['renewal']->OtherSchool ? $student_data['personal']->OtherSchool : '', 'Name of Unlisted Institution', null, null, array('col-md-3','col-sm-12')); //how are we handling "other" in the new DB?
         }
         $ret['Applicant_AppliedBefore'] = $this->form->field_boolean('Applicant_AppliedBefore', $student_data['personal']->AppliedBefore ? $student_data['personal']->AppliedBefore : 0, "Applied to CSF Before?",null, array('col-md-3'));
 
