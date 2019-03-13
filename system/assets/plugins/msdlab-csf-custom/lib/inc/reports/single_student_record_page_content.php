@@ -10,9 +10,9 @@ if($_POST) {
         'success' => 'Student info saved!'
     );
     $where = array();
-    $where['applicant'] = 'UserId = ' . $_POST['Applicant_UserId_input'];
+    $where['applicant'] = 'ApplicantId = ' . $_POST['Applicant_ApplicantId_input'];
     if($_POST['Renewal_UserId_input']){
-        $where['renewal'] = 'UserId = ' . $_POST['Renewal_UserId_input'];
+        $where['renewal'] = 'RenewalId = ' . $_POST['Renewal_RenewalId_input'];
     }
     if($_POST['Guardian_ApplicantId_input']){
         $where['guardian'] = 'ApplicantId = ' . $_POST['Guardian_ApplicantId_input'];
@@ -24,9 +24,9 @@ if($_POST) {
         $where['applicantscholarship'] = 'ApplicantId = ' . $_POST['ApplicantScholarship_ApplicantId_input'];
     }
     if($_POST['Applicant_UserId_input']){
-        $where['studentneed'] = 'UserId = ' . $_POST['Applicant_UserId_input'];
+        $where['studentneed'] = 'ApplicantId = ' . $_POST['Applicant_ApplicantId_input'];
     }
-    $where['payment'] = 'UserId = ' . $_POST['Applicant_UserId_input'];
+    $where['payment'] = 'ApplicantId = ' . $_POST['Applicant_ApplicantId_input'];
     if ($msg = $this->queries->set_data('single_student', $where, $notifications)) {
         print '<div class="updated notice notice-success is-dismissible">' . $msg . '</div>';
         if($_POST['ApplicantScholarship_AwardId_input'] > 0 && $_POST['ApplicantScholarship_ScholarshipId_input'] == ''){
@@ -43,7 +43,7 @@ if($_POST) {
     die();
 }
 
-$applicant_id = $this->queries->get_applicant_id($user_id);
+$applicant_id = $this->queries->get_applicant_id($user_id,$academic_year);
 
 if($student = $this->queries->get_student_data($applicant_id,$academic_year)) {
     if(is_wp_error($student)){

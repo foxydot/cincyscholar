@@ -1273,9 +1273,10 @@ class MSDLAB_Queries{
         return $result[0]->ProcessStepId;
     }
 
-    function get_applicant_id($user_id){
+    function get_applicant_id($user_id,$academic_year = FALSE){
+        if(!$academic_year){$academic_year = date("Y");}
         global $wpdb;
-        $sql = "SELECT ApplicantId FROM applicant WHERE UserId = ". $user_id ." ORDER BY AcademicYear DESC LIMIT 1;";
+        $sql = "SELECT ApplicantId FROM applicant WHERE UserId = ". $user_id ." AND AcademicYear = " . $academic_year . " LIMIT 1;";
         //error_log($sql);
         $result = $wpdb->get_results($sql);
         return $result[0]->ApplicantId;
