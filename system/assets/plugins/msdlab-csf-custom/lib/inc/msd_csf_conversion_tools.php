@@ -18,48 +18,16 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
         function __construct(){
             add_action('admin_menu', array(&$this,'settings_page'));
 
-            add_action( 'wp_ajax_create_student_users', array(&$this,'create_student_users') );
-            add_action( 'wp_ajax_create_donor_users', array(&$this,'create_donor_users') );
-            add_action( 'wp_ajax_copy_application_dates', array(&$this,'copy_application_dates') );
-            add_action( 'wp_ajax_move_applicant_majors', array(&$this,'move_applicant_majors') );
-            add_action( 'wp_ajax_reduce_majors', array(&$this,'reduce_majors') );
-            add_action( 'wp_ajax_fix_emails', array(&$this,'fix_emails') );
-            add_action( 'wp_ajax_update_renewal_table', array(&$this,'update_renewal_table') );
-            add_action( 'wp_ajax_update_applicant_table', array(&$this,'update_applicant_table') );
-            add_action( 'wp_ajax_parse_emails', array(&$this,'parse_duplicate_emails') );
-            add_action( 'wp_ajax_move_collegeid', array(&$this,'move_collegeid') );
-            add_action( 'wp_ajax_add_renewal_to_attachment_table', array(&$this,'add_renewal_to_attachment_table') );
-            add_action( 'wp_ajax_send_renewal_emails', array(&$this,'send_renewal_emails') );
-            add_action( 'wp_ajax_fix_up_renewal_attachments', array(&$this,'fix_up_renewal_attachments') );
-            add_action( 'wp_ajax_update_unpublishable_tables', array(&$this,'update_unpublishable_tables') );
-            add_action( 'wp_ajax_add_need_table', array(&$this,'add_need_table') );
-            add_action( 'wp_ajax_add_payment_table', array(&$this,'add_payment_table') );
-            add_action( 'wp_ajax_remove_unneccesary_tables', array(&$this,'remove_unneccesary_tables') );
-            add_action( 'wp_ajax_add_employer_table', array(&$this,'add_employer_table') );
-            add_action( 'wp_ajax_update_applicant_table_again', array(&$this,'update_applicant_table_again') );
-            add_action( 'wp_ajax_update_guardian_table', array(&$this,'update_guardian_table') );
-            add_action( 'wp_ajax_update_applicantscholarship_table', array(&$this,'update_applicantscholarship_table') );
-            add_action( 'wp_ajax_modify_amount_columns', array(&$this,'modify_amount_columns') );
-            add_action( 'wp_ajax_repair_renewals_with_no_user_id', array(&$this,'repair_renewals_with_no_user_id') );
-            add_action( 'wp_ajax_clean_text_fields', array(&$this,'clean_text_fields') );
-            add_action( 'wp_ajax_add_other_school_to_renewals', array(&$this,'add_other_school_to_renewals') );
-            add_action( 'wp_ajax_make_scholarships_deleteable', array(&$this,'make_scholarships_deleteable') );
-            add_action( 'wp_ajax_recommend', array(&$this,'recommend') );
-            add_action( 'wp_ajax_add_contacts_to_scholarships', array(&$this,'add_contacts_to_scholarships') );
-            add_action( 'wp_ajax_create_donoruserscholarship', array(&$this,'create_donoruserscholarship') );
-            add_action( 'wp_ajax_add_reject_columns', array(&$this,'add_reject_columns') );
-            add_action( 'wp_ajax_add_award_id', array(&$this,'add_award_id') );
-            add_action( 'wp_ajax_add_academic_year_columns', array(&$this,'add_academic_year_columns') );
-            add_action( 'wp_ajax_add_awardid_to_payments', array(&$this,'add_awardid_to_payments') );
-            add_action( 'wp_ajax_add_employerid_columns', array(&$this,'add_employerid_columns') );
-            add_action( 'wp_ajax_add_calipari_column', array(&$this,'add_calipari_column') );
-            add_action( 'wp_ajax_move_temp_payments_to_payments', array(&$this,'move_temp_payments_to_payments') );
-            add_action( 'wp_ajax_update_awarded_users', array(&$this,'update_awarded_users') );
-            add_action( 'wp_ajax_update_academic_year_columns', array(&$this,'update_academic_year_columns') );
-            add_action( 'wp_ajax_create_renewal_users_from_paper_applicant_list', array(&$this,'create_renewal_users_from_paper_applicant_list') );
-            add_action( 'wp_ajax_send_renewal_emails_2019', array(&$this,'send_renewal_emails_2019') );
-            add_action( 'wp_ajax_fix_stupid_extra_duplicates', array(&$this,'fix_stupid_extra_duplicates') );
-
+            $methods = get_class_methods($this);
+            $hidden_methods = array('__construct','settings_page','settings_page_content','random_str');
+            foreach($hidden_methods AS $hm) {
+                if (($key = array_search($hm, $methods)) !== false) {
+                    unset($methods[$key]);
+                }
+            }
+            foreach ($methods AS $method){
+                add_action('wp_ajax_'.$method, array(&$this,$method));
+            }
 
             add_filter('send_password_change_email',array(&$this,'return_false'));
             add_filter('send_email_change_email',array(&$this,'return_false'));
@@ -1093,7 +1061,13 @@ VALUES
         }
         function settings_page_content()
         {
-
+            $methods = get_class_methods($this);
+            $hidden_methods = array('__construct','settings_page','settings_page_content','random_str');
+            foreach($hidden_methods AS $hm) {
+                if (($key = array_search($hm, $methods)) !== false) {
+                    unset($methods[$key]);
+                }
+            }
             ?>
             <style>
                 span.note{
@@ -1120,467 +1094,33 @@ VALUES
             <script>
                 jQuery(document).ready(function($) {
                     $('.done button').attr("disabled", "disabled").html('Done');
-                    $('.create_student_users').click(function(){
+                    <?php
+                    foreach ($methods AS $method){
+                        print "$('.".$method."').click(function(){
                         var data = {
-                            action: 'create_student_users',
+                            action: '".$method."',
                         }
                         jQuery.post(ajaxurl, data, function(response) {
                             $('.response1').html(response);
                             console.log(response);
                         });
                     });
-                    $('.create_donor_users').click(function(){
-                        var data = {
-                            action: 'create_donor_users',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.copy_application_dates').click(function(){
-                        var data = {
-                            action: 'copy_application_dates',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.move_applicant_majors').click(function(){
-                        var data = {
-                            action: 'move_applicant_majors',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.reduce_majors').click(function(){
-                        var data = {
-                            action: 'reduce_majors',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.fix_emails').click(function(){
-                        var data = {
-                            action: 'fix_emails',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.update_renewal_table').click(function(){
-                        var data = {
-                            action: 'update_renewal_table',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.update_applicant_table').click(function(){
-                        var data = {
-                            action: 'update_applicant_table',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.parse_emails').click(function(){
-                        var data = {
-                            action: 'parse_emails',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.move_collegeid').click(function(){
-                        var data = {
-                            action: 'move_collegeid',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.add_renewal_to_attachment_table').click(function(){
-                        var data = {
-                            action: 'add_renewal_to_attachment_table',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.send_renewal_emails').click(function(){
-                        var data = {
-                            action: 'send_renewal_emails',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.send_renewal_emails_2019').click(function(){
-                        var data = {
-                            action: 'send_renewal_emails_2019',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.fix_up_renewal_attachments').click(function(){
-                        var data = {
-                            action: 'fix_up_renewal_attachments',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.update_unpublishable_tables').click(function(){
-                        var data = {
-                            action: 'update_unpublishable_tables',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.add_need_table').click(function(){
-                        var data = {
-                            action: 'add_need_table',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.add_payment_table').click(function(){
-                        var data = {
-                            action: 'add_payment_table',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.remove_unneccesary_tables').click(function(){
-                        var data = {
-                            action: 'remove_unneccesary_tables',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.add_employer_table').click(function(){
-                        var data = {
-                            action: 'add_employer_table',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.update_applicant_table_again').click(function(){
-                        var data = {
-                            action: 'update_applicant_table_again',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.update_guardian_table').click(function(){
-                        var data = {
-                            action: 'update_guardian_table',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.update_applicantscholarship_table').click(function(){
-                        var data = {
-                            action: 'update_applicantscholarship_table',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.modify_amount_columns').click(function(){
-                        var data = {
-                            action: 'modify_amount_columns',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.repair_renewals_with_no_user_id').click(function(){
-                        var data = {
-                            action: 'repair_renewals_with_no_user_id',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.clean_text_fields').click(function(){
-                        var data = {
-                            action: 'clean_text_fields',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.add_other_school_to_renewals').click(function(){
-                        var data = {
-                            action: 'add_other_school_to_renewals',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.make_scholarships_deleteable').click(function(){
-                        var data = {
-                            action: 'make_scholarships_deleteable',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.recommend').click(function(){
-                        var data = {
-                            action: 'recommend',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.add_contacts_to_scholarships').click(function(){
-                        var data = {
-                            action: 'add_contacts_to_scholarships',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.create_donoruserscholarship').click(function(){
-                        var data = {
-                            action: 'create_donoruserscholarship',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.add_reject_columns').click(function(){
-                        var data = {
-                            action: 'add_reject_columns',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.add_award_id').click(function(){
-                        var data = {
-                            action: 'add_award_id',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.add_academic_year_columns').click(function(){
-                        var data = {
-                            action: 'add_academic_year_columns',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.add_awardid_to_payments').click(function(){
-                        var data = {
-                            action: 'add_awardid_to_payments',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.add_employerid_columns').click(function(){
-                        var data = {
-                            action: 'add_employerid_columns',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.add_calipari_column').click(function(){
-                        var data = {
-                            action: 'add_calipari_column',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.move_temp_payments_to_payments').click(function(){
-                        var data = {
-                            action: 'move_temp_payments_to_payments',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.update_awarded_users').click(function(){
-                        var data = {
-                            action: 'update_awarded_users',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.update_academic_year_columns').click(function(){
-                        var data = {
-                            action: 'update_academic_year_columns',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.create_renewal_users_from_paper_applicant_list').click(function(){
-                        var data = {
-                            action: 'create_renewal_users_from_paper_applicant_list',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    $('.fix_stupid_extra_duplicates').click(function(){
-                        var data = {
-                            action: 'fix_stupid_extra_duplicates',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
+                    ";
+                    }
+                    ?>
                 });
 
             </script>
             <div class="wrap">
                 <h2>Database Update Tools</h2>
-                <dl>
-                    <div class="done">
-                    <dt>Create Student Users:</dt>
-                   <dd><button class="create_student_users">Go</button></dd>
-                    <dt>Create Donor Users:</dt>
-                    <dd><button class="create_donor_users">Go</button></dd>
-                    <dt>Copy Application Dates:</dt>
-                    <dd><button class="copy_application_dates">Go</button></dd>
-                    <dt>Move Applicant Majors:</dt>
-                    <dd><button class="move_applicant_majors">Go</button></dd>
-                    <dt>Reduce Majors:</dt>
-                    <dd><button class="reduce_majors">Go</button></dd>
-                    <dt>Fix Emails:</dt>
-                    <dd><button class="fix_emails">Go</button></dd>
-
-                    <dt>Update Renewal Table:</dt>
-                    <dd><button class="update_renewal_table">Go</button></dd>
-                    <dt>Update Applicant Table:</dt>
-                    <dd><button class="update_applicant_table">Go</button></dd>
-                    <dt>Parse Emails for Renewals:</dt>
-                    <dd><button class="parse_emails">Go</button></dd>
-                    <dt>Move CollegeID to applicant table:</dt>
-                    <dd><button class="move_collegeid">Go</button></dd>
-                    <dt>Add renewal to attachment table:</dt>
-                    <dd><button class="add_renewal_to_attachment_table">Go</button></dd>
-                    <dt>Fix up renewal attachments:</dt>
-                    <dd><button class="fix_up_renewal_attachments">Go</button></dd>
-                    <dt>Update unpublishable tables:</dt>
-                    <dd><button class="update_unpublishable_tables">Go</button></dd>
-                    <dt>Add need table:</dt>
-                    <dd><button class="add_need_table">Go</button></dd>
-                    <dt>Add payment table:</dt>
-                    <dd><button class="add_payment_table">Go</button></dd>
-                    <dt>Remove unneccessary tables:</dt>
-                    <dd><button class="remove_unneccesary_tables">Go</button></dd>
-                    <dt>Add employer table:</dt>
-                    <dd><button class="add_employer_table">Go</button></dd>
-                    <dt>Update Applicant Table Again:</dt>
-                    <dd><button class="update_applicant_table_again">Go</button></dd>
-                    <dt>Update Guardian Table:</dt>
-                    <dd><button class="update_guardian_table">Go</button></dd>
-                    <dt>Update ApplicantScholarship Table:</dt>
-                    <dd><button class="update_applicantscholarship_table">Go</button></dd>
-                    <dt>Modify Amount Columns:</dt>
-                    <dd><button class="modify_amount_columns">Go</button></dd>
-                    <dt>repair_renewals_with_no_user_id:</dt>
-                    <dd><button class="repair_renewals_with_no_user_id">Go</button></dd>
-                    <dt>Clean up text fields:</dt>
-                    <dd><button class="clean_text_fields">Go</button></dd>
-                    <dt>add_other_school_to_renewals:</dt>
-                    <dd><button class="add_other_school_to_renewals">Go</button></dd>
-                    <dt>make_scholarships_deleteable:</dt>
-                    <dd><button class="make_scholarships_deleteable">Go</button></dd>
-                    <dt>recommend:</dt>
-                    <dd><button class="recommend">Go</button></dd>
-                    <dt>add_contacts_to_scholarships:</dt>
-                    <dd><button class="add_contacts_to_scholarships">Go</button></dd>
-                    <dt>create_donoruserscholarship:</dt>
-                    <dd><button class="create_donoruserscholarship">Go</button></dd>
-                    <dt>add_reject_columns:</dt>
-                    <dd><button class="add_reject_columns">Go</button></dd>
-                    <dt>add_award_id:</dt>
-                    <dd><button class="add_award_id">Go</button></dd>
-                    <dt>add_academic_year_columns:</dt>
-                    <dd><button class="add_academic_year_columns">Go</button></dd>
-                    </div>
-                    <dt>add_awardid_to_payments:</dt>
-                    <dd><button class="add_awardid_to_payments">Go</button></dd>
-                    <dt>add_employerid_columns:</dt>
-                    <dd><button class="add_employerid_columns">Go</button></dd>
-                    <dt>add_calipari_column:</dt>
-                    <dd><button class="add_calipari_column">Go</button></dd>
-                    <dt>move_temp_payments_to_payments:</dt>
-                    <dd><button class="move_temp_payments_to_payments">Go</button></dd>
-                    <dt>update_awarded_users:</dt>
-                    <dd><button class="update_awarded_users">Go</button></dd>
-
-                    <dt>update_academic_year_columns:</dt>
-                    <dd><button class="update_academic_year_columns">Go</button></dd>
-                    <dt>create_renewal_users_from_paper_applicant_list:</dt>
-                    <dd><button class="create_renewal_users_from_paper_applicant_list">Go</button></dd>
-
-                    <dt>Send renewal emails:</dt>
-                    <dd><button class="send_renewal_emails_2019">Go</button></dd>
-                    <dt>fix_stupid_extra_duplicates:</dt>
-                    <dd><button class="fix_stupid_extra_duplicates">Go</button></dd>
-                </dl>
+                <ul>
+                    <?php
+                    foreach ($methods AS $method){
+                        print '<li><button class="'.$method.'">'.$method.'</button></li>
+                   ';
+                    }
+                    ?>
+                </ul>
                 <div class="response1"></div>
             </div>
             <?php
