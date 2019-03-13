@@ -34,6 +34,132 @@ if(!class_exists('MSDLab_CSF_Conversion_Tools')){
 
             $this->queries = new MSDLAB_Queries();
         }
+
+
+        //utility
+        function settings_page()
+        {
+            if ( count($_POST) > 0 && isset($_POST['csf_settings']) )
+            {
+                //do post stuff if needed.
+
+            }
+            add_submenu_page('tools.php',__('Database Tools'),__('Database Tools'), 'administrator', 'convert-options', array(&$this,'settings_page_content'));
+        }
+        function settings_page_content()
+        {
+            $methods = get_class_methods($this);
+            $hidden_methods = array('__construct','settings_page','settings_page_content','random_str');
+            foreach($hidden_methods AS $hm) {
+                if (($key = array_search($hm, $methods)) !== false) {
+                    unset($methods[$key]);
+                }
+            }
+            ?>
+            <style>
+                span.note{
+                    display: block;
+                    font-size: 0.9em;
+                    font-style: italic;
+                    color: #999999;
+                }
+                body{
+                    background-color: transparent;
+                }
+                .input-table.even{background-color: rgba(0,0,0,0.1);padding: 2rem 0;}
+                .input-table .description{display:none}
+                .input-table li:after{content:".";display:block;clear:both;visibility:hidden;line-height:0;height:0}
+                .input-table label{display:block;font-weight:bold;margin-right:1%;float:left;width:14%;text-align:right}
+                .input-table label span{display:inline;font-weight:normal}
+                .input-table span{color:#999;display:block}
+                .input-table .input{width:85%;float:left}
+                .input-table .input .half{width:48%;float:left}
+                .input-table textarea,.input-table input[type='text'],.input-table select{display:inline;margin-bottom:3px;width:90%}
+                .input-table .mceIframeContainer{background:#fff}
+                .input-table h4{color:#999;font-size:1em;margin:15px 6px;text-transform:uppercase}
+            </style>
+            <script>
+                jQuery(document).ready(function($) {
+                    $('.done button').attr("disabled", "disabled").html('Done');
+                    <?php
+                    foreach ($methods AS $method){
+                        print "$('.".$method."').click(function(){
+                        var data = {
+                            action: '".$method."',
+                        }
+                        jQuery.post(ajaxurl, data, function(response) {
+                            $('.response1').html(response);
+                            console.log(response);
+                        });
+                    });
+                    ";
+                    }
+                    ?>
+                });
+
+            </script>
+            <div class="wrap">
+                <h2>Database Update Tools</h2>
+                <ul>
+                    <?php
+                    foreach ($methods AS $method){
+                        print '<li><button class="'.$method.'">'.$method.'</button></li>
+                   ';
+                    }
+                    ?>
+                </ul>
+                <div class="response1"></div>
+            </div>
+            <?php
+        }
+
+
+        /**
+         * Generate and return a random characters string
+         *
+         * Useful for generating passwords or hashes.
+         *
+         * The default string returned is 8 alphanumeric characters string.
+         *
+         * The type of string returned can be changed with the "type" parameter.
+         * Seven types are - by default - available: basic, alpha, alphanum, num, nozero, unique and md5.
+         *
+         * @param   string  $type    Type of random string.  basic, alpha, alphanum, num, nozero, unique and md5.
+         * @param   integer $length  Length of the string to be generated, Default: 8 characters long.
+         * @return  string
+         */
+        function random_str($type = 'alphanum', $length = 8)
+        {
+            switch($type)
+            {
+                case 'basic'    : return mt_rand();
+                    break;
+                case 'alpha'    :
+                case 'alphanum' :
+                case 'num'      :
+                case 'nozero'   :
+                    $seedings             = array();
+                    $seedings['alpha']    = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                    $seedings['alphanum'] = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                    $seedings['num']      = '0123456789';
+                    $seedings['nozero']   = '123456789';
+
+                    $pool = $seedings[$type];
+
+                    $str = '';
+                    for ($i=0; $i < $length; $i++)
+                    {
+                        $str .= substr($pool, mt_rand(0, strlen($pool) -1), 1);
+                    }
+                    return $str;
+                    break;
+                case 'unique'   :
+                case 'md5'      :
+                    return md5(uniqid(mt_rand()));
+                    break;
+            }
+        }
+
         //methods
         function create_student_users(){
             global $wpdb;
@@ -1048,128 +1174,18 @@ VALUES
                     print '<li>Duplicate application #'.$student->RenewalApplicantId.' deleted.</li>';
                 }              }
         }
-        
-        //utility
-        function settings_page()
-        {
-            if ( count($_POST) > 0 && isset($_POST['csf_settings']) )
-            {
-                //do post stuff if needed.
-
-            }
-            add_submenu_page('tools.php',__('Database Tools'),__('Database Tools'), 'administrator', 'convert-options', array(&$this,'settings_page_content'));
-        }
-        function settings_page_content()
-        {
-            $methods = get_class_methods($this);
-            $hidden_methods = array('__construct','settings_page','settings_page_content','random_str');
-            foreach($hidden_methods AS $hm) {
-                if (($key = array_search($hm, $methods)) !== false) {
-                    unset($methods[$key]);
-                }
-            }
-            ?>
-            <style>
-                span.note{
-                    display: block;
-                    font-size: 0.9em;
-                    font-style: italic;
-                    color: #999999;
-                }
-                body{
-                    background-color: transparent;
-                }
-                .input-table.even{background-color: rgba(0,0,0,0.1);padding: 2rem 0;}
-                .input-table .description{display:none}
-                .input-table li:after{content:".";display:block;clear:both;visibility:hidden;line-height:0;height:0}
-                .input-table label{display:block;font-weight:bold;margin-right:1%;float:left;width:14%;text-align:right}
-                .input-table label span{display:inline;font-weight:normal}
-                .input-table span{color:#999;display:block}
-                .input-table .input{width:85%;float:left}
-                .input-table .input .half{width:48%;float:left}
-                .input-table textarea,.input-table input[type='text'],.input-table select{display:inline;margin-bottom:3px;width:90%}
-                .input-table .mceIframeContainer{background:#fff}
-                .input-table h4{color:#999;font-size:1em;margin:15px 6px;text-transform:uppercase}
-            </style>
-            <script>
-                jQuery(document).ready(function($) {
-                    $('.done button').attr("disabled", "disabled").html('Done');
-                    <?php
-                    foreach ($methods AS $method){
-                        print "$('.".$method."').click(function(){
-                        var data = {
-                            action: '".$method."',
-                        }
-                        jQuery.post(ajaxurl, data, function(response) {
-                            $('.response1').html(response);
-                            console.log(response);
-                        });
-                    });
-                    ";
-                    }
-                    ?>
-                });
-
-            </script>
-            <div class="wrap">
-                <h2>Database Update Tools</h2>
-                <ul>
-                    <?php
-                    foreach ($methods AS $method){
-                        print '<li><button class="'.$method.'">'.$method.'</button></li>
-                   ';
-                    }
-                    ?>
-                </ul>
-                <div class="response1"></div>
-            </div>
-            <?php
-        }
 
 
-        /**
-         * Generate and return a random characters string
-         *
-         * Useful for generating passwords or hashes.
-         *
-         * The default string returned is 8 alphanumeric characters string.
-         *
-         * The type of string returned can be changed with the "type" parameter.
-         * Seven types are - by default - available: basic, alpha, alphanum, num, nozero, unique and md5.
-         *
-         * @param   string  $type    Type of random string.  basic, alpha, alphanum, num, nozero, unique and md5.
-         * @param   integer $length  Length of the string to be generated, Default: 8 characters long.
-         * @return  string
-         */
-        function random_str($type = 'alphanum', $length = 8)
-        {
-            switch($type)
-            {
-                case 'basic'    : return mt_rand();
-                    break;
-                case 'alpha'    :
-                case 'alphanum' :
-                case 'num'      :
-                case 'nozero'   :
-                    $seedings             = array();
-                    $seedings['alpha']    = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-                    $seedings['alphanum'] = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-                    $seedings['num']      = '0123456789';
-                    $seedings['nozero']   = '123456789';
-
-                    $pool = $seedings[$type];
-
-                    $str = '';
-                    for ($i=0; $i < $length; $i++)
-                    {
-                        $str .= substr($pool, mt_rand(0, strlen($pool) -1), 1);
-                    }
-                    return $str;
-                    break;
-                case 'unique'   :
-                case 'md5'      :
-                    return md5(uniqid(mt_rand()));
-                    break;
+        function update_renewal_table_with_completion_fields(){
+            global $wpdb;
+            $sql = "ALTER TABLE renewal 
+ADD `IsComplete` tinyint(4) NOT NULL,
+ADD `ResumeOK` tinyint(1) unsigned zerofill NOT NULL,
+ADD `TranscriptOK` tinyint(1) unsigned zerofill NOT NULL,
+ADD `FinancialAidOK` tinyint(1) unsigned zerofill NOT NULL,
+ADD `FAFSAOK` tinyint(1) unsigned zerofill NOT NULL;";
+            if($wpdb->query($sql)) {
+                print "renewal table updated!";
             }
         }
     }
