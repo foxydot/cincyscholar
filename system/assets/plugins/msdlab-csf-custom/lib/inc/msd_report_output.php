@@ -965,5 +965,63 @@ class MSDLAB_Report_Output{
             return implode("\n\r", $ret);
         }
     }
+
+
+
+    function checks_to_print_table_data($fields,$result,$table_data){
+        $ret = array();
+        $ecsv = array();
+        foreach($table_data AS $college_data){
+            foreach ($college_data['Students'] AS $student_data) {
+                $row = array();
+                $erow = array();
+                foreach ($student_data AS $key => $value) {
+                    switch ($key) {
+                        case 'CheckAmount':
+                            $printval = '$' . $value;
+                            break;
+                        default:
+                            $printval = $value;
+                            break;
+                    }
+                    $row[] = '<td class="' . $value . '"><div>' . $printval . '</div></td>';
+                    if (!in_array($value, $this->skipcsv)) {
+                        $erow[] = $this->csv_safe($printval);
+                    }
+                }
+                $ret[] = '<tr class="'.$class.'">'.implode("\n\r", $row).'</tr>';
+                $ecsv[] = implode(",",$erow);
+            }
+            //final total
+            $row = array();
+            $erow = array();
+
+            $row[] = '<td class="College"><div>'.$college_data['College'].'</div></td>';
+            $erow[] = $this->csv_safe($college_data['College']);
+
+            $row[] = '<td colspan=4></td>';
+            $erow[] = '';
+            $erow[] = '';
+            $erow[] = '';
+            $erow[] = '';
+
+
+            $row[] = '<td class="CheckAmount"><div>$'.array_sum($college_data['CheckAmount']).'</div></td>';
+            $erow[] = $this->csv_safe('$'.array_sum($college_data['CheckAmount']));
+
+
+            $ret[] = '<tr class="total '.$class.'">'.implode("\n\r", $row).'</tr>';
+            $ecsv[] = implode(",",$erow);
+            $ecsv[] = "\n";
+        }
+
+        $this->export_csv = implode("\n", $ecsv);
+
+        if($echo){
+            print implode("\n\r", $ret);
+        } else {
+            return implode("\n\r", $ret);
+        }
+    }
 }
 

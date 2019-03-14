@@ -259,9 +259,16 @@ class MSDLab_ReportControls{
         $fund = $this->queries->get_select_array_from_db('fund', 'FundId', 'Name','FundId');
         $bool_options = array('0'=>'No','1'=>'Yes');
         $paymentkeys = array('1' => '1','1-Adj' => '1-Adj','2' => '2','2-Adj' => '2-Adj','3' => '3');
+        $academic_years = array();
+        for ($yr = date("Y"); $yr >= 2016; $yr--) {
+            $a = (string) $yr;
+            $b = (string) ($yr+1);
+            $academic_years[$yr] = $a . '/' . $b;
+        }
 
         switch($id){
             case 'checks_to_print':
+                $ret['academic_year'] = $this->select_search('Academic Year','academic_year',$academic_years);
                 $ret['payment_number'] = $this->select_search('Payment #','payment_number',$paymentkeys);
                 break;
         }

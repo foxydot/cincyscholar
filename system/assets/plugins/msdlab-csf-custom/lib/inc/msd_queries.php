@@ -167,7 +167,7 @@ class MSDLAB_Queries{
         $sql[] = ';';
 
         //TODO: refactor all queries to ue proper JOIN
-        //error_log('select_sql:'.implode(' ',$sql));
+        error_log('select_sql:'.implode(' ',$sql));
         $result = $wpdb->get_results(implode(' ',$sql));
         return $result;
     }
@@ -1413,16 +1413,41 @@ class MSDLAB_Queries{
         return $result[0]->Name;
     }
 
-    public function get_other_school($applicant_id){
-        $data['tables']['renewal'] = array('OtherSchool');
-        $data['where'] = 'renewal.ApplicantId = '.$applicant_id.' AND renewal.CollegeId = 343';
+    public function get_other_school($applicant_id)
+    {
+        $data['tables']['renewal'] = array('CollegeId');
+        $data['where'] = 'renewal.ApplicantId = ' . $applicant_id;
         $results = $this->get_result_set($data);
-        if(count($results) < 1){
-            $data['tables']['applicant'] = array('OtherSchool');
-            $data['where'] = 'applicant.ApplicantId = '.$applicant_id.' AND applicant.CollegeId = 343';
+        if (count($results) >= 1) {
+            $college_id = $results[0]->CollegeId;
+            if($college_id != 343){
+                return $this->get_college_by_id($college_id);
+            } else {
+                $data = array();
+                $data['tables']['renewal'] = array('OtherSchool');
+                $data['where'] = 'renewal.ApplicantId = ' . $applicant_id ;
+                $results = $this->get_result_set($data);
+                if (count($results) < 1) {
+                    $data = array();
+                    $data['tables']['applicant'] = array('OtherSchool');
+                    $data['where'] = 'applicant.ApplicantId = ' . $applicant_id ;
+                    $results = $this->get_result_set($data);
+                }
+                return $results[0]->OtherSchool;
+            }
+        } else {
+            $data = array();
+            $data['tables']['renewal'] = array('OtherSchool');
+            $data['where'] = 'renewal.ApplicantId = ' . $applicant_id;
             $results = $this->get_result_set($data);
+            if (count($results) < 1) {
+                $data = array();
+                $data['tables']['applicant'] = array('OtherSchool');
+                $data['where'] = 'applicant.ApplicantId = ' . $applicant_id;
+                $results = $this->get_result_set($data);
+            }
+            return $results[0]->OtherSchool;
         }
-        return $results[0]->OtherSchool;
     }
 
     function get_major_by_id($id){
