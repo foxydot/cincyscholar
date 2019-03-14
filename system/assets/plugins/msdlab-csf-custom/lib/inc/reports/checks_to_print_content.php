@@ -46,7 +46,7 @@ if($_POST){
     $check_data = array();
     foreach($result as $k => $user){
         $student_id = $user->StudentId != ''?$user->StudentId:'SSN '.$user->Last4SSN;
-        if($user->theCollegeId == 343){
+        if($user->theCollegeId == 343 || $user->theCollegeId == 0){
             $college = $this->queries->get_other_school($user->ApplicantId);
         } else {
             $college = $this->queries->get_college_by_id($user->theCollegeId);
@@ -56,6 +56,7 @@ if($_POST){
         $collegefund = $college;
         $check_data[$collegefund]['College'] = $college;
         $check_data[$collegefund]['Students'][$user->ApplicantId] = array(
+            //'ID' => $user->ApplicantId,
             'College'   => $college,
             'FirstName' => $user->FirstName,
             'LastName'  => $user->LastName,

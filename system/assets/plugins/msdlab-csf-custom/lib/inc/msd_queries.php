@@ -1420,7 +1420,7 @@ class MSDLAB_Queries{
         $results = $this->get_result_set($data);
         if (count($results) >= 1) {
             $college_id = $results[0]->CollegeId;
-            if($college_id != 343){
+            if($college_id != 343 && $college_id != 0){
                 return $this->get_college_by_id($college_id);
             } else {
                 $data = array();
