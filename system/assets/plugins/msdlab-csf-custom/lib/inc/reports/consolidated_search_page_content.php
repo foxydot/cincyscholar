@@ -170,7 +170,7 @@ if($_POST) {
                 continue;
             }
         }
-
+        ts_data($applicant);
         //error_log('CPS Search Gate passed');
         if (($applicant->ScholarshipId > 0) && (strtotime($applicant->DateAwarded) > strtotime($application_start_date))) {
             //error_log('is awardee');
