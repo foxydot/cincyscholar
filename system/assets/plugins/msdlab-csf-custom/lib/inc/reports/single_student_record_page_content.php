@@ -2,6 +2,8 @@
 global $academic_year;
 $tabs = '';
 $pane = array();
+
+$academic_year = $_GET['academic_year'];
 if($_POST) {
     //ts_data($_POST);
     $user_id = $_POST['Applicant_UserId_input'];
@@ -37,7 +39,6 @@ if($_POST) {
     }
 } elseif($_GET){
     $user_id = $_GET['user_id'];
-    $academic_year = $_GET['academic_year'];
 } else {
     print "Error. Please select student.";
     die();

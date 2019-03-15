@@ -398,6 +398,7 @@ class MSDLAB_Report_Output{
 
     //student edit panels
     function student_form($student_data){
+        $academic_year = isset($student_data['renewal']->AcademicYear)?$student_data['renewal']->AcademicYear:$student_data['personal']->AcademicYear;
         $renewal = isset($student_data['renewal']->RenewalId)?true:false;
         $this->set_form_select_options();
 
@@ -475,6 +476,7 @@ class MSDLAB_Report_Output{
             $ret[] = '<div id="scholarship_'.$s.'" class="scholarship-entry">';
             $ret['ApplicantScholarship_ApplicantId_'.$s] = $this->form->field_hidden("ApplicantScholarship_ApplicantId_".$s, $student_data['personal']->ApplicantId);
             $ret['ApplicantScholarship_AwardId_'.$s] = $this->form->field_hidden("ApplicantScholarship_AwardId_".$s, $scholarship->AwardId);
+            $ret['ApplicantScholarship_AcademicYear_'.$s] = $this->form->field_hidden("ApplicantScholarship_AcademicYear_".$s, $academic_year);
 
             $ret['ApplicantScholarship_ScholarshipId_'.$s] = $this->form->field_select('ApplicantScholarship_ScholarshipId_'.$s, $scholarship->ScholarshipId ? $scholarship->ScholarshipId : null, 'Scholarship '.$scholarship_cnt, null, $this->scholarship_array, array(), array('col-md-3', 'col-sm-12'));
             $ret['infoFund_'.$s] = $this->form->field_textinfo('infoFund', $this->queries->get_fund_by_scholarshipid($scholarship->ScholarshipId), 'Fund', null, null, array('col-md-2', 'col-sm-12'));
