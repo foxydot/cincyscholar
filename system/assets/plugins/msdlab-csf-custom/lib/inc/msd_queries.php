@@ -742,7 +742,7 @@ class MSDLAB_Queries{
 
             //add scholarship info
             $scholarship['tables']['applicantscholarship'] = array('*');
-            $scholarship['where'] = 'ApplicantId = '.$applicant_id.'AND AcademicYear = '.$this->post_vars['academic_year_input'];
+            $scholarship['where'] = 'ApplicantId = '.$applicant_id.' AND AcademicYear = '.$this->post_vars['academic_year_input'];
 
             $scholarship_results = $this->get_result_set($scholarship);
             foreach($scholarship_results AS $sr){
@@ -966,7 +966,49 @@ class MSDLAB_Queries{
         }
 
         $results = $this->get_result_set($data);
+
         //error_log('RENEWAL REPORT QUERY: ' . $wpdb->last_query);
+        foreach ($results AS $k => $r){
+            $applicant_id = $r->ApplicantId;
+            $renewal_id = $r->RenewalId;
+
+            $college = $agreements = $financial = $docs = array();
+
+            //add docs
+            $docs['tables']['attachment'] = array('AttachmentTypeId','FilePath');
+            $docs['where'] = 'RenewalId = '.$renewal_id;
+            $documents = $this->get_result_set($docs);
+            foreach($documents AS $d){
+                $results[$k]->Documents .= '<a href="'.$d->FilePath.'">'.$this->get_attachment_type_by_id($d->AttachmentTypeId).'</a><br />';
+            }
+
+            //add scholarship info
+            $scholarship['tables']['applicantscholarship'] = array('*');
+            $scholarship['where'] = 'ApplicantId = '.$applicant_id.' AND AcademicYear = '.$this->post_vars['academic_year_input'];
+
+            $scholarship_results = $this->get_result_set($scholarship);
+            foreach($scholarship_results AS $sr){
+                foreach($sr as $y => $z){
+                    $results[$k]->$y = $z;
+                }
+            }
+
+            //add payments
+            $payment['tables']['payment'] = array('*');
+            $payment['where'] = 'ApplicantId = '.$applicant_id.' AND AcademicYear = '.$this->post_vars['academic_year_input'];
+            $payment_results = $this->get_result_set($payment);
+            foreach($payment_results AS $pr){
+                $results[$k]->payment[] = $pr;
+            }
+
+            //add need
+            $need['tables']['studentneed'] = array('*');
+            $need['where'] = 'ApplicantId = '.$applicant_id;
+            $need_results = $this->get_result_set($need);
+            foreach($need_results AS $nr){
+                $results[$k]->need[] = $nr;
+            }
+        }
         return $results;
     }
 
