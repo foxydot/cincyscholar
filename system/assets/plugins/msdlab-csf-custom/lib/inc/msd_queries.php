@@ -1562,10 +1562,21 @@ class MSDLAB_Queries{
         global $wpdb;
         $sql = "SELECT ApplicantId FROM renewal WHERE UserId = ". $user_id ." AND AcademicYear = " . $academic_year . " LIMIT 1;";
         $result = $wpdb->get_results($sql);
-        if(!$result[0]->ApplicantId) {
+        //error_log($sql);
+        if(!$result[0]->ApplicantId) { //no renewal, try applications
             $sql = "SELECT ApplicantId FROM applicant WHERE UserId = " . $user_id . " AND AcademicYear = " . $academic_year . " LIMIT 1;";
-            //error_log($sql);
+          //  error_log($sql);
             $result = $wpdb->get_results($sql);
+            if(!$result[0]->ApplicantId) { //no applications for this year, try last year
+                $sql = "SELECT ApplicantId FROM renewal WHERE UserId = ". $user_id ." AND AcademicYear = " . ($academic_year - 1) . " LIMIT 1;";
+                $result = $wpdb->get_results($sql);
+            //    error_log($sql);
+                if(!$result[0]->ApplicantId) { //no renewal last year, try applications
+                    $sql = "SELECT ApplicantId FROM applicant WHERE UserId = " . $user_id . " AND AcademicYear = " . ($academic_year - 1) . " LIMIT 1;";
+              //      error_log($sql);
+                    $result = $wpdb->get_results($sql);
+                }
+            }
         }
         return $result[0]->ApplicantId;
     }

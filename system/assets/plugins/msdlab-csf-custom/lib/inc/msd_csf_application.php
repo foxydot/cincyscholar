@@ -784,6 +784,11 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     }
                     //sets up the query
                     //get the renewal data
+                    if($applicant_id < 1){
+                        print 'Your application ID cannot be found. Please contact support.';
+                        mail('catherine@msdlab.com','ApplicationId not found for UserId '.$user_id,'');
+                        return false;
+                    }
                     $data['tables']['Renewal'] = array('*');
                     $data['where'] .= 'renewal.ApplicantId = ' . $applicant_id;
                     $data['order'] = 'RenewalDateTime DESC';
