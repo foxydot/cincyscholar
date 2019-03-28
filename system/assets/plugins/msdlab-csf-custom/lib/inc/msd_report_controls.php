@@ -106,6 +106,7 @@ class MSDLab_ReportControls{
         $fund = $this->queries->get_select_array_from_db('fund', 'FundId', 'Name','FundId');
         $educational_attainment = $this->queries->get_select_array_from_db('educationalattainment', 'EducationalAttainmentId', 'EducationalAttainment','EducationalAttainmentId');
         $bool_options = array('0'=>'No','1'=>'Yes');
+        $employers = $this->queries->get_select_array_from_db('employer','employerid','employername','employername');
         $ret['search_all_button'] = $this->search_button('SEARCH','search_button_top');
         $ret['reset_button_top'] = $this->reset_button();
 
@@ -195,7 +196,8 @@ class MSDLab_ReportControls{
                 $ret['gpa_search'] = $this->number_range_search('HS GPA Between:','','hs_gpa_range_search',array('query-filter','col-sm-6','col-md-4'),0.00,100.00,0.1);
 
                 //TODO: replace with drop down search and parents alive for next year.
-                $ret['search_by_employer'] = $this->search_box('Employer:','','employer_search',array('query-filter','search-box','col-sm-6','col-md-4')); //this is handled AFTER the query
+                //$ret['search_by_employer'] = $this->search_box('Employer:','','employer_search',array('query-filter','search-box','col-sm-6','col-md-4')); //this is handled AFTER the query
+                $ret['search_by_employer'] = $this->select_search('Employer:','employer_search',$employers,array('query-filter','search-box','col-sm-6','col-md-4')); //this is handled AFTER the query
                 $ret['search_by_CPS_employee'] = $this->boolean_search('CPS Employee:','cps_employee_search',array('col-sm-6','col-md-2')); //this is handled AFTER the query
                 $ret['search_by_Calipari'] = $this->boolean_search('Coach Calipari:','calipari_search',array('col-sm-6','col-md-2')); //this is handled AFTER the query
                 //

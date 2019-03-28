@@ -129,7 +129,7 @@ $select_fields['scholarshipwhs'] = array('title' => 'Scholarship & High School',
 $tabs = $pane = array();
 if($_POST) {
     $academic_year = $_POST['academic_year_input'];
-    //ts_data($_POST);
+    ts_data($_POST);
     $this->search->javascript['collapse-btn-init'] = '
         $(".collapsable").css("display","none");
         $(".collapse-button i").removeClass("fa-compress").addClass("fa-expand");
@@ -153,9 +153,9 @@ if($_POST) {
         }
         //error_log('College Search Gate passed');
         if(!empty($_POST['employer_search_input'])){
-            if(stripos($applicant->Employer,$_POST['employer_search_input'])===false &&
-                stripos($applicant->GuardianEmployer1,$_POST['employer_search_input'])===false &&
-                stripos($applicant->GuardianEmployer2,$_POST['employer_search_input'])===false){
+            if($applicant->ApplicantEmployerId != $_POST['employer_search_input'] &&
+                $applicant->Guardian1EmployerId != $_POST['employer_search_input'] &&
+                $applicant->Guardian2EmployerId != $_POST['employer_search_input']){
                 continue;
             }
         }
@@ -197,9 +197,9 @@ if($_POST) {
         }
 
         if(!empty($_POST['employer_search_input'])){
-            if(stripos($renewal->Employer,$_POST['employer_search_input'])===false &&
-                stripos($renewal->GuardianEmployer1,$_POST['employer_search_input'])===false &&
-                stripos($renewal->GuardianEmployer2,$_POST['employer_search_input'])===false){
+            if($renewal->ApplicantEmployerId != $_POST['employer_search_input'] &&
+                $renewal->Guardian1EmployerId != $_POST['employer_search_input'] &&
+                $renewal->Guardian2EmployerId != $_POST['employer_search_input']){
                 continue;
             }
         }
