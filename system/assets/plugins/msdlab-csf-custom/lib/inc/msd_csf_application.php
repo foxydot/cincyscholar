@@ -1186,6 +1186,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
 
         function send_form_emails($type){
             global $current_user,$applicant_id;
+            if(current_user_can('view_csf_reports')){return;}
             if(!$applicant_id){$applicant_id = $this->queries->get_applicant_id($current_user->ID);}
             $headers = 'MIME-Version: 1.0' . "\r\n";
             $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";

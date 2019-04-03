@@ -169,21 +169,26 @@ class MSDLAB_Report_Output{
             foreach ($fields as $key => $value) {
                 switch ($value){
                     case 'UserId':
-                        $printval = '<strong>'.$user->{$value}.'</strong><br />';
+                        $printval = '<strong>'.$user->{$value}.'</strong>';
                         if(current_user_can('manage_csf')) {
-                            $printval .= '<a href="?page=student-edit&academic_year='.$academic_year.'&user_id=' . $user->{$value} . '" class="button" target="_blank">View/Edit</a>';
+                            $printval .= '<br /><a href="?page=student-edit&academic_year='.$academic_year.'&user_id=' . $user->{$value} . '" class="button" target="_blank">View/Edit Application</a>';
+                            $printval .= '<br /><a href="/system/wp-admin/user-edit.php?user_id=' . $user->{$value} . '" class="button" target="_blank">View/Edit User Info</a>';
                         }
                         break;
                     case 'ApplicantId':
                         if(current_user_can('manage_csf')) {
-                            $printval = '<a href="' . get_permalink($portal_page) . '?applicant_id=' . $user->{$value} . '&renewal_id=' . $user->RenewalId . '" target="_blank">' . $user->{$value} . '</a>';
+                            $printval = $user->{$value};
+                            $printval .= '<br /><a href="?page=student-edit&academic_year='.$academic_year.'&user_id=' . $user->UserId . '" class="button" target="_blank">View/Edit Application</a>';
+                            $printval .= '<br /><a href="' . get_permalink($portal_page) . '?applicant_id=' . $user->ApplicantId . '&renewal_id=' . $user->RenewalId . '" class="button" target="_blank">View/Edit Portal</a>';
                         } else {
                             $printval = $user->{$value};
                         }
                         break;
                     case 'RenewalId':
                         if(current_user_can('manage_csf')) {
-                            $printval = '<a href="' . get_permalink($portal_page) . '?applicant_id=' . $user->ApplicantId . '&renewal_id=' . $user->{$value} . '" target="_blank">' . $user->{$value} . '</a>';
+                            $printval = $user->{$value};
+                            $printval .= '<br /><a href="?page=student-edit&academic_year='.$academic_year.'&user_id=' . $user->UserId . '" class="button" target="_blank">View/Edit Application</a>';
+                            $printval .= '<br /><a href="' . get_permalink($portal_page) . '?applicant_id=' . $user->ApplicantId . '&renewal_id=' . $user->RenewalId . '" class="button" target="_blank">View/Edit Portal</a>';
                         } else {
                             $printval = $user->{$value};
                         }
