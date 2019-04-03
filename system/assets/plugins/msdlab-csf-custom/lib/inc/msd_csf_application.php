@@ -1206,7 +1206,7 @@ label{width: 25%;}span.result{width:75%;}
                         $emails['admin_' . $k]['header'] = $headers;
                         $emails['admin_' . $k]['to'] = $addy;
                         $emails['admin_' . $k]['subject'] = $current_user->display_name . ' Submitted an Application';
-                        $emails['admin_' . $k]['message'] = '<html><head>' . $css . '</head><body>' . $this->get_the_user_application($applicant_id) . '</body></html>';
+                        $emails['admin_' . $k]['message'] = '<html><head>' . $css . '</head><body>' . $this->get_the_user_application($applicant_id) . '<hr>'.$_SERVER['HTTP_USER_AGENT'].'</body></html>';
                     }
                     break;
                 case 'renewal_submitted':
@@ -1220,7 +1220,7 @@ label{width: 25%;}span.result{width:75%;}
                         $emails['admin_' . $k]['header'] = $headers;
                         $emails['admin_' . $k]['to'] = $addy;
                         $emails['admin_' . $k]['subject'] = $current_user->display_name . ' Submitted a Renewal Application';
-                        $emails['admin_' . $k]['message'] = '<html><head>' . $css . '</head><body>' . $this->get_the_user_renewal($applicant_id) . '</body></html>';
+                        $emails['admin_' . $k]['message'] = '<html><head>' . $css . '</head><body>' . $this->get_the_user_renewal($applicant_id) . '<hr>'.$_SERVER['HTTP_USER_AGENT'].'</body></html>';
                     }
                     break;
             }

@@ -320,3 +320,5 @@ if($_POST) {
     print implode("\n",$pane);
     print '</div>';
 }
+
+ts_data($_SERVER);
