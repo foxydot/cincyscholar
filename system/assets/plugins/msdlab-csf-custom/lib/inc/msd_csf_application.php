@@ -67,9 +67,12 @@ if (!class_exists('MSDLab_CSF_Application')) {
         }
 
         function add_styles_and_scripts(){
+            wp_enqueue_script( 'jquery-ui-datepicker' );
             wp_enqueue_script('jquery-validate',plugin_dir_url(__DIR__).'/../js/jquery.validate.min.js',array('jquery'));
             wp_enqueue_script('jquery-validate-addl',plugin_dir_url(__DIR__).'/../js/additional-methods.min.js',array('jquery','jquery-validate'));
             wp_enqueue_script('jquery-mask',plugin_dir_url(__DIR__).'/../js/jquery.mask.js',array('jquery'));
+            wp_enqueue_style( 'jquery-ui-base', plugin_dir_url(__DIR__).'/../css/jquery-ui.min.css' );
+            wp_enqueue_style( 'jquery-ui-theme', plugin_dir_url(__DIR__).'/../css/jquery-ui.theme.min.css' );
             wp_enqueue_style( 'msdform-css', plugin_dir_url(__DIR__).'/../css/msdform.css' );
         }
 
