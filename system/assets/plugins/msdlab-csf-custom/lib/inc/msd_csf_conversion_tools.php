@@ -1279,12 +1279,16 @@ ADD `FAFSAOK` tinyint(1) unsigned zerofill NOT NULL;";
                         }
                     }
                 }
+                ts_data($canonical_applicant_id);
                 $sql = 'UPDATE applicant SET '. implode(', ',$datastr) .' WHERE ApplicantId = '.$canonical_applicant_id;
                 ts_data($sql);
                 $sql = 'SELECT * FROM applicantfinancial WHERE ApplicantId IN ('.implode(", ",$associated_applicant_ids).');';
-                ts_data($canonical_applicant_id."\n".$sql);
+                ts_data($sql);
                 $sql = 'UPDATE attachment SET ApplicantId = '.$canonical_applicant_id.' WHERE ApplicantId IN ('.implode(", ",$associated_applicant_ids).');';
                 ts_data($sql);
+                $sql = 'UPDATE applicant SET AcademicYear = 1850 WHERE ApplicantId IN ('.implode(", ",$associated_applicant_ids).');';
+                ts_data($sql);
+
             }
         }
     }
