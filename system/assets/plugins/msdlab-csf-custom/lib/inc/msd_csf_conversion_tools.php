@@ -1225,5 +1225,77 @@ ADD `FAFSAOK` tinyint(1) unsigned zerofill NOT NULL;";
                 }
             }
         }
+
+        function fix_bad_locks(){
+            global $wpdb;
+            $sql = 'SELECT UserId FROM applicant WHERE AcademicYear = 2019 GROUP BY UserId HAVING COUNT(UserId) > 1;';
+            $result = $wpdb->get_results($sql,'ARRAY_N');
+            foreach($result AS $r){
+                $user_ids[] = $r[0];
+            }
+            $sql = 'SELECT * FROM applicant WHERE applicant.UserId IN ('.implode(',',$user_ids).') AND AcademicYear = 2019 ORDER BY applicant.UserId, applicant.ApplicantId;';
+            $result = $wpdb->get_results($sql);
+            foreach($result AS $r){
+                $grouped[$r->UserId][] = $r;
+            }
+            $ignored_fields = array('ApplicantId','ApplicationDateTime','Notes');
+            $ignored_cols = array('ApplicantId','associates');
+
+            foreach($grouped AS $group){
+                $last = array_key_last($group);
+                foreach ($group AS $index => $object) {
+                    if ($index == 0) {
+                        $canonical_applicant_id = $object->ApplicantId;
+                        $canon[$canonical_applicant_id] = $object;
+                        $origin = clone $object;
+                        $notes = $associated_applicant_ids = array();
+                        continue;
+                    }
+                    foreach ($object AS $key => $value) {
+                        if (!in_array($key, $ignored_fields)) {
+                            if ($value != $canon[$canonical_applicant_id]->{$key} && $value != '' && $value != 0) {
+                                $canon[$canonical_applicant_id]->{$key} = $value;
+                            }
+                        } elseif ($key == 'Notes'){
+                            $notes[] = $value;
+                        } elseif($key == 'ApplicantId'){
+                            $associated_applicant_ids[] = $value;
+                        }
+                    }
+                    if($index == $last){
+                        $notes = implode("\n",array_unique($notes));
+                        $notes .= "/n Associated applicant ids: ". implode(", ",$associated_applicant_ids);
+                        $canon[$canonical_applicant_id]->Notes = $notes;
+                        $canon[$canonical_applicant_id]->associates = $associated_applicant_ids;
+                    }
+                }
+                $datastr = array();
+                foreach($canon[$canonical_applicant_id] AS $col => $data){
+                    if(!in_array($col,$ignored_cols)) {
+                        if($data == $origin->{$col}) {
+                            //print '<tr><td>'.$data.'</td><td>'.$origin->{$col}.'</td></tr>';
+                        } else {
+                            $datastr[] = $col . ' = "' . $data . '"';
+                        }
+                    }
+                }
+                $sql = 'UPDATE applicant SET '. implode(', ',$datastr) .' WHERE ApplicantId = '.$canonical_applicant_id;
+                ts_data($sql);
+                $sql = 'SELECT * FROM applicantfinancial WHERE ApplicantId IN ('.implode(", ",$associated_applicant_ids).');';
+                ts_data($canonical_applicant_id."\n".$sql);
+                $sql = 'UPDATE attachment SET ApplicantId = '.$canonical_applicant_id.' WHERE ApplicantId IN ('.implode(", ",$associated_applicant_ids).');';
+                ts_data($sql);
+            }
+        }
+    }
+}
+
+if (! function_exists("array_key_last")) {
+    function array_key_last($array) {
+        if (!is_array($array) || empty($array)) {
+            return NULL;
+        }
+
+        return array_keys($array)[count($array)-1];
     }
 }
