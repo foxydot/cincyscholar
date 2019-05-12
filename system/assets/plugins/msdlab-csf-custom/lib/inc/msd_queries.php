@@ -583,6 +583,12 @@ class MSDLAB_Queries{
                 $data['where'] .= ' AND (applicant.HighSchoolGPA >= ' . $this->post_vars['hs_gpa_range_search_input_start'] . ' AND applicant.HighSchoolGPA <= ' . $this->post_vars['hs_gpa_range_search_input_end'] . ')';
             }
         }
+        //parent search
+        if(is_numeric($this->post_vars['single_family_search_input'])){
+            $data['tables']['guardian'] = array('*');
+            $data['where'] .= ' AND applicant.IsIndependent = 0 AND (guardian.GuardianFullName1 = "" OR guardian.GuardianFullName2 = "") AND guardian.ApplicantId = applicant.ApplicantId';
+        }
+
         //scholarship stuff search
         if(
             is_numeric($this->post_vars['scholarship_search_input']) ||
@@ -690,9 +696,19 @@ class MSDLAB_Queries{
             }
         }
         $results = $this->get_result_set($data);
-        //error_log('REPORT QUERY: ' . $wpdb->last_query);
-
+        error_log('REPORT QUERY: ' . $wpdb->last_query);
+        if(is_numeric($this->post_vars['single_family_search_input'])){
+            $handled = array();
+        }
         foreach ($results AS $k => $r){
+            //check for single parent, remove extra data
+            if(is_numeric($this->post_vars['single_family_search_input'])){
+                if(in_array($r->ApplicantId,$handled)){
+                    continue;
+                } else {
+                    $handled[] = $r->ApplicantId;
+                }
+            }
             $applicant_id = $r->ApplicantId;
 
             $college = $agreements = $financial = $docs = array();
@@ -713,6 +729,7 @@ class MSDLAB_Queries{
             } else {
                 $financial['tables']['guardian'] = array('*');
                 $financial['where'] .= ' guardian.ApplicantId = ' . $applicant_id;
+
             }
             $financial_results = $this->get_result_set($financial);
             foreach($financial_results AS $fr){
@@ -1560,20 +1577,21 @@ class MSDLAB_Queries{
     function get_applicant_id($user_id,$academic_year = FALSE){
         if(!$academic_year){$academic_year = date("Y");}
         global $wpdb;
+        error_log('get applicant_id query: ');
         $sql = "SELECT ApplicantId FROM renewal WHERE UserId = ". $user_id ." AND AcademicYear = " . $academic_year . " LIMIT 1;";
         $result = $wpdb->get_results($sql);
-        //error_log($sql);
+        error_log($sql);
         if(!$result[0]->ApplicantId) { //no renewal, try applications
             $sql = "SELECT ApplicantId FROM applicant WHERE UserId = " . $user_id . " AND AcademicYear = " . $academic_year . " LIMIT 1;";
-          //  error_log($sql);
+            error_log($sql);
             $result = $wpdb->get_results($sql);
             if(!$result[0]->ApplicantId) { //no applications for this year, try last year
                 $sql = "SELECT ApplicantId FROM renewal WHERE UserId = ". $user_id ." AND AcademicYear = " . ($academic_year - 1) . " LIMIT 1;";
                 $result = $wpdb->get_results($sql);
-            //    error_log($sql);
+                error_log($sql);
                 if(!$result[0]->ApplicantId) { //no renewal last year, try applications
                     $sql = "SELECT ApplicantId FROM applicant WHERE UserId = " . $user_id . " AND AcademicYear = " . ($academic_year - 1) . " LIMIT 1;";
-              //      error_log($sql);
+                    error_log($sql);
                     $result = $wpdb->get_results($sql);
                 }
             }

@@ -190,6 +190,7 @@ class MSDLab_ReportControls{
                 $ret['sar_search'] = $this->select_search('SAR','sar_search',$bool_options,array('query-filter','col-sm-6','col-md-4'));
                 $ret['award_search'] = $this->select_search('Award','award_search',$bool_options,array('query-filter','col-sm-6','col-md-4'));
                 $ret['firstgen_search'] = $this->select_search('First Gen','firstgen_search',$bool_options,array('query-filter','col-sm-6','col-md-4'));
+                $ret['search_by_single_parent'] = $this->select_search('Single Parent:','single_family_search',$bool_options,array('query-filter','col-sm-6','col-md-4')); //this is handled AFTER the query
                 $ret['highschool_search'] = $this->select_search('High School: ','highschool_search', $highschools,array('query-filter','select-search','col-sm-6','col-md-4'));
                 $ret['highschool_type_search'] = $this->select_search('High School Type: ','highschooltype_search', $highschooltypes,array('query-filter','select-search','col-sm-6','col-md-4'));
                 $ret['gradyear_search'] = $this->number_range_search('Graduation Between:','','gradyear_range_search',array('query-filter','col-sm-6','col-md-4'),date('Y')-20,date('Y'),1);
