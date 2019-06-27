@@ -101,6 +101,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
         }
 
         function application_shortcode_handler($atts,$content){
+            global $applicant_id;
             extract(shortcode_atts( array(
                 'application' => 'default', //default to primary application
             ), $atts ));
@@ -144,6 +145,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     //$ret[] = 'VIEW AWARD';
                 }
                 if(current_user_can('submit_application')){
+
                     if($today >= $start_date && $today <= $end_date){
                         $ret[2] = implode("\n\r",$this->get_form('application'));
                     } else {
@@ -212,6 +214,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                         $testwhere = $applicant_id > 0 ? 'applicant.ApplicantId = ' . $applicant_id : 'applicant.UserId = ' . $user_id;
                         $sql = "SELECT applicant.ApplicantId, applicant.ApplicationlLocked, applicant.AcademicYear FROM applicant WHERE " . $testwhere . " ORDER BY applicant.AcademicYear DESC LIMIT 1;";
                         global $wpdb;
+                        error_log('application locked test:' . $sql);
                         $test = $wpdb->get_results($sql);
                         //if so, make a copy of the application and reload with that data
                         if ($test[0]->ApplicationlLocked == 1) {

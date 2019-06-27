@@ -165,6 +165,7 @@ if($student = $this->queries->get_student_data($applicant_id,$academic_year)) {
             $scholarship_array = $this->queries->get_select_array_from_db('scholarship', 'ScholarshipId', 'Name','Name',1);
 
             $newscholarship['ApplicantScholarship_ApplicantId_new'] = $this->form->field_hidden("ApplicantScholarship_ApplicantId_new", $student['personal']->ApplicantId);
+            $newscholarship['ApplicantScholarship_AcademicYear_new'] = $this->form->field_hidden("ApplicantScholarship_AcademicYear_new", $academic_year);
 
             $newscholarship['ApplicantScholarship_ScholarshipId_new'] = $this->form->field_select('ApplicantScholarship_ScholarshipId_new', null, 'New Scholarship', null, $scholarship_array, array(), array('col-md-3', 'col-sm-12'));
             $newscholarship['ApplicantScholarship_AmountAwarded_new'] = $this->form->field_textfield('ApplicantScholarship_AmountAwarded_new', null, 'Amount Awarded', '', array('type' => 'number'), array('col-md-3', 'col-sm-12', 'currency'));
