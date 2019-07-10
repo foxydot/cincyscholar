@@ -2,7 +2,7 @@
 /*
 Plugin Name: MSD Site Settings
 Description: Provides settings panel for several social/address options and widgets/shortcodes/functions for display.
-Version: 1.1
+Version: 1.2.0
 Author: MSDLab
 Author URI: http://msdlab.com/
 GitHub Plugin URI: https://github.com/msdlab/msd_site_settings
@@ -29,7 +29,7 @@ class MSDSocial{
         $this->the_path = plugin_dir_path(__FILE__);
         $this->the_url = plugin_dir_url(__FILE__);
         $this->icon_size = get_option('msdsocial_icon_size')?get_option('msdsocial_icon_size'):'0';
-        $this->ver = '1.1';
+        $this->ver = '1.2.0';
         /*
          * Pull in some stuff from other files
          */
@@ -82,40 +82,41 @@ class MSDSocial{
 
 //contact information
 function get_bizname(){
-    $ret .= (get_option('msdsocial_biz_name')!='')?stripslashes(get_option('msdsocial_biz_name')):stripslashes(get_bloginfo('name'));
+    $ret = (get_option('msdsocial_biz_name')!='')?stripslashes(get_option('msdsocial_biz_name')):stripslashes(get_bloginfo('name'));
     return $ret;
 }
 function get_address(){
+        $ret = array();
     if((get_option('msdsocial_street')!='') || (get_option('msdsocial_city')!='') || (get_option('msdsocial_state')!='') || (get_option('msdsocial_zip')!='')) {
-        $ret = '<address itemscope itemtype="http://schema.org/LocalBusiness">';
-            $ret .= (get_option('msdsocial_street')!='')?'<span itemprop="streetAddress" class="msdsocial_street">'.get_option('msdsocial_street').'</span> ':'';
-            $ret .= (get_option('msdsocial_street2')!='')?'<span itemprop="streetAddress" class="msdsocial_street_2">'.get_option('msdsocial_street2').'</span> ':'';
-            $ret .= (get_option('msdsocial_city')!='')?'<span itemprop="addressLocality" class="msdsocial_city">'.get_option('msdsocial_city').'</span>, ':'';
-            $ret .= (get_option('msdsocial_state')!='')?'<span itemprop="addressRegion" class="msdsocial_state">'.get_option('msdsocial_state').'</span> ':'';
-            $ret .= (get_option('msdsocial_zip')!='')?'<span itemprop="postalCode" class="msdsocial_zip">'.get_option('msdsocial_zip').'</span> ':'';
-        $ret .= '</address>';
-          return $ret;
+        $ret[] = '<address itemscope itemtype="http://schema.org/LocalBusiness">';
+            $ret[] =  (get_option('msdsocial_street')!='')?'<span itemprop="streetAddress" class="msdsocial_street">'.get_option('msdsocial_street').'</span> ':'';
+            $ret[] =  (get_option('msdsocial_street2')!='')?'<span itemprop="streetAddress" class="msdsocial_street_2">'.get_option('msdsocial_street2').'</span> ':'';
+            $ret[] =  (get_option('msdsocial_city')!='')?'<span itemprop="addressLocality" class="msdsocial_city">'.get_option('msdsocial_city').'</span>, ':'';
+            $ret[] =  (get_option('msdsocial_state')!='')?'<span itemprop="addressRegion" class="msdsocial_state">'.get_option('msdsocial_state').'</span> ':'';
+            $ret[] =  (get_option('msdsocial_zip')!='')?'<span itemprop="postalCode" class="msdsocial_zip">'.get_option('msdsocial_zip').'</span> ':'';
+        $ret[] =  '</address>';
+          return implode("\n",$ret);
         } else {
             return false;
         } 
 }
 function get_additional_locations(){
     $additional_locations = get_option(msdsocial_adtl_locations);
-    $ret = '';
+    $ret = array();
     foreach($additional_locations AS $loc){
         if(($loc[street]!='') || ($loc[city]!='') || ($loc[state]!='') || ($loc[zip]!='')) {
-            $ret .= '<address itemscope itemtype="http://schema.org/LocalBusiness">';
-                $ret .= ($loc[location_name]!='')?'<span itemprop="name" class="msdsocial_location_name">'.$loc[location_name].'</span> ':'';
-                $ret .= ($loc[street]!='')?'<span itemprop="streetAddress" class="msdsocial_street">'.$loc[street].'</span> ':'';
-                $ret .= ($loc[street2]!='')?'<span itemprop="streetAddress" class="msdsocial_street_2">'.$loc[street2].'</span> ':'';
-                $ret .= ($loc[city]!='')?'<span itemprop="addressLocality" class="msdsocial_city">'.$loc[city].'</span>, ':'';
-                $ret .= ($loc[state]!='')?'<span itemprop="addressRegion" class="msdsocial_state">'.$loc[state].'</span> ':'';
-                $ret .= ($loc[zip]!='')?'<span itemprop="postalCode" class="msdsocial_zip">'.$loc[zip].'</span> ':'';
-                $ret .= $this->get_location_digits($loc,FALSE,'');
-            $ret .= '</address>';
+            $ret[] =  '<address itemscope itemtype="http://schema.org/LocalBusiness">';
+                $ret[] =  ($loc[location_name]!='')?'<span itemprop="name" class="msdsocial_location_name">'.$loc[location_name].'</span> ':'';
+                $ret[] =  ($loc[street]!='')?'<span itemprop="streetAddress" class="msdsocial_street">'.$loc[street].'</span> ':'';
+                $ret[] =  ($loc[street2]!='')?'<span itemprop="streetAddress" class="msdsocial_street_2">'.$loc[street2].'</span> ':'';
+                $ret[] =  ($loc[city]!='')?'<span itemprop="addressLocality" class="msdsocial_city">'.$loc[city].'</span>, ':'';
+                $ret[] =  ($loc[state]!='')?'<span itemprop="addressRegion" class="msdsocial_state">'.$loc[state].'</span> ':'';
+                $ret[] =  ($loc[zip]!='')?'<span itemprop="postalCode" class="msdsocial_zip">'.$loc[zip].'</span> ':'';
+                $ret[] =  $this->get_location_digits($loc,FALSE,'');
+            $ret[] =  '</address>';
         }
     }
-    return $ret;
+    return implode("\n",$ret);
 }
 function get_all_locations(){
     $primary_location = array(
@@ -136,23 +137,23 @@ function get_all_locations(){
     );
     $additional_locations = get_option(msdsocial_adtl_locations);
     $locations = array_merge($primary_location,$additional_locations);
-    $ret = '';
+    $ret = array();
     foreach($locations AS $loc){
         if(($loc[street]!='') || ($loc[city]!='') || ($loc[state]!='') || ($loc[zip]!='') || ($loc[phone]!='')) {
-            $ret .= '<li>
+            $ret[] =  '<li>
             <address itemscope itemtype="http://schema.org/LocalBusiness">';
-                $ret .= ($loc[location_name]!='')?'<span itemprop="name" class="msdsocial_location_name">'.$loc[location_name].'</span> ':'';
-                $ret .= ($loc[street]!='')?'<span itemprop="streetAddress" class="msdsocial_street">'.$loc[street].'</span> ':'';
-                $ret .= ($loc[street2]!='')?'<span itemprop="streetAddress" class="msdsocial_street_2">'.$loc[street2].'</span> ':'';
-                $ret .= ($loc[city]!='')?'<span itemprop="addressLocality" class="msdsocial_city">'.$loc[city].'</span>, ':'';
-                $ret .= ($loc[state]!='')?'<span itemprop="addressRegion" class="msdsocial_state">'.$loc[state].'</span> ':'';
-                $ret .= ($loc[zip]!='')?'<span itemprop="postalCode" class="msdsocial_zip">'.$loc[zip].'</span> ':'';
-                $ret .= $this->get_location_digits($loc,FALSE,'');
-            $ret .= '</address>
+                $ret[] =  ($loc[location_name]!='')?'<span itemprop="name" class="msdsocial_location_name">'.$loc[location_name].'</span> ':'';
+                $ret[] =  ($loc[street]!='')?'<span itemprop="streetAddress" class="msdsocial_street">'.$loc[street].'</span> ':'';
+                $ret[] =  ($loc[street2]!='')?'<span itemprop="streetAddress" class="msdsocial_street_2">'.$loc[street2].'</span> ':'';
+                $ret[] =  ($loc[city]!='')?'<span itemprop="addressLocality" class="msdsocial_city">'.$loc[city].'</span>, ':'';
+                $ret[] =  ($loc[state]!='')?'<span itemprop="addressRegion" class="msdsocial_state">'.$loc[state].'</span> ':'';
+                $ret[] =  ($loc[zip]!='')?'<span itemprop="postalCode" class="msdsocial_zip">'.$loc[zip].'</span> ':'';
+                $ret[] =  $this->get_location_digits($loc,FALSE,'');
+            $ret[] =  '</address>
             </li>';
         }
     }
-    return '<ul class="all-locations">'.$ret.'</ul>';
+    return '<ul class="all-locations">'.implode("\n",$ret).'</ul>';
 }
 
 function get_digits($dowrap = TRUE,$sep = " | "){
@@ -244,6 +245,7 @@ function get_location_digits($loc,$dowrap = TRUE,$sep = " | "){
 }
 
 function get_phone($dowrap = TRUE){
+        $ret = '';
         if((get_option('msdsocial_phone')!='')) {
             if((get_option('msdsocial_tracking_phone')!='')){
                 if(wp_is_mobile()){
@@ -334,6 +336,7 @@ function get_hours($atts = array()){
 }
 //create copyright message
 function copyright($address = TRUE){
+        $ret = '';
     if($address){
         $ret .= $this->msdsocial_get_address();
         $ret .= $this->msdsocial_get_digits();
@@ -347,48 +350,48 @@ function copyright($address = TRUE){
 function social_media($atts = array()){
     extract( shortcode_atts( array(
             ), $atts ) );
-    
+    $ret = array();
     if(get_option('msdsocial_facebook_link')!=""){
-        $ret .= '<a href="'.get_option('msdsocial_facebook_link').'" class="fa fa-facebook" title="Join Us on Facebook!" target="_blank"></a>';
+        $ret['facebook'] =  '<a href="'.get_option('msdsocial_facebook_link').'" class="fa fa-facebook" title="Join Us on Facebook!" target="_blank"></a>';
     }    
     if(get_option('msdsocial_twitter_user')!=""){
-        $ret .= '<a href="http://www.twitter.com/'.get_option('msdsocial_twitter_user').'" class="fa fa-twitter" title="Follow Us on Twitter!" target="_blank"></a>';
+        $ret['twitter'] =  '<a href="http://www.twitter.com/'.get_option('msdsocial_twitter_user').'" class="fa fa-twitter" title="Follow Us on Twitter!" target="_blank"></a>';
     }    
     if(get_option('msdsocial_pinterest_link')!=""){
-        $ret .= '<a href="'.get_option('msdsocial_pinterest_link').'" class="fa fa-pinterest" title="Pinterest" target="_blank"></a>';
+        $ret['pinterest'] =  '<a href="'.get_option('msdsocial_pinterest_link').'" class="fa fa-pinterest" title="Pinterest" target="_blank"></a>';
     }    
     if(get_option('msdsocial_google_link')!=""){
-        $ret .= '<a href="'.get_option('msdsocial_google_link').'" class="fa fa-google-plus" title="Google+" target="_blank"></a>';
+        $ret['google'] =  '<a href="'.get_option('msdsocial_google_link').'" class="fa fa-google-plus" title="Google+" target="_blank"></a>';
     }    
     if(get_option('msdsocial_linkedin_link')!=""){
-        $ret .= '<a href="'.get_option('msdsocial_linkedin_link').'" class="fa fa-linkedin" title="LinkedIn" target="_blank"></a>';
+        $ret['linkedin'] =  '<a href="'.get_option('msdsocial_linkedin_link').'" class="fa fa-linkedin" title="LinkedIn" target="_blank"></a>';
     }    
     if(get_option('msdsocial_instagram_link')!=""){
-        $ret .= '<a href="'.get_option('msdsocial_instagram_link').'" class="fa fa-instagram" title="Instagram" target="_blank"></a>';
+        $ret['instagram'] =  '<a href="'.get_option('msdsocial_instagram_link').'" class="fa fa-instagram" title="Instagram" target="_blank"></a>';
     }    
     if(get_option('msdsocial_tumblr_link')!=""){
-        $ret .= '<a href="'.get_option('msdsocial_tumblr_link').'" class="fa fa-tumblr" title="Tumblr" target="_blank"></a>';
+        $ret['tumblr'] =  '<a href="'.get_option('msdsocial_tumblr_link').'" class="fa fa-tumblr" title="Tumblr" target="_blank"></a>';
     }    
     if(get_option('msdsocial_reddit_link')!=""){
-        $ret .= '<a href="'.get_option('msdsocial_reddit_link').'" class="fa fa-reddit" title="Reddit" target="_blank"></a>';
+        $ret['reddit'] =  '<a href="'.get_option('msdsocial_reddit_link').'" class="fa fa-reddit" title="Reddit" target="_blank"></a>';
     }    
     if(get_option('msdsocial_flickr_link')!=""){
-        $ret .= '<a href="'.get_option('msdsocial_flickr_link').'" class="fa fa-flickr" title="Flickr" target="_blank"></a>';
+        $ret['flickr'] =  '<a href="'.get_option('msdsocial_flickr_link').'" class="fa fa-flickr" title="Flickr" target="_blank"></a>';
     }    
     if(get_option('msdsocial_youtube_link')!=""){
-        $ret .= '<a href="'.get_option('msdsocial_youtube_link').'" class="fa fa-youtube" title="YouTube" target="_blank"></a>';
+        $ret['youtube'] =  '<a href="'.get_option('msdsocial_youtube_link').'" class="fa fa-youtube" title="YouTube" target="_blank"></a>';
     }    
     if(get_option('msdsocial_vimeo_link')!=""){
-        $ret .= '<a href="'.get_option('msdsocial_vimeo_link').'" class="fa fa-vimeo-square" title="Vimeo" target="_blank"></a>';
+        $ret['vimeo'] =  '<a href="'.get_option('msdsocial_vimeo_link').'" class="fa fa-vimeo-square" title="Vimeo" target="_blank"></a>';
     }    
     if(get_option('msdsocial_vine_link')!=""){
-        $ret .= '<a href="'.get_option('msdsocial_vine_link').'" class="fa fa-vine" title="Vine" target="_blank"></a>';
+        $ret['vine'] =  '<a href="'.get_option('msdsocial_vine_link').'" class="fa fa-vine" title="Vine" target="_blank"></a>';
     }    
     if(get_option('msdsocial_sharethis_link')!=""){
-        $ret .= '<a href="'.get_option('msdsocial_sharethis_link').'" class="fa fa-share-alt" title="ShareThis" target="_blank"></a>';
+        $ret['sharethis'] =  '<a href="'.get_option('msdsocial_sharethis_link').'" class="fa fa-share-alt" title="ShareThis" target="_blank"></a>';
     }    
     if(get_option('msdsocial_contact_link')!=""){
-        $ret .= '<a href="'.get_option('msdsocial_contact_link').'" class="fa fa-envelope" title="Contact Us" target="_blank"></a>';
+        $ret['contact'] =  '<a href="'.get_option('msdsocial_contact_link').'" class="fa fa-envelope" title="Contact Us" target="_blank"></a>';
     }
     if(get_option('msdsocial_show_phone')!=""){
         if(get_option('msdsocial_tracking_tollfree')!=''){
@@ -401,7 +404,7 @@ function social_media($atts = array()){
             $phone = get_option('msdsocial_phone');
         }
         if($phone != '') {
-            $ret .= '<a href="tel:+1' . $phone . '" class="fa fa-phone" title="Call Us"></a>';
+            $ret['phone'] =  '<a href="tel:+1' . $phone . '" class="fa fa-phone" title="Call Us"></a>';
         }
     }
     if(get_option('msdsocial_show_blog')!=""){
@@ -411,17 +414,18 @@ function social_media($atts = array()){
         } else {
           $blog_url = get_option('home');
         }
-        $ret .= '<a href="'.$blog_url.'" class="fa fa-newspaper-o" title="Blog" target="_blank"></a>';
+        $ret['blog'] =  '<a href="'.$blog_url.'" class="fa fa-newspaper-o" title="Blog" target="_blank"></a>';
     }
     if(get_option('msdsocial_show_feed')!=""){
-        $ret .= '<a href="'.get_bloginfo('rss2_url').'" class="fa fa-rss" title="RSS Feed" target="_blank"></a>';
+        $ret['feed'] =  '<a href="'.get_bloginfo('rss2_url').'" class="fa fa-rss" title="RSS Feed" target="_blank"></a>';
     }
     $ret = apply_filters('msdlab_social_icons_output',$ret);
-    $ret = '<div id="social-media" class="social-media">'.$ret.'</div>';
+    $ret = '<div id="social-media" class="social-media">'.implode("\n",$ret).'</div>';
     return $ret;
 }
 
 function get_hours_deux(){ ///why are there two of these?
+        $ret = array();
     $days = array(
             'Sunday',
             'Monday',
@@ -442,26 +446,26 @@ function get_hours_deux(){ ///why are there two of these?
             if($hours[$day] != $prev['hours']){
                 if(isset($prev['hours'])){
                     if(isset($prev['day'])){
-                        $ret .= ' - '.$prev['day'];
+                        $ret[] =  ' - '.$prev['day'];
                     }
-                    $ret .= '</span><span class="hours">'.$prev['hours'].'</span></div>
+                    $ret[] =  '</span><span class="hours">'.$prev['hours'].'</span></div>
 ';
                 }
-                $ret .= '<div class="hours '.$day.'"><span class="day">'.$day;
+                $ret[] =  '<div class="hours '.$day.'"><span class="day">'.$day;
                 unset($prev['day']);
             } else {
                 $prev['day'] = $day;
             }
             if($day == 'Saturday'){
                 if($hours[$day] == $prev['hours'] && isset($prev['day'])){
-                    $ret .= ' - '.$prev['day'];
+                    $ret[] =  ' - '.$prev['day'];
                 }
-                $ret .= '</span><span class="hours">'.$hours[$day].'</span></div>
+                $ret[] =  '</span><span class="hours">'.$hours[$day].'</span></div>
 ';
             }
             $prev['hours'] = $hours[$day];
         }
-        return '<div class="business-hours">'.$ret.'</div>';
+        return '<div class="business-hours">'.implode("\n",$ret).'</div>';
 }
 
 function notification_bar_in_date_window($date = '',$convert = TRUE){

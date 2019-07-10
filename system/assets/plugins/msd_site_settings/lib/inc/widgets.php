@@ -4,7 +4,7 @@
  */
 class MSDConnected extends WP_Widget {
     /** constructor */
-    function MSDConnected() {
+    function __construct() {
 		$widget_ops = array('classname' => 'msd-connected', 'description' => __('Show social icons'));
 		$control_ops = array('width' => 400, 'height' => 350);
 		$this->WP_Widget('connected', __('MSD Connected'), $widget_ops, $control_ops);
@@ -151,7 +151,7 @@ add_action('widgets_init', create_function('', 'return register_widget("MSDConne
  */
 class MSDAddress extends WP_Widget {
     /** constructor */
-    function MSDAddress() {
+    function __construct() {
 		$widget_ops = array('classname' => 'msd-address', 'description' => __('Display addresses'));
 		$control_ops = array('width' => 400, 'height' => 350);
 		$this->WP_Widget('address', __('MSD Address'), $widget_ops, $control_ops);
@@ -192,7 +192,7 @@ add_action('widgets_init', create_function('', 'return register_widget("MSDAddre
 
 class MSDCopyright extends WP_Widget {
     /** constructor */
-    function MSDCopyright() {
+    function __construct() {
 		$widget_ops = array('classname' => 'msd-copyright', 'description' => __('Display copyright notice'));
 		$control_ops = array('width' => 400, 'height' => 350);
 		$this->WP_Widget('copyright', __('MSD Copyright'), $widget_ops, $control_ops);
@@ -232,7 +232,7 @@ add_action('widgets_init', create_function('', 'return register_widget("MSDCopyr
 
 class MSDVisit extends WP_Widget {
     /** constructor */
-    function MSDVisit() {
+    function __construct() {
         $widget_ops = array('classname' => 'msd-visit', 'description' => __('Display shop hours'));
         $control_ops = array('width' => 400, 'height' => 350);
         $this->WP_Widget('visit', __('MSD Visit Us'), $widget_ops, $control_ops);

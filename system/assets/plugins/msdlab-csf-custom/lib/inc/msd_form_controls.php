@@ -350,7 +350,7 @@ class MSDLAB_FormControls{
         $filename = array_pop(explode('/',$value->FilePath));
         $fileext = strtolower(array_pop(explode('.',$filename)));
         $file_display =  '<div class="document'.$fileshow.'">
-                    <a href="'.$value->FilePath.'" title="'.$filename.'" class="file-link"><i class="fa fa-file-pdf-o" aria-hidden="true"></i><br /><span class="filename">'.$filename.'</span><br><span class="filecat hidden">'.$attachment_types[$value->AttachmentTypeId].'</span></a>
+                    <a href="'.msdlab_filter_filepath($value->FilePath).'" title="'.$filename.'" class="file-link"><i class="fa fa-file-pdf-o" aria-hidden="true"></i><br /><span class="filename">'.$filename.'</span><br><span class="filecat hidden">'.$attachment_types[$value->AttachmentTypeId].'</span></a>
                     <button class="file-delete" value="'.$value->FilePath.'" id="'.$attachment_id.'">Delete</button>
                 </div>';
         $form_field = '<div class="box'.$uploadshow.'">
