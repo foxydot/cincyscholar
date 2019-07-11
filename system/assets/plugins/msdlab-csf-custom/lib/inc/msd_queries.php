@@ -456,7 +456,7 @@ class MSDLAB_Queries{
         $sql[] = ';';
 
         //TODO: refactor all queries to ue proper JOIN
-        error_log('select_sql:'.implode(' ',$sql));
+        //error_log('select_sql:'.implode(' ',$sql));
         $result = $wpdb->get_results(implode(' ',$sql));
         return $result;
     }
@@ -696,7 +696,7 @@ class MSDLAB_Queries{
             }
         }
         $results = $this->get_result_set($data);
-        error_log('REPORT QUERY: ' . $wpdb->last_query);
+        //error_log('REPORT QUERY: ' . $wpdb->last_query);
         if(is_numeric($this->post_vars['single_family_search_input'])){
             $handled = array();
         }
@@ -1577,21 +1577,21 @@ class MSDLAB_Queries{
     function get_applicant_id($user_id,$academic_year = FALSE){
         if(!$academic_year){$academic_year = date("Y");}
         global $wpdb;
-        error_log('get applicant_id query: ');
+        //error_log('get applicant_id query: ');
         $sql = "SELECT ApplicantId FROM renewal WHERE UserId = ". $user_id ." AND AcademicYear = " . $academic_year . " LIMIT 1;";
         $result = $wpdb->get_results($sql);
-        error_log($sql);
+        //error_log($sql);
         if(!$result[0]->ApplicantId) { //no renewal, try applications
             $sql = "SELECT ApplicantId FROM applicant WHERE UserId = " . $user_id . " AND AcademicYear = " . $academic_year . " LIMIT 1;";
-            error_log($sql);
+            //error_log($sql);
             $result = $wpdb->get_results($sql);
             if(!$result[0]->ApplicantId) { //no applications for this year, try last year
                 $sql = "SELECT ApplicantId FROM renewal WHERE UserId = ". $user_id ." AND AcademicYear = " . ($academic_year - 1) . " LIMIT 1;";
                 $result = $wpdb->get_results($sql);
-                error_log($sql);
+                //error_log($sql);
                 if(!$result[0]->ApplicantId) { //no renewal last year, try applications
                     $sql = "SELECT ApplicantId FROM applicant WHERE UserId = " . $user_id . " AND AcademicYear = " . ($academic_year - 1) . " LIMIT 1;";
-                    error_log($sql);
+                    //error_log($sql);
                     $result = $wpdb->get_results($sql);
                 }
             }

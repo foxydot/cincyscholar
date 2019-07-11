@@ -334,7 +334,7 @@ class MSDLAB_Report_Output{
             }
         }
         //create an empty file and open for writing
-        $temp_file = fopen($temp_dirname.'/'.$temp_filename,'w+b');
+        $temp_file = fopen($temp_dirname.'/'.$temp_filename,'wb');
         //write to file
         fwrite($temp_file,$this->export_header."\n".$this->export_csv);
         fclose($temp_file);
@@ -356,7 +356,7 @@ class MSDLAB_Report_Output{
             }
         }
         //create an empty file and open for writing
-        $temp_file = fopen($temp_dirname.'/'.$temp_filename,'w+b');
+        $temp_file = fopen($temp_dirname.'/'.$temp_filename,'wb');
         //write to file
         fwrite($temp_file,$this->export_header."\n".$this->export_csv);
         fclose($temp_file);
