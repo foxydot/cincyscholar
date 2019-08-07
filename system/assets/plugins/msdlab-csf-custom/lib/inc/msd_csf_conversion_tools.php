@@ -1291,6 +1291,34 @@ ADD `FAFSAOK` tinyint(1) unsigned zerofill NOT NULL;";
 
             }
         }
+
+        function remove_user_data(){
+           /* DELETE FROM agreements WHERE ApplicantId = 7207;
+DELETE FROM agreements WHERE ApplicantId = 10475;
+DELETE FROM applicantcollege WHERE ApplicantId = 7207;
+DELETE FROM applicantcollege WHERE ApplicantId = 10475;
+DELETE FROM applicantfinancial WHERE ApplicantId = 7207;
+DELETE FROM applicantfinancial WHERE ApplicantId = 10475;
+DELETE FROM applicantindependencequery WHERE ApplicantId = 7207;
+DELETE FROM applicantindependencequery WHERE ApplicantId = 10475;
+DELETE FROM applicantscholarship WHERE ApplicantId = 7207;
+DELETE FROM applicantscholarship WHERE ApplicantId = 10475;
+DELETE FROM applicationprocess WHERE ApplicantId = 7207;
+DELETE FROM applicationprocess WHERE ApplicantId = 10475;
+DELETE FROM attachment WHERE ApplicantId = 7207;
+DELETE FROM attachment WHERE ApplicantId = 10475;
+DELETE FROM guardian WHERE ApplicantId = 7207;
+DELETE FROM guardian WHERE ApplicantId = 10475;
+DELETE FROM recommend WHERE ApplicantId = 7207;
+DELETE FROM recommend WHERE ApplicantId = 10475;
+DELETE FROM renewal WHERE ApplicantId = 7207;
+DELETE FROM renewal WHERE ApplicantId = 10475;
+DELETE FROM studentneed WHERE ApplicantId = 7207;
+DELETE FROM studentneed WHERE ApplicantId = 10475;
+
+DELETE FROM applicant WHERE ApplicantId = 7207;
+DELETE FROM applicant WHERE ApplicantId = 10475; */
+        }
     }
 }
 
