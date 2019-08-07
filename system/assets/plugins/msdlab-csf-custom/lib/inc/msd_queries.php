@@ -696,7 +696,7 @@ class MSDLAB_Queries{
             }
         }
         $results = $this->get_result_set($data);
-        //error_log('REPORT QUERY: ' . $wpdb->last_query);
+        error_log('REPORT QUERY: ' . $wpdb->last_query);
         if(is_numeric($this->post_vars['single_family_search_input'])){
             $handled = array();
         }
@@ -984,7 +984,7 @@ class MSDLAB_Queries{
 
         $results = $this->get_result_set($data);
 
-        //error_log('RENEWAL REPORT QUERY: ' . $wpdb->last_query);
+        error_log('RENEWAL REPORT QUERY: ' . $wpdb->last_query);
         foreach ($results AS $k => $r){
             $applicant_id = $r->ApplicantId;
             $renewal_id = $r->RenewalId;
