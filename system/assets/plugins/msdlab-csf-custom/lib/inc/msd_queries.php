@@ -485,8 +485,10 @@ class MSDLAB_Queries{
             } else {
                 $where[] = 'UNIX_TIMESTAMP(applicant.ApplicationDateTime) >= '.strtotime(get_option('csf_settings_start_date')); //replace with dates from settings
             }
-            if(!empty($this->post_vars['application_date_search_input_end'])){
+            if(!empty($this->post_vars['application_date_search_input_end'])&& ($this->post_vars['application_date_search_input_start'] != $this->post_vars['application_date_search_input_end'])){
                 $where[] = 'UNIX_TIMESTAMP(applicant.ApplicationDateTime) <= '.strtotime($this->post_vars['application_date_search_input_end']);
+            } else {
+                $where[] = 'UNIX_TIMESTAMP(applicant.ApplicationDateTime) <= '.strtotime($this->post_vars['application_date_search_input_start']. ' + 1 day');
             }
             $data['where'] = implode(' AND ',$where);
         }
@@ -619,8 +621,10 @@ class MSDLAB_Queries{
                 } else {
                     $where[] = 'UNIX_TIMESTAMP(applicantscholarship.DateAwarded) >= '.strtotime(get_option('csf_settings_start_date')); //replace with dates from settings
                 }
-                if(!empty($this->post_vars['award_date_search_input_start'])){
+                if(!empty($this->post_vars['award_date_search_input_end']) && ($this->post_vars['award_date_search_input_start'] != $this->post_vars['award_date_search_input_end'])){
                     $where[] = 'UNIX_TIMESTAMP(applicantscholarship.DateAwarded) <= '.strtotime($this->post_vars['award_date_search_input_end']);
+                } else {
+                    $where[] = 'UNIX_TIMESTAMP(applicantscholarship.DateAwarded) <= '.(strtotime($this->post_vars['award_date_search_input_start'] . ' + 1 day'));
                 }
                 $data['where'] .= ' AND '.implode(' AND ',$where);
             } else {
@@ -686,8 +690,10 @@ class MSDLAB_Queries{
                 } else {
                     $where[] = 'UNIX_TIMESTAMP(payment.PaymentDateTime) >= '.strtotime(get_option('csf_settings_start_date')); //replace with dates from settings
                 }
-                if(!empty($this->post_vars['award_date_search_input_start'])){
+                if(!empty($this->post_vars['payment_date_search_input_end']) && ($this->post_vars['payment_date_search_input_start'] != $this->post_vars['award_date_search_input_end'])){
                     $where[] = 'UNIX_TIMESTAMP(payment.PaymentDateTime) <= '.strtotime($this->post_vars['payment_date_search_input_end']);
+                } else {
+                    $where[] = 'UNIX_TIMESTAMP(payment.PaymentDateTime) <= '.(strtotime($this->post_vars['payment_date_search_input_start'] . ' + 1 day'));
                 }
                 $data['where'] .= ' AND '.implode(' AND ',$where);
             }
@@ -696,7 +702,7 @@ class MSDLAB_Queries{
             }
         }
         $results = $this->get_result_set($data);
-        error_log('REPORT QUERY: ' . $wpdb->last_query);
+        //error_log('REPORT QUERY: ' . $wpdb->last_query);
         if(is_numeric($this->post_vars['single_family_search_input'])){
             $handled = array();
         }
@@ -811,8 +817,8 @@ class MSDLAB_Queries{
             } else {
                 $where[] = 'UNIX_TIMESTAMP(renewal.RenewalDateTime) >= '.strtotime(get_option('csf_settings_start_date')); //replace with dates from settings
             }
-            if(!empty($this->post_vars['renewal_date_search_input_end'])){
-                $where[] = 'UNIX_TIMESTAMP(renewal.RenewalDateTime) <= '.strtotime($this->post_vars['renewal_date_search_input_end']);
+            if(!empty($this->post_vars['renewal_date_search_input_end']) && ($this->post_vars['renewal_date_search_input_start'] != $this->post_vars['renewal_date_search_input_end'])){
+                $where[] = 'UNIX_TIMESTAMP(renewal.RenewalDateTime) <= '.strtotime($this->post_vars['renewal_date_search_input_end']. ' + 1 day');
             }
             $data['where'] = implode(' AND ',$where);
         }
@@ -905,8 +911,10 @@ class MSDLAB_Queries{
                 } else {
                     $where[] = 'UNIX_TIMESTAMP(applicantscholarship.DateAwarded) >= '.strtotime(get_option('csf_settings_start_date')); //replace with dates from settings
                 }
-                if(!empty($this->post_vars['award_date_search_input_start'])){
+                if(!empty($this->post_vars['award_date_search_input_end']) && ($this->post_vars['award_date_search_input_start'] != $this->post_vars['award_date_search_input_end'])){
                     $where[] = 'UNIX_TIMESTAMP(applicantscholarship.DateAwarded) <= '.strtotime($this->post_vars['award_date_search_input_end']);
+                } else {
+                    $where[] = 'UNIX_TIMESTAMP(applicantscholarship.DateAwarded) <= '.(strtotime($this->post_vars['award_date_search_input_start'] . ' + 1 day'));
                 }
                 $data['where'] .= ' AND '.implode(' AND ',$where);
             } else {
@@ -972,8 +980,10 @@ class MSDLAB_Queries{
                 } else {
                     $where[] = 'UNIX_TIMESTAMP(payment.PaymentDateTime) >= '.strtotime(get_option('csf_settings_start_date')); //replace with dates from settings
                 }
-                if(!empty($this->post_vars['award_date_search_input_start'])){
+                if(!empty($this->post_vars['award_date_search_input_start']) && ($this->post_vars['payment_date_search_input_start'] != $this->post_vars['payment_date_search_input_end'])){
                     $where[] = 'UNIX_TIMESTAMP(payment.PaymentDateTime) <= '.strtotime($this->post_vars['payment_date_search_input_end']);
+                } else {
+                    $where[] = 'UNIX_TIMESTAMP(payment.PaymentDateTime) <= '.(strtotime($this->post_vars['payment_date_search_input_start'] . ' + 1 day'));
                 }
                 $data['where'] .= ' AND '.implode(' AND ',$where);
             }
@@ -984,7 +994,7 @@ class MSDLAB_Queries{
 
         $results = $this->get_result_set($data);
 
-        error_log('RENEWAL REPORT QUERY: ' . $wpdb->last_query);
+        //error_log('RENEWAL REPORT QUERY: ' . $wpdb->last_query);
         foreach ($results AS $k => $r){
             $applicant_id = $r->ApplicantId;
             $renewal_id = $r->RenewalId;
