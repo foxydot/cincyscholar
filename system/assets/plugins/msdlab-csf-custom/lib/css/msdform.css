@@ -192,6 +192,18 @@ form.csf_report_search_form, form#csf_college {
   .admin_page_student-edit td label {
     display: inline; }
 
+.admin_page_student-edit a.removeScholarship {
+  display: inline-block;
+  font-size: 1.2em;
+  background-color: red;
+  color: white;
+  padding: 0.25em 0.5em;
+  border-radius: 50%;
+  line-height: 1; }
+  .admin_page_student-edit a.removeScholarship:hover {
+    background-color: black;
+    text-decoration: none; }
+
 .upload-wrapper {
   margin-bottom: 1em; }
   .upload-wrapper label {

@@ -5,7 +5,7 @@ $pane = array();
 
 $academic_year = $_GET['academic_year'];
 if($_POST) {
-    //ts_data($_POST);
+    ts_data($_POST);
     $user_id = $_POST['Applicant_UserId_input'];
     $notifications = array(
         'nononce' => 'Student info could not be saved.',
@@ -22,9 +22,10 @@ if($_POST) {
     if($_POST['Agreements_ApplicantId_input']){
         $where['agreements'] = 'ApplicantId = ' . $_POST['Agreements_ApplicantId_input'];
     }
-    if(is_numeric($_POST['ApplicantScholarship_ApplicantId_input'])){
+    //TODO: set up for multi-scholarship?
+    /*if(is_numeric($_POST['ApplicantScholarship_ApplicantId_input'])){
         $where['applicantscholarship'] = 'ApplicantId = ' . $_POST['ApplicantScholarship_ApplicantId_input'];
-    }
+    }*/
     if($_POST['Applicant_UserId_input']){
         $where['studentneed'] = 'ApplicantId = ' . $_POST['Applicant_ApplicantId_input'];
     }
@@ -155,13 +156,18 @@ if($student = $this->queries->get_student_data($applicant_id,$academic_year)) {
             ";
             $jquery[] = "
             $('#Applicant_Reject_input,#Renewal_Reject_input').change(function(){
-                if($(this).is(':checked')){
-                    $('#ApplicantScholarship_ScholarshipId_input').val('');
-                    $('#ApplicantScholarship_AmountAwarded_input').val(0);
-                    $('#ApplicantScholarship_DateAwarded_input').val(0);
-                }
-            });
-            ";
+                if($(this).is(':checked')){";
+
+
+            foreach($student['scholarship'] AS $sch) {
+                $jquery[] = "
+                    $('#ApplicantScholarship_ScholarshipId_".$sch->AwardId."_input').val('');
+                    $('#ApplicantScholarship_AmountAwarded_".$sch->AwardId."_input').val(0);
+                    $('#ApplicantScholarship_DateAwarded_".$sch->AwardId."_input').val(0); 
+                    ";
+            }
+
+            $jquery[] = "}});";
             $scholarship_array = $this->queries->get_select_array_from_db('scholarship', 'ScholarshipId', 'Name','Name',1);
 
             $newscholarship['ApplicantScholarship_ApplicantId_new'] = $this->form->field_hidden("ApplicantScholarship_ApplicantId_new", $student['personal']->ApplicantId);
@@ -179,6 +185,20 @@ if($student = $this->queries->get_student_data($applicant_id,$academic_year)) {
             $newscholarshipform = str_replace(array("\n", "\r"), '', implode("",$newscholarship));
             $newscholarshipform = str_replace("'","\'",$newscholarshipform);
 
+            $jquery[] = "
+            $('.removeScholarship').click(function(){
+                var s_id = $(this).attr('data-item');
+                var s_title = $(this).attr('title');
+                var doeeet = confirm('Are you sure you want to remove ' + s_title + '?');
+                if(doeeet == true){
+                    $('#ApplicantScholarship_ScholarshipId_' + s_id + '_input').val('');
+                    $('#ApplicantScholarship_AmountAwarded_' + s_id + '_input').val(0);
+                    $('#ApplicantScholarship_DateAwarded_' + s_id + '_input').val(0); 
+                    $('#scholarship_' + s_id).hide();
+                    alert(s_title + ' will be removed! Be sure to save your changes!');
+                }
+            });
+            ";
             $jquery[] = "
             $('#add_scholarship_btn').click(function(){
                 var html = '".$newscholarshipform."';

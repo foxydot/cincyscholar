@@ -483,7 +483,7 @@ class MSDLAB_Report_Output{
             $ret['ApplicantScholarship_AwardId_'.$s] = $this->form->field_hidden("ApplicantScholarship_AwardId_".$s, $scholarship->AwardId);
             $ret['ApplicantScholarship_AcademicYear_'.$s] = $this->form->field_hidden("ApplicantScholarship_AcademicYear_".$s, $academic_year);
 
-            $ret['ApplicantScholarship_ScholarshipId_'.$s] = $this->form->field_select('ApplicantScholarship_ScholarshipId_'.$s, $scholarship->ScholarshipId ? $scholarship->ScholarshipId : null, 'Scholarship '.$scholarship_cnt, null, $this->scholarship_array, array(), array('col-md-3', 'col-sm-12'));
+            $ret['ApplicantScholarship_ScholarshipId_'.$s] = $this->form->field_select('ApplicantScholarship_ScholarshipId_'.$s, $scholarship->ScholarshipId ? $scholarship->ScholarshipId : null, 'Scholarship '.$scholarship_cnt.' <a href="#" class="removeScholarship" title="Scholarship '.$scholarship_cnt.'" data-item="'.$s.'">x</a>', null, $this->scholarship_array, array(), array('col-md-3', 'col-sm-12'));
             $ret['infoFund_'.$s] = $this->form->field_textinfo('infoFund', $this->queries->get_fund_by_scholarshipid($scholarship->ScholarshipId), 'Fund', null, null, array('col-md-2', 'col-sm-12'));
             $ret['ApplicantScholarship_AmountAwarded_'.$s] = $this->form->field_textfield('ApplicantScholarship_AmountAwarded_'.$s, $scholarship->AmountAwarded ? $scholarship->AmountAwarded : null, 'Amount Awarded', '', array('type' => 'number'), array('col-md-2', 'col-sm-12', 'currency'));
             $ret['ApplicantScholarship_AmountActuallyAwarded_'.$s] = $this->form->field_textfield('ApplicantScholarship_AmountActuallyAwarded_'.$s, $scholarship->AmountActuallyAwarded ? $scholarship->AmountActuallyAwarded : null, 'Amount Actually Awarded', '', array('type' => 'number'), array('col-md-2', 'col-sm-12', 'currency'));
@@ -506,6 +506,7 @@ class MSDLAB_Report_Output{
                 $ret['ApplicantScholarship_GPAC_' . $s] = $this->form->field_hidden('ApplicantScholarship_GPAC_' . $s, $scholarship->GPAC ? $scholarship->GPAC : 0, 'GPA Cumulative', '0.000', array('col-md-2', 'col-sm-12', 'gpac'));
             }
             $ret[] = '</div>';
+            //$ret[] = '<div class="col-md-12"><a class="button delete removeScholarship" id="removeScholarship_'.$s.'" name="removeScholarship_'.$s.'" data-item="'.$s.'">x Remove Scholarship '.$scholarship_cnt.'</a></div>';
             $ret[] = '</div>';
             $scholarship_cnt++;
         }
