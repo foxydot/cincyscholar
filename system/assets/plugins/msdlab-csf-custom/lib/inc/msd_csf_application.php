@@ -111,6 +111,8 @@ if (!class_exists('MSDLab_CSF_Application')) {
             }
             $start_date = strtotime(get_option('csf_settings_start_date'));
             $end_date = strtotime(get_option('csf_settings_end_date'));
+            $renewal_start_date = strtotime(get_option('csf_settings_renewal_start_date'));
+            $renewal_end_date = strtotime(get_option('csf_settings_renewal_end_date'));
             $portal_page = get_option('csf_settings_student_welcome_page');
             $today = time();
             if(!is_page($portal_page)){
@@ -160,7 +162,11 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     $ret[2] = implode("\n\r",$this->get_form('application'));
                 }
                 if(current_user_can('submit_renewal')){
-                    $ret[2] = implode("\n\r",$this->get_form('renewal'));
+                    if($today >= $renewal_start_date && $today <= $renewal_end_date){
+                        $ret[2] = implode("\n\r",$this->get_form('renewal'));
+                    } else {
+                        return $content;
+                    }
                 }
                 sort($ret);
                 return implode("\n\r",$ret);
