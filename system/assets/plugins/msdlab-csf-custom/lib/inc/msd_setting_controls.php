@@ -33,6 +33,9 @@ class MSDLAB_SettingControls{
         $ret['start_date'] = $this->settings_date("Start Date","csf_settings_start_date",array('datepicker'),get_option('csf_settings_start_date'));
         $ret['end_date'] = $this->settings_date("End Date","csf_settings_end_date",array('datepicker'),get_option('csf_settings_end_date'));
         $ret['alt_text'] = $this->settings_textarea("Text to Display When Not Taking Applications","csf_settings_alt_text",array(''),get_option('csf_settings_alt_text'));
+        $ret['renewal_start_date'] = $this->settings_date("Renewal Start Date","csf_settings_renewal_start_date",array('datepicker'),get_option('csf_settings_renewal_start_date'));
+        $ret['renewal_end_date'] = $this->settings_date("Renewal End Date","csf_settings_renewal_end_date",array('datepicker'),get_option('csf_settings_renewal_end_date'));
+        $ret['renewal_alt_text'] = $this->settings_textarea("Text to Display When Not Taking Renewals","csf_settings_renewal_alt_text",array(''),get_option('csf_settings_renewal_alt_text'));
         $ret['student_welcome_page'] = $this->settings_pageselect("Select Student Portal Welcome Page","csf_settings_student_welcome_page");
         $ret['donor_welcome_page'] = $this->settings_pageselect("Select Donor Portal Welcome Page","csf_settings_donor_welcome_page");
         $ret['button'] = $this->settings_button();
