@@ -217,6 +217,8 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     //only do this if it is a student user!
                     if(!current_user_can('submit_renewal') && !current_user_can('view_csf_reports')) {
                         //first check if the application is "locked"
+                        // //where is the application locked?
+                        //TODO: Automate application locking upon end of scholarship award season.
                         $testwhere = $applicant_id > 0 ? 'applicant.ApplicantId = ' . $applicant_id : 'applicant.UserId = ' . $user_id;
                         $sql = "SELECT applicant.ApplicantId, applicant.ApplicationlLocked, applicant.AcademicYear FROM applicant WHERE " . $testwhere . " ORDER BY applicant.AcademicYear DESC LIMIT 1;";
                         global $wpdb;

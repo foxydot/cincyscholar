@@ -78,7 +78,9 @@ class MSDLAB_Queries{
         foreach($applicant[0] AS $k => $v){
             switch($k){
                 case 'ApplicantId':
+                    break;
                 case 'ApplicationDateTime':
+                    $values[] = $k.' = '.date('Y-m-d H:i:s:v');
                     break;
                 case 'AcademicYear':
                     $values[] = $k.' = '.date('Y');
