@@ -1087,8 +1087,12 @@ VALUES
 
             UPDATE z_renewals1819 SET UserId = (SELECT UserId FROM applicant WHERE applicant.FirstName = z_renewals1819.FirstName AND applicant.LastName = z_renewals1819.LastName LIMIT 1) WHERE UserId IS NULL;
             UPDATE z_renewals1819 SET ApplicantId = (SELECT ApplicantId FROM applicant WHERE applicant.FirstName = z_renewals1819.FirstName AND applicant.LastName = z_renewals1819.LastName LIMIT 1) WHERE ApplicantId IS NULL;
+
+            UPDATE z_renewals1819 SET ROLE = (SELECT meta_value FROM fdn_usermeta WHERE fdn_usermeta.user_id = z_renewals1819.UserId AND fdn_usermeta.meta_key = 'fdn_capabilities' LIMIT 1);
              *
              * This will check for exisiting users/applications
+             *
+             * Dump all "Student Awardee Renewing" down to "Student Awardee", then run Upgrade Renewals.
              *
              * Now create z_paper_applicant_list by duplicating the above structure and importing hte result of the following query:
              * SELECT * FROM `z_renewals1819` WHERE UserId IS NULL;
@@ -1289,6 +1293,29 @@ ADD `FAFSAOK` tinyint(1) unsigned zerofill NOT NULL;";
                 $sql = 'UPDATE applicant SET AcademicYear = 1850 WHERE ApplicantId IN ('.implode(", ",$associated_applicant_ids).');';
                 ts_data($sql);
 
+            }
+        }
+
+        function upgrade_renewals(){
+            global $wpdb;
+            $sql = "SELECT * FROM z_renewals2021";
+
+            $students = $wpdb->get_results($sql);
+
+            foreach($students AS $student){
+                $user = get_user_by('ID',$student->UserId);
+                if($user){
+                    $user_id = $user->ID;
+                    if($wpdb->get_results($sql)){
+                        print $user->display_name .' <br>';
+                    }
+                    if($student->Email != $user->user_email){
+                        wp_update_user(array('ID' => $user->ID,'user_email' => $student->Email, 'role' => 'renewal'));
+                    } else {
+                        wp_update_user(array('ID' => $user->ID, 'role' => 'renewal'));
+
+                    }
+                }
             }
         }
 
