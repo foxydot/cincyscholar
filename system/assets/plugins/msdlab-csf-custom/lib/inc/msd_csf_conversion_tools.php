@@ -602,6 +602,66 @@ beth@cincinnatischolarshipfoundation.org<br/>
             }
         }
 
+
+        function send_renewal_emails_2020(){
+            global $wpdb;
+            $subject = 'It is time to renew your scholarship at CincinnatiScholarshipFoundation.org';
+            $headers['from'] = 'From: Elizabeth Collins <beth@cincinnatischolarshipfoundation.org>';
+            $headers['content-type'] = 'Content-Type: text/html; charset=UTF-8';
+            $headers['bcc'] = 'Bcc: beth@cincinnatischolarshipfoundation.org';
+
+            $email_str = '
+            <p>Please surf to <a href = "http://cincinnatischolarshipfoundation.org">http://cincinnatischolarshipfoundation.org</a>, click the Login/Register button, and login with the same account information as last year.</p>
+            <p>The email associated with your account is: [[user_email]]</p>
+            <p>If you cannot remember your password, please use the "forgot password" feature to recover it.</p>
+<p>
+Immediately upon logging in, you will be redirected to the renewal form.
+ </p><p>
+ The renewal process is necessary to determine that you still meet the criteria to receive your scholarship for the 2020-2021 academic year.  We will need the following documents to complete your renewal application: 
+<ul>
+<li>your 2020-2021 Student Aid Report (SAR)</li>
+<li>your 2020-2021 Financial Aid Notification</li>
+<li>your spring semester grades, when they become available </li>
+</ul>
+The deadline to submit the renewal application, with or without the required documentation, is May 15th, '.date("Y").'. 
+</p><p>
+Elizabeth Collins<br/>
+Program Administrator
+</p><p>
+324 East 4th St., 2nd Floor<br/>
+Cincinnati OH  45202
+ </p><p>
+Ph:  (513)345-6701<br/>
+Fax:  (513)345-6705
+ </p><p>
+beth@cincinnatischolarshipfoundation.org<br/>
+<a href = "http://cincinnatischolarshipfoundation.org">www.cincinnatischolarshipfoundation.org</a>
+</p>
+';
+
+            $sql = "SELECT * FROM z_renewals2021;";
+            $results = $wpdb->get_results($sql);
+            foreach ($results AS $r){
+                $to = $r->FirstName.' '.$r->LastName.' <'.$r->Email.'>';
+                if($r->Email != $r->UserEmail){
+                    $headers['cc'] = 'Cc: '.$r->UserEmail;
+                } else {
+                    unset($headers['cc']);
+                }
+
+                $pattern = array('/\[\[email\]\]/','/\[\[TempPwd\]\]/','/\[\[user_email\]\]/');
+                $replacement = array($r->Email,$temppwd,$r->UserEmail);
+                $message = preg_replace($pattern,$replacement,$email_str);
+
+
+                //send the email
+                //if(wp_mail($to, $subject, $message, $headers)){
+                    print $r->FirstName.' '.$r->LastName.', '.$r->Email.'<br />';
+                    print $to .'<br>'. $subject .'<br>'. $message .'<br><br>';
+                //}
+            }
+        }
+
         function fix_up_renewal_attachments(){
             global $wpdb;
             $sql = "SELECT b.LastName, b.RenewalId AS RenewalId2, a.* FROM attachment AS a,renewal AS b WHERE a.ApplicantId = b.ApplicantId AND (a.RenewalId = 0 OR a.RenewalId IS NULL) AND b.ApplicantId IN (SELECT c.ApplicantId FROM renewal AS c);";
