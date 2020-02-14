@@ -655,10 +655,10 @@ beth@cincinnatischolarshipfoundation.org<br/>
 
 
                 //send the email
-                //if(wp_mail($to, $subject, $message, $headers)){
+                if(wp_mail($to, $subject, $message, $headers)){
                     print $r->FirstName.' '.$r->LastName.', '.$r->Email.'<br />';
-                    print $to .'<br>'. $subject .'<br>'. $message .'<br><br>';
-                //}
+                    //print $to .'<br>'. $subject .'<br>'. $message .'<br><br>';
+                }
             }
         }
 
