@@ -793,7 +793,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                             }
                         } else {
                             print $response->get_error_message();
-                            wp_mail('catherine@madsciencedept.com','Renewal form error for user '.$_POST['Renewal_UserId_input'].'.',$response->get_error_message()."\n\n".$_POST);
+                            wp_mail('catherine@madsciencedept.com','Renewal form error for user '.$_POST['Renewal_UserId_input'].'.',json_encode($response->get_error_message())."\n\n".$_POST);
                         }
                     }
                     //sets up the query
@@ -831,6 +831,7 @@ if (!class_exists('MSDLab_CSF_Application')) {
                     }
                     $documents = $this->queries->get_result_set($docs);
                     //ts_data($result->RenewalId);
+                    $renewal_year = date("Y");
                     if(!$result){ //there is no renewal! oh no! get the application data and populate the form with that.
                         $data = array();
                         $data['tables']['Applicant'] = array('UserId','Email','ApplicationDateTime', 'FirstName', 'MiddleInitial', 'LastName', 'Last4SSN', 'Address1', 'Address2', 'City', 'StateId',
@@ -847,6 +848,9 @@ if (!class_exists('MSDLab_CSF_Application')) {
                         }
                         $results = $this->queries->get_result_set($data);
                         $result = $results[0];
+                    //} elseif($result->AcademicYear != $renewal_year){
+                        //duplicate renewal
+
                     }
 
                     //ts_data($result);
