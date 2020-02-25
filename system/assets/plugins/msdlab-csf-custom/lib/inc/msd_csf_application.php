@@ -1277,7 +1277,7 @@ label{width: 25%;}span.result{width:75%;}
             $this->major_array = $this->queries->get_select_array_from_db('Major', 'MajorId', 'MajorName','MajorName',1);
             $this->educationalattainment_array = $this->queries->get_select_array_from_db('EducationalAttainment', 'EducationalAttainmentId', 'EducationalAttainment');
             $this->highschool_array = $this->queries->get_select_array_from_db('HighSchool', 'HighSchoolId', 'SchoolName','SchoolName',1);
-            for ($yr = date("Y")-18; $yr <= date("Y")+2; $yr++) {
+            for ($yr = date("Y")-38; $yr <= date("Y")+2; $yr++) {
                 $this->gradyr_array[$yr.'-01-01'] = $yr;
             }
             $this->gradyr_array = array_reverse($this->gradyr_array);
